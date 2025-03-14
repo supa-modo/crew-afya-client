@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FiUser, FiLock, FiEye, FiEyeOff, FiAlertCircle } from "react-icons/fi";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
+import { TbAlertTriangle, TbLockFilled } from "react-icons/tb";
+import { PiUserDuotone, PiSignInDuotone } from "react-icons/pi";
+import { motion } from "framer-motion";
 
 const LoginForm = () => {
   const [identifier, setIdentifier] = useState("");
@@ -10,6 +13,7 @@ const LoginForm = () => {
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorTimeout, setErrorTimeout] = useState(null);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { login, error: authError, clearError, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -57,7 +61,7 @@ const LoginForm = () => {
       clearError();
 
       // Attempt to login
-      const userData = await login(identifier, password);
+      const userData = await login(identifier, password, rememberMe);
 
       // If we get here, login was successful
       console.log("Login successful:", userData);
@@ -65,43 +69,55 @@ const LoginForm = () => {
       // Navigate to the redirect path or dashboard
       navigate(from, { replace: true });
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login error in form:", error);
 
-      // Set form error with more specific message
+      // Display the specific error message from the server
+      // Make sure we're getting the most specific error message possible
       setFormError(error.message || "Invalid credentials. Please try again.");
+
+      // Set a timeout to clear the error after 8 seconds
+      const timeout = setTimeout(() => {
+        setFormError("");
+      }, 8000);
+
+      setErrorTimeout(timeout);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className=" overflow-hidden transition-all duration-300">
+    <div className="mx-4 overflow-hidden transition-all duration-300">
       {formError && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 flex items-start border-b border-red-100 dark:border-red-900/30">
-          <FiAlertCircle className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
-          <span className="text-sm font-medium">{formError}</span>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mx-1 sm:mx-3 bg-red-500/10 dark:bg-red-700/20 border border-red-500/30 rounded-lg p-3 mb-6 flex items-center gap-3"
+        >
+          <TbAlertTriangle className="text-red-500 dark:text-red-400 flex-shrink-0" />
+          <p className="text-red-500 text-xs sm:text-sm">{formError}</p>
+        </motion.div>
       )}
 
       <form onSubmit={handleSubmit} className="px-1 sm:px-3">
-        <div className="space-y-6">
+        <div className="space-y-3 sm:space-y-4">
           <div>
             <label
               htmlFor="identifier"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300 mb-2"
             >
               Phone Number or ID Number
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiUser className="h-5 w-5 text-gray-400" />
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <PiUserDuotone className="h-5 w-5 text-gray-400" />
               </div>
               <input
                 id="identifier"
                 type="text"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                className="text-sm text-gray-600/90 sm:text-base font-geist block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                 placeholder="Enter your phone or ID number"
                 required
                 disabled={isSubmitting}
@@ -113,41 +129,60 @@ const LoginForm = () => {
             <div className="mb-1">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300"
               >
                 Password
               </label>
             </div>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiLock className="h-5 w-5 text-gray-400" />
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <TbLockFilled className="h-5 w-5 text-gray-400" />
               </div>
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                placeholder="••••••••"
+                className="text-sm text-gray-600/90 sm:text-base font-geist block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                placeholder="••••••••••"
                 required
                 disabled={isSubmitting}
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                className="absolute inset-y-0 right-0 pr-6 flex items-center"
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={isSubmitting}
               >
                 {showPassword ? (
-                  <FiEyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
+                  <FaEyeSlash className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
                 ) : (
-                  <FiEye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
+                  <FaEye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
                 )}
               </button>
             </div>
+          </div>
+
+          <div className="flex justify-between items-center mx-1 font-open">
+            <div className="flex items-center ">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="h-3 w-3 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+              />
+              <label
+                htmlFor="remember-me"
+                className="ml-2 block text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400"
+              >
+                Remember me
+              </label>
+            </div>
             <Link
               to="/forgot-password"
-              className="justify-end text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
+              className="text-[0.8rem] sm:text-sm font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
             >
               Forgot password?
             </Link>
@@ -156,7 +191,7 @@ const LoginForm = () => {
           <div>
             <button
               type="submit"
-              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 ${
+              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600  focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 ${
                 isSubmitting ? "opacity-70 cursor-not-allowed" : ""
               }`}
               disabled={isSubmitting}
@@ -186,14 +221,17 @@ const LoginForm = () => {
                   Signing in...
                 </div>
               ) : (
-                "Sign in"
+                <div className="flex items-center space-x-1">
+                  <PiSignInDuotone size={18} />
+                  <span>Sign In</span>
+                </div>
               )}
             </button>
           </div>
         </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="mt-5 text-center">
+          <p className="text-[0.83rem] sm:text-sm text-gray-600 dark:text-gray-400">
             Don't have an account?{" "}
             <Link
               to="/register"
@@ -204,14 +242,14 @@ const LoginForm = () => {
           </p>
         </div>
 
-        <div className="mt-4 text-center">
+        {/* <div className="mt-4 text-center">
           <Link
             to="/admin-login"
-            className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors duration-200"
+            className="text-[0.83rem] sm:text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors duration-200"
           >
             Admin Login
           </Link>
-        </div>
+        </div> */}
       </form>
     </div>
   );

@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FiMail, FiAlertCircle, FiCheckCircle } from "react-icons/fi";
+import { motion } from "framer-motion";
+import { FiMail, FiAlertCircle, FiCheckCircle, FiPhone } from "react-icons/fi";
 import { forgotPassword } from "../../services/authService";
+import { TbAlertTriangle } from "react-icons/tb";
 
 const ForgotPasswordForm = ({ onSubmitSuccess }) => {
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
+  const [identifierType, setIdentifierType] = useState("email"); // "phone" or "email"
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -23,26 +26,40 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
     e.preventDefault();
 
     // Basic validation
-    if (!email) {
-      setFormError("Please enter your email address");
+    if (!identifier) {
+      setFormError(
+        `Please enter your ${
+          identifierType === "email" ? "email address" : "phone number"
+        }`
+      );
       return;
     }
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setFormError("Please enter a valid email address");
-      return;
+    // Validation based on identifier type
+    if (identifierType === "email") {
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(identifier)) {
+        setFormError("Please enter a valid email address");
+        return;
+      }
+    } else {
+      // Phone validation (simple check for now)
+      const phoneRegex = /^\+?[0-9]{10,15}$/;
+      if (!phoneRegex.test(identifier)) {
+        setFormError("Please enter a valid phone number");
+        return;
+      }
     }
 
     try {
       setIsSubmitting(true);
       setFormError("");
 
-      await forgotPassword(email);
+      await forgotPassword(identifier);
       setIsSuccess(true);
       if (onSubmitSuccess) {
-        onSubmitSuccess(email);
+        onSubmitSuccess(identifier);
       }
     } catch (error) {
       setFormError(
@@ -60,6 +77,12 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
     }
   };
 
+  const toggleIdentifierType = () => {
+    setIdentifierType(identifierType === "email" ? "phone" : "email");
+    setIdentifier("");
+    setFormError("");
+  };
+
   if (isSuccess && !onSubmitSuccess) {
     return (
       <div className="text-center">
@@ -67,15 +90,17 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
           <FiCheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
         </div>
         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-          Check your email
+          {identifierType === "email" ? "Check your email" : "Check your phone"}
         </h3>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          We've sent a password reset link to {email}
+          We've sent a password reset{" "}
+          {identifierType === "email" ? "link to " : "code to "}
+          {identifier}
         </p>
         <div className="mt-6">
           <Link
             to="/login"
-            className="inline-flex items-center justify-center w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
+            className="inline-flex items-center justify-center w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
           >
             Back to Login
           </Link>
@@ -87,43 +112,65 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
   return (
     <div>
       {formError && (
-        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg flex items-start border border-red-100 dark:border-red-800/30 animate-fadeIn">
-          <FiAlertCircle className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
-          <span className="text-sm">{formError}</span>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className=" bg-red-500/10 dark:bg-red-700/20 border border-red-500/30 rounded-lg p-3 mb-6 flex items-center gap-3"
+        >
+          <TbAlertTriangle className="text-red-500 dark:text-red-400 flex-shrink-0" />
+          <p className="text-red-500 text-xs sm:text-sm">{formError}</p>
+        </motion.div>
       )}
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-6">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-          >
-            Email Address
-          </label>
+        <div className="mb-6 ">
+          <div className="flex justify-between items-center mb-2">
+            <label
+              htmlFor="identifier"
+              className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300"
+            >
+              {identifierType === "email" ? "Email Address" : "Phone Number"}
+            </label>
+            <button
+              type="button"
+              onClick={toggleIdentifierType}
+              className="text-xs text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
+            >
+              Use {identifierType === "email" ? "phone number" : "email"}{" "}
+              instead
+            </button>
+          </div>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FiMail className="h-5 w-5 text-gray-400" />
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              {identifierType === "email" ? (
+                <FiMail className="h-5 w-5 text-gray-400" />
+              ) : (
+                <FiPhone className="h-5 w-5 text-gray-400" />
+              )}
             </div>
             <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-              placeholder="you@example.com"
+              id="identifier"
+              type={identifierType === "email" ? "email" : "tel"}
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              className="text-sm text-gray-600/90 sm:text-base font-geist block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+              placeholder={
+                identifierType === "email" ? "you@example.com" : "+254700000000"
+              }
               required
               disabled={isSubmitting}
             />
           </div>
           <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-            We'll send a link to reset your password to this email address.
+            We'll send a {identifierType === "email" ? "link" : "code"} to reset
+            your password to this{" "}
+            {identifierType === "email" ? "email address" : "phone number"}.
           </p>
         </div>
 
         <button
           type="submit"
-          className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+          className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
           disabled={isSubmitting}
         >
           {isSubmitting ? (

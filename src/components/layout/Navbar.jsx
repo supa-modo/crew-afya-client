@@ -71,10 +71,10 @@ const Navbar = () => {
                   />
                 </div>
                 <div className="flex flex-col leading-none">
-                  <span className="text-xl font-extrabold font-nunito bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent dark:from-primary-400 dark:to-primary-500">
+                  <span className="text-xl font-extrabold font-nunito tracking-tight bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent dark:from-primary-400 dark:to-primary-500">
                     CrewAfya
                   </span>
-                  <span className="text-lg sm:text-xl -mt-2.5 sm:-mt-2 font-extrabold font-nunito bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent dark:from-primary-400 dark:to-primary-500">
+                  <span className="text-lg sm:text-xl -mt-2.5 sm:-mt-2 font-extrabold font-nunito tracking-tight bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent dark:from-primary-400 dark:to-primary-500">
                     Care
                   </span>
                 </div>
@@ -172,7 +172,7 @@ const Navbar = () => {
                   <div>
                     <button
                       onClick={toggleProfile}
-                      className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800"
+                      className="flex text-sm rounded-full focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800"
                       aria-expanded="false"
                       aria-haspopup="true"
                     >

@@ -12,8 +12,18 @@ import {
   FiShield,
   FiArrowRight,
   FiArrowLeft,
+  FiLoader,
 } from "react-icons/fi";
+import {
+  TbAlertTriangle,
+  TbLockFilled,
+  TbPhoneDone,
+  TbShieldCheckFilled,
+} from "react-icons/tb";
+import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
+import { PiIdentificationBadgeDuotone, PiPhoneListDuotone, PiUserDuotone } from "react-icons/pi";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -26,6 +36,7 @@ const RegisterForm = () => {
     confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
@@ -68,6 +79,10 @@ const RegisterForm = () => {
       ...prev,
       [name]: value,
     }));
+    // Clear error when user starts typing
+    if (formError) {
+      setFormError("");
+    }
   };
 
   const handleOtpChange = (index, value) => {
@@ -97,19 +112,20 @@ const RegisterForm = () => {
     if (
       !formData.firstName ||
       !formData.lastName ||
-      !formData.email ||
       !formData.phoneNumber ||
       !formData.idNumber
     ) {
-      setFormError("Please fill in all fields");
+      setFormError("Please fill in all required fields");
       return false;
     }
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setFormError("Please enter a valid email address");
-      return false;
+    // Email validation - only if email is provided
+    if (formData.email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        setFormError("Please enter a valid email address or leave it blank");
+        return false;
+      }
     }
 
     // Phone validation (simple check for now)
@@ -253,7 +269,7 @@ const RegisterForm = () => {
       const userData = {
         firstName: formData.firstName,
         lastName: formData.lastName,
-        email: formData.email,
+        email: formData.email || null,
         phoneNumber: formData.phoneNumber,
         idNumber: formData.idNumber,
         password: formData.password,
@@ -266,6 +282,7 @@ const RegisterForm = () => {
         state: {
           message:
             "Registration successful! Please log in with your credentials.",
+          type: "success",
         },
       });
     } catch (error) {
@@ -277,12 +294,16 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="max-w-md w-full mx-auto">
+    <div className="mx-4 overflow-hidden transition-all duration-300">
       {formError && (
-        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg flex items-start border border-red-100 dark:border-red-800/30 animate-fadeIn">
-          <FiAlertCircle className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
-          <span className="text-sm">{formError}</span>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mx-1 sm:mx-3 bg-red-500/10 dark:bg-red-700/20 border border-red-500/30 rounded-lg p-3 mb-6 flex items-center gap-3"
+        >
+          <TbAlertTriangle className="text-red-500 dark:text-red-400 flex-shrink-0" />
+          <p className="text-red-500 text-xs sm:text-sm">{formError}</p>
+        </motion.div>
       )}
 
       <form
@@ -294,20 +315,21 @@ const RegisterForm = () => {
                 handleNextStep();
               }
         }
+        className="px-1 sm:px-3"
       >
         {step === 1 && (
-          <div className="space-y-5">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+              <div className="w-full">
                 <label
                   htmlFor="firstName"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
                 >
                   First Name
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiUser className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <PiUserDuotone className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
                     id="firstName"
@@ -315,93 +337,46 @@ const RegisterForm = () => {
                     type="text"
                     value={formData.firstName}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                    className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                     placeholder="John"
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
-              <div>
+              <div className="w-full">
                 <label
                   htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
                 >
                   Last Name
                 </label>
-                <input
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="block w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  placeholder="Doe"
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiMail className="h-5 w-5 text-gray-400" />
+                <div className="relative">
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="text-sm text-gray-600/90 sm:text-base block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                    placeholder="Doe"
+                    required
+                    disabled={isSubmitting}
+                  />
                 </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  placeholder="you@example.com"
-                  required
-                />
               </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Phone Number
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiPhone className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  type="tel"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  placeholder="+254700000000"
-                  required
-                />
-              </div>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                We'll send a verification code to this number
-              </p>
             </div>
 
             <div>
               <label
                 htmlFor="idNumber"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
               >
                 ID Number
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiShield className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <PiIdentificationBadgeDuotone className="h-5 sm:h-6 w-5 sm:w-6 text-gray-400" />
                 </div>
                 <input
                   id="idNumber"
@@ -409,18 +384,48 @@ const RegisterForm = () => {
                   type="text"
                   value={formData.idNumber}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                   placeholder="Enter your ID number"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
 
+            <div>
+              <label
+                htmlFor="phoneNumber"
+                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+              >
+                Phone Number
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <PiPhoneListDuotone className="h-5 sm:h-6 w-5 sm:w-6 text-gray-400" />
+                </div>
+                <input
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  type="tel"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                  placeholder="+254700000000"
+                  required
+                  disabled={isSubmitting}
+                />
+              </div>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                We'll send a verification code to this number
+              </p>
+            </div>
+
             <button
               type="submit"
-              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:border-p focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
             >
-              Continue
+              <span>Continue</span>
               <FiArrowRight className="ml-2 h-4 w-4" />
             </button>
           </div>
@@ -429,10 +434,10 @@ const RegisterForm = () => {
         {step === 2 && (
           <div className="space-y-5">
             <div className="text-center mb-2">
-              <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mb-4">
-                <FiShield className="h-8 w-8" />
+              <div className="inline-flex items-center justify-center h-16 w-20 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-primary-500 dark:text-blue-400 mb-4">
+                <TbShieldCheckFilled className="h-10 w-10" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+              <h3 className="text-lg font-bold font-geist text-gray-600 dark:text-white">
                 Verify Your Phone
               </h3>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
@@ -450,8 +455,9 @@ const RegisterForm = () => {
                   value={otpCode[index]}
                   onChange={(e) => handleOtpChange(index, e.target.value)}
                   onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                  className="w-10 h-12 sm:w-12 sm:h-14 text-center text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                  className="w-10 h-12 sm:w-12 sm:h-14 text-gray-600 text-center text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                   required
+                  disabled={isSubmitting}
                 />
               ))}
             </div>
@@ -478,7 +484,8 @@ const RegisterForm = () => {
               <button
                 type="button"
                 onClick={handlePrevStep}
-                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                disabled={isSubmitting}
               >
                 <FiArrowLeft className="mr-2 h-4 w-4" />
                 Back
@@ -486,30 +493,11 @@ const RegisterForm = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <div className="flex items-center">
-                    <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
+                    <FiLoader className="animate-spin -ml-1 mr-2 h-4 w-4" />
                     Verifying...
                   </div>
                 ) : (
@@ -526,12 +514,12 @@ const RegisterForm = () => {
         {step === 3 && (
           <div className="space-y-5">
             <div className="text-center mb-2">
-              <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mb-4">
-                <FiCheckCircle className="h-8 w-8" />
+              <div className="flex items-center gap-2 justify-center">
+                <TbPhoneDone className="h-6 w-6 text-green-600 " />
+                <h3 className="text-lg font-bold font-nunito text-green-600 ">
+                  Phone Number Verified
+                </h3>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Phone Verified
-              </h3>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                 Create a password to complete your registration
               </p>
@@ -540,13 +528,13 @@ const RegisterForm = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
               >
                 Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiLock className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <TbLockFilled className="h-6 w-6 text-gray-400" />
                 </div>
                 <input
                   id="password"
@@ -554,19 +542,21 @@ const RegisterForm = () => {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                   placeholder="••••••••"
                   required
+                  disabled={isSubmitting}
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={isSubmitting}
                 >
                   {showPassword ? (
-                    <FiEyeOff className="h-5 w-5 text-gray-400" />
+                    <FaEyeSlash className="h-5 w-5" />
                   ) : (
-                    <FiEye className="h-5 w-5 text-gray-400" />
+                    <FaEye className="h-5 w-5" />
                   )}
                 </button>
               </div>
@@ -578,24 +568,37 @@ const RegisterForm = () => {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
               >
                 Confirm Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiLock className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <TbLockFilled className="h-6 w-6 text-gray-400" />
                 </div>
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type={showPassword ? "text" : "password"}
+                  type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                   placeholder="••••••••"
                   required
+                  disabled={isSubmitting}
                 />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  disabled={isSubmitting}
+                >
+                  {showConfirmPassword ? (
+                    <FaEyeSlash className="h-5 w-5" />
+                  ) : (
+                    <FaEye className="h-5 w-5" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -603,7 +606,8 @@ const RegisterForm = () => {
               <button
                 type="button"
                 onClick={handlePrevStep}
-                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                disabled={isSubmitting}
               >
                 <FiArrowLeft className="mr-2 h-4 w-4" />
                 Back
@@ -611,30 +615,11 @@ const RegisterForm = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <div className="flex items-center">
-                    <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
+                    <FiLoader className="animate-spin -ml-1 mr-2 h-4 w-4" />
                     Creating account...
                   </div>
                 ) : (
@@ -647,7 +632,7 @@ const RegisterForm = () => {
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-[0.83rem] sm:text-sm text-gray-600 dark:text-gray-400">
           Already have an account?{" "}
           <Link
             to="/login"

@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import LoginForm from "../components/auth/LoginForm";
-import { FiCheckCircle, FiHeart, FiUser } from "react-icons/fi";
+import { FiCheckCircle } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
+import { TbLockFilled, TbShieldCheckFilled } from "react-icons/tb";
 
 const LoginPage = () => {
   const location = useLocation();
@@ -32,8 +33,8 @@ const LoginPage = () => {
           alt="Health background"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/70 via-blue-50/60 to-transparent z-10" />
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 via-transparent to-blue-50/50 z-10 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/70 via-blue-50/60 to-transparent dark:from-gray-900/80 dark:via-gray-900/70 dark:to-gray-900/30 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 via-transparent to-blue-50/50 dark:from-gray-900/70 dark:via-gray-900/40 dark:to-gray-900/60 z-10 backdrop-blur-sm" />
       </div>
 
       {/* Background decorative elements */}
@@ -41,13 +42,13 @@ const LoginPage = () => {
         <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-br from-cyan-100/40 to-blue-100/30 dark:from-cyan-800/20 dark:to-blue-800/10 rounded-full blur-3xl transform translate-x-1/3 -translate-y-1/3"></div>
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-to-tr from-teal-100/30 to-blue-100/20 dark:from-teal-800/20 dark:to-blue-800/10 rounded-full blur-3xl opacity-70"></div>
 
-        {/* Abstract medical-themed decorative elements */}
-        <div className="absolute top-1/4 right-1/4 w-64 h-64 border-4 border-blue-200/30 dark:border-blue-700/20 rounded-full"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-32 h-32 border-2 border-teal-300/40 dark:border-teal-600/30 rounded-full"></div>
+        {/* Abstract medical-themed decorative elements - adjusted for smaller screens */}
+        <div className="absolute top-1/3 right-1/4 w-32 h-32 sm:w-64 sm:h-64 border-4 border-blue-200/30 dark:border-blue-700/20 rounded-full"></div>
+        <div className="absolute bottom-1/3 left-1/4 w-16 h-16 sm:w-32 sm:h-32 border-2 border-teal-300/40 dark:border-teal-600/30 rounded-full"></div>
 
         {/* Heartbeat line */}
         <svg
-          className="absolute bottom-20 left-0 right-0 mx-auto opacity-20 dark:opacity-10"
+          className="absolute bottom-24 left-0 right-0 mx-auto w-3/4 sm:w-auto opacity-20 dark:opacity-10"
           width="400"
           height="50"
           viewBox="0 0 400 50"
@@ -93,8 +94,8 @@ const LoginPage = () => {
                 className="w-16 h-16 md:w-20 md:h-20 mx-auto"
               />
             </div>
-            <div className="text-center mb-5">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-nunito font-extrabold text-primary-500 dark:text-primary-600 mb-3">
+            <div className="text-center mb-3 md:mb-4">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-nunito tracking-tight font-extrabold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
                 CrewAfya Care
               </h1>
               <p className="text-gray-400 text-sm lg:text-base">
@@ -107,13 +108,11 @@ const LoginPage = () => {
               initial={{ width: 0 }}
               animate={{ width: "8rem" }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="h-1 bg-gradient-to-r from-primary-500 to-secondary-400 rounded-full mx-auto"
+              className="h-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-full mx-auto"
             ></motion.div>
           </motion.div>
 
-          <div
-            className="px-8 pb-6 bg-gray-50 dark:bg-gray-800/50"
-          >
+          <div className="px-4 pb-10 bg-gray-50 dark:bg-gray-800/50">
             <LoginForm />
           </div>
         </div>
@@ -126,32 +125,12 @@ const LoginPage = () => {
           className="mt-8 flex justify-center space-x-6 opacity-70"
         >
           <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
-            <svg
-              className="h-4 w-4 mr-1"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-            Secure Login
+            <TbShieldCheckFilled className="w-4 h-4 mr-1" />
+            <span>Secure Login</span>
           </div>
           <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
-            <svg
-              className="h-4 w-4 mr-1"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-            HIPAA Compliant
+            <TbLockFilled className="w-4 h-4 mr-1" />
+            <span>HIPAA Compliant</span>
           </div>
         </motion.div>
       </motion.div>

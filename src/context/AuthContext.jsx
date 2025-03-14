@@ -22,7 +22,8 @@ export const AuthProvider = ({ children }) => {
     const checkAuthStatus = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
 
         if (token) {
           try {
@@ -53,6 +54,8 @@ export const AuthProvider = ({ children }) => {
               // If refresh fails, clear storage
               localStorage.removeItem("token");
               localStorage.removeItem("refreshToken");
+              sessionStorage.removeItem("token");
+              sessionStorage.removeItem("refreshToken");
               setUser(null);
               setIsAuthenticated(false);
               setIsAdmin(false);
@@ -75,13 +78,13 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
-  const login = async (identifier, password) => {
+  const login = async (identifier, password, rememberMe = false) => {
     try {
       setLoading(true);
       setError(null);
 
       // Login and get tokens
-      const response = await loginUser(identifier, password);
+      const response = await loginUser(identifier, password, rememberMe);
 
       // Extract user data from the response
       if (response && response.data && response.data.user) {
@@ -111,22 +114,27 @@ export const AuthProvider = ({ children }) => {
         }
       }
     } catch (err) {
-      setError(err.message || "Failed to login");
+      console.error("Login error:", err);
+
+      // Set the error state with the specific message from the API
+      const errorMessage = err.message || "Failed to login. Please try again.";
+      setError(errorMessage);
+
       setIsAuthenticated(false);
       setIsAdmin(false);
-      throw err;
+      throw err; // Re-throw to be caught by the component
     } finally {
       setLoading(false);
     }
   };
 
-  const adminLogin = async (email, password) => {
+  const adminLogin = async (email, password, rememberMe = false) => {
     try {
       setLoading(true);
       setError(null);
 
       // Login and get tokens
-      const response = await adminLoginUser(email, password);
+      const response = await adminLoginUser(email, password, rememberMe);
 
       // Extract user data from the response
       if (response && response.data && response.data.user) {
@@ -153,7 +161,9 @@ export const AuthProvider = ({ children }) => {
         }
       }
     } catch (err) {
-      setError(err.message || "Failed to login");
+      console.error("Admin login error:", err);
+      // Use the error message from the error object
+      setError(err.message || "Failed to login as admin. Please try again.");
       setIsAuthenticated(false);
       setIsAdmin(false);
       throw err;
@@ -166,10 +176,19 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      const data = await registerUser(userData);
+
+      // Ensure email is null if it's an empty string
+      const processedUserData = { ...userData };
+      if (processedUserData.email === "") {
+        processedUserData.email = null;
+      }
+
+      const data = await registerUser(processedUserData);
       return data;
     } catch (err) {
-      setError(err.message || "Failed to register");
+      console.error("Registration error:", err);
+      // Use the error message from the error object
+      setError(err.message || "Failed to register. Please try again.");
       throw err;
     } finally {
       setLoading(false);
@@ -180,13 +199,21 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       await logoutUser();
-      // Note: tokens are now cleared in the logoutUser function
+      // Clear tokens from both storage locations
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("refreshToken");
       setUser(null);
       setIsAuthenticated(false);
       setIsAdmin(false);
     } catch (err) {
       setError(err.message || "Failed to logout");
       // Still set user to null even if logout fails
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("refreshToken");
       setUser(null);
       setIsAuthenticated(false);
       setIsAdmin(false);
