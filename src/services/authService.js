@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = `${BASE_URL}/api/v1`;
 
 // Create axios instance with default config
 const api = axios.create({
@@ -53,7 +54,7 @@ api.interceptors.response.use(
           throw new Error("No refresh token available");
         }
 
-        const response = await axios.post(`${API_URL}/auth/refresh-token`, {
+        const response = await axios.post(`${BASE_URL}/auth/refresh-token`, {
           refreshToken,
         });
 
@@ -216,7 +217,7 @@ export const refreshUserToken = async () => {
       throw new Error("No refresh token available");
     }
 
-    const response = await axios.post(`${API_URL}/auth/refresh-token`, {
+    const response = await axios.post(`${BASE_URL}/auth/refresh-token`, {
       refreshToken,
     });
 

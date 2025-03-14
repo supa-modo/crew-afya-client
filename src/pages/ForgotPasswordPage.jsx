@@ -2,7 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiMail, FiArrowLeft, FiPhone } from "react-icons/fi";
-import { TbLockFilled, TbShieldCheckFilled } from "react-icons/tb";
+import {
+  TbLockFilled,
+  TbMailFilled,
+  TbPhone,
+  TbShieldCheckFilled,
+} from "react-icons/tb";
 import ForgotPasswordForm from "../components/auth/ForgotPasswordForm";
 
 const ForgotPasswordPage = () => {
@@ -65,7 +70,7 @@ const ForgotPasswordPage = () => {
               </h1>
               <p className="text-gray-400 text-sm lg:text-base">
                 {resetSent
-                  ? `We've sent instructions to your ${resetMethod}`
+                  ? `We've sent the password reset instructions to your ${resetMethod}`
                   : "Enter your phone number or email to reset your password"}
               </p>
             </div>
@@ -81,60 +86,68 @@ const ForgotPasswordPage = () => {
 
           <div className="px-4 pb-10 bg-gray-50 dark:bg-gray-800/50">
             {resetSent ? (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="text-center px-4 py-6"
-              >
+              <div>
                 <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/20 mb-4"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-center px-4 py-6 bg-primary-100/60 dark:bg-blue-900/20 rounded-xl mb-6"
                 >
-                  {resetMethod === "email" ? (
-                    <FiMail className="h-8 w-8 text-green-600 dark:text-green-400" />
-                  ) : (
-                    <FiPhone className="h-8 w-8 text-green-600 dark:text-green-400" />
-                  )}
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="mx-auto flex items-center justify-center h-14 w-20 rounded-xl bg-blue-100 dark:bg-blue-800/30 mb-3"
+                  >
+                    {resetMethod === "email" ? (
+                      <TbMailFilled className="h-8 w-8 text-primary-600 dark:text-blue-400" />
+                    ) : (
+                      <TbPhone className="h-10 w-10 text-blue-600 dark:text-blue-400" />
+                    )}
+                  </motion.div>
+                  <motion.h3
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="text-lg font-bold font-geist text-gray-600 dark:text-white"
+                  >
+                    {resetMethod === "email"
+                      ? "Check your email"
+                      : "Check your phone"}
+                  </motion.h3>
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                    className="mt-2 text-sm text-gray-600 dark:text-gray-300"
+                  >
+                    Your password reset instructions have been sent to{" "}
+                    <span className="font-medium">{resetIdentifier}</span>
+                  </motion.p>
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                    className="mt-1 text-xs text-gray-500 dark:text-gray-400"
+                  >
+                    {resetMethod === "email"
+                      ? "If you don't see the email, check your spam folder."
+                      : "If you don't receive the SMS, make sure your phone number is correct."}
+                  </motion.p>
                 </motion.div>
-                <motion.h3
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="text-lg font-medium text-gray-900 dark:text-white"
-                >
-                  {resetMethod === "email"
-                    ? "Check your email"
-                    : "Check your phone"}
-                </motion.h3>
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                  className="mt-2 text-sm text-gray-600 dark:text-gray-400"
-                >
-                  We've sent password reset instructions to{" "}
-                  <span className="font-medium">{resetIdentifier}</span>
-                </motion.p>
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
-                  className="mt-1 text-xs text-gray-500 dark:text-gray-400"
-                >
-                  {resetMethod === "email"
-                    ? "If you don't see the email, check your spam folder."
-                    : "If you don't receive the SMS, make sure your phone number is correct."}
-                </motion.p>
-                <Link
-                  to="/login"
-                  className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
-                >
-                  Return to Login
-                </Link>
-              </motion.div>
+                {resetSent ? (
+                  <Link
+                    to="/login"
+                    className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                  >
+                    Return to Login
+                  </Link>
+                ) : (
+                  <div>
+                    <p></p>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 <div className="mx-1 sm:mx-4">
@@ -164,7 +177,7 @@ const ForgotPasswordPage = () => {
         >
           <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
             <TbShieldCheckFilled className="w-4 h-4 mr-1" />
-            <span>Secure Reset</span>
+            <span>Secure Process</span>
           </div>
           <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
             <TbLockFilled className="w-4 h-4 mr-1" />
