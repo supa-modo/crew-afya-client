@@ -227,7 +227,7 @@ const Navbar = () => {
                     <div className="relative">
                       <button
                         onClick={toggleProfile}
-                        className="flex items-center space-x-2 bg-white/20 dark:bg-gray-800 p-1.5 pr-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-1 focus:border-primary-500 focus:ring-primary-500 dark:focus:ring-offset-gray-900"
+                        className="flex items-center space-x-2 bg-white/20 dark:bg-gray-800/10 p-1.5 pr-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-1 focus:border-primary-500 focus:ring-primary-500 dark:focus:ring-offset-gray-900"
                         aria-expanded={isProfileOpen}
                         aria-haspopup="true"
                       >

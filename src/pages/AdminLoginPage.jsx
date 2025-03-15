@@ -26,25 +26,41 @@ const AdminLoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative bg-gradient-to-br from-indigo-50/80 to-blue-50/80 dark:from-gray-900/80 dark:to-indigo-900/80">
-      {/* Background image */}
-      <div className="absolute inset-0 z-0">
+       {/* Background image */}
+       <div className="absolute inset-0 z-0">
         <img
           src="/afya1.jpg"
           alt="Health background"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-50/70 via-indigo-50/60 to-transparent z-10" />
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/60 via-transparent to-indigo-50/50 z-10 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/70 via-blue-50/60 to-transparent dark:from-gray-900/80 dark:via-gray-900/70 dark:to-gray-900/30 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 via-transparent to-blue-50/50 dark:from-gray-900/70 dark:via-gray-900/40 dark:to-gray-900/60 z-10 backdrop-blur-sm" />
       </div>
 
       {/* Background decorative elements */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-br from-blue-100/40 to-indigo-100/30 dark:from-blue-800/20 dark:to-indigo-800/10 rounded-full blur-3xl transform translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-to-tr from-indigo-100/30 to-blue-100/20 dark:from-indigo-800/20 dark:to-blue-800/10 rounded-full blur-3xl opacity-70"></div>
+      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-br from-cyan-100/40 to-blue-100/30 dark:from-cyan-800/20 dark:to-blue-800/10 rounded-full blur-3xl transform translate-x-1/3 -translate-y-1/3"></div>
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-to-tr from-teal-100/30 to-blue-100/20 dark:from-teal-800/20 dark:to-blue-800/10 rounded-full blur-3xl opacity-70"></div>
 
-        {/* Abstract admin-themed decorative elements */}
-        <div className="absolute top-1/4 right-1/4 w-64 h-64 border-4 border-indigo-200/30 dark:border-indigo-700/20 rounded-full"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-32 h-32 border-2 border-blue-300/40 dark:border-blue-600/30 rounded-full"></div>
+        {/* Abstract medical-themed decorative elements - adjusted for smaller screens */}
+        <div className="absolute top-1/3 right-1/4 w-32 h-32 sm:w-64 sm:h-64 border-4 border-blue-200/30 dark:border-blue-700/20 rounded-full"></div>
+        <div className="absolute bottom-1/3 left-1/4 w-16 h-16 sm:w-32 sm:h-32 border-2 border-teal-300/40 dark:border-teal-600/30 rounded-full"></div>
+
+        {/* Heartbeat line */}
+        <svg
+          className="absolute bottom-20 left-0 right-0 mx-auto w-3/4 sm:w-auto opacity-20 dark:opacity-10"
+          width="400"
+          height="50"
+          viewBox="0 0 400 50"
+        >
+          <path
+            d="M0,25 L50,25 L60,10 L70,40 L80,15 L90,25 L400,25"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="text-blue-500 dark:text-blue-400"
+          />
+        </svg>
 
         {/* Shield symbols - admin theme */}
         <div className="absolute top-24 left-64 text-indigo-300/50 dark:text-indigo-700/20 text-5xl">
@@ -59,7 +75,7 @@ const AdminLoginPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-full max-w-lg z-20"
+        className="w-full max-w-lg z-20 mt-24"
       >
         {message && (
           <motion.div
@@ -87,7 +103,7 @@ const AdminLoginPage = () => {
               />
             </div>
             <div className="text-center mt-2 mb-3 sm:mb-4">
-              <h1 className="text-2xl md:text-3xl font-nunito font-extrabold text-secondary-500 dark:text-secondary-400 mb-3">
+              <h1 className="text-2xl md:text-3xl font-bold text-secondary-500 dark:text-secondary-400 mb-3">
                 CrewAfya Admin
               </h1>
               <p className="text-gray-400 text-sm lg:text-base">

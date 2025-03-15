@@ -1,17 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import {
-  FiMail,
-  FiLock,
-  FiEye,
-  FiEyeOff,
-  FiAlertCircle,
-  FiShield,
-} from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
-import { PiPasswordDuotone, PiSignInDuotone, PiUserGearDuotone } from "react-icons/pi";
+import { PiPasswordDuotone } from "react-icons/pi";
 import { TbMailFilled } from "react-icons/tb";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { RiAdminLine } from "react-icons/ri";
 
 const AdminLoginForm = () => {
   const [email, setEmail] = useState("");
@@ -102,8 +95,8 @@ const AdminLoginForm = () => {
   return (
     <div className="overflow-hidden transition-all duration-300">
       <div className="flex items-center gap-2 justify-center mb-2">
-        <PiUserGearDuotone className="h-8 w-8 text-zinc-500 " />
-        <h3 className="text-lg sm:text-xl font-bold font-nunito text-zinc-400 ">
+        <RiAdminLine className="h-8 w-8 text-green-700/90 " />
+        <h3 className="text-lg sm:text-xl font-semibold  text-green-700/85 ">
           Admin Login
         </h3>
       </div>
@@ -124,7 +117,7 @@ const AdminLoginForm = () => {
           <div>
             <label
               htmlFor="email"
-              className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300 mb-1"
+              className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
             >
               Email Address
             </label>
@@ -137,7 +130,7 @@ const AdminLoginForm = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="text-sm text-gray-600/90 sm:text-base font-geist block w-full pl-14 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-500 focus:ring-secondary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-500 dark:focus:border-secondary-500 transition-colors duration-200"
+                className="text-sm text-gray-600/90 sm:text-base block w-full pl-14 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-500 focus:ring-secondary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-500 dark:focus:border-secondary-500 transition-colors duration-200"
                 placeholder="admin@example.com"
                 required
                 disabled={isSubmitting}
@@ -145,40 +138,41 @@ const AdminLoginForm = () => {
             </div>
           </div>
 
-          <div className="mb-1">
+          <div>
             <label
               htmlFor="password"
-              className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300"
+              className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
             >
               Password
             </label>
-          </div>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <PiPasswordDuotone className="h-6 w-6 text-gray-400" />
+
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <PiPasswordDuotone className="h-6 w-6 text-gray-400" />
+              </div>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="text-sm text-gray-600/90 sm:text-base block w-full pl-14 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-500 focus:ring-secondary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-500 dark:focus:border-secondary-500 transition-colors duration-200"
+                placeholder="••••••••••"
+                required
+                disabled={isSubmitting}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-6 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
+                disabled={isSubmitting}
+              >
+                {showPassword ? (
+                  <FaEyeSlash className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
+                ) : (
+                  <FaEye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
+                )}
+              </button>
             </div>
-            <input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="text-sm text-gray-600/90 sm:text-base font-geist block w-full pl-14 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-500 focus:ring-secondary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-500 dark:focus:border-secondary-500 transition-colors duration-200"
-              placeholder="••••••••••"
-              required
-              disabled={isSubmitting}
-            />
-            <button
-              type="button"
-              className="absolute inset-y-0 right-0 pr-6 flex items-center"
-              onClick={() => setShowPassword(!showPassword)}
-              disabled={isSubmitting}
-            >
-              {showPassword ? (
-                <FaEyeSlash className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
-              ) : (
-                <FaEye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
-              )}
-            </button>
           </div>
 
           <div>
@@ -221,9 +215,10 @@ const AdminLoginForm = () => {
         </div>
 
         <div className="mt-8 text-center">
+          
           <Link
             to="/login"
-            className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors duration-200"
+            className="text-sm text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
           >
             Back to User Login
           </Link>
