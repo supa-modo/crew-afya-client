@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FiPhone, FiMail, FiMapPin } from "react-icons/fi";
 import { PiMapPinAreaDuotone, PiPhoneDuotone } from "react-icons/pi";
-import { TbMailFilled } from "react-icons/tb";
+import { TbAddressBook, TbMailFilled } from "react-icons/tb";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -156,20 +156,35 @@ const Footer = () => {
               Contact
             </h3>
             <ul className="mt-4 space-y-2">
-              <li className="flex items-center text-sm text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-600">
-                <PiMapPinAreaDuotone className="mr-2 h-6 w-6 text-gray-400" />
-                <span>123 Insurance Street, Nairobi, Kenya</span>
+              <li className="flex items-center text-sm text-gray-600 hover:text-primary-600 hover:underline underline-offset-4 dark:text-gray-400 dark:hover:text-primary-600">
+                <Link
+                  to="https://maps.app.goo.gl/1234567890"
+                  className="flex items-center"
+                >
+                  <PiMapPinAreaDuotone className="mr-2 h-6 w-6 text-gray-400" />
+                  <span>123 Insurance Street, Nairobi, Kenya</span>
+                </Link>
               </li>
-              <li className="flex items-center text-sm text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-600">
-                <PiPhoneDuotone className="mr-2 h-5 w-5 text-gray-400" />
-                <span>+254 700 000 000</span>
+              <li className="text-sm flex items-center text-gray-600  dark:text-gray-400 ">
+                <TbAddressBook className="mr-2 h-5 w-5 text-gray-400" />
+                <span>P.O. Box 12345, Nairobi, Kenya</span>
               </li>
-              <li className=" text-sm text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-600">
-                <div className="flex items-center" >
+              <li className="text-sm text-gray-600 hover:text-primary-600 hover:underline underline-offset-4 dark:text-gray-400 dark:hover:text-primary-600">
+                <Link to="tel:+254700000000" className="flex items-center">
+                  <PiPhoneDuotone className="mr-2 h-5 w-5 text-gray-400" />
+                  <span>+254 700 000 000</span>
+                </Link>
+              </li>
+              <li className="text-sm text-gray-600 hover:text-primary-600 hover:underline underline-offset-4 dark:text-gray-400 dark:hover:text-primary-600">
+                <Link
+                  to="mailto:info@crewafya.com"
+                  className="flex items-center"
+                >
                   <TbMailFilled className="mr-2 h-5 w-5 text-gray-400" />
                   <span>info@crewafya.com</span>
-                </div>
+                </Link>
               </li>
+              
             </ul>
           </div>
         </div>

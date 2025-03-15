@@ -83,9 +83,9 @@ const MakePayment = () => {
   };
 
   return (
-    <div className="card max-w-md w-full mx-auto">
+    <div className="max-w-2xl w-full mx-auto pb-4">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h2 className="text-2xl font-bold text-green-700 dark:text-white">
           Make a Payment
         </h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">

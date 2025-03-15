@@ -43,7 +43,7 @@ const DashboardPage = () => {
                 to="/"
                 className="hover:text-gray-700 dark:hover:text-gray-300 flex items-center"
               >
-                <TbHomeDot className="h-5 w-5 mr-1" />
+                <TbHomeDot className="h-5 w-5 mr-2" />
                 Home
               </Link>
             </li>
@@ -87,7 +87,7 @@ const DashboardPage = () => {
             <div className="mt-4 md:mt-0 flex space-x-4">
               <Link
                 to="/payments"
-                className="inline-flex items-center px-5 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                className="inline-flex items-center px-5 py-2 border border-green-600 rounded-lg shadow-sm text-sm font-medium text-green-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
               >
                 <TbCreditCardPay className="mr-2 h-6 w-6" />
                 Make a Payment
@@ -111,15 +111,15 @@ const DashboardPage = () => {
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 rounded-xl">
         <div className="bg-white dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
           <div className="border-b border-gray-200 dark:border-gray-700 p-4 sm:p-6 md:p-7">
-            <h2 className="text-base sm:text-lg font-bold text-primary-600 dark:text-white pl-1 sm:pl-2 mb-4 flex items-center">
+            <h2 className="text-base sm:text-lg font-bold text-primary-600 pl-1 sm:pl-2 mb-4 flex items-center">
               <TbShieldCheckFilled className="mr-2 h-6 w-6 text-primary-600" />
-              Your Coverage Details
+              Your Coverage Details Overview
             </h2>
             {/* Coverage and Payment Schedule Section */}
             <div className="flex flex-col md:flex-row gap-6">
               {/* Insurance Coverage Section */}
               <div className="md:w-[70%] bg-white dark:bg-gray-800 rounded-xl shadow-sm px-5 py-4 border border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg font-semibold text-gray-600 mb-0.5 dark:text-white flex items-center">
+                <h3 className="text-lg font-semibold text-gray-600 mb-0.5 dark:text-gray-300 flex items-center">
                   Coverage Utilization
                 </h3>
                 <p className="text-[0.8rem] text-gray-600 dark:text-gray-400 mb-4">
@@ -175,7 +175,7 @@ const DashboardPage = () => {
 
               {/* Payment Schedule Section */}
               <div className="md:w-[30%] bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg font-semibold text-gray-600 mb-0.5 dark:text-white flex items-center">
+                <h3 className="text-lg font-semibold text-gray-600 mb-0.5 dark:text-gray-300 flex items-center">
                   Payment Schedule
                 </h3>
                 <p className="text-[0.8rem] text-gray-600 dark:text-gray-400 mb-2">
@@ -215,7 +215,7 @@ const DashboardPage = () => {
                       Weekly
                     </span>
                   </div>
-                  <button className="w-full justify-center text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-500">
+                  <button className="w-full justify-center text-sm text-green-600 dark:text-green-600 hover:text-primary-700 dark:hover:text-primary-500">
                     Change Details
                   </button>
                 </div>
@@ -224,8 +224,8 @@ const DashboardPage = () => {
 
             {/* Recent Payments Section */}
             <div className="mt-8">
-              <h3 className="text-base md:text-lg font-semibold text-gray-600 pl-4 mb-1.5 dark:text-white flex items-center">
-              <MdPayments className="mr-2 h-6 w-6 text-gray-400" />
+              <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 mb-1.5  flex items-center">
+              <MdPayments className="mr-2 h-6 w-6 text-green-700" />
                 Recent Payments
               </h3>
               <PaymentHistory />
@@ -233,9 +233,9 @@ const DashboardPage = () => {
 
             {/* Documents Section */}
             <div className="bg-white mt-10 dark:bg-gray-800 rounded-md">
-            <h3 className="text-base md:text-lg font-semibold text-gray-600 pl-4 mb-4 dark:text-white flex items-center">
+            <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 mb-4  flex items-center">
                 
-            <PiFilesDuotone className="mr-2 h-7 w-7 text-gray-400" />
+            <PiFilesDuotone className="mr-2 h-7 w-7 text-green-700" />
                 Uploaded Documents
               </h3>
               <div className="flex items-center justify-center h-48 bg-gray-50 dark:bg-gray-900/50 rounded-md border-2 border-dashed border-gray-300 dark:border-gray-700">

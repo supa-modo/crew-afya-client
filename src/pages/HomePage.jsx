@@ -133,12 +133,11 @@ const HomePage = () => {
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-32 md:pb-48 md:pt-56 relative z-20">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="md:w-1/2 mb-12 md:-mb-10 flex flex-col justify-end ">
-              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight animate-fadeIn pt-10">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight animate-fadeIn pt-10">
                 Transform Your
                 <br />
-                <span className="text-secondary-300 mr-2">Medical Cover</span>
-                {/* <br /> */}
-                Payment Experience
+                <span className="text-secondary-300 mr-2">Health Coverage</span>
+                Payment Experience & Management
               </h1>
               <p className="mt-6 text-base sm:text-lg text-white text-opacity-90 max-w-2xl">
                 Our comprehensive platform streamlines your medical cover
@@ -282,7 +281,7 @@ const HomePage = () => {
                   </span>
                 </div>
 
-                <h3 className="mt-1  text-gray-600 font-semibold dark:text-gray-300 ">
+                <h3 className="mt-1  text-green-700 font-semibold dark:text-gray-300 ">
                   Active Users
                 </h3>
                 <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
@@ -305,7 +304,7 @@ const HomePage = () => {
                   </span>
                 </div>
 
-                <h3 className="mt-1 text-gray-600 font-semibold dark:text-gray-300 ">
+                <h3 className="mt-1 text-green-700 font-semibold dark:text-gray-300 ">
                   Payments Processed
                 </h3>
                 <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
@@ -323,12 +322,12 @@ const HomePage = () => {
                   >
                     0
                   </span>
-                  <span className="ml-1 text-gray-600 dark:text-gray-300 text-2xl font-semibold">
+                  <span className="ml-1 text-primary-600 dark:text-primary-400 text-2xl font-semibold">
                     %
                   </span>
                 </div>
 
-                <h3 className="mt-1 text-gray-600 font-semibold dark:text-gray-300 ">
+                <h3 className="mt-1 text-green-700 font-semibold dark:text-gray-300 ">
                   Satisfaction Rate
                 </h3>
                 <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
@@ -440,13 +439,13 @@ const HomePage = () => {
       </div>
 
       {/* How It Works Section */}
-      <div id="how-it-works" className="py-24 bg-white dark:bg-gray-800">
+      <div id="how-it-works" className="py-24 ">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
               Simple Process
             </h2>
-            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-600 dark:text-white">
+            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-green-700 dark:text-white">
               How It Works
             </h2>
             <p className="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -492,13 +491,13 @@ const HomePage = () => {
               ].map((step, index) => (
                 <div key={index} className="relative">
                   <div className="bg-primary-100 dark:bg-gray-700 rounded-xl shadow-lg p-6 z-10 relative h-full flex flex-col items-center text-center">
-                    <div className="mb-4 w-16 h-16 rounded-full bg-primary-200 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-400">
+                    <div className="mb-2 w-16 h-16 rounded-full bg-primary-200 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-400">
                       {step.icon}
                     </div>
                     <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-primary-500 text-white text-lg md:text-xl font-bold rounded-full w-10 h-10 flex items-center justify-center">
                       {step.step}
                     </div>
-                    <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-600 dark:text-white mt-2 md:mt-4">
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold text-green-700 dark:text-white mt-1 sm:mt-2 md:mt-4">
                       {step.title}
                     </h3>
                     <p className="mt-1 sm:mt-2 text-sm md:text-base text-gray-600 dark:text-gray-400">
@@ -686,9 +685,9 @@ const HomePage = () => {
       </div> */}
 
       {/* CTA Section */}
-      <div className="bg-primary-600 dark:bg-primary-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+      <div className="">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-20">
+          <div className="bg-white border border-gray-200  dark:border-gray-700 dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
             <div className="md:flex">
               <div className="md:w-1/2 p-8 md:p-12">
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
@@ -707,7 +706,7 @@ const HomePage = () => {
                   </Link>
                 </div>
               </div>
-              <div className="md:w-1/2 bg-gradient-to-br from-primary-500 to-secondary-600 dark:from-primary-700 dark:to-secondary-800 p-8 md:p-12 text-white">
+              <div className="md:w-1/2 border-l border-gray-200 dark:border-gray-700 bg-gradient-to-br from-primary-500 to-secondary-600 dark:from-primary-700 dark:to-secondary-800 p-8 md:p-12 text-white">
                 <h3 className="text-lg sm:text-xl lg:text-2xl font-bold">
                   Why Choose Us?
                 </h3>

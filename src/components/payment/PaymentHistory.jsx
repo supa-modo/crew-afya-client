@@ -17,9 +17,13 @@ import {
 } from "react-icons/fi";
 import { HiCash } from "react-icons/hi";
 import { getPaymentHistory } from "../../services/paymentService";
-import { TbCalendarDot, TbCreditCard } from "react-icons/tb";
+import {
+  TbCalendarDot,
+  TbCreditCard,
+  TbShieldHalfFilled,
+} from "react-icons/tb";
 
-const PaymentHistory = () => {
+const PaymentHistory = ({ title = "Recent Transactions" }) => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -241,27 +245,39 @@ const PaymentHistory = () => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div className="p-3 pt-5 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4">
-          <div className="relative flex-1 max-w-md">
-            <form onSubmit={handleSearch}>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiSearch className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  className="text-sm  block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  placeholder="Search by reference or method..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-            </form>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          {/* Dynamic Title - Hidden on mobile */}
+          <div className="flex items-center gap-2 md:w-[50%]">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-600 dark:text-white">
+              {title}
+            </h2>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              ({filteredPayments.length} transactions)
+            </span>
           </div>
-          <div className="flex items-center space-x-2">
+
+          {/* Search and Filters - Full width on mobile */}
+          <div className="w-full  md:w-[50%] flex flex-row items-end sm:items-center gap-3">
+            <div className="relative w-full">
+              <form onSubmit={handleSearch} className="w-full">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiSearch className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    className="text-sm block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                    placeholder="Search by reference or method..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </form>
+            </div>
+
             <button
               onClick={toggleFilters}
-              className={`inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold ${
+              className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap ${
                 showFilters
                   ? "bg-primary-50 text-primary-700 border-primary-300 dark:bg-primary-900/20 dark:text-primary-400 dark:border-primary-700"
                   : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
@@ -354,6 +370,15 @@ const PaymentHistory = () => {
                 scope="col"
                 className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
               >
+                <div className="flex items-center">
+                  <TbShieldHalfFilled className="mr-2 h-5 w-5" />
+                  Medical Cover
+                </div>
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
+              >
                 Reference Code
               </th>
               <th
@@ -393,9 +418,12 @@ const PaymentHistory = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="inline-flex items-center px-3 py-0.5 rounded-md text-sm font-medium bg-secondary-100 text-secondary-500 dark:bg-blue-900/20 dark:text-blue-400">
+                  <div className="inline-flex items-center px-3 py-0.5 rounded-md text-sm font-medium bg-green-100 text-green-700 dark:bg-blue-900/20 dark:text-blue-400">
                     {payment.method}
                   </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  {payment.medicalCover || "Crew Afya Lite"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   {payment.reference || "-"}

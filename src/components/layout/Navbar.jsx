@@ -21,7 +21,7 @@ import { BiSupport } from "react-icons/bi";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { TbActivity, TbBulb, TbBulbOff, TbHome2 } from "react-icons/tb";
-import { PiGearDuotone, PiSignOutDuotone, PiUserDuotone } from "react-icons/pi";
+import { PiGearDuotone, PiGearSixDuotone, PiInfoDuotone, PiSignOutDuotone, PiUserDuotone } from "react-icons/pi";
 import { MdSpaceDashboard } from "react-icons/md";
 import { FaCreditCard } from "react-icons/fa";
 
@@ -363,7 +363,7 @@ const Navbar = () => {
                 onClick={closeMenus}
               >
                 <div className="flex items-center">
-                  <TbHome2 className="mr-3" size={19} />
+                  <TbHome2 className="mr-3" size={20} />
                   Home
                 </div>
               </Link>
@@ -380,7 +380,7 @@ const Navbar = () => {
                     onClick={closeMenus}
                   >
                     <div className="flex items-center">
-                      <MdSpaceDashboard className="mr-3" size={19} />
+                      <MdSpaceDashboard className="mr-3" size={20} />
                       Dashboard
                     </div>
                   </Link>
@@ -394,7 +394,7 @@ const Navbar = () => {
                     onClick={closeMenus}
                   >
                     <div className="flex items-center">
-                      <FaCreditCard className="mr-3" size={18} />
+                      <FaCreditCard className="mr-3" size={19} />
                       Payments
                     </div>
                   </Link>
@@ -408,7 +408,7 @@ const Navbar = () => {
                     onClick={closeMenus}
                   >
                     <div className="flex items-center">
-                      <PiUserDuotone className="mr-3" size={18} />
+                      <PiUserDuotone className="mr-3" size={19} />
                       Profile
                     </div>
                   </Link>
@@ -422,7 +422,7 @@ const Navbar = () => {
                     onClick={closeMenus}
                   >
                     <div className="flex items-center">
-                      <FiSettings className="mr-3" size={18} />
+                      <PiGearSixDuotone className="mr-3" size={19} />
                       Settings
                     </div>
                   </Link>
@@ -439,7 +439,7 @@ const Navbar = () => {
                     onClick={closeMenus}
                   >
                     <div className="flex items-center">
-                      <FiInfo className="mr-3 " size={18} />
+                      <PiInfoDuotone className="mr-3 " size={20} />
                       About Us
                     </div>
                   </Link>
@@ -453,7 +453,7 @@ const Navbar = () => {
                     onClick={closeMenus}
                   >
                     <div className="flex items-center">
-                      <BiSupport className="mr-3 " size={18} />
+                      <BiSupport className="mr-3 " size={19} />
                       Support
                     </div>
                   </Link>

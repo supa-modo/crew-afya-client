@@ -152,7 +152,7 @@ const DashboardSummary = () => {
           className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 sm:px-6 sm:py-4 border border-gray-200 dark:border-gray-700 flex flex-col"
         >
           <div className="flex justify-between items-center">
-            <p className="text-xs sm:text-[0.8rem] font-semibold font- text-primary-600 dark:text-primary-400">
+            <p className="text-xs sm:text-[0.8rem] font-semibold font- text-gray-600 dark:text-gray-300">
               {item.title}
             </p>
             {item.icon === "card" && (
@@ -168,7 +168,7 @@ const DashboardSummary = () => {
               <TbCalendarUp className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
             )}
           </div>
-          <h3 className="text-lg sm:text-xl font-extrabold font-nunito text-zinc-500 dark:text-white">
+          <h3 className="text-lg sm:text-xl font-bold text-green-700">
             {item.value}
           </h3>
           <p className="text-xs  text-gray-500 dark:text-gray-400 mt-1">
