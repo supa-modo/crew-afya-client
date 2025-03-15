@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiMail, FiAlertCircle, FiCheckCircle, FiPhone } from "react-icons/fi";
 import { forgotPassword } from "../../services/authService";
-import { TbAlertTriangle } from "react-icons/tb";
+import { TbAlertTriangle, TbMailFilled, TbPhone } from "react-icons/tb";
 
 const ForgotPasswordForm = ({ onSubmitSuccess }) => {
   const [identifier, setIdentifier] = useState("");
@@ -127,7 +127,7 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
           <div className="flex justify-between items-center mb-2">
             <label
               htmlFor="identifier"
-              className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300"
+              className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300"
             >
               {identifierType === "email" ? "Email Address" : "Phone Number"}
             </label>
@@ -143,9 +143,9 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               {identifierType === "email" ? (
-                <FiMail className="h-5 w-5 text-gray-400" />
+                <TbMailFilled className="h-6 w-6 text-gray-400" />
               ) : (
-                <FiPhone className="h-5 w-5 text-gray-400" />
+                <TbPhone className="h-6 w-6 text-gray-400" />
               )}
             </div>
             <input
@@ -153,7 +153,7 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
               type={identifierType === "email" ? "email" : "tel"}
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              className="text-sm text-gray-600/90 sm:text-base font-geist block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+              className="text-sm text-gray-600/90 sm:text-base  block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
               placeholder={
                 identifierType === "email" ? "you@example.com" : "+254700000000"
               }

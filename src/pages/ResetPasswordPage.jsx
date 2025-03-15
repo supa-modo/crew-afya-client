@@ -65,7 +65,7 @@ const ResetPasswordPage = () => {
                 className="w-16 h-16 md:w-20 md:h-20 mx-auto"
               />
             </div>
-            <div className="text-center mb-3 md:mb-4">
+            <div className="text-center pt-4 mb-3 md:mb-4">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-nunito tracking-tight font-extrabold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
                 Reset Your Password
               </h1>

@@ -37,6 +37,7 @@ export default {
         geist: ["Geist", "sans-serif"],
         nunito: ["Nunito Sans", "sans-serif"],
         open: ["Open Sans", "sans-serif"],
+        lexend: ["Lexend", "sans-serif"],
       },
     },
   },

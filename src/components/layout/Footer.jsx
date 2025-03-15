@@ -1,17 +1,19 @@
 import { Link } from "react-router-dom";
 import { FiPhone, FiMail, FiMapPin } from "react-icons/fi";
+import { PiMapPinAreaDuotone, PiPhoneDuotone } from "react-icons/pi";
+import { TbMailFilled } from "react-icons/tb";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+    <footer className="bg-primary-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
             <Link to="/" className="flex items-center">
               <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
-                CrewAfya
+                CrewAfya Care
               </span>
             </Link>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -79,33 +81,33 @@ const Footer = () => {
               <li>
                 <Link
                   to="/insurance"
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
                 >
                   Insurance Covers
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/payments"
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  to="/ussd"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
                 >
-                  Payment Tracking
+                  USSD Services
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/loans"
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  to="/admin-login"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
                 >
-                  Loan Deductions
+                  Admin Login
                 </Link>
               </li>
               <li>
                 <Link
                   to="/ussd"
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
                 >
-                  USSD Services
+                  Help Center
                 </Link>
               </li>
             </ul>
@@ -118,23 +120,23 @@ const Footer = () => {
               <li>
                 <Link
                   to="/about"
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
                 >
                   About Us
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/careers"
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  to="/faqs"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
                 >
-                  Careers
+                  FAQs
                 </Link>
               </li>
               <li>
                 <Link
                   to="/privacy"
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
                 >
                   Privacy Policy
                 </Link>
@@ -142,7 +144,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/terms"
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
                 >
                   Terms of Service
                 </Link>
@@ -154,41 +156,43 @@ const Footer = () => {
               Contact
             </h3>
             <ul className="mt-4 space-y-2">
-              <li className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <FiMapPin className="mr-2 h-5 w-5 text-gray-400" />
+              <li className="flex items-center text-sm text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-600">
+                <PiMapPinAreaDuotone className="mr-2 h-6 w-6 text-gray-400" />
                 <span>123 Insurance Street, Nairobi, Kenya</span>
               </li>
-              <li className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <FiPhone className="mr-2 h-5 w-5 text-gray-400" />
+              <li className="flex items-center text-sm text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-600">
+                <PiPhoneDuotone className="mr-2 h-5 w-5 text-gray-400" />
                 <span>+254 700 000 000</span>
               </li>
-              <li className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <FiMail className="mr-2 h-5 w-5 text-gray-400" />
-                <span>info@crewafya.com</span>
+              <li className=" text-sm text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-600">
+                <div className="flex items-center" >
+                  <TbMailFilled className="mr-2 h-5 w-5 text-gray-400" />
+                  <span>info@crewafya.com</span>
+                </div>
               </li>
             </ul>
           </div>
         </div>
         <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             &copy; {currentYear} CrewAfya. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0 flex space-x-6">
             <Link
               to="/privacy"
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
             >
-              Privacy
+              Privacy Policy
             </Link>
             <Link
               to="/terms"
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
             >
-              Terms
+              Terms & Conditions
             </Link>
             <Link
               to="/cookies"
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
             >
               Cookies
             </Link>

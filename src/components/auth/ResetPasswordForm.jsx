@@ -105,7 +105,7 @@ const ResetPasswordForm = () => {
       <div>
         <label
           htmlFor="password"
-          className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300 mb-1"
+          className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
         >
           New Password
         </label>
@@ -144,7 +144,7 @@ const ResetPasswordForm = () => {
       <div>
         <label
           htmlFor="confirmPassword"
-          className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300 mb-1"
+          className="block text-[0.83rem] ml-1 sm:text-sm font-medium  text-gray-500 dark:text-gray-300 mb-1"
         >
           Confirm New Password
         </label>
@@ -179,7 +179,7 @@ const ResetPasswordForm = () => {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+        className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm  text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <div className="flex items-center">

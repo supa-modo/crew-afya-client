@@ -104,7 +104,7 @@ const LoginForm = () => {
           <div>
             <label
               htmlFor="identifier"
-              className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300 mb-1"
+              className="block text-[0.83rem] ml-1 sm:text-sm font-medium  text-gray-500 dark:text-gray-300 mb-1"
             >
               Phone Number or ID Number
             </label>
@@ -117,7 +117,7 @@ const LoginForm = () => {
                 type="text"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                className="text-sm text-gray-600/90 sm:text-base font-geist block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                 placeholder="Enter your phone or ID number"
                 required
                 disabled={isSubmitting}
@@ -129,7 +129,7 @@ const LoginForm = () => {
             <div className="mb-1">
               <label
                 htmlFor="password"
-                className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300"
+                className="block text-[0.83rem] ml-1 sm:text-sm font-medium  text-gray-500 dark:text-gray-300"
               >
                 Password
               </label>
@@ -143,7 +143,7 @@ const LoginForm = () => {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="text-sm text-gray-600/90 sm:text-base font-geist block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                className="text-sm text-gray-600/90 sm:text-base  block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                 placeholder="••••••••••"
                 required
                 disabled={isSubmitting}
@@ -175,14 +175,14 @@ const LoginForm = () => {
               />
               <label
                 htmlFor="remember-me"
-                className="ml-2 block text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400"
+                className="ml-2 block text-[0.8rem] font-semibold text-gray-500 dark:text-gray-400"
               >
                 Remember me
               </label>
             </div>
             <Link
               to="/forgot-password"
-              className="text-[0.8rem] sm:text-sm font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
+              className="text-[0.8rem] sm:text-sm font-bold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
             >
               Forgot password?
             </Link>
@@ -191,7 +191,7 @@ const LoginForm = () => {
           <div>
             <button
               type="submit"
-              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600  focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 ${
+              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600  focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 ${
                 isSubmitting ? "opacity-70 cursor-not-allowed" : ""
               }`}
               disabled={isSubmitting}

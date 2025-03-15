@@ -81,14 +81,14 @@ const ForgotPasswordPage = () => {
                 className="w-16 h-16 md:w-20 md:h-20 mx-auto"
               />
             </div>
-            <div className="text-center mb-3 md:mb-4">
+            <div className="text-center pt-4 mb-3 md:mb-4">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-nunito tracking-tight font-extrabold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
-                Reset Password
+                Reset Your Password
               </h1>
               <p className="text-gray-400 text-sm lg:text-base">
                 {resetSent
                   ? `We've sent the password reset instructions to your ${resetMethod}`
-                  : "Enter your phone number or email to reset your password"}
+                  : "Enter your phone number or email address to reset your password"}
               </p>
             </div>
 

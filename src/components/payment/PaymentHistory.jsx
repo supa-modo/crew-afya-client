@@ -15,7 +15,9 @@ import {
   FiDollarSign,
   FiCreditCard,
 } from "react-icons/fi";
+import { HiCash } from "react-icons/hi";
 import { getPaymentHistory } from "../../services/paymentService";
+import { TbCalendarDot, TbCreditCard } from "react-icons/tb";
 
 const PaymentHistory = () => {
   const [payments, setPayments] = useState([]);
@@ -157,7 +159,7 @@ const PaymentHistory = () => {
 
     return (
       <span
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bgColor} ${textColor}`}
+        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor}`}
       >
         {icon}
         {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -237,9 +239,9 @@ const PaymentHistory = () => {
   );
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="p-3 pt-5 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between gap-2 sm:gap-3 md:gap-4">
           <div className="relative flex-1 max-w-md">
             <form onSubmit={handleSearch}>
               <div className="relative">
@@ -248,7 +250,7 @@ const PaymentHistory = () => {
                 </div>
                 <input
                   type="text"
-                  className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                  className="text-sm  block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                   placeholder="Search by reference or method..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -259,7 +261,7 @@ const PaymentHistory = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={toggleFilters}
-              className={`inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium ${
+              className={`inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold ${
                 showFilters
                   ? "bg-primary-50 text-primary-700 border-primary-300 dark:bg-primary-900/20 dark:text-primary-400 dark:border-primary-700"
                   : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
@@ -272,11 +274,11 @@ const PaymentHistory = () => {
         </div>
 
         {showFilters && (
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label
                 htmlFor="status"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
               >
                 Status
               </label>
@@ -285,7 +287,7 @@ const PaymentHistory = () => {
                 name="status"
                 value={filters.status}
                 onChange={handleFilterChange}
-                className="block w-full pl-3 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                className="text-sm md:text-base font-medium block w-full pl-3 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 text-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
               >
                 <option value="">All Statuses</option>
                 <option value="completed">Completed</option>
@@ -296,7 +298,7 @@ const PaymentHistory = () => {
             <div>
               <label
                 htmlFor="dateRange"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
               >
                 Date Range
               </label>
@@ -305,7 +307,7 @@ const PaymentHistory = () => {
                 name="dateRange"
                 value={filters.dateRange}
                 onChange={handleFilterChange}
-                className="block w-full pl-3 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                className="text-sm md:text-base font-medium block w-full pl-3 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 text-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
               >
                 <option value="">All Time</option>
                 <option value="last7days">Last 7 Days</option>
@@ -323,46 +325,46 @@ const PaymentHistory = () => {
             <tr>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
               >
                 <div className="flex items-center">
-                  <FiCalendar className="mr-1 h-4 w-4" />
+                  <TbCalendarDot className="mr-2 h-5 w-5" />
                   Date
                 </div>
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
               >
                 <div className="flex items-center">
-                  <FiDollarSign className="mr-1 h-4 w-4" />
+                  <HiCash className="mr-2 h-5 w-5" />
                   Amount
                 </div>
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
               >
                 <div className="flex items-center">
-                  <FiCreditCard className="mr-1 h-4 w-4" />
+                  <TbCreditCard className="mr-2 h-5 w-5" />
                   Method
                 </div>
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
               >
-                Reference
+                Reference Code
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
               >
                 Status
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                className="px-6 py-3 text-right text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
               >
                 Actions
               </th>
@@ -375,10 +377,10 @@ const PaymentHistory = () => {
                 className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900 dark:text-white">
+                  <div className="text-sm font-medium text-gray-700 dark:text-gray-400">
                     {formatDate(payment.date)}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                  <div className="text-xs font-medium text-gray-500 dark:text-gray-500">
                     {new Date(payment.date).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -386,12 +388,12 @@ const PaymentHistory = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900 dark:text-white">
+                  <div className="text-sm font-medium text-gray-700 dark:text-gray-400">
                     {formatCurrency(payment.amount)}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
+                  <div className="inline-flex items-center px-3 py-0.5 rounded-md text-sm font-medium bg-secondary-100 text-secondary-500 dark:bg-blue-900/20 dark:text-blue-400">
                     {payment.method}
                   </div>
                 </td>
@@ -404,10 +406,13 @@ const PaymentHistory = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   {payment.status === "completed" && (
                     <button
-                      className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
+                      className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300  items-center gap-2 transition-colors duration-200"
                       title="Download Receipt"
                     >
-                      <FiDownload className="h-5 w-5" />
+                      <div className="flex items-center gap-2">
+                        <FiDownload className="h-5 w-5" />
+                        <span>Receipt</span>
+                      </div>
                     </button>
                   )}
                 </td>

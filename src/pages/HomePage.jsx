@@ -1,20 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { FiArrowRight, FiCheckCircle, FiActivity } from "react-icons/fi";
+import { FcCellPhone } from "react-icons/fc";
+import { PiChartLineUpDuotone, PiUserDuotone } from "react-icons/pi";
 import {
-  FiShield,
-  FiCreditCard,
-  FiSmartphone,
-  FiBarChart2,
-  FiArrowRight,
-  FiUser,
-  FiLock,
-  FiCheckCircle,
-  FiCalendar,
-  FiDollarSign,
-  FiFileText,
-  FiActivity,
-} from "react-icons/fi";
+  TbCalendarCheck,
+  TbCreditCardFilled,
+  TbFileText,
+  TbLockSquareRounded,
+  TbShieldHalfFilled,
+} from "react-icons/tb";
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -140,46 +136,61 @@ const HomePage = () => {
               <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight animate-fadeIn pt-10">
                 Transform Your
                 <br />
-                <span className="text-secondary-300">Medical Cover</span>
+                <span className="text-secondary-300 mr-2">Medical Cover</span>
                 {/* <br /> */}
                 Payment Experience
               </h1>
-              <p className="mt-6 text-xl text-white text-opacity-90 max-w-2xl">
+              <p className="mt-6 text-base sm:text-lg text-white text-opacity-90 max-w-2xl">
                 Our comprehensive platform streamlines your medical cover
                 management, making premium payments, coverage tracking, and
                 financial planning seamless.
               </p>
 
               <div className="mt-8 flex space-x-4">
-                <button
-                  onClick={(e) => handleAuthAwareNavigation(e, "/register")}
-                  className="btn bg-white text-primary-700 hover:bg-gray-100 hover:text-primary-800 px-8 py-3 text-base font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
-                >
-                  Get Started <FiArrowRight className="ml-2" />
-                </button>
-                <button
-                  onClick={(e) => handleAuthAwareNavigation(e, "/login")}
-                  className="btn bg-transparent border-2 border-white text-white hover:bg-white/10 px-10 py-3 text-base font-medium rounded-lg flex items-center"
-                >
-                  Sign In
-                </button>
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => navigate("/dashboard")}
+                    className="text-sm sm:text-base btn bg-white text-primary-700 hover:bg-gray-100 hover:text-primary-800 px-10 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
+                  >
+                    Go to Your Dashboard <FiArrowRight className="ml-2" />
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={(e) => handleAuthAwareNavigation(e, "/register")}
+                      className="text-sm sm:text-base btn bg-white text-primary-700 hover:bg-gray-100 hover:text-primary-800 px-10 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
+                    >
+                      Get Started <FiArrowRight className="ml-2" />
+                    </button>
+                    <button
+                      onClick={(e) => handleAuthAwareNavigation(e, "/login")}
+                      className="text-sm sm:text-base btn bg-transparent border-2 border-white text-white hover:bg-white/10 px-12 py-3 font-medium rounded-lg flex items-center"
+                    >
+                      Sign In
+                    </button>
+                  </>
+                )}
               </div>
 
               <div className="mt-12 flex items-center space-x-8">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="w-8 h-8 rounded-full border-2 border-white bg-primary-300 overflow-hidden flex items-center justify-center text-xs text-white"
-                    >
-                      {i}
+                {!isAuthenticated && (
+                  <>
+                    <div className="flex -space-x-2">
+                      {[1, 2, 3, 4].map((i) => (
+                        <div
+                          key={i}
+                          className="w-8 h-8 rounded-full border-2 border-white bg-primary-500 overflow-hidden flex items-center justify-center text-xs text-white"
+                        >
+                          {i}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <p className="text-white text-opacity-90">
-                  <span className="font-bold">10,000+</span> users trust our
-                  platform
-                </p>
+                    <p className="text-white text-opacity-90">
+                      <span className="font-semibold">10,000+</span> users trust
+                      our platform
+                    </p>
+                  </>
+                )}
               </div>
             </div>
 
@@ -200,7 +211,7 @@ const HomePage = () => {
                 </div>
 
                 {/* Floating card elements */}
-                <div className="absolute -bottom-6 -left-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 transform hover:scale-105 transition-transform">
+                <div className="absolute -bottom-6 -left-6 bg-primary-100 dark:bg-gray-800 rounded-lg shadow-lg p-4 transform hover:scale-105 transition-transform">
                   <div className="flex items-center">
                     <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
                       <FiCheckCircle className="w-5 h-5" />
@@ -216,7 +227,7 @@ const HomePage = () => {
                   </div>
                 </div>
 
-                <div className="absolute -top-6 -right-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 transform hover:scale-105 transition-transform">
+                <div className="absolute -top-6 -right-6 bg-primary-100 dark:bg-gray-800 rounded-lg shadow-lg p-4 transform hover:scale-105 transition-transform">
                   <div className="flex items-center">
                     <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
                       <FiActivity className="w-5 h-5" />
@@ -331,73 +342,73 @@ const HomePage = () => {
 
       {/* Features Section with Animations */}
       <div id="features" className="py-24 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
               Features
             </h2>
-            <h2 className="mt-2 text-4xl font-bold text-gray-900 dark:text-white">
+            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-gray-600 dark:text-white">
               Everything You Need in One Place
             </h2>
-            <p className="mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Our comprehensive platform provides you with all the tools to
               manage your health insurance payments and coverage effectively.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {[
               {
-                icon: <FiShield className="h-6 w-6" />,
+                icon: <TbShieldHalfFilled className="h-6 w-6" />,
                 title: "Coverage Tracking",
                 description:
                   "Monitor your insurance coverage limits and usage in real-time with detailed visualizations.",
                 color: "primary",
               },
               {
-                icon: <FiCreditCard className="h-6 w-6" />,
+                icon: <TbCreditCardFilled className="h-6 w-6" />,
                 title: "Premium Payments",
                 description:
                   "Pay your premiums easily using M-Pesa and track your payment history in one place.",
                 color: "secondary",
               },
               {
-                icon: <FiSmartphone className="h-6 w-6" />,
+                icon: <FcCellPhone className="h-6 w-6" />,
                 title: "USSD Access",
                 description:
                   "Access your account and make payments via USSD on any feature phone for universal access.",
                 color: "primary",
               },
               {
-                icon: <FiBarChart2 className="h-6 w-6" />,
+                icon: <PiChartLineUpDuotone className="h-6 w-6" />,
                 title: "Payment Analytics",
                 description:
                   "Track your payment history and analyze your insurance spending with interactive charts.",
                 color: "secondary",
               },
               {
-                icon: <FiUser className="h-6 w-6" />,
+                icon: <PiUserDuotone className="h-6 w-6" />,
                 title: "User Profiles",
                 description:
                   "Manage your personal details and upload required documents securely in your profile.",
                 color: "secondary",
               },
               {
-                icon: <FiLock className="h-6 w-6" />,
+                icon: <TbLockSquareRounded className="h-7 w-7" />,
                 title: "Secure Access",
                 description:
                   "Multi-factor authentication and encryption ensure your financial data stays protected.",
                 color: "primary",
               },
               {
-                icon: <FiCalendar className="h-6 w-6" />,
+                icon: <TbCalendarCheck className="h-6 w-6" />,
                 title: "Scheduled Payments",
                 description:
                   "Set up recurring payments on daily, weekly, or monthly schedules for your convenience.",
                 color: "secondary",
               },
               {
-                icon: <FiFileText className="h-6 w-6" />,
+                icon: <TbFileText className="h-6 w-6" />,
                 title: "Insurance Documentation",
                 description:
                   "Access and store all your insurance policy documents in one secure location.",
@@ -408,17 +419,17 @@ const HomePage = () => {
                 key={index}
                 className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300"
               >
-                <div className={`h-2 bg-${feature.color}-500`}></div>
-                <div className="p-6">
+                <div className={`h-1 bg-${feature.color}-500`}></div>
+                <div className="p-4 sm:p-5 md:p-6">
                   <div
-                    className={`p-3 bg-${feature.color}-100 dark:bg-${feature.color}-900/20 rounded-full w-12 h-12 flex items-center justify-center text-${feature.color}-600 dark:text-${feature.color}-400 mb-4`}
+                    className={`p-3 bg-${feature.color}-100 dark:bg-${feature.color}-900/20 rounded-full w-12 h-12 flex items-center justify-center text-${feature.color}-600 dark:text-${feature.color}-400 mb-2 sm:mb-3 md:mb-4`}
                   >
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-600 dark:text-white">
                     {feature.title}
                   </h3>
-                  <p className="mt-2 text-gray-600 dark:text-gray-400">
+                  <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                     {feature.description}
                   </p>
                 </div>
@@ -430,15 +441,15 @@ const HomePage = () => {
 
       {/* How It Works Section */}
       <div id="how-it-works" className="py-24 bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
               Simple Process
             </h2>
-            <h2 className="mt-2 text-4xl font-bold text-gray-900 dark:text-white">
+            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-600 dark:text-white">
               How It Works
             </h2>
-            <p className="mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Our platform makes managing your health insurance payments as
               simple as possible.
             </p>
@@ -448,49 +459,49 @@ const HomePage = () => {
             {/* Connecting line */}
             <div className="absolute top-24 left-0 right-0 h-1 bg-primary-200 dark:bg-primary-900 hidden md:block"></div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-7 md:gap-8">
               {[
                 {
                   step: "01",
                   title: "Create Account",
                   description:
                     "Sign up with your email or phone number and verify your identity with a one-time password.",
-                  icon: <FiUser className="h-8 w-8" />,
+                  icon: <PiUserDuotone className="h-8 w-8" />,
                 },
                 {
                   step: "02",
                   title: "Choose Coverage",
                   description:
                     "Select your preferred insurance coverage type from our available options.",
-                  icon: <FiShield className="h-8 w-8" />,
+                  icon: <TbShieldHalfFilled className="h-8 w-8" />,
                 },
                 {
                   step: "03",
                   title: "Set Up Payments",
                   description:
                     "Configure your payment schedule and link your preferred payment method.",
-                  icon: <FiCreditCard className="h-8 w-8" />,
+                  icon: <TbCreditCardFilled className="h-8 w-8" />,
                 },
                 {
                   step: "04",
                   title: "Monitor Coverage",
                   description:
                     "Track your coverage, payments, and account status through your personalized dashboard.",
-                  icon: <FiBarChart2 className="h-8 w-8" />,
+                  icon: <PiChartLineUpDuotone className="h-8 w-8" />,
                 },
               ].map((step, index) => (
                 <div key={index} className="relative">
-                  <div className="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 z-10 relative h-full flex flex-col items-center text-center">
-                    <div className="mb-4 w-16 h-16 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-400">
+                  <div className="bg-primary-100 dark:bg-gray-700 rounded-xl shadow-lg p-6 z-10 relative h-full flex flex-col items-center text-center">
+                    <div className="mb-4 w-16 h-16 rounded-full bg-primary-200 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-400">
                       {step.icon}
                     </div>
-                    <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-primary-500 text-white text-xl font-bold rounded-full w-10 h-10 flex items-center justify-center">
+                    <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-primary-500 text-white text-lg md:text-xl font-bold rounded-full w-10 h-10 flex items-center justify-center">
                       {step.step}
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-4">
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-600 dark:text-white mt-2 md:mt-4">
                       {step.title}
                     </h3>
-                    <p className="mt-2 text-gray-600 dark:text-gray-400">
+                    <p className="mt-1 sm:mt-2 text-sm md:text-base text-gray-600 dark:text-gray-400">
                       {step.description}
                     </p>
                   </div>
@@ -680,25 +691,27 @@ const HomePage = () => {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
             <div className="md:flex">
               <div className="md:w-1/2 p-8 md:p-12">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                   Ready to transform your insurance management?
                 </h2>
-                <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
+                <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400">
                   Join thousands of users who are simplifying their health
                   insurance payments and coverage tracking.
                 </p>
-                <div className="mt-8">
+                <div className="mt-6 md:mt-8">
                   <Link
                     to={isAuthenticated ? "/dashboard" : "/register"}
-                    className="btn btn-primary px-8 py-4 text-base font-medium rounded-lg shadow-lg hover:shadow-xl transition-all"
+                    className="btn btn-primary px-8 py-3 text-sm sm:text-base font-medium rounded-lg shadow-lg hover:shadow-xl transition-all"
                   >
                     {isAuthenticated ? "Go to Dashboard" : "Get Started Now"}
                   </Link>
                 </div>
               </div>
               <div className="md:w-1/2 bg-gradient-to-br from-primary-500 to-secondary-600 dark:from-primary-700 dark:to-secondary-800 p-8 md:p-12 text-white">
-                <h3 className="text-2xl font-bold">Why Choose Us?</h3>
-                <ul className="mt-6 space-y-4">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold">
+                  Why Choose Us?
+                </h3>
+                <ul className="mt-3 md:mt-6 space-y-3 sm:space-y-4 ">
                   <li className="flex items-start">
                     <svg
                       className="h-6 w-6 text-white mr-2"
@@ -713,7 +726,7 @@ const HomePage = () => {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span>
+                    <span className="text-sm md:text-base">
                       Comprehensive medical insurance coverage tracking
                     </span>
                   </li>
@@ -731,7 +744,9 @@ const HomePage = () => {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span>Secure payment processing via M-Pesa</span>
+                    <span className="text-sm md:text-base">
+                      Secure payment processing via M-Pesa
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <svg
@@ -747,7 +762,9 @@ const HomePage = () => {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span>Universal access through web and USSD</span>
+                    <span className="text-sm md:text-base">
+                      Universal access through web and USSD
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <svg
@@ -763,7 +780,7 @@ const HomePage = () => {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span>
+                    <span className="text-sm md:text-base">
                       Payment history tracking and analytics with statements
                     </span>
                   </li>

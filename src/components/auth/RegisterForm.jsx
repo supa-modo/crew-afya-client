@@ -533,7 +533,7 @@ const RegisterForm = () => {
             <div className="text-center mb-2">
               <div className="flex items-center gap-2 justify-center">
                 <TbPhoneDone className="h-6 w-6 text-green-600 " />
-                <h3 className="text-lg font-bold font-nunito text-green-600 ">
+                <h3 className="text-lg font-semibold text-green-600 ">
                   Phone Number Verified
                 </h3>
               </div>
