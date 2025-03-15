@@ -29,7 +29,7 @@ const RegisterPage = () => {
 
         {/* Medical pattern background */}
         <svg
-          className="absolute bottom-10 sm:bottom-20 left-0 right-0 mx-auto w-3/4 sm:w-auto opacity-20 dark:opacity-10"
+          className="absolute bottom-16 sm:bottom-14 left-0 right-0 mx-auto w-3/4 sm:w-auto opacity-20 dark:opacity-10"
           width="400"
           height="50"
           viewBox="0 0 400 50"
@@ -47,8 +47,8 @@ const RegisterPage = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-        className="w-full max-w-xl z-20"
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="w-full max-w-xl z-20 mt-24"
       >
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
           <motion.div
@@ -87,7 +87,6 @@ const RegisterPage = () => {
           </div>
         </div>
 
-        
         {/* Trust badges */}
         <motion.div
           initial={{ opacity: 0 }}

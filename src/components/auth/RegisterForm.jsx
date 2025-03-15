@@ -22,13 +22,16 @@ import {
 } from "react-icons/tb";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
-import { PiIdentificationBadgeDuotone, PiPhoneListDuotone, PiUserDuotone } from "react-icons/pi";
+import {
+  PiIdentificationBadgeDuotone,
+  PiPhoneListDuotone,
+  PiUserDuotone,
+} from "react-icons/pi";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
     phoneNumber: "",
     idNumber: "",
@@ -109,13 +112,15 @@ const RegisterForm = () => {
   };
 
   const validateStep1 = () => {
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.phoneNumber ||
-      !formData.idNumber
-    ) {
+    if (!formData.fullName || !formData.phoneNumber || !formData.idNumber) {
       setFormError("Please fill in all required fields");
+      return false;
+    }
+
+    // Full name validation - must have at least first and last name
+    const nameParts = formData.fullName.trim().split(/\s+/);
+    if (nameParts.length < 2) {
+      setFormError("Please enter your full name (first and last name)");
       return false;
     }
 
@@ -266,9 +271,21 @@ const RegisterForm = () => {
       setFormError("");
       clearError();
 
+      // Split the full name into parts
+      const nameParts = formData.fullName.trim().split(/\s+/);
+      const firstName = nameParts[0];
+      const lastName = nameParts[nameParts.length - 1];
+
+      // If there are parts in between, combine them as otherNames
+      let otherNames = null;
+      if (nameParts.length > 2) {
+        otherNames = nameParts.slice(1, nameParts.length - 1).join(" ");
+      }
+
       const userData = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
+        firstName,
+        lastName,
+        otherNames,
         email: formData.email || null,
         phoneNumber: formData.phoneNumber,
         idNumber: formData.idNumber,
@@ -319,51 +336,28 @@ const RegisterForm = () => {
       >
         {step === 1 && (
           <div className="space-y-4">
-            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-              <div className="w-full">
-                <label
-                  htmlFor="firstName"
-                  className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-                >
-                  First Name
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <PiUserDuotone className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                    placeholder="John"
-                    required
-                    disabled={isSubmitting}
-                  />
+            <div>
+              <label
+                htmlFor="fullName"
+                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+              >
+                Full Name
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <PiUserDuotone className="h-5 w-5 text-gray-400" />
                 </div>
-              </div>
-              <div className="w-full">
-                <label
-                  htmlFor="lastName"
-                  className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-                >
-                  Last Name
-                </label>
-                <div className="relative">
-                  <input
-                    id="lastName"
-                    name="lastName"
-                    type="text"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className="text-sm text-gray-600/90 sm:text-base block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                    placeholder="Doe"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
+                <input
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                  placeholder="John Doe"
+                  required
+                  disabled={isSubmitting}
+                />
               </div>
             </div>
 
@@ -384,9 +378,32 @@ const RegisterForm = () => {
                   type="text"
                   value={formData.idNumber}
                   onChange={handleChange}
-                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                   placeholder="Enter your ID number"
                   required
+                  disabled={isSubmitting}
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+              >
+                Email Address(Optional)
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FiMail className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                  placeholder="example@email.com"
                   disabled={isSubmitting}
                 />
               </div>
@@ -409,7 +426,7 @@ const RegisterForm = () => {
                   type="tel"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                   placeholder="+254700000000"
                   required
                   disabled={isSubmitting}

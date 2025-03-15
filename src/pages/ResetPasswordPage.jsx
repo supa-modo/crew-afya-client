@@ -26,13 +26,30 @@ const ResetPasswordPage = () => {
         {/* Abstract medical-themed decorative elements */}
         <div className="absolute top-1/3 right-1/4 w-16 h-16 sm:w-32 sm:h-32 border-2 border-blue-200/30 dark:border-blue-700/20 rounded-full"></div>
         <div className="absolute bottom-1/3 left-1/4 w-8 h-8 sm:w-16 sm:h-16 border border-teal-300/40 dark:border-teal-600/30 rounded-full"></div>
+      
+       {/* Heartbeat line */}
+       <svg
+          className="absolute bottom-24 left-0 right-0 mx-auto w-3/4 sm:w-auto opacity-20 dark:opacity-10"
+          width="400"
+          height="50"
+          viewBox="0 0 400 50"
+        >
+          <path
+            d="M0,25 L50,25 L60,10 L70,40 L80,15 L90,25 L400,25"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="text-blue-500 dark:text-blue-400"
+          />
+        </svg>
+      
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-        className="w-full max-w-lg z-20"
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="w-full max-w-lg z-20 mt-24"
       >
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
           <motion.div

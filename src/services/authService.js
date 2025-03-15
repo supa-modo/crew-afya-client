@@ -98,6 +98,11 @@ export const registerUser = async (userData) => {
       userDataToSend.email = null;
     }
 
+    // If otherNames is empty string, set it to null
+    if (userDataToSend.otherNames === "") {
+      userDataToSend.otherNames = null;
+    }
+
     const response = await api.post("/auth/register", userDataToSend);
     return response.data;
   } catch (error) {

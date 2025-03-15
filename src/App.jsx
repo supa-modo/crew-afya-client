@@ -3,6 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import Layout from "./components/layout/Layout";
 import HomePage from "./pages/HomePage";
+// import HomePage from "./pages/Homepage2";
 import LoginPage from "./pages/LoginPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import RegisterPage from "./pages/RegisterPage";

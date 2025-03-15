@@ -183,6 +183,11 @@ export const AuthProvider = ({ children }) => {
         processedUserData.email = null;
       }
 
+      // Ensure otherNames is null if it's an empty string
+      if (processedUserData.otherNames === "") {
+        processedUserData.otherNames = null;
+      }
+
       const data = await registerUser(processedUserData);
       return data;
     } catch (err) {
