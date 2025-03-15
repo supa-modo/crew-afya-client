@@ -104,7 +104,7 @@ const LoginForm = () => {
           <div>
             <label
               htmlFor="identifier"
-              className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300 mb-2"
+              className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300 mb-1"
             >
               Phone Number or ID Number
             </label>

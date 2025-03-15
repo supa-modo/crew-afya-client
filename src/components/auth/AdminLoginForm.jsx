@@ -9,6 +9,9 @@ import {
   FiShield,
 } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
+import { PiPasswordDuotone, PiSignInDuotone, PiUserGearDuotone } from "react-icons/pi";
+import { TbMailFilled } from "react-icons/tb";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const AdminLoginForm = () => {
   const [email, setEmail] = useState("");
@@ -98,42 +101,43 @@ const AdminLoginForm = () => {
 
   return (
     <div className="overflow-hidden transition-all duration-300">
-      <div className="flex justify-center mb-6">
-        <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
-          <FiShield className="h-8 w-8" />
-        </div>
+      <div className="flex items-center gap-2 justify-center mb-2">
+        <PiUserGearDuotone className="h-8 w-8 text-zinc-500 " />
+        <h3 className="text-lg sm:text-xl font-bold font-nunito text-zinc-400 ">
+          Admin Login
+        </h3>
       </div>
 
-      <h2 className="text-center text-xl font-bold text-gray-900 dark:text-white mb-6">
-        Admin Login
-      </h2>
-
       {formError && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 flex items-start border-b border-red-100 dark:border-red-900/30">
-          <FiAlertCircle className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
-          <span className="text-sm font-medium">{formError}</span>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mx-1 sm:mx-3 bg-red-500/10 dark:bg-red-700/20 border border-red-500/30 rounded-lg p-3 mb-6 flex items-center gap-3"
+        >
+          <TbAlertTriangle className="text-red-500 dark:text-red-400 flex-shrink-0" />
+          <p className="text-red-500 text-xs sm:text-sm">{formError}</p>
+        </motion.div>
       )}
 
       <form onSubmit={handleSubmit} className="px-1 sm:px-3">
-        <div className="space-y-6">
+        <div className="space-y-3 sm:space-y-4">
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300 mb-1"
             >
               Email Address
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiMail className="h-5 w-5 text-gray-400" />
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <TbMailFilled className="h-6 w-6 text-gray-400" />
               </div>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                className="text-sm text-gray-600/90 sm:text-base font-geist block w-full pl-14 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-500 focus:ring-secondary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-500 dark:focus:border-secondary-500 transition-colors duration-200"
                 placeholder="admin@example.com"
                 required
                 disabled={isSubmitting}
@@ -141,54 +145,46 @@ const AdminLoginForm = () => {
             </div>
           </div>
 
-          <div>
-            <div className="mb-1">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Password
-              </label>
-            </div>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiLock className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                placeholder="••••••••"
-                required
-                disabled={isSubmitting}
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                onClick={() => setShowPassword(!showPassword)}
-                disabled={isSubmitting}
-              >
-                {showPassword ? (
-                  <FiEyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
-                ) : (
-                  <FiEye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
-                )}
-              </button>
-            </div>
-            <Link
-              to="/forgot-password"
-              className="justify-end text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
+          <div className="mb-1">
+            <label
+              htmlFor="password"
+              className="block text-[0.83rem] ml-1 sm:text-sm font-medium font-geist text-gray-500 dark:text-gray-300"
             >
-              Forgot password?
-            </Link>
+              Password
+            </label>
+          </div>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <PiPasswordDuotone className="h-6 w-6 text-gray-400" />
+            </div>
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="text-sm text-gray-600/90 sm:text-base font-geist block w-full pl-14 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-500 focus:ring-secondary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-500 dark:focus:border-secondary-500 transition-colors duration-200"
+              placeholder="••••••••••"
+              required
+              disabled={isSubmitting}
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-6 flex items-center"
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={isSubmitting}
+            >
+              {showPassword ? (
+                <FaEyeSlash className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
+              ) : (
+                <FaEye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" />
+              )}
+            </button>
           </div>
 
           <div>
             <button
               type="submit"
-              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all duration-200 ${
+              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-secondary-500 to-secondary-600 hover:from-secondary-700 hover:to-secondary-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-secondary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 ${
                 isSubmitting ? "opacity-70 cursor-not-allowed" : ""
               }`}
               disabled={isSubmitting}

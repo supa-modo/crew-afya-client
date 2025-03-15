@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import AdminLoginForm from "../components/auth/AdminLoginForm";
 import { FiCheckCircle, FiShield, FiLock } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
+import { TbAlertTriangle, TbLockFilled, TbUserShield } from "react-icons/tb";
 
 const AdminLoginPage = () => {
   const location = useLocation();
@@ -46,11 +47,11 @@ const AdminLoginPage = () => {
         <div className="absolute bottom-1/4 left-1/4 w-32 h-32 border-2 border-blue-300/40 dark:border-blue-600/30 rounded-full"></div>
 
         {/* Shield symbols - admin theme */}
-        <div className="absolute top-24 left-16 text-indigo-300/30 dark:text-indigo-700/20 text-4xl">
-          <FiShield className="h-12 w-12" />
+        <div className="absolute top-24 left-64 text-indigo-300/50 dark:text-indigo-700/20 text-5xl">
+          <TbUserShield className="h-16 w-16" />
         </div>
-        <div className="absolute bottom-20 right-24 text-blue-300/30 dark:text-blue-700/20 text-5xl">
-          <FiLock className="h-10 w-10" />
+        <div className="absolute bottom-24 right-24 text-blue-200 dark:text-blue-700/20 text-5xl">
+          <TbLockFilled className="h-20 w-20" />
         </div>
       </div>
 
@@ -85,12 +86,12 @@ const AdminLoginPage = () => {
                 className="w-16 h-16 md:w-20 md:h-20 mx-auto"
               />
             </div>
-            <div className="text-center mb-5">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-nunito font-extrabold text-indigo-600 dark:text-indigo-500 mb-3">
+            <div className="text-center mt-2 mb-3 sm:mb-4">
+              <h1 className="text-2xl md:text-3xl font-nunito font-extrabold text-secondary-500 dark:text-secondary-400 mb-3">
                 CrewAfya Admin
               </h1>
               <p className="text-gray-400 text-sm lg:text-base">
-                Enter your admin credentials to access the dashboard
+                Sign in withyour admin credentials to continue
               </p>
             </div>
 
@@ -99,7 +100,7 @@ const AdminLoginPage = () => {
               initial={{ width: 0 }}
               animate={{ width: "8rem" }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="h-1 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full mx-auto"
+              className="h-1 bg-gradient-to-r from-secondary-500 to-secondary-700 rounded-full mx-auto"
             ></motion.div>
           </motion.div>
 
