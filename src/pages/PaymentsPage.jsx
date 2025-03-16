@@ -55,10 +55,10 @@ const PaymentsPage = () => {
         { name: "Outpatient - Capitation", limit: "Up to 20,000" },
         { name: "Optical + Free Eye Test", limit: "5,000" },
         { name: "Accidents", limit: "50,000" },
-        { name: "Permanent disability compensation", limit: "50,000" },
         { name: "Last Expense", limit: "50,000" },
         { name: "Emergency Evacuation", limit: "10,000" },
         { name: "Daily cash compensation", limit: "Kes 800" },
+        { name: "Permanent disability compensation", limit: "50,000" },
         { name: "Wellness Support", limit: "Group Sessions" },
       ],
       premiums: {
@@ -76,10 +76,10 @@ const PaymentsPage = () => {
         { name: "Outpatient - Capitation", limit: "Up to 20,000" },
         { name: "Optical + Free Eye Test", limit: "5,000" },
         { name: "Accidents", limit: "50,000" },
-        { name: "Permanent disability compensation", limit: "50,000" },
         { name: "Last Expense", limit: "50,000" },
         { name: "Emergency Evacuation", limit: "10,000" },
         { name: "Daily cash compensation", limit: "Kes 800" },
+        { name: "Permanent disability compensation", limit: "50,000" },
         { name: "Wellness Support", limit: "Group Sessions + Individual" },
       ],
       premiums: {
@@ -172,10 +172,7 @@ const PaymentsPage = () => {
         <nav className="flex" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
             <li>
-              <Link
-                to="/"
-                className="hover:text-primary-600 flex items-center"
-              >
+              <Link to="/" className="hover:text-primary-600 flex items-center">
                 <TbHome2 className="h-5 w-5 mr-2" />
                 Home
               </Link>
@@ -330,14 +327,14 @@ const PaymentsPage = () => {
           </div>
         </div>
       </div>
-
-      {/* Plan Selection Modal */}
-      <PlanSelectionModal
-        isOpen={isPlanModalOpen}
-        onClose={handleClosePlanModal}
-        insurancePlans={insurancePlans}
-        onPlanSelected={handlePlanSelected}
-      />
+      {isPlanModalOpen && (
+        <PlanSelectionModal
+          isOpen={isPlanModalOpen}
+          onClose={handleClosePlanModal}
+          insurancePlans={insurancePlans}
+          onPlanSelected={handlePlanSelected}
+        />
+      )}
     </div>
   );
 };

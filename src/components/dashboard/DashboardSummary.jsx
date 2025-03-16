@@ -50,12 +50,12 @@ const DashboardSummary = () => {
         const nextPaymentAmount = nextPayment ? nextPayment.amount : 5000; // Using the amount from the example
 
         setSummaryData({
-          totalPaid: 45000, 
+          totalPaid: 45000,
           nextPaymentDate,
           nextPaymentAmount,
           coverageStatus: "Active",
-          coverageLimit: 1000000, 
-          coverType: "CrewAfya Lite", 
+          coverageLimit: 1000000,
+          coverType: "CrewAfya Lite",
         });
       } catch (err) {
         setError(err.message || "Failed to load summary data");
@@ -149,7 +149,7 @@ const DashboardSummary = () => {
       {summaryItems.map((item, index) => (
         <div
           key={index}
-          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 sm:px-6 sm:py-4 border border-gray-200 dark:border-gray-700 flex flex-col"
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm pl-3 pr-2 py-3 sm:px-6 sm:py-4 border border-gray-200 dark:border-gray-700 flex flex-col"
         >
           <div className="flex justify-between items-center">
             <p className="text-xs sm:text-[0.8rem] font-semibold font- text-gray-600 dark:text-gray-300">
@@ -171,7 +171,7 @@ const DashboardSummary = () => {
           <h3 className="text-lg sm:text-xl font-bold text-green-700">
             {item.value}
           </h3>
-          <p className="text-xs  text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 sm:mt-1">
             {item.description}
           </p>
         </div>

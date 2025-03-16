@@ -57,8 +57,8 @@ const Layout = () => {
         </div>
 
         {/* Content */}
-        <Navbar />
-        <main className="flex-grow relative z-10">
+        <Navbar  />
+        <main className="flex-grow relative">
           <Outlet />
         </main>
         <Footer />

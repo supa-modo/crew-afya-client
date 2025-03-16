@@ -3,8 +3,6 @@ import {
   FiX,
   FiArrowRight,
   FiArrowLeft,
-  FiCheck,
-  FiAlertTriangle,
   FiLoader,
   FiPhone,
 } from "react-icons/fi";
@@ -27,6 +25,30 @@ const PlanSelectionModal = ({
   const [errorMessage, setErrorMessage] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      // Save the current scroll position
+      const scrollY = window.scrollY;
+
+      // Add styles to prevent scrolling
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.overflowY = "scroll";
+
+      // Cleanup function to restore scrolling when modal closes
+      return () => {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflowY = "";
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   // Reset state when modal is opened
   useEffect(() => {
@@ -151,7 +173,7 @@ const PlanSelectionModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-[100] overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div
           className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
@@ -288,7 +310,7 @@ const PlanSelectionModal = ({
                           className="w-full flex-shrink-0 px-1"
                         >
                           <div
-                            className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                            className={`relative p-4 rounded-xl border-2 transition-all duration-200 ${
                               selectedPlan?.name === plan.name
                                 ? "border-primary-500 bg-primary-50 dark:bg-primary-900/10"
                                 : "border-gray-200 dark:border-gray-700 hover:border-primary-300"
@@ -577,16 +599,16 @@ const PlanSelectionModal = ({
                       Payment Successful!
                     </p>
                     <p className="text-gray-600 dark:text-gray-400 mb-4">
-                      Your health insurance plan has been activated successfully.
+                      Your health insurance plan has been activated
+                      successfully.
                     </p>
                     <button
                       type="button"
                       onClick={handleClose}
                       className="inline-flex items-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-sm sm:text-base font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                     >
-                        <MdSpaceDashboard  className="mr-2 h-5 w-5" />
+                      <MdSpaceDashboard className="mr-2 h-5 w-5" />
                       Go to Dashboard
-                      
                     </button>
                   </div>
                 )}

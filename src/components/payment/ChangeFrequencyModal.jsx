@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiX, FiCheck, FiLoader } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { TbShieldCheckFilled } from "react-icons/tb";
@@ -13,6 +13,30 @@ const ChangeFrequencyModal = ({
   const [selectedFrequency, setSelectedFrequency] = useState(currentFrequency);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      // Save the current scroll position
+      const scrollY = window.scrollY;
+
+      // Add styles to prevent scrolling
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.overflowY = "scroll";
+
+      // Cleanup function to restore scrolling when modal closes
+      return () => {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflowY = "";
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   if (!isOpen || !currentPlan) return null;
 
@@ -32,7 +56,7 @@ const ChangeFrequencyModal = ({
       onFrequencyChanged(selectedFrequency);
       setIsSuccess(true);
 
-    //   Close the modal after a short delay
+      //   Close the modal after a short delay
       setTimeout(() => {
         onClose();
       }, 2000);
@@ -98,7 +122,11 @@ const ChangeFrequencyModal = ({
                 Payment frequency updated!
               </h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Your payment frequency has been changed to <span className="text-secondary-700 font-semibold">{selectedFrequency}</span> payments.
+                Your payment frequency has been changed to{" "}
+                <span className="text-secondary-700 font-semibold">
+                  {selectedFrequency}
+                </span>{" "}
+                payments.
               </p>
             </motion.div>
           ) : (
