@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FiMenu,
@@ -21,7 +21,13 @@ import { BiSupport } from "react-icons/bi";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { TbActivity, TbBulb, TbBulbOff, TbHome2 } from "react-icons/tb";
-import { PiGearDuotone, PiGearSixDuotone, PiInfoDuotone, PiSignOutDuotone, PiUserDuotone } from "react-icons/pi";
+import {
+  PiGearDuotone,
+  PiGearSixDuotone,
+  PiInfoDuotone,
+  PiSignOutDuotone,
+  PiUserDuotone,
+} from "react-icons/pi";
 import { MdSpaceDashboard } from "react-icons/md";
 import { FaCreditCard } from "react-icons/fa";
 
@@ -33,6 +39,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const menuRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,6 +64,27 @@ const Navbar = () => {
 
     return () => {
       document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
+  // Add click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isMenuOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isMenuOpen]);
 
@@ -351,7 +379,7 @@ const Navbar = () => {
 
         {/* Mobile menu, show/hide based on menu state */}
         {isMenuOpen && (
-          <div className="md:hidden" id="mobile-menu">
+          <div className="md:hidden" id="mobile-menu" ref={menuRef}>
             <div className="pl-6 pr-6 pt-3 pb-3 space-y-1  sm:px-3 border-t border-gray-200 dark:border-gray-800">
               <Link
                 to="/"

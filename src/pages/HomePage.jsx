@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FiArrowRight, FiCheckCircle, FiActivity } from "react-icons/fi";
-import { FcCellPhone } from "react-icons/fc";
+import { MdOutlinePhoneIphone } from "react-icons/md";
 import { PiChartLineUpDuotone, PiUserDuotone } from "react-icons/pi";
 import {
   TbCalendarCheck,
@@ -11,6 +11,8 @@ import {
   TbLockSquareRounded,
   TbShieldHalfFilled,
 } from "react-icons/tb";
+import FeatureIcon from "../components/ui/FeatureIcon";
+import ColorBar from "../components/ui/ColorBar";
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -342,7 +344,7 @@ const HomePage = () => {
       {/* Features Section with Animations */}
       <div id="features" className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-8 sm:mb-10 md:mb-14">
             <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
               Features
             </h2>
@@ -369,66 +371,64 @@ const HomePage = () => {
                 title: "Premium Payments",
                 description:
                   "Pay your premiums easily using M-Pesa and track your payment history in one place.",
-                color: "secondary",
+                color: "red",
               },
               {
-                icon: <FcCellPhone className="h-6 w-6" />,
+                icon: <MdOutlinePhoneIphone className="h-6 w-6" />,
                 title: "USSD Access",
                 description:
                   "Access your account and make payments via USSD on any feature phone for universal access.",
-                color: "primary",
+                color: "orange",
               },
               {
                 icon: <PiChartLineUpDuotone className="h-6 w-6" />,
                 title: "Payment Analytics",
                 description:
                   "Track your payment history and analyze your insurance spending with interactive charts.",
-                color: "secondary",
+                color: "indigo",
               },
               {
                 icon: <PiUserDuotone className="h-6 w-6" />,
                 title: "User Profiles",
                 description:
                   "Manage your personal details and upload required documents securely in your profile.",
-                color: "secondary",
+                color: "purple",
               },
               {
                 icon: <TbLockSquareRounded className="h-7 w-7" />,
                 title: "Secure Access",
                 description:
                   "Multi-factor authentication and encryption ensure your financial data stays protected.",
-                color: "primary",
+                color: "blue",
               },
               {
                 icon: <TbCalendarCheck className="h-6 w-6" />,
                 title: "Scheduled Payments",
                 description:
                   "Set up recurring payments on daily, weekly, or monthly schedules for your convenience.",
-                color: "secondary",
+                color: "red",
               },
               {
                 icon: <TbFileText className="h-6 w-6" />,
                 title: "Insurance Documentation",
                 description:
                   "Access and store all your insurance policy documents in one secure location.",
-                color: "primary",
+                color: "pink",
               },
             ].map((feature, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300"
+                className="bg-gray-100 dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300"
               >
-                <div className={`h-1 bg-${feature.color}-500`}></div>
-                <div className="p-4 sm:p-5 md:p-6">
-                  <div
-                    className={`p-3 bg-${feature.color}-100 dark:bg-${feature.color}-900/20 rounded-full w-12 h-12 flex items-center justify-center text-${feature.color}-600 dark:text-${feature.color}-400 mb-2 sm:mb-3 md:mb-4`}
-                  >
-                    {feature.icon}
+                <ColorBar color={feature.color} />
+                <div className="py-4 px-3 sm:p-5 md:p-6">
+                  <div className="flex items-center space-x-2 mb-1 sm:mb-2 md:mb-3 ">
+                    <FeatureIcon icon={feature.icon} color={feature.color} />
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-600 dark:text-white">
+                      {feature.title}
+                    </h3>
                   </div>
-                  <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-600 dark:text-white">
-                    {feature.title}
-                  </h3>
-                  <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                  <p className=" text-sm sm:text-base text-gray-600 dark:text-gray-400">
                     {feature.description}
                   </p>
                 </div>

@@ -73,84 +73,89 @@ const Footer = () => {
               </a>
             </div>
           </div>
-          <div className="col-span-1">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
-              Services
-            </h3>
-            <ul className="mt-4 space-y-2">
-              <li>
-                <Link
-                  to="/insurance"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
-                >
-                  Insurance Covers
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/ussd"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
-                >
-                  USSD Services
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/admin-login"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
-                >
-                  Admin Login
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/ussd"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
-                >
-                  Help Center
-                </Link>
-              </li>
-            </ul>
+
+          {/* Services and Company sections - side by side on mobile */}
+          <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-8 md:gap-8">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                Services
+              </h3>
+              <ul className="mt-4 space-y-2">
+                <li>
+                  <Link
+                    to="/insurance"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                  >
+                    Insurance Covers
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/ussd"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                  >
+                    USSD Services
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin-login"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                  >
+                    Admin Login
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/ussd"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                  >
+                    Help Center
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+                Company
+              </h3>
+              <ul className="mt-4 space-y-2">
+                <li>
+                  <Link
+                    to="/about"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                  >
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/faqs"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                  >
+                    FAQs
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/privacy"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/terms"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                  >
+                    Terms of Service
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="col-span-1">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
-              Company
-            </h3>
-            <ul className="mt-4 space-y-2">
-              <li>
-                <Link
-                  to="/about"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/faqs"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
-                >
-                  FAQs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/privacy"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/terms"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
-                >
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </div>
+
           <div className="col-span-1">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
               Contact
@@ -184,7 +189,6 @@ const Footer = () => {
                   <span>info@crewafya.com</span>
                 </Link>
               </li>
-              
             </ul>
           </div>
         </div>

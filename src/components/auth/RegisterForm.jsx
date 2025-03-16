@@ -324,14 +324,14 @@ const RegisterForm = () => {
       )}
 
       <form
-        onSubmit={
-          step === 3
-            ? handleSubmit
-            : (e) => {
-                e.preventDefault();
-                handleNextStep();
-              }
-        }
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (step === 3) {
+            handleSubmit(e);
+          } else {
+            handleNextStep();
+          }
+        }}
         className="px-1 sm:px-3"
       >
         {step === 1 && (
@@ -508,7 +508,8 @@ const RegisterForm = () => {
                 Back
               </button>
               <button
-                type="submit"
+                type="button"
+                onClick={handleVerifyOtp}
                 disabled={isSubmitting}
                 className="flex-1 flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
               >
