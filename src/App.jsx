@@ -11,6 +11,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import DashboardPage from "./pages/DashboardPage";
 import PaymentsPage from "./pages/PaymentsPage";
+import PaymentPage from "./pages/PaymentPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -52,6 +53,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <PaymentsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="payment"
+                element={
+                  <ProtectedRoute>
+                    <PaymentPage />
                   </ProtectedRoute>
                 }
               />

@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  FiCreditCard,
-  FiClock,
-  FiList,
-  FiCalendar,
-  FiDollarSign,
-  FiHome,
-  FiShield,
   FiCheck,
   FiChevronDown,
   FiChevronUp,
@@ -14,21 +7,22 @@ import {
 } from "react-icons/fi";
 import MakePayment from "../components/payment/MakePayment";
 import PaymentHistory from "../components/payment/PaymentHistory";
-import { Link } from "react-router-dom";
+import PlanSelectionModal from "../components/payment/PlanSelectionModal";
+import { Link, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import {
-  TbCreditCard,
   TbCreditCardFilled,
   TbHome2,
-  TbShieldCheckFilled,
-  TbShieldHalf,
   TbShieldHalfFilled,
 } from "react-icons/tb";
 import { BiSolidShieldX } from "react-icons/bi";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
+import { useAuth } from "../context/AuthContext";
 
 const PaymentsPage = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [selectedFrequency, setSelectedFrequency] = useState("daily");
   const [calendarDate, setCalendarDate] = useState(new Date());
@@ -48,6 +42,8 @@ const PaymentsPage = () => {
     ],
     defaulted: ["2025-03-14", "2025-03-16"],
   });
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+  const [isChangingPlan, setIsChangingPlan] = useState(false);
 
   const insurancePlans = [
     {
@@ -94,6 +90,34 @@ const PaymentsPage = () => {
     },
   ];
 
+  // Simulate loading user subscription data
+  useEffect(() => {
+    // Check if user has a subscription in localStorage
+    const userSubscription = localStorage.getItem("userSubscription");
+
+    if (userSubscription) {
+      const { plan, frequency } = JSON.parse(userSubscription);
+      const foundPlan = insurancePlans.find((p) => p.name === plan.name);
+      if (foundPlan) {
+        setSelectedPlan(foundPlan);
+        setSelectedFrequency(frequency);
+      }
+    }
+  }, []);
+
+  // Save subscription to localStorage when it changes
+  useEffect(() => {
+    if (selectedPlan) {
+      localStorage.setItem(
+        "userSubscription",
+        JSON.stringify({
+          plan: selectedPlan,
+          frequency: selectedFrequency,
+        })
+      );
+    }
+  }, [selectedPlan, selectedFrequency]);
+
   const tileClassName = ({ date }) => {
     const dateStr = date.toISOString().split("T")[0];
     if (paymentDates.paid.includes(dateStr)) {
@@ -122,6 +146,25 @@ const PaymentsPage = () => {
     }
   }, [selectedPlan]);
 
+  const handleOpenPlanModal = (isChanging = false) => {
+    setIsChangingPlan(isChanging);
+    setIsPlanModalOpen(true);
+  };
+
+  const handleClosePlanModal = (success = false) => {
+    setIsPlanModalOpen(false);
+
+    if (success && !selectedPlan) {
+      // If this was the first plan selection, refresh the page
+      window.location.reload();
+    }
+  };
+
+  const handlePlanSelected = (plan, frequency) => {
+    setSelectedPlan(plan);
+    setSelectedFrequency(frequency);
+  };
+
   return (
     <div className="py-6 mt-16">
       {/* Breadcrumb */}
@@ -131,7 +174,7 @@ const PaymentsPage = () => {
             <li>
               <Link
                 to="/"
-                className="hover:text-gray-700 dark:hover:text-gray-300 flex items-center"
+                className="hover:text-primary-600 flex items-center"
               >
                 <TbHome2 className="h-5 w-5 mr-2" />
                 Home
@@ -163,7 +206,7 @@ const PaymentsPage = () => {
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-5">
         <div className="bg-white flex flex-col md:flex-row justify-between items-center dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
           <div className="px-6 py-5 sm:px-8 sm:py-6">
-            <h1 className="text-lg md:text-xl font-bold text-green-700 dark:text-white flex items-center">
+            <h1 className="text-lg md:text-xl font-bold text-green-700  flex items-center">
               <TbCreditCardFilled className="mr-2 h-6 w-6 text-gray-400" />
               Payments and Health Cover Plans
             </h1>
@@ -173,9 +216,14 @@ const PaymentsPage = () => {
             </p>
           </div>
           <div className="px-6 pb-5 mr-auto md:mr-0 md:px-0 md:py-0">
-            <button className="btn-primary text-sm text-white md:mr-6 px-4 py-2 rounded-md">
-              Change Your Plan
-            </button>
+            {selectedPlan && (
+              <button
+                className="btn-primary text-sm text-white md:mr-6 px-4 py-2 rounded-md"
+                onClick={() => handleOpenPlanModal(true)}
+              >
+                Change Your Plan
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -221,31 +269,30 @@ const PaymentsPage = () => {
               <div className="">
                 {selectedPlan ? (
                   <div className="space-y-4">
-                    <div className="bg-primary-50 dark:bg-primary-900/10 p-4 md:mx-10 rounded-lg border border-primary-200 dark:border-primary-800 mb-6">
-                      
+                    <div className="bg-primary-50 dark:bg-primary-900/10 px-2 sm:px-4 py-4 md:mx-10 rounded-lg border border-primary-200 dark:border-primary-800 mb-6">
                       <div className="flex items-center justify-between">
-                      <div className="flex items-start">
-                        <MdOutlineHealthAndSafety className="h-6 w-6 text-primary-600 mt-0.5 mr-3" />
+                        <div className="flex items-center">
+                          <MdOutlineHealthAndSafety className="h-6 w-6 text-primary-600 mt-0.5 mr-1 sm:mr-2 md:mr-3" />
+                          <div>
+                            <h3 className="font-medium text-gray-900 dark:text-white">
+                              {selectedPlan.name}
+                            </h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              {selectedFrequency.charAt(0).toUpperCase() +
+                                selectedFrequency.slice(1)}{" "}
+                              payment of KES{" "}
+                              {selectedPlan.premiums[
+                                selectedFrequency
+                              ].toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
                         <div>
-                          <h3 className="font-medium text-gray-900 dark:text-white">
-                            {selectedPlan.name}
-                          </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {selectedFrequency.charAt(0).toUpperCase() +
-                              selectedFrequency.slice(1)}{" "}
-                            payment of KES{" "}
-                            {selectedPlan.premiums[
-                              selectedFrequency
-                            ].toLocaleString()}
-                          </p>
+                          <div className=" text-xs font-medium text-green-700 px-4 sm:px-6 py-1.5 rounded-full bg-green-200">
+                            Active
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <div className=" text-xs font-medium text-green-700 px-6 py-1.5 rounded-full bg-green-200">
-                          Active
-                        </div>
-                      </div>
-                        </div>
                     </div>
                     <MakePayment
                       selectedPlan={selectedPlan}
@@ -263,13 +310,7 @@ const PaymentsPage = () => {
                       payment.
                     </p>
                     <button
-                      onClick={() => {
-                        toggleSection("plans");
-                        setExpandedSections((prev) => ({
-                          ...prev,
-                          makePayment: false,
-                        }));
-                      }}
+                      onClick={() => handleOpenPlanModal(false)}
                       className="inline-flex items-center px-7 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                     >
                       Select a Plan
@@ -290,114 +331,13 @@ const PaymentsPage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        {/* Insurance Plans Section */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm rounded-md overflow-hidden border border-gray-200 dark:border-gray-700">
-          <button
-            onClick={() => toggleSection("plans")}
-            className="w-full px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 focus:outline-none"
-          >
-            <div className="flex items-center">
-              <TbShieldHalfFilled className="h-5 w-5 text-primary-600 mr-2" />
-              <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-                Insurance Plans
-              </h2>
-            </div>
-            {expandedSections.plans ? (
-              <FiChevronUp className="h-5 w-5 text-gray-500" />
-            ) : (
-              <FiChevronDown className="h-5 w-5 text-gray-500" />
-            )}
-          </button>
-
-          {expandedSections.plans && (
-            <div className="p-6">
-              <div className="space-y-6">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Choose the insurance plan that best fits your needs. Compare
-                  benefits and select your preferred payment frequency.
-                </p>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {insurancePlans.map((plan) => (
-                    <div
-                      key={plan.name}
-                      className={`relative p-5 rounded-xl border-2 transition-all duration-200 ${
-                        selectedPlan?.name === plan.name
-                          ? "border-primary-500 bg-primary-50 dark:bg-primary-900/10"
-                          : "border-gray-200 dark:border-gray-700 hover:border-primary-300"
-                      }`}
-                    >
-                      {selectedPlan?.name === plan.name && (
-                        <div className="absolute top-4 right-4">
-                          <FiCheck className="h-6 w-6 text-primary-500" />
-                        </div>
-                      )}
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                        {plan.name}
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                        {plan.forWho}
-                      </p>
-                      <div className="space-y-3 mb-6">
-                        {plan.benefits.map((benefit) => (
-                          <div
-                            key={benefit.name}
-                            className="flex justify-between text-sm"
-                          >
-                            <span className="text-gray-600 dark:text-gray-400">
-                              {benefit.name}
-                            </span>
-                            <span className="font-medium text-gray-900 dark:text-white">
-                              {benefit.limit}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="pt-5 border-t border-gray-200 dark:border-gray-700">
-                        <div className="flex justify-between items-center mb-4">
-                          <select
-                            className="block w-1/2 pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm dark:bg-gray-700"
-                            value={selectedFrequency}
-                            onChange={(e) =>
-                              setSelectedFrequency(e.target.value)
-                            }
-                          >
-                            <option value="daily">Daily</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="annual">Annual</option>
-                          </select>
-                          <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                            KES{" "}
-                            {plan.premiums[selectedFrequency].toLocaleString()}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => {
-                            setSelectedPlan(plan);
-                            setExpandedSections((prev) => ({
-                              ...prev,
-                              makePayment: true,
-                            }));
-                          }}
-                          className={`w-full py-3 px-4 rounded-md font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                            selectedPlan?.name === plan.name
-                              ? "bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500"
-                              : "bg-white text-primary-600 border border-primary-600 hover:bg-primary-50 focus:ring-primary-500"
-                          }`}
-                        >
-                          {selectedPlan?.name === plan.name
-                            ? "Selected Plan"
-                            : "Select Plan"}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      {/* Plan Selection Modal */}
+      <PlanSelectionModal
+        isOpen={isPlanModalOpen}
+        onClose={handleClosePlanModal}
+        insurancePlans={insurancePlans}
+        onPlanSelected={handlePlanSelected}
+      />
     </div>
   );
 };

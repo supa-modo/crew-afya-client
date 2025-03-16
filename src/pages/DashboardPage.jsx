@@ -1,20 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  FiCreditCard,
   FiFileText,
-  FiShield,
   FiActivity,
-  FiBarChart2,
-  FiCalendar,
-  FiClock,
-  FiUser,
-  FiHome,
 } from "react-icons/fi";
 import DashboardSummary from "../components/dashboard/DashboardSummary";
 import PaymentHistory from "../components/payment/PaymentHistory";
+import ChangeFrequencyModal from "../components/payment/ChangeFrequencyModal";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import {
+  TbActivity,
   TbCreditCardPay,
   TbHomeDot,
   TbShieldCheckFilled,
@@ -31,6 +26,63 @@ import { MdPayments } from "react-icons/md";
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const { user } = useAuth();
+  const [userSubscription, setUserSubscription] = useState(null);
+  const [isFrequencyModalOpen, setIsFrequencyModalOpen] = useState(false);
+  const [nextPaymentDate, setNextPaymentDate] = useState("April 15, 2025");
+
+  // Load user subscription data
+  useEffect(() => {
+    const subscription = localStorage.getItem("userSubscription");
+    if (subscription) {
+      setUserSubscription(JSON.parse(subscription));
+    }
+  }, []);
+
+  const handleOpenFrequencyModal = () => {
+    setIsFrequencyModalOpen(true);
+  };
+
+  const handleCloseFrequencyModal = () => {
+    setIsFrequencyModalOpen(false);
+  };
+
+  const handleFrequencyChanged = (newFrequency) => {
+    if (userSubscription) {
+      const updatedSubscription = {
+        ...userSubscription,
+        frequency: newFrequency,
+      };
+
+      // Update local state
+      setUserSubscription(updatedSubscription);
+
+      // Save to localStorage
+      localStorage.setItem(
+        "userSubscription",
+        JSON.stringify(updatedSubscription)
+      );
+
+      // Update next payment date based on frequency
+      const today = new Date();
+      let nextDate;
+
+      if (newFrequency === "daily") {
+        nextDate = new Date(today);
+        nextDate.setDate(today.getDate() + 1);
+      } else if (newFrequency === "monthly") {
+        nextDate = new Date(today);
+        nextDate.setMonth(today.getMonth() + 1);
+      } else if (newFrequency === "annual") {
+        nextDate = new Date(today);
+        nextDate.setFullYear(today.getFullYear() + 1);
+      }
+
+      if (nextDate) {
+        const options = { year: "numeric", month: "long", day: "numeric" };
+        setNextPaymentDate(nextDate.toLocaleDateString("en-US", options));
+      }
+    }
+  };
 
   return (
     <div className="py-6">
@@ -41,7 +93,7 @@ const DashboardPage = () => {
             <li>
               <Link
                 to="/"
-                className="hover:text-gray-700 dark:hover:text-gray-300 flex items-center"
+                className="hover:text-primary-600 flex items-center"
               >
                 <TbHomeDot className="h-5 w-5 mr-2" />
                 Home
@@ -190,7 +242,7 @@ const DashboardPage = () => {
                       </span>
                     </div>
                     <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      April 15, 2025
+                      {nextPaymentDate}
                     </span>
                   </div>
                   <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
@@ -201,21 +253,29 @@ const DashboardPage = () => {
                       </span>
                     </div>
                     <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      KES 500.00
+                      {userSubscription
+                        ? `KES ${userSubscription.plan.premiums[
+                            userSubscription.frequency
+                          ].toLocaleString()}`
+                        : "KES 500.00"}
                     </span>
                   </div>
                   <div className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center">
-                      <FiActivity className="h-5 w-5 text-primary-600 mr-2" />
+                      <TbActivity className="h-5 w-5 text-primary-600 mr-2" />
                       <span className="text-sm text-gray-500 dark:text-gray-400">
                         Frequency:
                       </span>
                     </div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      Weekly
+                    <span className="text-sm font-medium text-gray-900 dark:text-white capitalize">
+                      {userSubscription ? userSubscription.frequency : "Weekly"}
                     </span>
                   </div>
-                  <button className="w-full justify-center text-sm text-green-600 dark:text-green-600 hover:text-primary-700 dark:hover:text-primary-500">
+                  <button
+                    className="w-full justify-center text-sm text-secondary-600 hover:text-green-700 "
+                    onClick={handleOpenFrequencyModal}
+                    disabled={!userSubscription}
+                  >
                     Change Details
                   </button>
                 </div>
@@ -225,7 +285,7 @@ const DashboardPage = () => {
             {/* Recent Payments Section */}
             <div className="mt-8">
               <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 mb-1.5  flex items-center">
-              <MdPayments className="mr-2 h-6 w-6 text-green-700" />
+                <MdPayments className="mr-2 h-6 w-6 text-green-700" />
                 Recent Payments
               </h3>
               <PaymentHistory />
@@ -233,14 +293,13 @@ const DashboardPage = () => {
 
             {/* Documents Section */}
             <div className="bg-white mt-10 dark:bg-gray-800 rounded-md">
-            <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 mb-4  flex items-center">
-                
-            <PiFilesDuotone className="mr-2 h-7 w-7 text-green-700" />
+              <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 mb-4  flex items-center">
+                <PiFilesDuotone className="mr-2 h-7 w-7 text-green-700" />
                 Uploaded Documents
               </h3>
               <div className="flex items-center justify-center h-48 bg-gray-50 dark:bg-gray-900/50 rounded-md border-2 border-dashed border-gray-300 dark:border-gray-700">
                 <div className="text-center">
-                  <FiFileText className="mx-auto h-12 w-12 text-gray-400" />
+                  <PiFilesDuotone className="mx-auto h-12 w-12 text-gray-400" />
                   <p className="mt-2 text-gray-500 dark:text-gray-400">
                     Your insurance documents and receipts will appear here.
                   </p>
@@ -254,6 +313,16 @@ const DashboardPage = () => {
         </div>
       </div>
 
+      {/* Change Frequency Modal */}
+      {userSubscription && (
+        <ChangeFrequencyModal
+          isOpen={isFrequencyModalOpen}
+          onClose={handleCloseFrequencyModal}
+          currentPlan={userSubscription.plan}
+          currentFrequency={userSubscription.frequency}
+          onFrequencyChanged={handleFrequencyChanged}
+        />
+      )}
     </div>
   );
 };

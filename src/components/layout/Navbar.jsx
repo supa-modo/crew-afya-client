@@ -199,6 +199,17 @@ const Navbar = () => {
                     >
                       Payments
                     </Link>
+                    {/* <Link
+                      to="/payment"
+                      className={`${
+                        isActive("/payment")
+                          ? "text-primary-600 dark:text-primary-400 "
+                          : "text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 "
+                      } px-3 py-2 rounded-lg font-medium transition-colors duration-200 `}
+                      onClick={closeMenus}
+                    >
+                      Pay Now
+                    </Link> */}
                   </>
                 ) : (
                   <>
@@ -426,6 +437,20 @@ const Navbar = () => {
                       Payments
                     </div>
                   </Link>
+                  {/* <Link
+                    to="/payment"
+                    className={`${
+                      isActive("/payment")
+                        ? "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
+                    onClick={closeMenus}
+                  >
+                    <div className="flex items-center">
+                      <FaCreditCard className="mr-3" size={19} />
+                      Pay Now
+                    </div>
+                  </Link> */}
                   <Link
                     to="/profile"
                     className={`${

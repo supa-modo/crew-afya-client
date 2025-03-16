@@ -14,9 +14,10 @@ import {
   FiCalendar,
   FiDollarSign,
   FiCreditCard,
+  FiChevronDown,
+  FiChevronUp,
 } from "react-icons/fi";
 import { HiCash } from "react-icons/hi";
-import { getPaymentHistory } from "../../services/paymentService";
 import {
   TbCalendarDot,
   TbCreditCard,
@@ -35,6 +36,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
     dateRange: "",
   });
   const [showFilters, setShowFilters] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const pageSize = 10;
 
@@ -42,15 +44,59 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
     const fetchPayments = async () => {
       try {
         setLoading(true);
-        const response = await getPaymentHistory();
 
-        // Check if response has the expected structure
-        if (!response || !response.success || !Array.isArray(response.data)) {
-          throw new Error("Invalid payment history data format");
+        // Load payment history from localStorage
+        const storedPayments = localStorage.getItem("paymentHistory");
+        let paymentData = [];
+
+        if (storedPayments) {
+          paymentData = JSON.parse(storedPayments);
+        } else {
+          // If no payments exist, create sample data
+          const samplePayments = [
+            {
+              id: "1",
+              date: new Date(
+                Date.now() - 2 * 24 * 60 * 60 * 1000
+              ).toISOString(), // 2 days ago
+              amount: 500,
+              status: "completed",
+              method: "M-Pesa",
+              reference: "MP123456",
+              plan: "Crew Afya Lite",
+            },
+            {
+              id: "2",
+              date: new Date(
+                Date.now() - 9 * 24 * 60 * 60 * 1000
+              ).toISOString(), // 9 days ago
+              amount: 500,
+              status: "completed",
+              method: "M-Pesa",
+              reference: "MP789012",
+              plan: "Crew Afya Lite",
+            },
+            {
+              id: "3",
+              date: new Date(
+                Date.now() - 16 * 24 * 60 * 60 * 1000
+              ).toISOString(), // 16 days ago
+              amount: 500,
+              status: "failed",
+              method: "M-Pesa",
+              reference: "MP345678",
+              plan: "Crew Afya Lite",
+            },
+          ];
+          localStorage.setItem(
+            "paymentHistory",
+            JSON.stringify(samplePayments)
+          );
+          paymentData = samplePayments;
         }
 
         // Sort payments by date (newest first)
-        const sortedPayments = [...response.data].sort(
+        const sortedPayments = [...paymentData].sort(
           (a, b) => new Date(b.date) - new Date(a.date)
         );
 
@@ -257,7 +303,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
           </div>
 
           {/* Search and Filters - Full width on mobile */}
-          <div className="w-full  md:w-[50%] flex flex-row items-end sm:items-center gap-3">
+          <div className="w-full md:w-[50%] flex flex-row items-end sm:items-center gap-3">
             <div className="relative w-full">
               <form onSubmit={handleSearch} className="w-full">
                 <div className="relative">
@@ -285,6 +331,11 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
             >
               <FiFilter className="mr-2 h-4 w-4" />
               Filters
+            </button>
+
+            <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200">
+              <FiDownload className="mr-2 h-4 w-4" />
+              Export
             </button>
           </div>
         </div>
@@ -341,7 +392,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
             <tr>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 <div className="flex items-center">
                   <TbCalendarDot className="mr-2 h-5 w-5" />
@@ -350,7 +401,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 <div className="flex items-center">
                   <HiCash className="mr-2 h-5 w-5" />
@@ -359,7 +410,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 <div className="flex items-center">
                   <TbCreditCard className="mr-2 h-5 w-5" />
@@ -368,7 +419,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 <div className="flex items-center">
                   <TbShieldHalfFilled className="mr-2 h-5 w-5" />
@@ -377,19 +428,19 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 Reference Code
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
+                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 Status
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-right text-[0.8rem] font-medium text-primary-600  uppercase tracking-wider"
+                className="px-6 py-3 text-right text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 Actions
               </th>
@@ -423,7 +474,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                  {payment.medicalCover || "Crew Afya Lite"}
+                  {payment.plan || "Crew Afya Lite"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   {payment.reference || "-"}
@@ -434,7 +485,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   {payment.status === "completed" && (
                     <button
-                      className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300  items-center gap-2 transition-colors duration-200"
+                      className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 items-center gap-2 transition-colors duration-200"
                       title="Download Receipt"
                     >
                       <div className="flex items-center gap-2">
