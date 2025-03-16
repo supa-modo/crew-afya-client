@@ -134,7 +134,7 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
             <button
               type="button"
               onClick={toggleIdentifierType}
-              className="text-xs text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
+              className="text-[0.82rem] text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
             >
               Use {identifierType === "email" ? "phone number" : "email"}{" "}
               instead

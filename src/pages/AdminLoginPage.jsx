@@ -103,11 +103,11 @@ const AdminLoginPage = () => {
               />
             </div>
             <div className="text-center mt-2 mb-3 sm:mb-4">
-              <h1 className="text-2xl md:text-3xl font-bold text-secondary-500 dark:text-secondary-400 mb-3">
+              <h1 className="text-2xl md:text-3xl font-bold text-secondary-700 dark:text-secondary-600 mb-3">
                 CrewAfya Admin
               </h1>
               <p className="text-gray-400 text-sm lg:text-base">
-                Sign in withyour admin credentials to continue
+                Sign in with your admin credentials to continue
               </p>
             </div>
 
@@ -116,7 +116,7 @@ const AdminLoginPage = () => {
               initial={{ width: 0 }}
               animate={{ width: "8rem" }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="h-1 bg-gradient-to-r from-secondary-500 to-secondary-700 rounded-full mx-auto"
+              className="h-1 bg-gradient-to-r from-secondary-700 to-secondary-500 rounded-full mx-auto"
             ></motion.div>
           </motion.div>
 

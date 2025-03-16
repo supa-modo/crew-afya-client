@@ -231,6 +231,11 @@ export const AuthProvider = ({ children }) => {
     setError(null);
   };
 
+  // Function to update user data in context
+  const updateUser = (userData) => {
+    setUser(userData);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -244,6 +249,7 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         clearError,
+        updateUser,
       }}
     >
       {children}

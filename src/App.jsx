@@ -15,11 +15,6 @@ import PaymentPage from "./pages/PaymentPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import AdminRoute from "./components/auth/AdminRoute";
-import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
-import AdminUsersPage from "./pages/admin/AdminUsersPage";
-import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
-import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
 
 function App() {
   return (
@@ -72,42 +67,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
-              {/* Protected routes for admin users */}
-              <Route path="admin">
-                <Route
-                  path="dashboard"
-                  element={
-                    <AdminRoute>
-                      <AdminDashboardPage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="users"
-                  element={
-                    <AdminRoute>
-                      <AdminUsersPage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="payments"
-                  element={
-                    <AdminRoute>
-                      <AdminPaymentsPage />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="settings"
-                  element={
-                    <AdminRoute>
-                      <AdminSettingsPage />
-                    </AdminRoute>
-                  }
-                />
-              </Route>
 
               {/* 404 route */}
               <Route path="*" element={<NotFoundPage />} />
