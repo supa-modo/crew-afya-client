@@ -5,6 +5,111 @@
 :root {
   font-family: "Lexend", sans-serif;
   /* line-height: 1.5; */
+
+  /* Scrollbar variables */
+  --scrollbar-width: 8px;
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-thumb-hover: #a1a1a1;
+  --scrollbar-thumb-active: #909090;
+
+  /* Dark mode scrollbar variables */
+  --scrollbar-track-dark: #2d3748;
+  --scrollbar-thumb-dark: #4a5568;
+  --scrollbar-thumb-hover-dark: #606f85;
+  --scrollbar-thumb-active-dark: #718096;
+
+  /* Admin scrollbar variables */
+  --scrollbar-thumb-admin: rgba(122, 127, 249, 0.5);
+  --scrollbar-thumb-hover-admin: rgba(122, 127, 249, 0.7);
+  --scrollbar-thumb-active-admin: rgba(122, 127, 249, 0.9);
+}
+
+/* Custom scrollbar styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* Chrome, Edge, and Safari */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  border: 2px solid var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--scrollbar-thumb-active);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+/* Dark mode scrollbar */
+.dark * {
+  scrollbar-color: var(--scrollbar-thumb-dark) var(--scrollbar-track-dark);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-dark);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-dark);
+  border: 2px solid var(--scrollbar-track-dark);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover-dark);
+}
+
+.dark ::-webkit-scrollbar-thumb:active {
+  background: var(--scrollbar-thumb-active-dark);
+}
+
+.dark ::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track-dark);
+}
+
+/* Admin area scrollbar */
+[class*="admin-"] * {
+  scrollbar-color: var(--scrollbar-thumb-admin) var(--scrollbar-track);
+}
+
+[class*="admin-"] ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-admin);
+}
+
+[class*="admin-"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover-admin);
+}
+
+[class*="admin-"] ::-webkit-scrollbar-thumb:active {
+  background: var(--scrollbar-thumb-active-admin);
+}
+
+.dark [class*="admin-"] * {
+  scrollbar-color: var(--scrollbar-thumb-admin) var(--scrollbar-track-dark);
+}
+
+.dark [class*="admin-"] ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-admin);
+  border: 2px solid var(--scrollbar-track-dark);
 }
 
 @layer base {
@@ -24,6 +129,10 @@
 
   .btn-secondary {
     @apply bg-secondary-600 text-white hover:bg-secondary-700 dark:bg-secondary-700 dark:hover:bg-secondary-800;
+  }
+
+  .btn-admin {
+    @apply bg-admin-600 text-white hover:bg-admin-700 dark:bg-admin-700 dark:hover:bg-admin-800;
   }
 
   .btn-outline {

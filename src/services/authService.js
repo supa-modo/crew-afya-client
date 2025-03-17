@@ -1,9 +1,9 @@
-import axios from "axios";
+import api, { apiGet, apiPost } from "./api";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
 // Create axios instance with default config
-const api = axios.create({
+const apiInstance = api.create({
   baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
@@ -11,7 +11,7 @@ const api = axios.create({
 });
 
 // Add request interceptor to add auth token to requests
-api.interceptors.request.use(
+apiInstance.interceptors.request.use(
   (config) => {
     // Try to get token from localStorage first, then sessionStorage
     const token =
@@ -25,7 +25,7 @@ api.interceptors.request.use(
 );
 
 // Add response interceptor to handle token refresh
-api.interceptors.response.use(
+apiInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -53,7 +53,7 @@ api.interceptors.response.use(
           throw new Error("No refresh token available");
         }
 
-        const response = await axios.post(`${API_URL}/auth/refresh-token`, {
+        const response = await apiInstance.post("/auth/refresh-token", {
           refreshToken,
         });
 
@@ -69,7 +69,7 @@ api.interceptors.response.use(
 
           // Update the Authorization header for the retry
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          return api(originalRequest);
+          return apiInstance(originalRequest);
         } else {
           throw new Error("Invalid token response format");
         }
@@ -103,21 +103,20 @@ export const registerUser = async (userData) => {
       userDataToSend.otherNames = null;
     }
 
-    const response = await api.post("/auth/register", userDataToSend);
-    return response.data;
+    return await apiPost("/auth/register", userDataToSend);
   } catch (error) {
-    throw handleApiError(error);
+    throw error;
   }
 };
 
 // Login user with phone number or ID number
 export const loginUser = async (identifier, password, rememberMe = false) => {
   try {
-    const response = await api.post("/auth/login", { identifier, password });
+    const response = await apiPost("/auth/login", { identifier, password });
 
     // Check if response has the expected structure
-    if (response.data && response.data.data) {
-      const { token, refreshToken, user } = response.data.data;
+    if (response && response.data) {
+      const { token, refreshToken, user } = response.data;
 
       // Store tokens based on rememberMe preference
       if (token && refreshToken) {
@@ -138,23 +137,23 @@ export const loginUser = async (identifier, password, rememberMe = false) => {
         }
       }
 
-      return response.data;
+      return response;
     } else {
       throw new Error("Invalid response format from server");
     }
   } catch (error) {
-    throw handleApiError(error);
+    throw error;
   }
 };
 
 // Login admin with email
 export const adminLoginUser = async (email, password, rememberMe = false) => {
   try {
-    const response = await api.post("/auth/admin-login", { email, password });
+    const response = await apiPost("/auth/admin-login", { email, password });
 
     // Check if response has the expected structure
-    if (response.data && response.data.data) {
-      const { token, refreshToken, user } = response.data.data;
+    if (response && response.data) {
+      const { token, refreshToken, user } = response.data;
 
       // Store tokens based on rememberMe preference
       if (token && refreshToken) {
@@ -175,12 +174,12 @@ export const adminLoginUser = async (email, password, rememberMe = false) => {
         }
       }
 
-      return response.data;
+      return response;
     } else {
       throw new Error("Invalid response format from server");
     }
   } catch (error) {
-    throw handleApiError(error);
+    throw error;
   }
 };
 
@@ -191,7 +190,8 @@ export const logoutUser = async () => {
     const refreshToken =
       localStorage.getItem("refreshToken") ||
       sessionStorage.getItem("refreshToken");
-    const response = await api.post("/auth/logout", { refreshToken });
+
+    await apiPost("/auth/logout", { refreshToken });
 
     // Always clear tokens on logout from both storages
     localStorage.removeItem("token");
@@ -199,14 +199,14 @@ export const logoutUser = async () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("refreshToken");
 
-    return response.data;
+    return { success: true };
   } catch (error) {
     // Still clear tokens even if the logout request fails
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("refreshToken");
-    throw handleApiError(error);
+    throw error;
   }
 };
 
@@ -221,13 +221,13 @@ export const refreshUserToken = async () => {
       throw new Error("No refresh token available");
     }
 
-    const response = await axios.post(`${API_URL}/auth/refresh-token`, {
+    const response = await apiPost("/auth/refresh-token", {
       refreshToken,
     });
 
     // Check if response has the expected structure
-    if (response.data && response.data.data && response.data.data.token) {
-      const newToken = response.data.data.token;
+    if (response && response.data && response.data.token) {
+      const newToken = response.data.token;
 
       // Store the new token in the same storage that had the refresh token
       if (localStorage.getItem("refreshToken")) {
@@ -236,7 +236,7 @@ export const refreshUserToken = async () => {
         sessionStorage.setItem("token", newToken);
       }
 
-      return response.data;
+      return response;
     } else {
       throw new Error("Invalid token response format");
     }
@@ -246,17 +246,16 @@ export const refreshUserToken = async () => {
     localStorage.removeItem("refreshToken");
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("refreshToken");
-    throw handleApiError(error);
+    throw error;
   }
 };
 
 // Get user profile
 export const getUserProfile = async () => {
   try {
-    const response = await api.get("/auth/profile");
-    return response.data;
+    return await apiGet("/auth/profile");
   } catch (error) {
-    throw handleApiError(error);
+    throw error;
   }
 };
 
@@ -270,22 +269,20 @@ export const forgotPassword = async (identifier) => {
       ? { email: identifier }
       : { phoneNumber: identifier };
 
-    const response = await api.post("/auth/forgot-password", payload);
-    return response.data;
+    return await apiPost("/auth/forgot-password", payload);
   } catch (error) {
-    throw handleApiError(error);
+    throw error;
   }
 };
 
 // Reset password
 export const resetPassword = async (token, password) => {
   try {
-    const response = await api.post(`/auth/reset-password/${token}`, {
+    return await apiPost(`/auth/reset-password/${token}`, {
       password,
     });
-    return response.data;
   } catch (error) {
-    throw handleApiError(error);
+    throw error;
   }
 };
 
@@ -349,4 +346,4 @@ const handleApiError = (error) => {
   }
 };
 
-export default api;
+export default apiInstance;

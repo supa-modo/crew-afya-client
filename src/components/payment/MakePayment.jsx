@@ -7,6 +7,7 @@ import {
   FiAlertTriangle,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { apiPost } from "../../services/api";
 
 const MakePayment = ({ selectedPlan, frequency }) => {
   let [phoneNumber, setPhoneNumber] = useState("");
@@ -33,37 +34,22 @@ const MakePayment = ({ selectedPlan, frequency }) => {
     setPaymentStatus("processing");
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
       // Format phone number to ensure it starts with 254 (Kenya)
       if (phoneNumber.startsWith("0")) {
         phoneNumber = `254${phoneNumber.substring(1)}`;
       } else if (phoneNumber.startsWith("+")) {
         phoneNumber = phoneNumber.substring(1);
       }
-      // Randomly simulate success or failure (80% success rate)
-      const isSuccess = Math.random() < 0.8;
 
-      if (isSuccess) {
+      // Make API call to initiate payment using our apiPost helper
+      const response = await apiPost("/payments/mpesa", {
+        amount: selectedPlan.premiums[frequency],
+        phoneNumber,
+        description: `Payment for ${selectedPlan.name} (${frequency}) medical cover`,
+      });
+
+      if (response.success) {
         setPaymentStatus("success");
-
-        // Add to payment history in localStorage
-        const paymentHistory = JSON.parse(
-          localStorage.getItem("paymentHistory") || "[]"
-        );
-        const newPayment = {
-          id: Date.now().toString(),
-          date: new Date().toISOString(),
-          amount: selectedPlan.premiums[frequency],
-          status: "completed",
-          method: "M-Pesa",
-          reference: `MP${Math.floor(Math.random() * 1000000)}`,
-          plan: selectedPlan.name,
-        };
-
-        paymentHistory.unshift(newPayment);
-        localStorage.setItem("paymentHistory", JSON.stringify(paymentHistory));
 
         // Reset form after success
         setTimeout(() => {
@@ -72,11 +58,15 @@ const MakePayment = ({ selectedPlan, frequency }) => {
         }, 3000);
       } else {
         setPaymentStatus("error");
-        setErrorMessage("Failed to process payment. Please try again.");
+        setErrorMessage(
+          response.message || "Failed to process payment. Please try again."
+        );
       }
     } catch (error) {
       setPaymentStatus("error");
-      setErrorMessage("An unexpected error occurred. Please try again.");
+      setErrorMessage(
+        error.message || "An unexpected error occurred. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }

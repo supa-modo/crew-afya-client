@@ -311,7 +311,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="mx-4 overflow-hidden transition-all duration-300">
+    <div className="md:mx-4 overflow-hidden transition-all duration-300">
       {formError && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}

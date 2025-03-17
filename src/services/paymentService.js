@@ -1,4 +1,4 @@
-import api from "./authService";
+import { apiGet, apiPost, apiPut } from "./api";
 
 // Mock payment data for development
 const MOCK_PAYMENT_HISTORY = [
@@ -106,8 +106,7 @@ const MOCK_PAYMENT_HISTORY = [
 // Initiate M-Pesa payment
 export const initiateMpesaPayment = async (paymentData) => {
   try {
-    const response = await api.post("/payments/mpesa", paymentData);
-    return response.data;
+    return await apiPost("/payments/mpesa", paymentData);
   } catch (error) {
     throw error;
   }
@@ -116,8 +115,7 @@ export const initiateMpesaPayment = async (paymentData) => {
 // Create payment schedule
 export const createPaymentSchedule = async (scheduleData) => {
   try {
-    const response = await api.post("/payments/schedule", scheduleData);
-    return response.data;
+    return await apiPost("/payments/schedule", scheduleData);
   } catch (error) {
     throw error;
   }
@@ -126,22 +124,17 @@ export const createPaymentSchedule = async (scheduleData) => {
 // Update payment schedule
 export const updatePaymentSchedule = async (scheduleId, scheduleData) => {
   try {
-    const response = await api.put(
-      `/payments/schedule/${scheduleId}`,
-      scheduleData
-    );
-    return response.data;
+    return await apiPut(`/payments/schedule/${scheduleId}`, scheduleData);
   } catch (error) {
     throw error;
   }
 };
 
 // Get payment history
-export const getPaymentHistory = async () => {
+export const getPaymentHistory = async (params = {}) => {
   try {
     // In a real app, this would be an API call
-    // const response = await api.get("/payments/history");
-    // return response.data;
+    // return await apiGet("/payments/history", params);
 
     // For now, return mock data
     return {
@@ -158,8 +151,7 @@ export const getPaymentHistory = async () => {
 export const getPaymentDetails = async (paymentId) => {
   try {
     // In a real app, this would be an API call
-    // const response = await api.get(`/payments/${paymentId}`);
-    // return response.data;
+    // return await apiGet(`/payments/${paymentId}`);
 
     // For now, find the payment in our mock data
     const payment = MOCK_PAYMENT_HISTORY.find((p) => p.id === paymentId);
@@ -182,8 +174,7 @@ export const getPaymentDetails = async (paymentId) => {
 export const getPaymentMethods = async () => {
   try {
     // In a real app, this would be an API call
-    // const response = await api.get("/payments/methods");
-    // return response.data;
+    // return await apiGet("/payments/methods");
 
     // For now, return mock payment methods
     return {

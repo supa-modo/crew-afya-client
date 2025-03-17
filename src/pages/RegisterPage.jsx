@@ -48,7 +48,7 @@ const RegisterPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-full max-w-xl z-20 mt-24"
+        className="w-full max-w-xl z-20 mt-12 md:mt-24"
       >
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
           <motion.div

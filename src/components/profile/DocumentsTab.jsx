@@ -2,7 +2,11 @@ import { useState } from "react";
 import { FiFile, FiUpload, FiTrash2 } from "react-icons/fi";
 import ConfirmationModal from "../common/ConfirmationModal";
 import { TbCloudUpload, TbDownload, TbTrash } from "react-icons/tb";
-import { PiFilePdfDuotone, PiFilesDuotone, PiImageDuotone } from "react-icons/pi";
+import {
+  PiFilePdfDuotone,
+  PiFilesDuotone,
+  PiImageDuotone,
+} from "react-icons/pi";
 
 const DocumentsTab = ({
   documents,
@@ -81,8 +85,8 @@ const DocumentsTab = ({
                   onClick={handleFileUploadClick}
                   className="inline-flex items-center space-x-2 px-4 py-1.5 border border-transparent text-xs font-medium rounded-md text-yellow-700 bg-amber-200 hover:bg-yellow-200 dark:bg-yellow-800 dark:text-yellow-300 dark:hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
                 >
-                  <TbCloudUpload className="h-4 w-4"/>
-                  <span>Upload ID Now</span> 
+                  <TbCloudUpload className="h-4 w-4" />
+                  <span>Upload ID Now</span>
                 </button>
               </div>
             </div>

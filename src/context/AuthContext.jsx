@@ -16,16 +16,20 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [token, setToken] = useState(
+    localStorage.getItem("token") || sessionStorage.getItem("token") || null
+  );
 
   useEffect(() => {
     // Check if user is already logged in
     const checkAuthStatus = async () => {
       try {
         setLoading(true);
-        const token =
+        const currentToken =
           localStorage.getItem("token") || sessionStorage.getItem("token");
 
-        if (token) {
+        if (currentToken) {
+          setToken(currentToken);
           try {
             // Get user profile
             const userData = await getUserProfile();
@@ -40,15 +44,22 @@ export const AuthProvider = ({ children }) => {
           } catch (err) {
             // Token might be expired, try to refresh
             try {
-              await refreshUserToken();
-              const userData = await getUserProfile();
-              if (userData && userData.data) {
-                setUser(userData.data);
-                setIsAuthenticated(true);
-                setIsAdmin(
-                  userData.data.role === "admin" ||
-                    userData.data.role === "superadmin"
-                );
+              const refreshResponse = await refreshUserToken();
+              if (
+                refreshResponse &&
+                refreshResponse.data &&
+                refreshResponse.data.token
+              ) {
+                setToken(refreshResponse.data.token);
+                const userData = await getUserProfile();
+                if (userData && userData.data) {
+                  setUser(userData.data);
+                  setIsAuthenticated(true);
+                  setIsAdmin(
+                    userData.data.role === "admin" ||
+                      userData.data.role === "superadmin"
+                  );
+                }
               }
             } catch (refreshErr) {
               // If refresh fails, clear storage
@@ -56,12 +67,14 @@ export const AuthProvider = ({ children }) => {
               localStorage.removeItem("refreshToken");
               sessionStorage.removeItem("token");
               sessionStorage.removeItem("refreshToken");
+              setToken(null);
               setUser(null);
               setIsAuthenticated(false);
               setIsAdmin(false);
             }
           }
         } else {
+          setToken(null);
           setUser(null);
           setIsAuthenticated(false);
           setIsAdmin(false);
@@ -89,6 +102,7 @@ export const AuthProvider = ({ children }) => {
       // Extract user data from the response
       if (response && response.data && response.data.user) {
         setUser(response.data.user);
+        setToken(response.data.token);
         setIsAuthenticated(true);
         setIsAdmin(
           response.data.user.role === "admin" ||
@@ -139,6 +153,7 @@ export const AuthProvider = ({ children }) => {
       // Extract user data from the response
       if (response && response.data && response.data.user) {
         setUser(response.data.user);
+        setToken(response.data.token);
         setIsAuthenticated(true);
         setIsAdmin(true);
         return response.data.user;
@@ -209,6 +224,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("refreshToken");
       sessionStorage.removeItem("token");
       sessionStorage.removeItem("refreshToken");
+      setToken(null);
       setUser(null);
       setIsAuthenticated(false);
       setIsAdmin(false);
@@ -219,6 +235,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("refreshToken");
       sessionStorage.removeItem("token");
       sessionStorage.removeItem("refreshToken");
+      setToken(null);
       setUser(null);
       setIsAuthenticated(false);
       setIsAdmin(false);
@@ -240,6 +257,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        token,
         loading,
         error,
         isAuthenticated,

@@ -12,11 +12,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
             <Link to="/" className="flex items-center">
+            <img className="h-10 w-auto mr-2" src="/logo.png" alt="CrewAfya" />
               <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
                 CrewAfya Care
               </span>
             </Link>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Streamlining health insurance premium collections and financial
               record-keeping.
             </p>
@@ -192,10 +193,13 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            &copy; {currentYear} CrewAfya. All rights reserved.
-          </p>
+        <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
+        <div className="flex items-center mb-4 md:mb-0">
+            <img className="h-7 w-auto mr-2" src="/logo.png" alt="CrewAfya" />
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              &copy; {currentYear} CrewAfya. All rights reserved.
+            </span>
+          </div>
           <div className="mt-4 md:mt-0 flex space-x-6">
             <Link
               to="/privacy"

@@ -15,6 +15,12 @@ import PaymentPage from "./pages/PaymentPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminUsersPage from "./pages/admin/AdminUsersPage";
+import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
+import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
+import AdminSystemHealthPage from "./pages/admin/AdminSystemHealthPage";
 
 function App() {
   return (
@@ -69,6 +75,23 @@ function App() {
               />
 
               {/* 404 route */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+
+            {/* Admin routes with AdminLayout */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute adminOnly>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="dashboard" element={<AdminDashboardPage />} />
+              <Route path="users" element={<AdminUsersPage />} />
+              <Route path="payments" element={<AdminPaymentsPage />} />
+              <Route path="analytics" element={<AdminAnalyticsPage />} />
+              <Route path="system-health" element={<AdminSystemHealthPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>

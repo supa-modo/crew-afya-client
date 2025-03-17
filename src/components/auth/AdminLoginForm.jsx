@@ -5,6 +5,7 @@ import { PiPasswordDuotone } from "react-icons/pi";
 import { TbMailFilled } from "react-icons/tb";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { RiAdminLine } from "react-icons/ri";
+import { motion } from "framer-motion";
 
 const AdminLoginForm = () => {
   const [email, setEmail] = useState("");

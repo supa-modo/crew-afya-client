@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { apiGet, apiDownload } from "../../services/api";
 import {
   FiDownload,
   FiSearch,
@@ -24,6 +25,8 @@ import {
   TbShieldHalfFilled,
 } from "react-icons/tb";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+
 const PaymentHistory = ({ title = "Recent Transactions" }) => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,73 +48,82 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
       try {
         setLoading(true);
 
-        // Load payment history from localStorage
-        const storedPayments = localStorage.getItem("paymentHistory");
-        let paymentData = [];
+        // Fetch payment history from API using our apiGet helper
+        const response = await apiGet("/payments/history", {
+          limit: 50, // Get more records to allow for client-side filtering
+          offset: 0,
+          status: filters.status || undefined,
+          startDate: getStartDateFromRange(filters.dateRange),
+          endDate: new Date().toISOString(),
+        });
 
-        if (storedPayments) {
-          paymentData = JSON.parse(storedPayments);
-        } else {
-          // If no payments exist, create sample data
-          const samplePayments = [
-            {
-              id: "1",
-              date: new Date(
-                Date.now() - 2 * 24 * 60 * 60 * 1000
-              ).toISOString(), // 2 days ago
-              amount: 500,
-              status: "completed",
-              method: "M-Pesa",
-              reference: "MP123456",
-              plan: "Crew Afya Lite",
-            },
-            {
-              id: "2",
-              date: new Date(
-                Date.now() - 9 * 24 * 60 * 60 * 1000
-              ).toISOString(), // 9 days ago
-              amount: 500,
-              status: "completed",
-              method: "M-Pesa",
-              reference: "MP789012",
-              plan: "Crew Afya Lite",
-            },
-            {
-              id: "3",
-              date: new Date(
-                Date.now() - 16 * 24 * 60 * 60 * 1000
-              ).toISOString(), // 16 days ago
-              amount: 500,
-              status: "failed",
-              method: "M-Pesa",
-              reference: "MP345678",
-              plan: "Crew Afya Lite",
-            },
-          ];
-          localStorage.setItem(
-            "paymentHistory",
-            JSON.stringify(samplePayments)
+        if (response.success) {
+          // Map API response to match the expected format
+          const paymentData = response.data.map((payment) => ({
+            id: payment.id,
+            date: payment.paymentDate,
+            amount: payment.amount,
+            status: payment.status.toLowerCase(),
+            method:
+              payment.paymentMethod === "mpesa"
+                ? "M-Pesa"
+                : payment.paymentMethod,
+            reference:
+              payment.mpesaReceiptNumber || payment.transactionId || "-",
+            plan: payment.metadata?.planType || "Crew Afya Lite",
+          }));
+
+          // Sort payments by date (newest first)
+          const sortedPayments = [...paymentData].sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
           );
-          paymentData = samplePayments;
+
+          setPayments(sortedPayments);
+          setTotalPages(Math.ceil(sortedPayments.length / pageSize));
+        } else {
+          throw new Error(
+            response.message || "Failed to fetch payment history"
+          );
         }
-
-        // Sort payments by date (newest first)
-        const sortedPayments = [...paymentData].sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
-        );
-
-        setPayments(sortedPayments);
-        setTotalPages(Math.ceil(sortedPayments.length / pageSize));
       } catch (err) {
         setError(err.message || "Failed to load payment history");
         console.error("Payment history error:", err);
+
+        // Fallback to localStorage if API fails
+        const storedPayments = localStorage.getItem("paymentHistory");
+        if (storedPayments) {
+          const paymentData = JSON.parse(storedPayments);
+          setPayments(paymentData);
+          setTotalPages(Math.ceil(paymentData.length / pageSize));
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchPayments();
-  }, []);
+  }, [filters.status, filters.dateRange]);
+
+  // Helper function to get start date based on date range filter
+  const getStartDateFromRange = (range) => {
+    const now = new Date();
+    switch (range) {
+      case "last7days":
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 7);
+        return sevenDaysAgo.toISOString();
+      case "last30days":
+        const thirtyDaysAgo = new Date(now);
+        thirtyDaysAgo.setDate(now.getDate() - 30);
+        return thirtyDaysAgo.toISOString();
+      case "last90days":
+        const ninetyDaysAgo = new Date(now);
+        ninetyDaysAgo.setDate(now.getDate() - 90);
+        return ninetyDaysAgo.toISOString();
+      default:
+        return undefined;
+    }
+  };
 
   // Format currency
   const formatCurrency = (amount) => {
@@ -217,6 +229,19 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
     );
   };
 
+  // Handle download receipt
+  const handleDownloadReceipt = async (payment) => {
+    try {
+      await apiDownload(
+        `/payments/${payment.id}/receipt`,
+        `receipt-${payment.reference}.pdf`
+      );
+    } catch (error) {
+      console.error("Error downloading receipt:", error);
+      alert("Failed to download receipt. Please try again later.");
+    }
+  };
+
   if (loading) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-md shadow-sm p-4 border border-gray-200 dark:border-gray-700 animate-pulse">
@@ -264,11 +289,6 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
 
   // Filter and search payments
   const filteredPayments = payments.filter((payment) => {
-    // Filter by status
-    if (filters.status && payment.status !== filters.status) {
-      return false;
-    }
-
     // Search by reference or method
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
@@ -485,6 +505,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   {payment.status === "completed" && (
                     <button
+                      onClick={() => handleDownloadReceipt(payment)}
                       className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 items-center gap-2 transition-colors duration-200"
                       title="Download Receipt"
                     >
