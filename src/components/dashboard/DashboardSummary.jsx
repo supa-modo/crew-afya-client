@@ -119,7 +119,7 @@ const DashboardSummary = () => {
     {
       title: "Total Paid",
       value: formatCurrency(summaryData.totalPaid),
-      description: `Next payment - ${formatDate(
+      description: `Next payment on ${formatDate(
         summaryData.nextPaymentDate
       ).replace(", 2023", "")}`,
       icon: "card",
@@ -145,11 +145,11 @@ const DashboardSummary = () => {
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 ">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 ">
       {summaryItems.map((item, index) => (
         <div
           key={index}
-          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm pl-3 pr-2 py-3 sm:px-6 sm:py-4 border border-gray-200 dark:border-gray-700 flex flex-col"
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm pr-4 pl-5 py-3 sm:px-6 sm:py-4 border border-gray-200 dark:border-gray-700 flex flex-col"
         >
           <div className="flex justify-between items-center">
             <p className="text-xs sm:text-[0.8rem] font-semibold font- text-gray-600 dark:text-gray-300">

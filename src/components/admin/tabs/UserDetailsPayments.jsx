@@ -6,6 +6,7 @@ import {
   FiClock,
   FiDownload,
 } from "react-icons/fi";
+import { PiSwapDuotone } from "react-icons/pi";
 import {
   TbCashBanknote,
   TbCreditCard,
@@ -15,6 +16,7 @@ import {
   TbClock,
   TbRefresh,
 } from "react-icons/tb";
+import Pagination from "../../common/Pagination";
 
 const UserDetailsPayments = ({ user }) => {
   const [payments, setPayments] = useState([]);
@@ -22,7 +24,7 @@ const UserDetailsPayments = ({ user }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const paymentsPerPage = 5;
+  const paymentsPerPage = 6;
 
   useEffect(() => {
     // In a real implementation, this would fetch payments from an API
@@ -211,9 +213,10 @@ const UserDetailsPayments = ({ user }) => {
   return (
     <div className="space-y-6 p-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-          Payment History
-        </h3>
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-secondary-800/90">
+          <PiSwapDuotone className="h-6 w-6" />
+          <span className="">Payment History</span>
+        </h2>
       </div>
 
       {/* Search and Filter */}
@@ -363,51 +366,14 @@ const UserDetailsPayments = ({ user }) => {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <nav
-              className="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6"
-              aria-label="Pagination"
-            >
-              <div className="hidden sm:block">
-                <p className="text-sm text-gray-700 dark:text-gray-400">
-                  Showing{" "}
-                  <span className="font-medium">{indexOfFirstPayment + 1}</span>{" "}
-                  to{" "}
-                  <span className="font-medium">
-                    {Math.min(indexOfLastPayment, filteredPayments.length)}
-                  </span>{" "}
-                  of{" "}
-                  <span className="font-medium">{filteredPayments.length}</span>{" "}
-                  payments
-                </p>
-              </div>
-              <div className="flex-1 flex justify-between sm:justify-end">
-                <button
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
-                    currentPage === 1
-                      ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-600"
-                      : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                  } mr-3`}
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={() =>
-                    setCurrentPage(Math.min(totalPages, currentPage + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
-                    currentPage === totalPages
-                      ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-600"
-                      : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                  }`}
-                >
-                  Next
-                </button>
-              </div>
-            </nav>
+          {!loading && currentPayments.length > 0 && totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredPayments.length}
+              pageSize={paymentsPerPage}
+              onPageChange={setCurrentPage}
+            />
           )}
         </div>
       ) : (

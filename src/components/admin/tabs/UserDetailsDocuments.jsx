@@ -9,6 +9,8 @@ import {
   FiCalendar,
   FiFile,
 } from "react-icons/fi";
+import { PiFilesDuotone } from "react-icons/pi";
+import { TbFileText, TbUpload } from "react-icons/tb";
 
 const UserDetailsDocuments = ({ user }) => {
   const [uploadingDocument, setUploadingDocument] = useState(false);
@@ -75,32 +77,33 @@ const UserDetailsDocuments = ({ user }) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-          Documents
-        </h3>
+      <h2 className="flex items-center gap-2 text-lg font-semibold text-secondary-800/90 dark:text-secondary-600">
+          <PiFilesDuotone className="h-6 w-6" />
+          <span className="">Documents</span>
+        </h2>
         <button
           type="button"
           onClick={handleUploadClick}
-          className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-admin-600 hover:bg-admin-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
+          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-admin-600 hover:bg-admin-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
         >
-          <FiUpload className="mr-1.5 h-4 w-4" /> Upload Document
+          <TbUpload className="mr-1.5 h-4 w-4" /> Upload Document
         </button>
       </div>
 
       {uploadingDocument && (
-        <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg p-4 border border-admin-200 dark:border-admin-700">
+        <div className="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-xl p-4 border border-admin-200 dark:border-admin-700">
           <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">
             Upload New Document
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Document Type
               </label>
               <select
                 value={documentType}
                 onChange={(e) => setDocumentType(e.target.value)}
-                className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value="">Select Document Type</option>
                 <option value="identity">Identity Document</option>
@@ -111,14 +114,14 @@ const UserDetailsDocuments = ({ user }) => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Document Name
               </label>
               <input
                 type="text"
                 value={documentName}
                 onChange={(e) => setDocumentName(e.target.value)}
-                className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="Enter document name"
               />
             </div>
@@ -185,7 +188,7 @@ const UserDetailsDocuments = ({ user }) => {
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center">
-                      <FiFile className="h-5 w-5 text-gray-400 mr-2" />
+                      <TbFileText className="h-5 w-5 text-gray-400 mr-2" />
                       <h4 className="text-base font-medium text-gray-900 dark:text-white truncate">
                         {doc.name}
                       </h4>

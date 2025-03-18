@@ -16,8 +16,9 @@ import {
   FiDollarSign,
 } from "react-icons/fi";
 import { formatDate, formatDateForInput } from "../../../utils/formatDate";
-import { TbUserEdit, TbUserX } from "react-icons/tb";
-
+import { TbCalendarDot, TbCash, TbClockCheck, TbEdit, TbShieldHalfFilled, TbTrash, TbUserEdit, TbUserX } from "react-icons/tb";
+import { MdHealthAndSafety } from "react-icons/md";
+import { PiUserDuotone } from "react-icons/pi";
 const UserDetailsProfile = ({ user }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -113,13 +114,13 @@ const UserDetailsProfile = ({ user }) => {
   const getPlanStatusClass = (status) => {
     switch (status?.toLowerCase()) {
       case "active":
-        return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
+        return "bg-green-200 text-green-800 dark:bg-green-900/20 dark:text-green-400";
       case "expired":
-        return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400";
+        return "bg-red-200 text-red-800 dark:bg-red-900/20 dark:text-red-400";
       case "suspended":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
+        return "bg-yellow-200 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400";
+        return "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-400";
     }
   };
 
@@ -156,8 +157,9 @@ const UserDetailsProfile = ({ user }) => {
   return (
     <div className="py-6 px-4 sm:p-6 lg:pb-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg leading-6 font-semibold text-secondary-700">
-          Profile Information
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-secondary-800/90">
+          <PiUserDuotone className="h-6 w-6" />
+          <span className="">Profile Information</span>
         </h2>
         <button
           type="button"
@@ -257,9 +259,10 @@ const UserDetailsProfile = ({ user }) => {
           {/* Insurance Plans Section */}
           <div className="pt-5 border-t border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Medical Cover Plan
-              </h3>
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-secondary-800/90 ">
+                <MdHealthAndSafety className="h-6 w-6" />
+                <span className="">Medical Cover Plan</span>
+              </h2>
 
               {!plan && (
                 <button
@@ -284,10 +287,10 @@ const UserDetailsProfile = ({ user }) => {
               <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg border border-gray-200 dark:border-gray-700">
                 <div className="px-4 py-4 sm:px-6 flex justify-between items-start">
                   <div>
-                    <h4 className="text-lg font-medium text-gray-900 dark:text-white flex items-center">
+                    <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300 flex items-center">
                       {plan.name}
                       <span
-                        className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPlanStatusClass(
+                        className={`ml-2 px-3 inline-flex text-xs leading-5 font-semibold rounded-full ${getPlanStatusClass(
                           plan.status
                         )}`}
                       >
@@ -307,18 +310,18 @@ const UserDetailsProfile = ({ user }) => {
                     <button
                       type="button"
                       onClick={() => handleEditPlan(plan)}
-                      className="inline-flex items-center p-1.5 border border-gray-300 shadow-sm text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+                      className="inline-flex items-center p-1.5 border border-gray-300 shadow-sm text-xs rounded-md text-gray-700 bg-white hover:bg-admin-100 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-admin-600"
                       title="Edit Plan"
                     >
-                      <FiEdit2 className="h-3.5 w-3.5" />
+                      <TbEdit className="h-[1.1rem] w-[1.1rem]" />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDeletePlan(plan.id)}
-                      className="inline-flex items-center p-1.5 border border-red-300 shadow-sm text-xs rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:bg-gray-700 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-900/20"
+                      className="inline-flex items-center p-1.5 border border-red-300 shadow-sm text-xs rounded-md text-red-700 bg-white hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-800/30"
                       title="Delete Plan"
                     >
-                      <FiTrash2 className="h-3.5 w-3.5" />
+                      <TbTrash className="h-[1.1rem] w-[1.1rem]" />
                     </button>
                   </div>
                 </div>
@@ -326,7 +329,7 @@ const UserDetailsProfile = ({ user }) => {
                   <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-4">
                     <div className="sm:col-span-1">
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
-                        <FiCalendar className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                        <TbCalendarDot className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" />
                         Coverage Period
                       </dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-white">
@@ -337,17 +340,17 @@ const UserDetailsProfile = ({ user }) => {
 
                     <div className="sm:col-span-1">
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
-                        <FiClock className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                        <TbClockCheck className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" />
                         Payment Frequency
                       </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white capitalize">
+                      <dd className="mt-1 pl-4 text-sm text-gray-900 dark:text-white capitalize">
                         {formatPaymentFrequency(plan.paymentFrequency)}
                       </dd>
                     </div>
 
                     <div className="sm:col-span-1">
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
-                        <FiDollarSign className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                        <TbCash className="mr-1 h-5 w-5 text-gray-400 dark:text-gray-500" />
                         Cost ({formatPaymentFrequency(plan.paymentFrequency)})
                       </dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-white font-semibold">

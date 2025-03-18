@@ -14,6 +14,7 @@ import {
   RiUserUnfollowLine,
 } from "react-icons/ri";
 import { TbEyeEdit, TbRefresh } from "react-icons/tb";
+import Pagination from "../../components/common/Pagination";
 
 const UserManagement = ({
   onUserSelect,
@@ -32,10 +33,19 @@ const UserManagement = ({
   const [totalUsers, setTotalUsers] = useState(0);
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
+  const [filterPlan, setFilterPlan] = useState("all");
 
   useEffect(() => {
     fetchUsers();
-  }, [currentPage, sortBy, sortOrder, filterRole, filterStatus, searchTerm]);
+  }, [
+    currentPage,
+    sortBy,
+    sortOrder,
+    filterRole,
+    filterStatus,
+    searchTerm,
+    filterPlan,
+  ]);
 
   const fetchUsers = async () => {
     try {
@@ -49,6 +59,7 @@ const UserManagement = ({
       //   sortOrder,
       //   role: filterRole !== "all" ? filterRole : undefined,
       //   isActive: filterStatus !== "all" ? filterStatus === "active" : undefined,
+      //   plan: filterPlan !== "all" ? filterPlan : undefined,
       // });
 
       // Mock API response
@@ -80,6 +91,17 @@ const UserManagement = ({
           filteredUsers = filteredUsers.filter(
             (user) => user.isActive === isActive
           );
+        }
+
+        // Filter by plan
+        if (filterPlan !== "all") {
+          filteredUsers = filteredUsers.filter((user) => {
+            return (
+              user.plan &&
+              user.plan.name &&
+              user.plan.name.toLowerCase().includes(filterPlan.toLowerCase())
+            );
+          });
         }
 
         // Sort users
@@ -213,6 +235,27 @@ const UserManagement = ({
     );
   };
 
+  const formatPlanName = (plan) => {
+    if (!plan) return "No Plan";
+    return plan.name;
+  };
+
+  const getPlanStatusClass = (status) => {
+    if (!status)
+      return "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400";
+
+    switch (status.toLowerCase()) {
+      case "active":
+        return "bg-green-200 text-green-800 dark:bg-green-700/30 dark:text-green-300";
+      case "expired":
+        return "bg-red-200 text-red-800 dark:bg-red-700/40 dark:text-red-300";
+      case "suspended":
+        return "bg-yellow-200 text-yellow-800 dark:bg-yellow-700/30 dark:text-yellow-300";
+      default:
+        return "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400";
+    }
+  };
+
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 border-b border-gray-200 dark:border-gray-700">
@@ -234,9 +277,20 @@ const UserManagement = ({
             <TbRefresh className="h-5 w-5 text-gray-400 hover:text-gray-600" />
           </button>
         </form>
-        <div className="flex gap-2 w-full sm:w-auto">
+        <div className="flex gap-2 w-full sm:w-auto flex-wrap">
           <select
-            className="border border-gray-300 rounded-lg text-sm sm:text-[0.92rem] text-gray-600  font-medium px-3 py-2 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+            className="border border-gray-300 rounded-lg text-sm sm:text-[0.92rem] text-gray-600 font-medium px-3 py-2 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+            value={filterPlan}
+            onChange={(e) => setFilterPlan(e.target.value)}
+          >
+            <option value="all">All Plans</option>
+            <option value="Crew Afya Lite">Crew Afya Lite</option>
+            <option value="Crew Afya - (Up to M+3)">
+              Crew Afya - (Up to M+3)
+            </option>
+          </select>
+          <select
+            className="border border-gray-300 rounded-lg text-sm sm:text-[0.92rem] text-gray-600 font-medium px-3 py-2 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
             value={filterRole}
             onChange={(e) => setFilterRole(e.target.value)}
           >
@@ -246,7 +300,7 @@ const UserManagement = ({
             <option value="superadmin">Super Admin</option>
           </select>
           <select
-            className="border border-gray-300 rounded-lg text-sm sm:text-[0.92rem] text-gray-600  font-medium px-3 py-2 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+            className="border border-gray-300 rounded-lg text-sm sm:text-[0.92rem] text-gray-600 font-medium px-3 py-2 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
@@ -289,14 +343,15 @@ const UserManagement = ({
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider"
               >
-                Role
+                Plan
               </th>
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider"
               >
-                Status
+                Role
               </th>
+              
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider cursor-pointer"
@@ -317,6 +372,12 @@ const UserManagement = ({
               </th>
               <th
                 scope="col"
+                className="px-6 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider"
+              >
+                Status
+              </th>
+              <th
+                scope="col"
                 className="px-4 py-3 text-center text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider"
               >
                 Actions
@@ -328,25 +389,28 @@ const UserManagement = ({
               // Loading skeleton
               [...Array(5)].map((_, index) => (
                 <tr key={index} className="animate-pulse">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+                  </td>
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
                   </td>
-                  <td className="px-4 py-4 whitespace-nowrap text-center">
+                  <td className="px-4 py-3 whitespace-nowrap text-center">
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 ml-auto"></div>
                   </td>
                 </tr>
@@ -367,7 +431,7 @@ const UserManagement = ({
                   className="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
                 >
                   <td
-                    className="px-6 py-4 whitespace-nowrap"
+                    className="px-6 py-3 whitespace-nowrap"
                     onClick={() => handleViewUser(user)}
                   >
                     <div className="flex items-center">
@@ -385,7 +449,7 @@ const UserManagement = ({
                     </div>
                   </td>
                   <td
-                    className="px-6 py-4 whitespace-nowrap"
+                    className="px-6 py-3 whitespace-nowrap"
                     onClick={() => handleViewUser(user)}
                   >
                     <div className="text-sm text-gray-900 dark:text-white">
@@ -396,7 +460,33 @@ const UserManagement = ({
                     </div>
                   </td>
                   <td
-                    className="px-3 py-4 whitespace-nowrap"
+                    className="px-6 py-3 whitespace-nowrap"
+                    onClick={() => handleViewUser(user)}
+                  >
+                    {user.plan ? (
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">
+                          {formatPlanName(user.plan)}
+                        </span>
+                        <span
+                          className={`mt-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPlanStatusClass(
+                            user.plan.status
+                          )}`}
+                        >
+                          {user.plan.status
+                            ? user.plan.status.charAt(0).toUpperCase() +
+                              user.plan.status.slice(1)
+                            : "N/A"}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        No Plan
+                      </span>
+                    )}
+                  </td>
+                  <td
+                    className="px-3 py-3 whitespace-nowrap"
                     onClick={() => handleViewUser(user)}
                   >
                     <span
@@ -415,8 +505,21 @@ const UserManagement = ({
                         : "User"}
                     </span>
                   </td>
+                 
                   <td
-                    className="px-3 py-4 whitespace-nowrap"
+                    className="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
+                    onClick={() => handleViewUser(user)}
+                  >
+                    {formatDate(user.createdAt)}
+                  </td>
+                  <td
+                    className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
+                    onClick={() => handleViewUser(user)}
+                  >
+                    {formatDate(user.lastLogin)}
+                  </td>
+                  <td
+                    className="px-3 py-3 whitespace-nowrap"
                     onClick={() => handleViewUser(user)}
                   >
                     <span
@@ -429,19 +532,7 @@ const UserManagement = ({
                       {user.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                    onClick={() => handleViewUser(user)}
-                  >
-                    {formatDate(user.createdAt)}
-                  </td>
-                  <td
-                    className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
-                    onClick={() => handleViewUser(user)}
-                  >
-                    {formatDate(user.lastLogin)}
-                  </td>
-                  <td className="pr-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="pr-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                     {renderUserActions(user)}
                   </td>
                 </tr>
@@ -453,143 +544,13 @@ const UserManagement = ({
 
       {/* Pagination */}
       {!loading && users.length > 0 && (
-        <div className="bg-white dark:bg-gray-900 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6">
-          <div className="flex-1 flex justify-between sm:hidden">
-            <button
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-              className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
-                currentPage === 1
-                  ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-600"
-                  : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-              }`}
-            >
-              Previous
-            </button>
-            <button
-              onClick={() =>
-                setCurrentPage(Math.min(totalPages, currentPage + 1))
-              }
-              disabled={currentPage === totalPages}
-              className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
-                currentPage === totalPages
-                  ? "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-600"
-                  : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-              }`}
-            >
-              Next
-            </button>
-          </div>
-          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm text-gray-700 dark:text-gray-400">
-                Showing{" "}
-                <span className="font-medium">
-                  {users.length > 0 ? (currentPage - 1) * 10 + 1 : 0}
-                </span>{" "}
-                to{" "}
-                <span className="font-medium">
-                  {Math.min(currentPage * 10, totalUsers)}
-                </span>{" "}
-                of <span className="font-medium">{totalUsers}</span> results
-              </p>
-            </div>
-            <div>
-              <nav
-                className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-                aria-label="Pagination"
-              >
-                <button
-                  onClick={() => setCurrentPage(1)}
-                  disabled={currentPage === 1}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${
-                    currentPage === 1
-                      ? "text-gray-300 dark:text-gray-600"
-                      : "text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:border-gray-600"
-                  }`}
-                >
-                  <span className="sr-only">First</span>
-                  <span>First</span>
-                </button>
-                <button
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className={`relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium ${
-                    currentPage === 1
-                      ? "text-gray-300 dark:text-gray-600"
-                      : "text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:border-gray-600"
-                  }`}
-                >
-                  <span className="sr-only">Previous</span>
-                  <span>Prev</span>
-                </button>
-                {[...Array(totalPages)].map((_, index) => {
-                  const pageNumber = index + 1;
-                  // Show current page, and 1 page before and after
-                  if (
-                    pageNumber === 1 ||
-                    pageNumber === totalPages ||
-                    (pageNumber >= currentPage - 1 &&
-                      pageNumber <= currentPage + 1)
-                  ) {
-                    return (
-                      <button
-                        key={pageNumber}
-                        onClick={() => setCurrentPage(pageNumber)}
-                        className={`relative inline-flex items-center px-4 py-2 border ${
-                          currentPage === pageNumber
-                            ? "z-10 bg-admin-50 border-admin-500 text-admin-600 dark:bg-admin-900 dark:border-admin-500 dark:text-admin-200"
-                            : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700"
-                        } text-sm font-medium`}
-                      >
-                        {pageNumber}
-                      </button>
-                    );
-                  } else if (
-                    pageNumber === currentPage - 2 ||
-                    pageNumber === currentPage + 2
-                  ) {
-                    return (
-                      <span
-                        key={pageNumber}
-                        className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600"
-                      >
-                        ...
-                      </span>
-                    );
-                  }
-                  return null;
-                })}
-                <button
-                  onClick={() =>
-                    setCurrentPage(Math.min(totalPages, currentPage + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className={`relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium ${
-                    currentPage === totalPages
-                      ? "text-gray-300 dark:text-gray-600"
-                      : "text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:border-gray-600"
-                  }`}
-                >
-                  <span className="sr-only">Next</span>
-                  <span>Next</span>
-                </button>
-                <button
-                  onClick={() => setCurrentPage(totalPages)}
-                  disabled={currentPage === totalPages}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
-                    currentPage === totalPages
-                      ? "text-gray-300 dark:text-gray-600"
-                      : "text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:border-gray-600"
-                  }`}
-                >
-                  <span className="sr-only">Last</span>
-                  <span>Last</span>
-                </button>
-              </nav>
-            </div>
-          </div>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalUsers}
+          pageSize={10}
+          onPageChange={setCurrentPage}
+        />
       )}
     </div>
   );

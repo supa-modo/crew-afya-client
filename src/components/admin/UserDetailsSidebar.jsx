@@ -107,14 +107,14 @@ const UserDetailsSidebar = ({
   const navItems = [
     {
       id: "profile",
-      label: "Profile",
+      label: "Profile & Insurance Coverage",
       icon: <PiUserDuotone className="h-5 w-5" />,
     },
-    {
-      id: "plans",
-      label: "Insurance Plans",
-      icon: <TbShieldHalfFilled className="h-6 w-6" />,
-    },
+    // {
+    //   id: "plans",
+    //   label: "Insurance Plans",
+    //   icon: <TbShieldHalfFilled className="h-6 w-6" />,
+    // },
     {
       id: "payments",
       label: "Payments",
@@ -159,8 +159,8 @@ const UserDetailsSidebar = ({
       case "profile":
         // This will not be reached due to the condition above
         return null;
-      case "plans":
-        return <UserDetailsPlans user={user} />;
+      // case "plans":
+      //   return <UserDetailsPlans user={user} />;
       case "payments":
         return <UserDetailsPayments user={user} />;
       case "documents":
@@ -223,26 +223,14 @@ const UserDetailsSidebar = ({
                       <div className="w-full md:w-[25%] md:border-r md:border-gray-200 md:dark:border-gray-700 md:pr-4 mb-6 md:mb-0">
                         <div className="h-full flex flex-col">
                           {/* User Profile Header */}
-                          <motion.div
-                            className="text-center pb-5"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3, duration: 0.4 }}
-                          >
+                          <motion.div className="text-center pb-5">
                             <div className="relative inline-block mb-4">
-                              <motion.img
+                              <img
                                 src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
                                   userName
                                 )}&background=random`}
                                 alt={userName}
                                 className="h-24 w-24 rounded-full border-4 border-admin-200 dark:border-gray-600 shadow-md"
-                                initial={{ scale: 0.8, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                transition={{
-                                  delay: 0.4,
-                                  type: "spring",
-                                  stiffness: 200,
-                                }}
                               />
                               <div className="absolute bottom-1 -right-3">
                                 {getStatusBadge(user.status)}
@@ -361,7 +349,7 @@ const UserDetailsSidebar = ({
                         className="flex-1 md:pl-6 md:w-[75%]"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 0.7, duration: 0.5 }}
+                        transition={{ delay: 0.2, duration: 0.3 }}
                       >
                         {renderTabContent()}
                       </motion.div>
