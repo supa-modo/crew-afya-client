@@ -203,7 +203,7 @@ const UserManagement = ({
             e.stopPropagation();
             handleViewUser(user);
           }}
-          className="py-1 px-4 text-admin-600 flex items-center gap-1 bg-admin-50 dark:bg-admin-500/10 hover:bg-admin-100 rounded-md dark:text-admin-400 dark:hover:bg-admin-900"
+          className="py-1 px-4 text-admin-600 flex items-center gap-1 bg-admin-100 dark:bg-admin-500/10 hover:bg-admin-100 rounded-md dark:text-admin-400 dark:hover:bg-admin-900"
           title="View Details"
         >
           <TbEyeEdit className="h-5 w-5" />
@@ -364,7 +364,7 @@ const UserManagement = ({
               users.map((user) => (
                 <tr
                   key={user.id}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                  className="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
                 >
                   <td
                     className="px-6 py-4 whitespace-nowrap"
