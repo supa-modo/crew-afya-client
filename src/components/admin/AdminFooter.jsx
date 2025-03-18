@@ -9,7 +9,7 @@ const AdminFooter = () => {
     <footer
       className={`${
         darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-      } border-t mt-auto py-4`}
+      } border-t mt-auto py-3.5`}
     >
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">

@@ -121,7 +121,7 @@ const AdminLayout = () => {
             }`}
           >
             {/* Subtle grid pattern */}
-            <div className="absolute inset-0 opacity-15 dark:opacity-5 pointer-events-none">
+            <div className="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none">
               <svg width="100%" height="100%">
                 <pattern
                   id="admin-grid"

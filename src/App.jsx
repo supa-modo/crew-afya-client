@@ -21,6 +21,7 @@ import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
 import AdminSystemHealthPage from "./pages/admin/AdminSystemHealthPage";
+import AddNewUserPage from "./pages/admin/AddNewUserPage";
 
 function App() {
   return (
@@ -89,6 +90,7 @@ function App() {
             >
               <Route path="dashboard" element={<AdminDashboardPage />} />
               <Route path="users" element={<AdminUsersPage />} />
+              <Route path="users/new" element={<AddNewUserPage />} />
               <Route path="payments" element={<AdminPaymentsPage />} />
               <Route path="analytics" element={<AdminAnalyticsPage />} />
               <Route path="system-health" element={<AdminSystemHealthPage />} />

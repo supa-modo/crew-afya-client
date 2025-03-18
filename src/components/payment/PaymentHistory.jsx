@@ -24,6 +24,7 @@ import {
   TbCreditCard,
   TbShieldHalfFilled,
 } from "react-icons/tb";
+import { formatDate } from "../../utils/formatDate";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
@@ -131,15 +132,6 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
       style: "currency",
       currency: "KES",
     }).format(amount);
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    return new Intl.DateTimeFormat("en-KE", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }).format(new Date(dateString));
   };
 
   const handleSearch = (e) => {
@@ -276,10 +268,10 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
         <div className="inline-flex items-center justify-center h-16 w-16 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 mb-4">
           <FiCreditCard className="h-8 w-8" />
         </div>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+        <h3 className="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">
           No payment history
         </h3>
-        <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+        <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
           You haven't made any payments yet. When you make payments, they will
           appear here.
         </p>
