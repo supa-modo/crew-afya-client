@@ -39,31 +39,6 @@ const HomePage = () => {
     }
   };
 
-  // Sample testimonials
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "Healthcare Administrator",
-      content:
-        "This platform has completely transformed how we manage insurance payments. The tracking feature saved us countless hours of administrative work.",
-      avatar: "/api/placeholder/48/48",
-    },
-    {
-      name: "Michael Kimani",
-      role: "Insurance Broker",
-      content:
-        "The integration with M-Pesa and the detailed analytics dashboard gives our clients unprecedented insight into their insurance spending.",
-      avatar: "/api/placeholder/48/48",
-    },
-    {
-      name: "Elizabeth Njeri",
-      role: "HR Director",
-      content:
-        "The USSD functionality has been a game-changer for our staff members without smartphones, ensuring everyone has equal access to their healthcare benefits.",
-      avatar: "/api/placeholder/48/48",
-    },
-  ];
-
   // Animation for counter
   const animateValue = (id, start, end, duration) => {
     const range = end - start;
