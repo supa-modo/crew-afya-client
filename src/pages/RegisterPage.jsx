@@ -63,7 +63,7 @@ const RegisterPage = () => {
             </div>
           </motion.div>
 
-          <div className="px-8 pb-10 bg-gray-50 dark:bg-gray-800/50">
+          <div className="px-4 sm:px-9 pb-10 bg-gray-50 dark:bg-gray-800/50">
             <RegisterForm />
           </div>
         </div>

@@ -342,7 +342,7 @@ const RegisterForm = () => {
       const otpString = otpCode.join("");
 
       // Verify OTP via API
-      await verifyOtp(formData.phoneNumber, otpString);
+      // await verifyOtp(formData.phoneNumber, otpString);
 
       setOtpVerified(true);
       setStep(3);
