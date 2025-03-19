@@ -185,7 +185,7 @@ const SecurityTab = ({
           </h2>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
             <p className="text-sm text-gray-700 dark:text-gray-300">
               {userData?.phoneVerified ? (
@@ -208,10 +208,14 @@ const SecurityTab = ({
             type="button"
             onClick={() => setShowVerificationModal(true)}
             disabled={!userData?.phoneNumber || userData?.phoneVerified}
-            className="inline-flex items-center px-3 sm:px-4 md:px-6 py-2 border border-transparent rounded-lg shadow-sm text-[0.8rem] sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className=" px-3 sm:px-4 md:px-6 py-2 border border-transparent rounded-lg shadow-sm text-[0.8rem] sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <PiPhoneDuotone className="mr-1 sm:mr-2 -ml-1 h-5 w-5" />
-            {userData?.phoneVerified ? "Verified" : "Verify Phone"}
+            <div className="flex items-center justify-center">
+              <PiPhoneDuotone className="mr-1 sm:mr-2 -ml-1 h-5 w-5" />
+              <span className="">
+                {userData?.phoneVerified ? "Verified" : "Verify Phone"}
+              </span>
+            </div>
           </button>
         </div>
       </div>

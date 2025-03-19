@@ -23,7 +23,9 @@ import {
 } from "react-icons/tb";
 import {
   PiClockCountdownDuotone,
+  PiFilePdfDuotone,
   PiFilesDuotone,
+  PiImageDuotone,
   PiMoneyWavy,
   PiUserCircle,
   PiUserDuotone,
@@ -478,7 +480,7 @@ const DashboardPage = () => {
 
             {/* Documents Section */}
             <div className="bg-white mt-10 dark:bg-gray-800 rounded-md">
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
                 <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 flex items-center">
                   <PiFilesDuotone className="mr-2 h-7 w-7 text-green-700" />
                   Uploaded Documents
@@ -488,7 +490,7 @@ const DashboardPage = () => {
                   className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 cursor-pointer"
                 >
                   <FiUpload className="mr-2 -ml-1 h-4 w-4" />
-                  Upload Document
+                  Upload New Document
                 </button>
               </div>
 
@@ -555,41 +557,15 @@ const DashboardPage = () => {
                       <div className="flex items-start justify-between">
                         <div className="flex items-start space-x-3">
                           <div className="flex-shrink-0">
-                            {doc.mimeType?.startsWith("image/") ? (
-                              <div className="h-10 w-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                                <svg
-                                  className="h-6 w-6 text-gray-500"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                  />
-                                </svg>
-                              </div>
-                            ) : doc.mimeType === "application/pdf" ? (
-                              <div className="h-10 w-10 rounded-lg bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-                                <svg
-                                  className="h-6 w-6 text-red-500"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                                  />
-                                </svg>
-                              </div>
-                            ) : (
+                          {doc.mimeType.startsWith("image/") ? (
+                      <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 flex items-center justify-center">
+                        <PiImageDuotone className="h-6 w-6 text-blue-500" />
+                      </div>
+                    ) : doc.mimeType === "application/pdf" ? (
+                      <div className="h-10 w-10 rounded-lg bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+                        <PiFilePdfDuotone className="h-6 w-6 text-red-500" />
+                      </div>
+                    )  : (
                               <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
                                 <svg
                                   className="h-6 w-6 text-blue-500"

@@ -509,10 +509,10 @@ const ProfilePage = () => {
                 </div>
               </div>
 
-              <div className="mt-6 space-y-1">
+              <div className="mt-4 sm:mt-6 space-y-1">
                 <button
                   onClick={() => setActiveTab("personal")}
-                  className={`w-full flex items-center text-left px-4 py-3 rounded-lg transition-colors duration-200 ${
+                  className={`w-full flex items-center text-left px-4 py-2.5 sm:py-3 rounded-lg transition-colors duration-200 ${
                     activeTab === "personal"
                       ? "bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-400"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -525,11 +525,13 @@ const ProfilePage = () => {
                         : "text-gray-400"
                     }`}
                   />
-                  <span>Personal Information</span>
+                  <span className="text-sm sm:text-base">
+                    Personal Information
+                  </span>
                 </button>
                 <button
                   onClick={() => setActiveTab("security")}
-                  className={`w-full flex items-center text-left px-4 py-3 rounded-lg transition-colors duration-200 ${
+                  className={`w-full flex items-center text-left px-4 py-2.5 sm:py-3 rounded-lg transition-colors duration-200 ${
                     activeTab === "security"
                       ? "bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-400"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -542,11 +544,11 @@ const ProfilePage = () => {
                         : "text-gray-400"
                     }`}
                   />
-                  <span>Security</span>
+                  <span className="text-sm sm:text-base">Security</span>
                 </button>
                 <button
                   onClick={() => setActiveTab("documents")}
-                  className={`w-full flex items-center text-left px-4 py-3 rounded-lg transition-colors duration-200 ${
+                  className={`w-full flex items-center text-left px-4 py-2.5 sm:py-3 rounded-lg transition-colors duration-200 ${
                     activeTab === "documents"
                       ? "bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-400"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -559,7 +561,7 @@ const ProfilePage = () => {
                         : "text-gray-400"
                     }`}
                   />
-                  <span>Documents</span>
+                  <span className="text-sm sm:text-base">Documents</span>
                 </button>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import Layout from "./components/layout/Layout";
+import ScrollToTop from "./components/common/ScrollToTop";
 import HomePage from "./pages/HomePage";
 // import HomePage from "./pages/Homepage2";
 import LoginPage from "./pages/LoginPage";
@@ -29,6 +30,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <Router>
+          <ScrollToTop />
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<Layout />}>

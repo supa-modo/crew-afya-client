@@ -266,7 +266,7 @@ const PaymentsPage = () => {
               <div className="">
                 {selectedPlan ? (
                   <div className="space-y-4">
-                    <div className="bg-primary-50 dark:bg-primary-900/10 px-2 sm:px-4 py-4 md:mx-10 rounded-lg border border-primary-200 dark:border-primary-800 mb-6">
+                    <div className="bg-primary-50 dark:bg-primary-900/10 px-2 sm:px-4 py-4 md:mx-10 rounded-lg border border-primary-200 dark:border-primary-800 mb-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
                           <MdOutlineHealthAndSafety className="h-6 w-6 text-primary-600 mt-0.5 mr-1 sm:mr-2 md:mr-3" />

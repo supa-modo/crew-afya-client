@@ -20,7 +20,6 @@ import {
   PiClockUserDuotone,
   PiFilesDuotone,
   PiGearDuotone,
-  PiMapPinAreaBold,
   PiUserDuotone,
 } from "react-icons/pi";
 import { HiCreditCard } from "react-icons/hi";
