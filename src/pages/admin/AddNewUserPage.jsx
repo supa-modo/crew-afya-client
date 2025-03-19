@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import { FaUserPlus, FaArrowLeft } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
@@ -8,6 +8,7 @@ import { FiAlertCircle } from "react-icons/fi";
 import UserInfoForm from "../../components/admin/UserInfoForm";
 import MedicalPlanSelector from "../../components/admin/MedicalPlanSelector";
 import DocumentUploadSection from "../../components/admin/DocumentUploadSection";
+import { TbHome2 } from "react-icons/tb";
 
 const AddNewUserPage = () => {
   const { darkMode } = useTheme();
@@ -192,6 +193,58 @@ const AddNewUserPage = () => {
   return (
     <div className="pb-6">
       <div className="max-w-screen-2xl mx-auto ">
+        {/* Breadcrumb */}
+        <div className="mb-4">
+          <nav className="flex" aria-label="Breadcrumb">
+            <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+              <li>
+                <Link
+                  to="/admin/dashboard"
+                  className="hover:text-admin-600 flex items-center"
+                >
+                  <TbHome2 className="h-5 w-5 mr-2" />
+                  Home
+                </Link>
+              </li>
+              <li className="flex items-center">
+                <svg
+                  className="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                <Link to="/admin/users" className="ml-2 hover:text-admin-600">
+                  User Management
+                </Link>
+              </li>
+              <li className="flex items-center">
+                <svg
+                  className="h-4 w-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+                <span className="ml-2 text-gray-700 dark:text-gray-300 font-medium">
+                  Add New User
+                </span>
+              </li>
+            </ol>
+          </nav>
+        </div>
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center">
             <button
@@ -241,7 +294,7 @@ const AddNewUserPage = () => {
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-2xl mb-6">
-              <div className="px-4 py-5 sm:p-6">
+              <div className="px-4 py-5 sm:px-10 sm:py-6">
                 {errors.form && (
                   <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4 dark:bg-red-900/20 dark:border-red-600">
                     <div className="flex">

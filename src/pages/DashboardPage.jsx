@@ -326,14 +326,14 @@ const DashboardPage = () => {
             <div className="mt-4 md:mt-0 flex space-x-4">
               <Link
                 to="/payments"
-                className="inline-flex items-center px-2 sm:px-5 py-2 border border-green-600 rounded-lg shadow-sm text-sm font-medium text-green-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                className="inline-flex items-center px-3 sm:px-5 py-2 bg-secondary-100 border border-green-600 rounded-lg shadow-sm text-sm font-medium text-green-700  dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
               >
                 <TbCreditCardPay className="mr-2 h-5 sm:h-6 w-5 sm:w-6" />
                 Make a Payment
               </Link>
               <Link
                 to="/profile"
-                className="inline-flex items-center px-3 sm:px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200"
+                className="inline-flex items-center px-4 sm:px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200"
               >
                 <PiUserCircle className="mr-2 h-5 sm:h-6 w-5 sm:w-6" />
                 View Profile

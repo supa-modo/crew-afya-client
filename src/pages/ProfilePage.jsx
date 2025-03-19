@@ -490,8 +490,8 @@ const ProfilePage = () => {
                   </div>
                   <div>
                     <h2 className="text-lg sm:text-center font-semibold text-zinc-600 dark:text-white">
-                      {user?.firstName || "John"} {user?.otherNames || "Smith"}{" "}
-                      {user?.lastName || "Doe"}
+                      {user?.firstName } {user?.otherNames }{" "}
+                      {user?.lastName }
                     </h2>
                     <p className="text-sm sm:text-center text-gray-500 dark:text-gray-400 mb-2">
                       {user?.email || "john.doe@example.com"}

@@ -33,7 +33,7 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               value={formData.fullName}
               onChange={handleChange}
               required
-              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
                 errors.fullName ? "border-red-300 dark:border-red-500" : ""
               }`}
               placeholder="John Doe"
@@ -64,7 +64,7 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               value={formData.email}
               onChange={handleChange}
               required
-              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
                 errors.email ? "border-red-300 dark:border-red-500" : ""
               }`}
               placeholder="example@email.com"
@@ -95,7 +95,7 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               value={formData.phoneNumber}
               onChange={handleChange}
               required
-              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
                 errors.phoneNumber ? "border-red-300 dark:border-red-500" : ""
               }`}
               placeholder="+254700000000"
@@ -125,7 +125,7 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               type="text"
               value={formData.nationalId}
               onChange={handleChange}
-              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
                 errors.nationalId ? "border-red-300 dark:border-red-500" : ""
               }`}
               placeholder="Enter ID number"
@@ -155,7 +155,7 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               value={formData.role}
               onChange={handleChange}
               required
-              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
                 errors.role ? "border-red-300 dark:border-red-500" : ""
               }`}
             >
@@ -189,7 +189,7 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               value={formData.password}
               onChange={handleChange}
               required
-              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
                 errors.password ? "border-red-300 dark:border-red-500" : ""
               }`}
               placeholder="••••••••"

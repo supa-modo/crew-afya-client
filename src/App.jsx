@@ -33,78 +33,84 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <Router>
-          <ScrollToTop />
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<Layout />}>
-              <Route index element={<HomePage />} />
-              <Route path="login" element={<LoginPage />} />
-              <Route path="admin-login" element={<AdminLoginPage />} />
-              <Route path="register" element={<RegisterPage />} />
-              <Route path="forgot-password" element={<ForgotPasswordPage />} />
-              <Route
-                path="reset-password/:token"
-                element={<ResetPasswordPage />}
-              />
+            <ScrollToTop />
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<Layout />}>
+                <Route index element={<HomePage />} />
+                <Route path="login" element={<LoginPage />} />
+                <Route path="admin-login" element={<AdminLoginPage />} />
+                <Route path="register" element={<RegisterPage />} />
+                <Route
+                  path="forgot-password"
+                  element={<ForgotPasswordPage />}
+                />
+                <Route
+                  path="reset-password/:token"
+                  element={<ResetPasswordPage />}
+                />
 
-              {/* Protected routes for regular users */}
-              <Route
-                path="dashboard"
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="payments"
-                element={
-                  <ProtectedRoute>
-                    <PaymentsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="payment"
-                element={
-                  <ProtectedRoute>
-                    <PaymentPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Protected routes for regular users */}
+                <Route
+                  path="dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="payments"
+                  element={
+                    <ProtectedRoute>
+                      <PaymentsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="payment"
+                  element={
+                    <ProtectedRoute>
+                      <PaymentPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* 404 route */}
-              <Route path="*" element={<NotFoundPage />} />
-            </Route>
+                {/* 404 route */}
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
 
-            {/* Admin routes with AdminLayout */}
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute adminOnly>
-                  <AdminLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="dashboard" element={<AdminDashboardPage />} />
-              <Route path="users" element={<AdminUsersPage />} />
-              <Route path="users/new" element={<AddNewUserPage />} />
-              <Route path="plans" element={<InsurancePlansPage />} />
-              <Route path="new-cover" element={<NewMedicalCoverPage />} />
-              <Route path="payments" element={<AdminPaymentsPage />} />
-              <Route path="analytics" element={<AdminAnalyticsPage />} />
-              <Route path="system-health" element={<AdminSystemHealthPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Route>
-          </Routes>
+              {/* Admin routes with AdminLayout */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute adminOnly>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="dashboard" element={<AdminDashboardPage />} />
+                <Route path="users" element={<AdminUsersPage />} />
+                <Route path="users/new" element={<AddNewUserPage />} />
+                <Route path="plans" element={<InsurancePlansPage />} />
+                <Route path="new-cover" element={<NewMedicalCoverPage />} />
+                <Route path="payments" element={<AdminPaymentsPage />} />
+                <Route path="analytics" element={<AdminAnalyticsPage />} />
+                <Route
+                  path="system-health"
+                  element={<AdminSystemHealthPage />}
+                />
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
+            </Routes>
           </Router>
         </AuthProvider>
       </ThemeProvider>
