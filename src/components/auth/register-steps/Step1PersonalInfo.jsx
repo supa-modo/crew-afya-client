@@ -26,7 +26,7 @@ const Step1PersonalInfo = ({
               formData.gender === "Male"
                 ? "border-primary-500 bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
                 : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800"
-            } rounded-lg shadow-sm text-sm font-medium transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700`}
+            } rounded-lg shadow-sm text-sm font-medium transition-colors duration-200 `}
             disabled={isSubmitting}
           >
             <TbGenderMale
@@ -45,7 +45,7 @@ const Step1PersonalInfo = ({
               formData.gender === "Female"
                 ? "border-primary-500 bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
                 : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800"
-            } rounded-lg shadow-sm text-sm font-medium transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700`}
+            } rounded-lg shadow-sm text-sm font-medium transition-colors duration-200 `}
             disabled={isSubmitting}
           >
             <TbGenderFemale

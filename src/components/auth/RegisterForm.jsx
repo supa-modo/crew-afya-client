@@ -468,9 +468,9 @@ const RegisterForm = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="text-center mb-6"
+          className="text-center mb-4"
         >
-          <h1 className="text-xl sm:text-2xl font-bold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
+          <h1 className="text-lg sm:text-2xl font-bold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
             Create Your Account
           </h1>
 
@@ -489,7 +489,7 @@ const RegisterForm = () => {
         animate={{ opacity: 1 }}
         className="text-center mb-4"
       >
-        <h2 className="text-lg font-semibold text-primary-600 dark:text-primary-400">
+        <h2 className="text-base sm:text-lg font-semibold text-primary-600 dark:text-primary-400">
           {step === 1 ? (
             "Welcome to Matatu Workers Union"
           ) : step === 2 ? (
