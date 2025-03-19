@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../../context/AuthContext";
+import { useTheme } from "../../../context/ThemeContext";
 import {
   BellIcon,
   UserCircleIcon,
   SearchIcon,
   MenuIcon,
   LogoutIcon,
-} from "../../utils/Icons";
+} from "../../../utils/Icons";
 import { TbBulb, TbBulbOff, TbMenu2 } from "react-icons/tb";
 
 const AdminNavbar = ({ toggleSidebar, title }) => {

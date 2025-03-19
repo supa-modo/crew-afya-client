@@ -19,10 +19,10 @@ import {
 } from "react-icons/tb";
 import { MdHealthAndSafety } from "react-icons/md";
 import { useTheme } from "../../context/ThemeContext";
-import PlanDetailsModal from "../../components/admin/plans/PlanDetailsModal";
-import PlanSubscribersList from "../../components/admin/plans/PlanSubscribersList";
+import PlanDetailsModal from "../../components/admin/adminInsurancePage/PlanDetailsModal";
+import PlanSubscribersList from "../../components/admin/adminInsurancePage/PlanSubscribersList";
 import { mockUsers } from "../../data/mockUsers";
-import PlanCard from "../../components/admin/plans/PlanCard";
+import PlanCard from "../../components/admin/adminInsurancePage/PlanCard";
 
 const InsurancePlansPage = () => {
   const { darkMode } = useTheme();

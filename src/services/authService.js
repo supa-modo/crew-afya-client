@@ -286,6 +286,24 @@ export const resetPassword = async (token, password) => {
   }
 };
 
+// Send OTP to phone number
+export const sendPhoneOtp = async (phoneNumber) => {
+  try {
+    return await apiPost("/auth/send-otp", { phoneNumber });
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Verify phone number with OTP
+export const verifyPhoneOtp = async (phoneNumber, otp) => {
+  try {
+    return await apiPost("/auth/verify-phone", { phoneNumber, otp });
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Helper function to handle API errors
 const handleApiError = (error) => {
   if (error.response) {

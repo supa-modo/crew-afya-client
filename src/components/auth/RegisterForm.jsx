@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FiUser,
@@ -19,6 +19,8 @@ import {
   TbLockFilled,
   TbPhoneDone,
   TbShieldCheckFilled,
+  TbBuildingStore,
+  TbRoute,
 } from "react-icons/tb";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
@@ -26,8 +28,18 @@ import {
   PiIdentificationBadgeDuotone,
   PiPhoneListDuotone,
   PiUserDuotone,
+  PiMapPinDuotone,
 } from "react-icons/pi";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FiSearch } from "react-icons/fi";
+
+// Import the new components
+import Step1PersonalInfo from "./register-steps/Step1PersonalInfo";
+import Step2PhoneVerification from "./register-steps/Step2PhoneVerification";
+import Step3ProfileCompletion from "./register-steps/Step3ProfileCompletion";
+
+// Kenyan counties list in order of priority (moved to constants file)
+import { counties, nairobiRoutes } from "../../constants/locationData";
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -37,6 +49,10 @@ const RegisterForm = () => {
     idNumber: "",
     password: "",
     confirmPassword: "",
+    county: "",
+    sacco: "",
+    route: "",
+    gender: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -47,8 +63,23 @@ const RegisterForm = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [otpResendTimer, setOtpResendTimer] = useState(0);
+  const [countyDropdownOpen, setCountyDropdownOpen] = useState(false);
+  const [countySearchTerm, setCountySearchTerm] = useState("");
+  const [filteredCounties, setFilteredCounties] = useState(counties);
+  const [routeDropdownOpen, setRouteDropdownOpen] = useState(false);
+  const [routeSearchTerm, setRouteSearchTerm] = useState("");
+  const [filteredRoutes, setFilteredRoutes] = useState(nairobiRoutes);
 
-  const { register, error: authError, clearError } = useAuth();
+  const countyDropdownRef = useRef(null);
+  const routeDropdownRef = useRef(null);
+
+  const {
+    register,
+    error: authError,
+    clearError,
+    sendOtp,
+    verifyOtp,
+  } = useAuth();
   const navigate = useNavigate();
 
   // Clear form error when component unmounts
@@ -76,6 +107,53 @@ const RegisterForm = () => {
     return () => clearInterval(interval);
   }, [otpResendTimer]);
 
+  // Filter counties based on search term
+  useEffect(() => {
+    if (countySearchTerm) {
+      const filtered = counties.filter((county) =>
+        county.toLowerCase().includes(countySearchTerm.toLowerCase())
+      );
+      setFilteredCounties(filtered);
+    } else {
+      setFilteredCounties(counties);
+    }
+  }, [countySearchTerm]);
+
+  // Filter routes based on search term
+  useEffect(() => {
+    if (routeSearchTerm) {
+      const filtered = nairobiRoutes.filter((route) =>
+        route.toLowerCase().includes(routeSearchTerm.toLowerCase())
+      );
+      setFilteredRoutes(filtered);
+    } else {
+      setFilteredRoutes(nairobiRoutes);
+    }
+  }, [routeSearchTerm]);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        countyDropdownRef.current &&
+        !countyDropdownRef.current.contains(event.target)
+      ) {
+        setCountyDropdownOpen(false);
+      }
+      if (
+        routeDropdownRef.current &&
+        !routeDropdownRef.current.contains(event.target)
+      ) {
+        setRouteDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -86,6 +164,33 @@ const RegisterForm = () => {
     if (formError) {
       setFormError("");
     }
+  };
+
+  const handleGenderSelect = (gender) => {
+    setFormData((prev) => ({
+      ...prev,
+      gender,
+    }));
+  };
+
+  const handleCountySelect = (county) => {
+    setFormData((prev) => ({
+      ...prev,
+      county,
+      // Clear route if changing county from Nairobi
+      route: county !== "Nairobi" ? "" : prev.route,
+    }));
+    setCountyDropdownOpen(false);
+    setCountySearchTerm("");
+  };
+
+  const handleRouteSelect = (route) => {
+    setFormData((prev) => ({
+      ...prev,
+      route,
+    }));
+    setRouteDropdownOpen(false);
+    setRouteSearchTerm("");
   };
 
   const handleOtpChange = (index, value) => {
@@ -112,7 +217,12 @@ const RegisterForm = () => {
   };
 
   const validateStep1 = () => {
-    if (!formData.fullName || !formData.phoneNumber || !formData.idNumber) {
+    if (
+      !formData.fullName ||
+      !formData.gender ||
+      !formData.phoneNumber ||
+      !formData.idNumber
+    ) {
       setFormError("Please fill in all required fields");
       return false;
     }
@@ -162,8 +272,19 @@ const RegisterForm = () => {
   };
 
   const validateStep3 = () => {
+    if (!formData.county || !formData.sacco) {
+      setFormError("Please select your county and enter your SACCO");
+      return false;
+    }
+
+    // If county is Nairobi, route is required
+    if (formData.county === "Nairobi" && !formData.route) {
+      setFormError("Please select your operating route in Nairobi");
+      return false;
+    }
+
     if (!formData.password || !formData.confirmPassword) {
-      setFormError("Please fill in all fields");
+      setFormError("Please create a password and confirm it");
       return false;
     }
 
@@ -186,12 +307,17 @@ const RegisterForm = () => {
       setIsSubmitting(true);
       setFormError("");
 
-      // Simulate OTP sending
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Send OTP via API
+      const response = await sendOtp(formData.phoneNumber);
 
       setOtpSent(true);
       setOtpResendTimer(60); // 60 seconds countdown
-      setIsSubmitting(false);
+
+      // For development, automatically fill the OTP if it's returned
+      if (response.data && response.data.otp) {
+        const otpArray = response.data.otp.split("");
+        setOtpCode(otpArray);
+      }
 
       // Focus the first OTP input
       setTimeout(() => {
@@ -199,7 +325,10 @@ const RegisterForm = () => {
         if (firstInput) firstInput.focus();
       }, 100);
     } catch (error) {
-      setFormError("Failed to send verification code. Please try again.");
+      setFormError(
+        error.message || "Failed to send verification code. Please try again."
+      );
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -209,15 +338,19 @@ const RegisterForm = () => {
       setIsSubmitting(true);
       setFormError("");
 
-      // Simulate OTP verification
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Compile OTP code into a string
+      const otpString = otpCode.join("");
 
-      // For demo purposes, any 6-digit code is valid
+      // Verify OTP via API
+      await verifyOtp(formData.phoneNumber, otpString);
+
       setOtpVerified(true);
       setStep(3);
-      setIsSubmitting(false);
     } catch (error) {
-      setFormError("Invalid verification code. Please try again.");
+      setFormError(
+        error.message || "Invalid verification code. Please try again."
+      );
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -227,13 +360,15 @@ const RegisterForm = () => {
       setIsSubmitting(true);
       setFormError("");
 
-      // Simulate OTP resending
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Resend OTP via API
+      await sendOtp(formData.phoneNumber);
 
       setOtpResendTimer(60); // Reset the timer
-      setIsSubmitting(false);
     } catch (error) {
-      setFormError("Failed to resend verification code. Please try again.");
+      setFormError(
+        error.message || "Failed to resend verification code. Please try again."
+      );
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -290,6 +425,10 @@ const RegisterForm = () => {
         phoneNumber: formData.phoneNumber,
         idNumber: formData.idNumber,
         password: formData.password,
+        county: formData.county,
+        sacco: formData.sacco,
+        route: formData.route,
+        gender: formData.gender,
       };
 
       await register(userData);
@@ -298,7 +437,7 @@ const RegisterForm = () => {
       navigate("/login", {
         state: {
           message:
-            "Registration successful! Please log in with your credentials.",
+            "Registration successful! You are now a member of Matatu Workers Union. Please log in with your credentials.",
           type: "success",
         },
       });
@@ -323,6 +462,76 @@ const RegisterForm = () => {
         </motion.div>
       )}
 
+      {/* Show title and animated underline only on step 1 */}
+      {step === 1 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="text-center mb-6"
+        >
+          <h1 className="text-xl sm:text-2xl font-bold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
+            Create Your Account
+          </h1>
+
+          {/* Animated underline */}
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: "8rem" }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="h-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-full mx-auto"
+          ></motion.div>
+        </motion.div>
+      )}
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center mb-4"
+      >
+        <h2 className="text-lg font-semibold text-primary-600 dark:text-primary-400">
+          {step === 1 ? (
+            "Welcome to Matatu Workers Union"
+          ) : step === 2 ? (
+            "Verify Your Phone Number"
+          ) : (
+            <div className="text-center mb-2">
+              <div className="flex items-center gap-2 justify-center">
+                <TbPhoneDone className="h-6 w-6 text-green-600 " />
+                <h3 className="text-lg font-semibold text-green-600 ">
+                  Phone Number Verified
+                </h3>
+              </div>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                Complete your profile and create a password
+              </p>
+            </div>
+          )}
+        </h2>
+        <p className="text-gray-400 text-sm lg:text-base">
+          {step === 1
+            ? "Fill in your details below to register as a member"
+            : ""}
+        </p>
+        <div className="flex justify-center items-center mt-3 space-x-1">
+          <div
+            className={`h-2 w-12 rounded-full ${
+              step >= 1 ? "bg-primary-500" : "bg-gray-300"
+            }`}
+          ></div>
+          <div
+            className={`h-2 w-12 rounded-full ${
+              step >= 2 ? "bg-primary-500" : "bg-gray-300"
+            }`}
+          ></div>
+          <div
+            className={`h-2 w-12 rounded-full ${
+              step >= 3 ? "bg-primary-500" : "bg-gray-300"
+            }`}
+          ></div>
+        </div>
+      </motion.div>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -335,317 +544,53 @@ const RegisterForm = () => {
         className="px-1 sm:px-3"
       >
         {step === 1 && (
-          <div className="space-y-4">
-            <div>
-              <label
-                htmlFor="fullName"
-                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-              >
-                Full Name
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <PiUserDuotone className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="fullName"
-                  name="fullName"
-                  type="text"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  placeholder="John Doe"
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="idNumber"
-                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-              >
-                ID Number
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <PiIdentificationBadgeDuotone className="h-5 sm:h-6 w-5 sm:w-6 text-gray-400" />
-                </div>
-                <input
-                  id="idNumber"
-                  name="idNumber"
-                  type="text"
-                  value={formData.idNumber}
-                  onChange={handleChange}
-                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  placeholder="Enter your ID number"
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-              >
-                Email Address(Optional)
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <FiMail className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  placeholder="example@email.com"
-                  disabled={isSubmitting}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-              >
-                Phone Number
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <PiPhoneListDuotone className="h-5 sm:h-6 w-5 sm:w-6 text-gray-400" />
-                </div>
-                <input
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  type="tel"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  placeholder="+254700000000"
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                We'll send a verification code to this number
-              </p>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:border-p focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
-              disabled={isSubmitting}
-            >
-              <span>Continue</span>
-              <FiArrowRight className="ml-2 h-4 w-4" />
-            </button>
-          </div>
+          <Step1PersonalInfo
+            formData={formData}
+            handleChange={handleChange}
+            handleGenderSelect={handleGenderSelect}
+            isSubmitting={isSubmitting}
+          />
         )}
 
         {step === 2 && (
-          <div className="space-y-5">
-            <div className="text-center mb-2">
-              <div className="inline-flex items-center justify-center h-16 w-20 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-primary-500 dark:text-blue-400 mb-4">
-                <TbShieldCheckFilled className="h-10 w-10" />
-              </div>
-              <h3 className="text-lg font-bold font-geist text-gray-600 dark:text-white">
-                Verify Your Phone
-              </h3>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                We've sent a 6-digit code to {formData.phoneNumber}
-              </p>
-            </div>
-
-            <div className="flex justify-center space-x-2 sm:space-x-3 mb-5">
-              {[0, 1, 2, 3, 4, 5].map((index) => (
-                <input
-                  key={index}
-                  id={`otp-${index}`}
-                  type="text"
-                  maxLength={1}
-                  value={otpCode[index]}
-                  onChange={(e) => handleOtpChange(index, e.target.value)}
-                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                  className="w-10 h-12 sm:w-12 sm:h-14 text-gray-600 text-center text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  required
-                  disabled={isSubmitting}
-                />
-              ))}
-            </div>
-
-            <div className="text-center mb-2">
-              {otpResendTimer > 0 ? (
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Resend code in{" "}
-                  <span className="font-medium">{otpResendTimer}s</span>
-                </p>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleResendOtp}
-                  disabled={isSubmitting}
-                  className="text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
-                >
-                  Resend verification code
-                </button>
-              )}
-            </div>
-
-            <div className="flex space-x-3">
-              <button
-                type="button"
-                onClick={handlePrevStep}
-                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
-                disabled={isSubmitting}
-              >
-                <FiArrowLeft className="mr-2 h-4 w-4" />
-                Back
-              </button>
-              <button
-                type="button"
-                onClick={handleVerifyOtp}
-                disabled={isSubmitting}
-                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center">
-                    <FiLoader className="animate-spin -ml-1 mr-2 h-4 w-4" />
-                    Verifying...
-                  </div>
-                ) : (
-                  <>
-                    Verify
-                    <FiArrowRight className="ml-2 h-4 w-4" />
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
+          <Step2PhoneVerification
+            formData={formData}
+            otpCode={otpCode}
+            handleOtpChange={handleOtpChange}
+            handleOtpKeyDown={handleOtpKeyDown}
+            otpResendTimer={otpResendTimer}
+            handleResendOtp={handleResendOtp}
+            handlePrevStep={handlePrevStep}
+            handleVerifyOtp={handleVerifyOtp}
+            isSubmitting={isSubmitting}
+          />
         )}
 
         {step === 3 && (
-          <div className="space-y-5">
-            <div className="text-center mb-2">
-              <div className="flex items-center gap-2 justify-center">
-                <TbPhoneDone className="h-6 w-6 text-green-600 " />
-                <h3 className="text-lg font-semibold text-green-600 ">
-                  Phone Number Verified
-                </h3>
-              </div>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                Create a password to complete your registration
-              </p>
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <TbLockFilled className="h-6 w-6 text-gray-400" />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  placeholder="••••••••"
-                  required
-                  disabled={isSubmitting}
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={isSubmitting}
-                >
-                  {showPassword ? (
-                    <FaEyeSlash className="h-5 w-5" />
-                  ) : (
-                    <FaEye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Password must be at least 8 characters long
-              </p>
-            </div>
-
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-              >
-                Confirm Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <TbLockFilled className="h-6 w-6 text-gray-400" />
-                </div>
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-                  placeholder="••••••••"
-                  required
-                  disabled={isSubmitting}
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  disabled={isSubmitting}
-                >
-                  {showConfirmPassword ? (
-                    <FaEyeSlash className="h-5 w-5" />
-                  ) : (
-                    <FaEye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex space-x-3">
-              <button
-                type="button"
-                onClick={handlePrevStep}
-                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
-                disabled={isSubmitting}
-              >
-                <FiArrowLeft className="mr-2 h-4 w-4" />
-                Back
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center">
-                    <FiLoader className="animate-spin -ml-1 mr-2 h-4 w-4" />
-                    Creating account...
-                  </div>
-                ) : (
-                  "Create Account"
-                )}
-              </button>
-            </div>
-          </div>
+          <Step3ProfileCompletion
+            formData={formData}
+            handleChange={handleChange}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
+            showConfirmPassword={showConfirmPassword}
+            setShowConfirmPassword={setShowConfirmPassword}
+            countyDropdownRef={countyDropdownRef}
+            countyDropdownOpen={countyDropdownOpen}
+            setCountyDropdownOpen={setCountyDropdownOpen}
+            countySearchTerm={countySearchTerm}
+            setCountySearchTerm={setCountySearchTerm}
+            filteredCounties={filteredCounties}
+            handleCountySelect={handleCountySelect}
+            routeDropdownRef={routeDropdownRef}
+            routeDropdownOpen={routeDropdownOpen}
+            setRouteDropdownOpen={setRouteDropdownOpen}
+            routeSearchTerm={routeSearchTerm}
+            setRouteSearchTerm={setRouteSearchTerm}
+            filteredRoutes={filteredRoutes}
+            handleRouteSelect={handleRouteSelect}
+            handlePrevStep={handlePrevStep}
+            isSubmitting={isSubmitting}
+          />
         )}
       </form>
 

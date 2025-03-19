@@ -21,10 +21,14 @@ import {
 import { HiCash } from "react-icons/hi";
 import {
   TbCalendarDot,
+  TbCash,
   TbCreditCard,
+  TbHistory,
+  TbMoneybag,
   TbShieldHalfFilled,
 } from "react-icons/tb";
 import { formatDate } from "../../utils/formatDate";
+import { MpesaIcon } from "../common/icons";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
@@ -481,8 +485,18 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="inline-flex items-center px-3 py-0.5 rounded-md text-sm font-medium bg-green-100 text-green-700 dark:bg-blue-900/20 dark:text-blue-400">
-                    {payment.method}
+                  <div className="inline-flex items-center px-3 py-0.5 rounded-md text-sm font-medium dark:text-blue-400">
+                  {payment.method === "M-Pesa" ? (
+                          <MpesaIcon width={60} height={20} />
+                        ) : payment.method === "Card" ? (
+                          <TbCreditCard className="mr-2 h-5 w-5 text-blue-500" />
+                        ) : payment.method === "Cash" ? (
+                          <TbCash className="mr-2 h-5 w-5 text-yellow-500" />
+                        ) : payment.method === "Bank Transfer" ? (
+                          <TbMoneybag className="mr-2 h-5 w-5 text-purple-500" />
+                        ) : (
+                          <TbHistory className="mr-2 h-5 w-5 text-gray-500" />
+                        )}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">

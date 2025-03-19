@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../../context/AuthContext";
+import { useTheme } from "../../../context/ThemeContext";
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
 import AdminFooter from "./AdminFooter";
@@ -14,7 +14,7 @@ import {
   ChartBarIcon,
   DocumentReportIcon,
   CogIcon,
-} from "../../utils/Icons";
+} from "../../../utils/Icons";
 import { MdSpaceDashboard } from "react-icons/md";
 
 const AdminLayout = () => {

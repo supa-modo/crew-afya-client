@@ -6,7 +6,6 @@ export const formatDate = (dateString) => {
   });
 };
 
-
 export const formatDateForInput = (dateString) => {
   if (!dateString) return "";
   try {
@@ -16,4 +15,15 @@ export const formatDateForInput = (dateString) => {
     console.error("Invalid date format:", error);
     return "";
   }
+};
+
+// Format date
+export const formatDate2 = (dateString, includeTime = false) => {
+  const options = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    ...(includeTime && { hour: "2-digit", minute: "2-digit" }),
+  };
+  return new Date(dateString).toLocaleDateString("en-US", options);
 };

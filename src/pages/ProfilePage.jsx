@@ -24,11 +24,11 @@ import {
   verifyPhoneNumber,
 } from "../services/userService";
 import { Link } from "react-router-dom";
-import SecurityTab from "../components/profile/SecurityTab";
-import DocumentsTab from "../components/profile/DocumentsTab";
-import PersonalInfoTab from "../components/profile/PersonalInfoTab";
-import DocumentUploadModal from "../components/profile/DocumentUploadModal";
-import PhoneVerificationModal from "../components/profile/PhoneVerificationModal";
+import SecurityTab from "../components/profilepage/SecurityTab";
+import DocumentsTab from "../components/profilepage/DocumentsTab";
+import PersonalInfoTab from "../components/profilepage/PersonalInfoTab";
+import DocumentUploadModal from "../components/profilepage/DocumentUploadModal";
+import PhoneVerificationModal from "../components/profilepage/PhoneVerificationModal";
 import ConfirmationModal from "../components/common/ConfirmationModal";
 import {
   PiFilesDuotone,
@@ -490,8 +490,7 @@ const ProfilePage = () => {
                   </div>
                   <div>
                     <h2 className="text-lg sm:text-center font-semibold text-zinc-600 dark:text-white">
-                      {user?.firstName } {user?.otherNames }{" "}
-                      {user?.lastName }
+                      {user?.firstName} {user?.otherNames} {user?.lastName}
                     </h2>
                     <p className="text-sm sm:text-center text-gray-500 dark:text-gray-400 mb-2">
                       {user?.email || "john.doe@example.com"}

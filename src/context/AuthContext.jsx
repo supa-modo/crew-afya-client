@@ -6,6 +6,8 @@ import {
   logoutUser,
   refreshUserToken,
   getUserProfile,
+  sendPhoneOtp,
+  verifyPhoneOtp,
 } from "../services/authService";
 
 const AuthContext = createContext();
@@ -253,6 +255,39 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
+  // Add new methods for phone verification
+  const sendOtp = async (phoneNumber) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await sendPhoneOtp(phoneNumber);
+      return response;
+    } catch (err) {
+      console.error("OTP send error:", err);
+      setError(
+        err.message || "Failed to send verification code. Please try again."
+      );
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyOtp = async (phoneNumber, otp) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await verifyPhoneOtp(phoneNumber, otp);
+      return response;
+    } catch (err) {
+      console.error("OTP verification error:", err);
+      setError(err.message || "Failed to verify code. Please try again.");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -268,6 +303,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         clearError,
         updateUser,
+        sendOtp,
+        verifyOtp,
       }}
     >
       {children}

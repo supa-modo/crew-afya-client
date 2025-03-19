@@ -296,7 +296,7 @@ const Navbar = () => {
                               <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
                                 {user?.email}
                               </p>
-                            </div>
+                            </div>  
                             <div className="py-1">
                               <Link
                                 to="/profile"

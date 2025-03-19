@@ -9,7 +9,7 @@ import {
 import DashboardSummary from "../components/dashboard/DashboardSummary";
 import PaymentHistory from "../components/payment/PaymentHistory";
 import ChangeFrequencyModal from "../components/payment/ChangeFrequencyModal";
-import DocumentUploadModal from "../components/profile/DocumentUploadModal";
+import DocumentUploadModal from "../components/profilepage/DocumentUploadModal";
 import ConfirmationModal from "../components/common/ConfirmationModal";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
@@ -557,15 +557,15 @@ const DashboardPage = () => {
                       <div className="flex items-start justify-between">
                         <div className="flex items-start space-x-3">
                           <div className="flex-shrink-0">
-                          {doc.mimeType.startsWith("image/") ? (
-                      <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 flex items-center justify-center">
-                        <PiImageDuotone className="h-6 w-6 text-blue-500" />
-                      </div>
-                    ) : doc.mimeType === "application/pdf" ? (
-                      <div className="h-10 w-10 rounded-lg bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-                        <PiFilePdfDuotone className="h-6 w-6 text-red-500" />
-                      </div>
-                    )  : (
+                            {doc.mimeType.startsWith("image/") ? (
+                              <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 flex items-center justify-center">
+                                <PiImageDuotone className="h-6 w-6 text-blue-500" />
+                              </div>
+                            ) : doc.mimeType === "application/pdf" ? (
+                              <div className="h-10 w-10 rounded-lg bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+                                <PiFilePdfDuotone className="h-6 w-6 text-red-500" />
+                              </div>
+                            ) : (
                               <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
                                 <svg
                                   className="h-6 w-6 text-blue-500"

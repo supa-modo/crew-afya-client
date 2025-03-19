@@ -96,8 +96,8 @@ const AdminLoginForm = () => {
   return (
     <div className="overflow-hidden transition-all duration-300">
       <div className="flex items-center gap-2 justify-center mb-2">
-        <RiAdminLine className="h-8 w-8 text-primary-600 " />
-        <h3 className="text-lg sm:text-xl font-semibold  text-primary-600 ">
+        <RiAdminLine className="h-8 w-8 text-secondary-600 " />
+        <h3 className="text-lg sm:text-xl font-semibold  text-secondary-600 ">
           Admin Login
         </h3>
       </div>
@@ -131,7 +131,7 @@ const AdminLoginForm = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="text-sm text-gray-600/90 sm:text-base block w-full pl-14 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
+                className="text-sm text-gray-600/90 sm:text-base block w-full pl-14 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-600 focus:ring-admin-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-admin-600 dark:focus:border-admin-600 transition-colors duration-200"
                 placeholder="admin@example.com"
                 required
                 disabled={isSubmitting}
@@ -156,7 +156,7 @@ const AdminLoginForm = () => {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="text-sm text-gray-600/90 sm:text-base block w-full pl-14 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
+                className="text-sm text-gray-600/90 sm:text-base block w-full pl-14 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-600 focus:ring-admin-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-admin-600 dark:focus:border-admin-600 transition-colors duration-200"
                 placeholder="••••••••••"
                 required
                 disabled={isSubmitting}
@@ -179,7 +179,7 @@ const AdminLoginForm = () => {
           <div>
             <button
               type="submit"
-              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-secondary-600 dark:focus:ring-offset-gray-800 transition-all duration-200 ${
+              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-admin-600 to-admin-700 hover:from-admin-700 hover:to-admin-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-admin-600 dark:focus:ring-offset-gray-800 transition-all duration-200 ${
                 isSubmitting ? "opacity-70 cursor-not-allowed" : ""
               }`}
               disabled={isSubmitting}
@@ -219,7 +219,7 @@ const AdminLoginForm = () => {
           
           <Link
             to="/login"
-            className="text-sm text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
+            className="text-sm text-secondary-600 hover:text-secondary-500 dark:text-secondary-400 dark:hover:text-secondary-300 transition-colors duration-200"
           >
             Back to User Login
           </Link>

@@ -7,9 +7,11 @@ const Pagination = ({
   totalItems,
   pageSize,
   onPageChange,
+  onPageSizeChange,
+  pageSizeOptions = [10, 25, 50, 100],
   className = "",
 }) => {
-  if (totalPages <= 1) return null;
+  if (totalItems === 0) return null;
 
   return (
     <div
@@ -53,7 +55,31 @@ const Pagination = ({
             of <span className="font-medium">{totalItems}</span> results
           </p>
         </div>
-        <div>
+        <div className="flex items-center space-x-4">
+          {/* Items per page select box */}
+          {onPageSizeChange && (
+            <div className="flex items-center">
+              <label
+                htmlFor="page-size"
+                className="text-sm text-gray-600 dark:text-gray-400 mr-2"
+              >
+                Per page:
+              </label>
+              <select
+                id="page-size"
+                value={pageSize}
+                onChange={(e) => onPageSizeChange(Number(e.target.value))}
+                className="text-sm border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:text-white"
+              >
+                {pageSizeOptions.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <nav
             className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
             aria-label="Pagination"

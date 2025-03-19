@@ -1,11 +1,5 @@
 import React, { useMemo } from "react";
-import {
-  FiChevronDown,
-  FiChevronLeft,
-  FiChevronRight,
-  FiEye,
-  FiFilter,
-} from "react-icons/fi";
+import { FiChevronDown, FiFilter } from "react-icons/fi";
 import {
   TbCash,
   TbCreditCard,
@@ -22,6 +16,8 @@ import {
   TbArrowsExchange,
 } from "react-icons/tb";
 import { parseISO } from "date-fns";
+import Pagination from "../../common/Pagination";
+import { MpesaIcon } from "../../common/icons";
 
 const PaymentTable = ({
   loading,
@@ -172,6 +168,11 @@ const PaymentTable = ({
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredPayments.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredPayments, currentPage, itemsPerPage]);
+
+  // Handle row click
+  const handleRowClick = (payment) => {
+    handleViewPayment(payment);
+  };
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
@@ -340,7 +341,8 @@ const PaymentTable = ({
                 return (
                   <tr
                     key={payment.id}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
+                    onClick={() => handleRowClick(payment)}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors cursor-pointer"
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                       {payment.id}
@@ -357,7 +359,7 @@ const PaymentTable = ({
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       <div className="flex items-center">
                         {payment.method === "M-Pesa" ? (
-                          <TbDeviceMobile className="mr-2 h-5 w-5 text-green-500" />
+                          <MpesaIcon width={60} height={20} />
                         ) : payment.method === "Card" ? (
                           <TbCreditCard className="mr-2 h-5 w-5 text-blue-500" />
                         ) : payment.method === "Cash" ? (
@@ -367,7 +369,7 @@ const PaymentTable = ({
                         ) : (
                           <TbHistory className="mr-2 h-5 w-5 text-gray-500" />
                         )}
-                        <span>{payment.method}</span>
+                        {/* <span>{payment.method}</span> */}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -393,23 +395,25 @@ const PaymentTable = ({
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex justify-end space-x-2">
+                      <div
+                        className="flex justify-end space-x-2"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <button
-                          onClick={() => handleViewPayment(payment)}
-                          className="text-admin-600 hover:text-admin-900 dark:text-admin-400 dark:hover:text-admin-300"
-                          title="View details"
-                        >
-                          <FiEye className="h-5 w-5" />
-                        </button>
-                        <button
-                          onClick={() => handleViewReceipt(payment)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewReceipt(payment);
+                          }}
                           className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                           title="View receipt"
                         >
                           <TbReceipt className="h-5 w-5" />
                         </button>
                         <button
-                          onClick={() => handleViewAuditTrail(payment)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewAuditTrail(payment);
+                          }}
                           className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
                           title="View audit trail"
                         >
@@ -425,79 +429,17 @@ const PaymentTable = ({
         </table>
       </div>
 
-      {/* Pagination */}
-      {!loading && paginatedPayments.length > 0 && (
-        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/60 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-y-3">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-            {Math.min(currentPage * itemsPerPage, filteredPayments.length)} of{" "}
-            {filteredPayments.length} payments
-          </div>
-          <div className="flex items-center space-x-2">
-            <select
-              className="text-sm border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:text-white"
-              value={itemsPerPage}
-              onChange={(e) => {
-                setItemsPerPage(Number(e.target.value));
-                setCurrentPage(1); // Reset to first page when changing items per page
-              }}
-            >
-              <option value={10}>10 per page</option>
-              <option value={25}>25 per page</option>
-              <option value={50}>50 per page</option>
-              <option value={100}>100 per page</option>
-            </select>
-            <nav className="flex items-center">
-              <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                disabled={currentPage === 1}
-                className="mr-2 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <FiChevronLeft className="h-5 w-5" />
-              </button>
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                // Calculate the page number to show
-                let pageNum;
-                if (totalPages <= 5) {
-                  // Show all pages if 5 or less
-                  pageNum = i + 1;
-                } else if (currentPage <= 3) {
-                  // At the start
-                  pageNum = i + 1;
-                } else if (currentPage >= totalPages - 2) {
-                  // At the end
-                  pageNum = totalPages - 4 + i;
-                } else {
-                  // In the middle
-                  pageNum = currentPage - 2 + i;
-                }
-
-                return (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentPage(pageNum)}
-                    className={`mx-1 px-3 py-1 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 ${
-                      currentPage === pageNum
-                        ? "bg-admin-600 text-white border-admin-600 dark:bg-admin-700 dark:border-admin-700"
-                        : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-              <button
-                onClick={() =>
-                  setCurrentPage(Math.min(totalPages, currentPage + 1))
-                }
-                disabled={currentPage === totalPages}
-                className="ml-2 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <FiChevronRight className="h-5 w-5" />
-              </button>
-            </nav>
-          </div>
-        </div>
+      {/* Using common Pagination component */}
+      {!loading && filteredPayments.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredPayments.length}
+          pageSize={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setItemsPerPage}
+          pageSizeOptions={[10, 25, 50, 100]}
+        />
       )}
     </div>
   );

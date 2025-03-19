@@ -3,11 +3,11 @@ import { FiX } from "react-icons/fi";
 import { getStatusBadge } from "../../utils/statusBadge";
 import { formatDate } from "../../utils/formatDate";
 // Import all tab components
-import UserDetailsProfile from "./tabs/UserDetailsProfile";
-import UserDetailsPayments from "./tabs/UserDetailsPayments";
-import UserDetailsDocuments from "./tabs/UserDetailsDocuments";
-import UserDetailsActivity from "./tabs/UserDetailsActivity";
-import UserDetailsSettings from "./tabs/UserDetailsSettings";
+import UserDetailsProfile from "./adminUserSidebarTabs/UserDetailsProfile";
+import UserDetailsPayments from "./adminUserSidebarTabs/UserDetailsPayments";
+import UserDetailsDocuments from "./adminUserSidebarTabs/UserDetailsDocuments";
+import UserDetailsActivity from "./adminUserSidebarTabs/UserDetailsActivity";
+import UserDetailsSettings from "./adminUserSidebarTabs/UserDetailsSettings";
 import {
   TbActivity,
   TbCalendarDot,
@@ -166,7 +166,7 @@ const UserDetailsSidebar = ({
             {/* Sidebar with animation */}
             <div className="fixed inset-y-0 right-0 pl-10 max-w-full flex">
               <motion.div
-                className="w-screen max-w-[1420px]"
+                className="w-screen max-w-[1450px]"
                 initial="hidden"
                 animate="visible"
                 exit="exit"

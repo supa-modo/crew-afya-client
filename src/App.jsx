@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { Analytics } from "@vercel/analytics/react";
-import Layout from "./components/layout/Layout";
+import Layout from "./components/userLayout/Layout";
 import ScrollToTop from "./components/common/ScrollToTop";
 import HomePage from "./pages/HomePage";
 // import HomePage from "./pages/Homepage2";
@@ -18,7 +18,7 @@ import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
-import AdminLayout from "./components/admin/AdminLayout";
+import AdminLayout from "./components/admin/adminLayout/AdminLayout";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
@@ -26,6 +26,7 @@ import AdminSystemHealthPage from "./pages/admin/AdminSystemHealthPage";
 import AddNewUserPage from "./pages/admin/AddNewUserPage";
 import InsurancePlansPage from "./pages/admin/InsurancePlansPage";
 import NewMedicalCoverPage from "./pages/admin/NewMedicalCoverPage";
+import AdminReportsPage from "./pages/admin/AdminReportsPage";
 function App() {
   return (
     <>
@@ -104,6 +105,7 @@ function App() {
                 <Route path="new-cover" element={<NewMedicalCoverPage />} />
                 <Route path="payments" element={<AdminPaymentsPage />} />
                 <Route path="analytics" element={<AdminAnalyticsPage />} />
+                <Route path="reports" element={<AdminReportsPage />} />
                 <Route
                   path="system-health"
                   element={<AdminSystemHealthPage />}

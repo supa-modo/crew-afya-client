@@ -1,52 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import {
-  FiCalendar,
-  FiDownload,
-  FiFilter,
-  FiSearch,
-  FiChevronDown,
-  FiChevronLeft,
-  FiChevronRight,
-  FiCheck,
-  FiX,
-  FiRefreshCw,
-  FiEye,
-} from "react-icons/fi";
-import {
-  TbHome2,
-  TbCash,
-  TbCashBanknote,
-  TbCreditCard,
-  TbFileAnalytics,
-  TbCalendarEvent,
-  TbFilter,
-  TbReceipt,
-  TbMoneybag,
-  TbHistory,
-  TbArrowsExchange,
-  TbUser,
-  TbId,
-  TbShield,
-  TbDeviceMobile,
-  TbReportMoney,
-  TbAlertCircle,
-  TbCheck,
-  TbInfoCircle,
-  TbExternalLink,
-} from "react-icons/tb";
-import { format, parseISO, subDays, isAfter } from "date-fns";
 import { useTheme } from "../../context/ThemeContext";
 import { generateMockPayments } from "../../utils/paymentsGenerator";
+import { formatDate2 } from "../../utils/formatDate";
 
 // Import components
-import PaymentHeader from "../../components/admin/payments/PaymentHeader";
-import PaymentStats from "../../components/admin/payments/PaymentStats";
-import PaymentFilters from "../../components/admin/payments/PaymentFilters";
-import PaymentTable from "../../components/admin/payments/PaymentTable";
-import PaymentDetailModal from "../../components/admin/payments/PaymentDetailModal";
-import PaymentReceiptModal from "../../components/admin/payments/PaymentReceiptModal";
-import PaymentAuditModal from "../../components/admin/payments/PaymentAuditModal";
+import PaymentHeader from "../../components/admin/adminPaymentsPageComponents/PaymentHeader";
+import PaymentStats from "../../components/admin/adminPaymentsPageComponents/PaymentStats";
+import PaymentFilters from "../../components/admin/adminPaymentsPageComponents/PaymentFilters";
+import PaymentTable from "../../components/admin/adminPaymentsPageComponents/PaymentTable";
+import PaymentDetailModal from "../../components/admin/adminPaymentsPageComponents/PaymentDetailModal";
+import PaymentReceiptModal from "../../components/admin/adminPaymentsPageComponents/PaymentReceiptModal";
+import PaymentAuditModal from "../../components/admin/adminPaymentsPageComponents/PaymentAuditModal";
 
 const AdminPaymentsPage = () => {
   const { darkMode } = useTheme();
@@ -190,17 +154,6 @@ const AdminPaymentsPage = () => {
     }).format(amount);
   };
 
-  // Format date
-  const formatDate = (dateString, includeTime = false) => {
-    const options = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      ...(includeTime && { hour: "2-digit", minute: "2-digit" }),
-    };
-    return new Date(dateString).toLocaleDateString("en-US", options);
-  };
-
   // Handle export data
   const handleExportData = () => {
     // Show the export options dropdown menu
@@ -329,7 +282,7 @@ const AdminPaymentsPage = () => {
           setItemsPerPage={setItemsPerPage}
           handleResetFilters={handleResetFilters}
           formatCurrency={formatCurrency}
-          formatDate={formatDate}
+          formatDate={formatDate2}
         />
       </div>
 
@@ -343,7 +296,7 @@ const AdminPaymentsPage = () => {
             setIsReceiptModalOpen(true);
           }}
           formatCurrency={formatCurrency}
-          formatDate={formatDate}
+          formatDate={formatDate2}
         />
       )}
 
@@ -352,7 +305,7 @@ const AdminPaymentsPage = () => {
           payment={selectedPayment}
           onClose={() => setIsReceiptModalOpen(false)}
           formatCurrency={formatCurrency}
-          formatDate={formatDate}
+          formatDate={formatDate2}
         />
       )}
 
@@ -361,7 +314,7 @@ const AdminPaymentsPage = () => {
           payment={selectedPayment}
           onClose={() => setIsAuditModalOpen(false)}
           formatCurrency={formatCurrency}
-          formatDate={formatDate}
+          formatDate={formatDate2}
         />
       )}
     </div>

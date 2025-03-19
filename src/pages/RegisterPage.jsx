@@ -1,8 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import RegisterForm from "../components/auth/RegisterForm";
-import { TbLockFilled, TbShieldCheckFilled } from "react-icons/tb";
 
 const RegisterPage = () => {
   return (
@@ -48,61 +45,28 @@ const RegisterPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-full max-w-xl z-20 mt-12 md:mt-24"
+        className="w-full max-w-2xl z-20 mt-10 md:mt-16"
       >
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, delay: 0.2 }}
-            className="px-8 pt-10 pb-6 text-center relative"
+            className="px-8 pt-10 pb-4 text-center relative"
           >
             <div className="w-full">
               <img
                 src="/logo.png"
-                alt="crewafya-logo"
+                alt="matatu-union-logo"
                 className="w-16 h-16 md:w-20 md:h-20 mx-auto"
               />
             </div>
-            <div className="text-center mb-3 md:mb-4">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-nunito tracking-tight font-extrabold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
-                Create Your Account
-              </h1>
-              <p className="text-gray-400 text-sm lg:text-base">
-                Join CrewAfya for better healthcare cover & management
-              </p>
-            </div>
-
-            {/* Animated underline */}
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "8rem" }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="h-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-full mx-auto"
-            ></motion.div>
           </motion.div>
 
           <div className="px-8 pb-10 bg-gray-50 dark:bg-gray-800/50">
             <RegisterForm />
           </div>
         </div>
-
-        {/* Trust badges */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.2 }}
-          className="mt-8 flex justify-center space-x-6 opacity-70"
-        >
-          <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
-            <TbShieldCheckFilled className="w-4 h-4 mr-1" />
-            <span>Secure Registration</span>
-          </div>
-          <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
-            <TbLockFilled className="w-4 h-4 mr-1" />
-            <span>HIPAA Compliant</span>
-          </div>
-        </motion.div>
       </motion.div>
     </div>
   );

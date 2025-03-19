@@ -6,7 +6,7 @@ import {
   FiClock,
   FiDownload,
 } from "react-icons/fi";
-import { PiSwapDuotone } from "react-icons/pi";
+import { PiBankDuotone, PiSwapDuotone } from "react-icons/pi";
 import {
   TbCashBanknote,
   TbCreditCard,
@@ -15,8 +15,14 @@ import {
   TbX,
   TbClock,
   TbRefresh,
+  TbSearch,
+  TbFilter,
+  TbCash,
+  TbMoneybag,
+  TbHistory,
 } from "react-icons/tb";
 import Pagination from "../../common/Pagination";
+import { MpesaIcon } from "../../common/icons";
 
 const UserDetailsPayments = ({ user }) => {
   const [payments, setPayments] = useState([]);
@@ -220,26 +226,28 @@ const UserDetailsPayments = ({ user }) => {
       </div>
 
       {/* Search and Filter */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-grow max-w-md">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <FiSearch className="h-5 w-5 text-gray-400" />
-          </div>
+      <div className="flex flex-col sm:flex-row gap-4 sm:justify-between">
+        <div className="relative flex-grow max-w-lg">
           <input
             type="text"
+            placeholder="Search plans..."
+            className="pl-9 pr-4 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 text-sm text-gray-600/90 sm:text-base transition-colors duration-200 w-full"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="focus:ring-admin-500 focus:border-admin-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            placeholder="Search payments..."
           />
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <TbSearch className="h-5 w-5 text-gray-400" />
+          </div>
         </div>
         <div className="relative inline-block">
-          <div className="flex items-center">
-            <FiFilter className="h-5 w-5 text-gray-400 mr-2" />
+          <div className="flex space-x-2 items-center">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mr-2 hidden sm:block">
+              <TbFilter className="h-6 w-6 text-gray-400" />
+            </div>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="block pl-3 pr-10 py-2 text-sm text-gray-600/90 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white transition-colors duration-200"
             >
               <option value="all">All Status</option>
               <option value="completed">Completed</option>
@@ -260,50 +268,50 @@ const UserDetailsPayments = ({ user }) => {
           </span>
         </div>
       ) : currentPayments.length > 0 ? (
-        <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow overflow-hidden rounded-xl">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
+              <thead className="bg-gray-100 dark:bg-gray-700">
                 <tr>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Reference
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Date
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Amount
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Method
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Status
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Plan
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    className="px-6 py-5 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
                     Actions
                   </th>
@@ -329,7 +337,17 @@ const UserDetailsPayments = ({ user }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       <div className="flex items-center">
-                        {getPaymentMethodIcon(payment.method)}
+                      {payment.method === "M-Pesa" ? (
+                          <MpesaIcon width={60} height={20} />
+                        ) : payment.method === "Card" ? (
+                          <TbCreditCard className="mr-2 h-5 w-5 text-blue-500" />
+                        ) : payment.method === "Cash" ? (
+                          <TbCash className="mr-2 h-5 w-5 text-yellow-500" />
+                        ) : payment.method === "Bank Transfer" ? (
+                          <PiBankDuotone className="mr-2 h-5 w-5 text-purple-500" />
+                        ) : (
+                          <TbHistory className="mr-2 h-5 w-5 text-gray-500" />
+                        )}
                         <span className="ml-1.5">{payment.method}</span>
                       </div>
                     </td>
