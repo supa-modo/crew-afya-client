@@ -36,7 +36,7 @@ const DocumentsTab = ({
 
   return (
     <div className="px-4 md:px-6 py-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
           <PiFilesDuotone className="h-6 w-6 mx-2 text-secondary-700" />
           <span className="text-secondary-800 pl-1 dark:text-secondary-600">
@@ -46,10 +46,13 @@ const DocumentsTab = ({
         <button
           type="button"
           onClick={handleFileUploadClick}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 cursor-pointer"
+          className=" px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 cursor-pointer"
         >
+          <div className="flex items-center justify-center">
           <TbCloudUpload className="mr-2 -ml-1 h-5 w-5" />
-          Upload Document
+          <span className="">Upload Document</span>
+          </div>
+          
         </button>
       </div>
 

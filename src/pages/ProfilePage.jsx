@@ -482,7 +482,7 @@ const ProfilePage = () => {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="px-4 sm:px-6 py-6">
               <div className="flex flex-col items-center">
-                <div className="flex sm:flex-col flex-row sm:space-x-0 space-x-4 items-center ">
+                <div className="flex sm:flex-col flex-row sm:space-x-0 space-x-4 sm:items-center">
                   <div className="h-24 w-24 rounded-full bg-primary-200 dark:bg-primary-900/50 flex items-center justify-center text-primary-600 dark:text-primary-400 text-3xl font-bold mb-4">
                     {/* {user?.firstName?.charAt(0) user?.lastName?.charAt(0) || ( */}
                     <PiUserDuotone className="h-12 w-12" />

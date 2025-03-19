@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { Analytics } from "@vercel/analytics/react";
 import Layout from "./components/layout/Layout";
 import ScrollToTop from "./components/common/ScrollToTop";
 import HomePage from "./pages/HomePage";
@@ -27,9 +28,11 @@ import InsurancePlansPage from "./pages/admin/InsurancePlansPage";
 import NewMedicalCoverPage from "./pages/admin/NewMedicalCoverPage";
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <Router>
+    <>
+      <Analytics />
+      <ThemeProvider>
+        <AuthProvider>
+          <Router>
           <ScrollToTop />
           <Routes>
             {/* Public routes */}
@@ -102,9 +105,10 @@ function App() {
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
+    </>
   );
 }
 
