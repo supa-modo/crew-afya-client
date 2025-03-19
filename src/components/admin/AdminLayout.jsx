@@ -14,12 +14,8 @@ import {
   ChartBarIcon,
   DocumentReportIcon,
   CogIcon,
-  MenuIcon,
-  XIcon,
-  LogoutIcon,
-  BellIcon,
-  UserCircleIcon,
 } from "../../utils/Icons";
+import { MdSpaceDashboard } from "react-icons/md";
 
 const AdminLayout = () => {
   const { logout } = useAuth();
@@ -35,45 +31,6 @@ const AdminLayout = () => {
       console.error("Logout failed:", error);
     }
   };
-
-  const navigation = [
-    {
-      name: "Dashboard",
-      href: "/admin/dashboard",
-      icon: HomeIcon,
-      current: location.pathname === "/admin/dashboard",
-    },
-    {
-      name: "Users",
-      href: "/admin/users",
-      icon: UsersIcon,
-      current: location.pathname === "/admin/users",
-    },
-    {
-      name: "Payments",
-      href: "/admin/payments",
-      icon: CreditCardIcon,
-      current: location.pathname === "/admin/payments",
-    },
-    {
-      name: "Analytics",
-      href: "/admin/analytics",
-      icon: ChartBarIcon,
-      current: location.pathname === "/admin/analytics",
-    },
-    {
-      name: "Reports",
-      href: "/admin/reports",
-      icon: DocumentReportIcon,
-      current: location.pathname === "/admin/reports",
-    },
-    {
-      name: "Settings",
-      href: "/admin/settings",
-      icon: CogIcon,
-      current: location.pathname === "/admin/settings",
-    },
-  ];
 
   // Mock notifications for UI
   const notifications = [

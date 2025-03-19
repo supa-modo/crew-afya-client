@@ -12,7 +12,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
             <Link to="/" className="flex items-center">
-            <img className="h-10 w-auto mr-2" src="/logo.png" alt="CrewAfya" />
+              <img
+                className="h-10 w-auto mr-2"
+                src="/logo.png"
+                alt="CrewAfya"
+              />
               <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
                 CrewAfya Care
               </span>
@@ -84,14 +88,6 @@ const Footer = () => {
               <ul className="mt-4 space-y-2">
                 <li>
                   <Link
-                    to="/insurance"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
-                  >
-                    Insurance Covers
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     to="/ussd"
                     className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
                   >
@@ -112,6 +108,14 @@ const Footer = () => {
                     className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
                   >
                     Help Center
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/feedback"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                  >
+                    Feedback
                   </Link>
                 </li>
               </ul>
@@ -194,7 +198,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
-        <div className="flex items-center mb-4 md:mb-0">
+          <div className="flex items-center mb-4 md:mb-0">
             <img className="h-7 w-auto mr-2" src="/logo.png" alt="CrewAfya" />
             <span className="text-sm text-gray-500 dark:text-gray-400">
               &copy; {currentYear} CrewAfya. All rights reserved.

@@ -192,7 +192,7 @@ const UserDetailsSidebar = ({
             {/* Sidebar with animation */}
             <div className="fixed inset-y-0 right-0 pl-10 max-w-full flex">
               <motion.div
-                className="w-screen max-w-[1400px]"
+                className="w-screen max-w-[1420px]"
                 initial="hidden"
                 animate="visible"
                 exit="exit"

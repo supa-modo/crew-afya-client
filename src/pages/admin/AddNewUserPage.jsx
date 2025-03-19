@@ -1,26 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import { FaUserPlus, FaArrowLeft } from "react-icons/fa";
+import { FiAlertCircle } from "react-icons/fi";
+
+// Import our components
+import UserInfoForm from "../../components/admin/UserInfoForm";
+import MedicalPlanSelector from "../../components/admin/MedicalPlanSelector";
+import DocumentUploadSection from "../../components/admin/DocumentUploadSection";
 
 const AddNewUserPage = () => {
   const { darkMode } = useTheme();
   const navigate = useNavigate();
+
+  // Form data state - updated to use fullName instead of firstName/lastName
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
     phoneNumber: "",
     role: "user",
     password: "",
-    confirmPassword: "",
     nationalId: "",
-    address: "",
-    dateOfBirth: "",
-    gender: "",
   });
+
+  // Plan selection state
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
+  // Documents state
+  const [documents, setDocuments] = useState([]);
+
+  // Form state
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formCompleted, setFormCompleted] = useState(false);
+
+  // Available plans with payment frequencies
+  const availablePlans = [
+    {
+      id: "plan1",
+      name: "Crew Afya Lite",
+      description: "Basic medical coverage with outpatient up to 20,000",
+      forWho: "For Driver/Conductor",
+      premiums: {
+        daily: 24,
+        monthly: 713,
+        annual: 8565,
+      },
+      benefits: [
+        { name: "Inpatient", limit: "200,000" },
+        { name: "Maternity (Within Inpatient)", limit: "20,000" },
+        { name: "Outpatient - Capitation", limit: "Up to 20,000" },
+        { name: "Optical + Free Eye Test", limit: "5,000" },
+      ],
+    },
+    {
+      id: "plan2",
+      name: "Crew Afya - (Up to M+3)",
+      description: "Family coverage for up to 4 members with enhanced benefits",
+      forWho: "For Driver/Conductor + Dependents",
+      premiums: {
+        daily: 55,
+        monthly: 1661,
+        annual: 19933,
+      },
+      benefits: [
+        { name: "Inpatient", limit: "200,000" },
+        { name: "Maternity (Within Inpatient)", limit: "20,000" },
+        { name: "Outpatient - Capitation", limit: "Up to 20,000" },
+        { name: "Wellness Support", limit: "Group Sessions + Individual" },
+      ],
+    },
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,19 +86,26 @@ const AddNewUserPage = () => {
 
     // Required fields
     const requiredFields = [
-      "firstName",
-      "lastName",
+      "fullName",
       "email",
       "phoneNumber",
       "role",
       "password",
-      "confirmPassword",
     ];
+
     requiredFields.forEach((field) => {
       if (!formData[field]) {
         newErrors[field] = "This field is required";
       }
     });
+
+    // Validate full name - must have at least first and last name
+    if (formData.fullName) {
+      const nameParts = formData.fullName.trim().split(/\s+/);
+      if (nameParts.length < 2) {
+        newErrors.fullName = "Please enter full name (first and last name)";
+      }
+    }
 
     // Email validation
     if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
@@ -68,9 +125,9 @@ const AddNewUserPage = () => {
       newErrors.password = "Password must be at least 8 characters";
     }
 
-    // Confirm password validation
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+    // Plan validation
+    if (!selectedPlan) {
+      newErrors.plan = "Please select a medical cover plan";
     }
 
     return newErrors;
@@ -79,23 +136,44 @@ const AddNewUserPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
     setIsSubmitting(true);
 
     try {
+      // Parse the full name into first name and last name for API
+      const nameParts = formData.fullName.trim().split(/\s+/);
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(" "); // Combine rest as last name
+
+      // Prepare data for submission - format for API
+      const userData = {
+        firstName,
+        lastName,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        role: formData.role,
+        password: formData.password,
+        nationalId: formData.nationalId,
+        plan: selectedPlan,
+        documents: documents,
+      };
+
       // Mock API call - would be replaced with actual API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log("Creating user with data:", userData);
 
-      // Show success message
-      alert("User created successfully!");
+      // Show success
+      setFormCompleted(true);
 
-      // Redirect to users list
-      navigate("/admin/users");
+      // In a real app, you would navigate after a successful creation
+      setTimeout(() => {
+        navigate("/admin/users");
+      }, 2000);
     } catch (error) {
       console.error("Error creating user:", error);
       setErrors({ form: "Failed to create user. Please try again." });
@@ -104,356 +182,150 @@ const AddNewUserPage = () => {
     }
   };
 
+  const handlePlanSelect = (plan) => {
+    setSelectedPlan(plan);
+    if (errors.plan) {
+      setErrors((prev) => ({ ...prev, plan: "" }));
+    }
+  };
+
   return (
-    <div className="py-6">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-center justify-between">
+    <div className="pb-6">
+      <div className="max-w-screen-2xl mx-auto ">
+        <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center">
             <button
               onClick={() => navigate("/admin/users")}
-              className="mr-4 flex items-center justify-center rounded-md p-2 text-admin-600 hover:bg-admin-100 hover:text-admin-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-admin-500"
+              className="mr-4 flex items-center justify-center rounded-md p-2 text-admin-600 hover:bg-admin-100 hover:text-admin-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-admin-500 dark:hover:bg-admin-900 dark:text-admin-400"
             >
               <FaArrowLeft className="h-5 w-5" />
             </button>
-            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
+            <h1 className="text-2xl font-semibold text-admin-700 dark:text-admin-500">
               Add New User
             </h1>
           </div>
         </div>
 
-        <div
-          className={`bg-white dark:bg-gray-800 shadow overflow-hidden rounded-lg`}
-        >
-          <div className="px-4 py-5 sm:p-6">
-            <div className="flex justify-center mb-6">
-              <div
-                className={`p-3 rounded-full ${
-                  darkMode ? "bg-admin-800" : "bg-admin-100"
-                }`}
+        {formCompleted ? (
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 text-center">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900">
+              <svg
+                className="h-10 w-10 text-green-600 dark:text-green-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                <FaUserPlus className="h-8 w-8 text-admin-600" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h2 className="mt-6 text-xl font-semibold text-gray-900 dark:text-white">
+              User Created Successfully!
+            </h2>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">
+              The new user has been added to the system.
+            </p>
+            <div className="mt-8">
+              <button
+                onClick={() => navigate("/admin/users")}
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-admin-600 hover:bg-admin-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
+              >
+                Go to Users
+              </button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div className="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-2xl mb-6">
+              <div className="px-4 py-5 sm:p-6">
+                {errors.form && (
+                  <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4 dark:bg-red-900/20 dark:border-red-600">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <FiAlertCircle className="h-5 w-5 text-red-400" />
+                      </div>
+                      <div className="ml-3">
+                        <p className="text-sm text-red-700 dark:text-red-400">
+                          {errors.form}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Section 1: User Information */}
+                <UserInfoForm
+                  formData={formData}
+                  handleChange={handleChange}
+                  errors={errors}
+                />
+
+                {/* Section 2: Medical Cover Plan */}
+                <MedicalPlanSelector
+                  availablePlans={availablePlans}
+                  selectedPlan={selectedPlan}
+                  handlePlanSelect={handlePlanSelect}
+                  error={errors.plan}
+                />
+
+                {/* Section 3: Documents */}
+                <DocumentUploadSection
+                  documents={documents}
+                  setDocuments={setDocuments}
+                />
+
+                <div className="pt-6 mt-8 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex justify-end space-x-3">
+                    <button
+                      type="button"
+                      onClick={() => navigate("/admin/users")}
+                      className="bg-white dark:bg-gray-800 py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-admin-600 hover:bg-admin-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Creating User...
+                        </>
+                      ) : (
+                        "Create User"
+                      )}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-
-            {errors.form && (
-              <div className="mb-4 bg-red-50 border-l-4 border-red-400 p-4 dark:bg-red-900/20 dark:border-red-600">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg
-                      className="h-5 w-5 text-red-400"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-red-700 dark:text-red-400">
-                      {errors.form}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-                <div>
-                  <label
-                    htmlFor="firstName"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    First Name
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="firstName"
-                      name="firstName"
-                      type="text"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      required
-                      className={`shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.firstName ? "border-red-300" : ""
-                      }`}
-                    />
-                    {errors.firstName && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.firstName}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="lastName"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Last Name
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="lastName"
-                      name="lastName"
-                      type="text"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      required
-                      className={`shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.lastName ? "border-red-300" : ""
-                      }`}
-                    />
-                    {errors.lastName && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.lastName}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Email
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      autoComplete="email"
-                      required
-                      className={`shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.email ? "border-red-300" : ""
-                      }`}
-                    />
-                    {errors.email && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.email}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="phoneNumber"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Phone Number
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      type="tel"
-                      value={formData.phoneNumber}
-                      onChange={handleChange}
-                      autoComplete="tel"
-                      required
-                      className={`shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.phoneNumber ? "border-red-300" : ""
-                      }`}
-                    />
-                    {errors.phoneNumber && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.phoneNumber}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="role"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Role
-                  </label>
-                  <div className="mt-1">
-                    <select
-                      id="role"
-                      name="role"
-                      value={formData.role}
-                      onChange={handleChange}
-                      required
-                      className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                    >
-                      <option value="user">User</option>
-                      <option value="admin">Admin</option>
-                      <option value="superadmin">Super Admin</option>
-                    </select>
-                    {errors.role && (
-                      <p className="mt-1 text-sm text-red-600">{errors.role}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="nationalId"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    National ID
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="nationalId"
-                      name="nationalId"
-                      type="text"
-                      value={formData.nationalId}
-                      onChange={handleChange}
-                      className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="dateOfBirth"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Date of Birth
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="dateOfBirth"
-                      name="dateOfBirth"
-                      type="date"
-                      value={formData.dateOfBirth}
-                      onChange={handleChange}
-                      className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="gender"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Gender
-                  </label>
-                  <div className="mt-1">
-                    <select
-                      id="gender"
-                      name="gender"
-                      value={formData.gender}
-                      onChange={handleChange}
-                      className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="address"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Address
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="address"
-                      name="address"
-                      type="text"
-                      value={formData.address}
-                      onChange={handleChange}
-                      className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Password
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="password"
-                      name="password"
-                      type="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      required
-                      className={`shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.password ? "border-red-300" : ""
-                      }`}
-                    />
-                    {errors.password && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.password}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Confirm Password
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type="password"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      required
-                      className={`shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.confirmPassword ? "border-red-300" : ""
-                      }`}
-                    />
-                    {errors.confirmPassword && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.confirmPassword}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => navigate("/admin/users")}
-                    className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-admin-600 hover:bg-admin-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? "Creating..." : "Create User"}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
+          </form>
+        )}
       </div>
     </div>
   );

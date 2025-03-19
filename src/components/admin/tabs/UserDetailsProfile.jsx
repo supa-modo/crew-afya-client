@@ -1,20 +1,9 @@
 import React, { useState } from "react";
 import {
-  FiMail,
-  FiPhone,
-  FiCalendar,
-  FiUser,
-  FiMap,
-  FiCreditCard,
-  FiEdit2,
   FiSave,
-  FiX,
-  FiMapPin,
   FiPlus,
-  FiTrash2,
-  FiClock,
-  FiDollarSign,
 } from "react-icons/fi";
+import { formatCurrency } from "../../../utils/formatCurrency";
 import { formatDate, formatDateForInput } from "../../../utils/formatDate";
 import { TbCalendarDot, TbCash, TbClockCheck, TbEdit, TbShieldHalfFilled, TbTrash, TbUserEdit, TbUserX } from "react-icons/tb";
 import { MdHealthAndSafety } from "react-icons/md";
@@ -34,8 +23,6 @@ const UserDetailsProfile = ({ user }) => {
     ? `${user.firstName} ${user.lastName}`
     : user?.name;
 
-  // Verbose debugging to understand what data we're receiving
-  console.log("UserDetailsProfile received user:", user);
 
   // Try to access user plan data directly
   let plan = user?.plan || null;
@@ -65,12 +52,6 @@ const UserDetailsProfile = ({ user }) => {
     }
   }
 
-  console.log("UserDetailsProfile extracted plan:", plan);
-  console.log(
-    "Plan details:",
-    plan ? JSON.stringify(plan, null, 2) : "No plan found"
-  );
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name.includes(".")) {
@@ -99,15 +80,6 @@ const UserDetailsProfile = ({ user }) => {
       setIsEditing(false);
       // In a real app, we would update the user state here
     }, 500);
-  };
-
-  // Helper function to format currency
-  const formatCurrency = (amount) => {
-    if (!amount) return "N/A";
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-    }).format(amount);
   };
 
   // Helper function to get CSS class for plan status
@@ -155,7 +127,7 @@ const UserDetailsProfile = ({ user }) => {
   };
 
   return (
-    <div className="py-6 px-4 sm:p-6 lg:pb-8">
+    <div className="py-6 px-2">
       <div className="flex justify-between items-center mb-6">
         <h2 className="flex items-center gap-2 text-lg font-semibold text-secondary-800/90">
           <PiUserDuotone className="h-6 w-6" />
@@ -284,8 +256,8 @@ const UserDetailsProfile = ({ user }) => {
                 </span>
               </div>
             ) : plan ? (
-              <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg border border-gray-200 dark:border-gray-700">
-                <div className="px-4 py-4 sm:px-6 flex justify-between items-start">
+              <div className="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
+                <div className="px-2 py-4 sm:px-6 flex justify-between items-start bg-admin-100 dark:bg-admin-800/10">
                   <div>
                     <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300 flex items-center">
                       {plan.name}

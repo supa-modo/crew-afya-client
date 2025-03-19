@@ -211,7 +211,7 @@ const UserDetailsPayments = ({ user }) => {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 py-6">
       <div className="flex justify-between items-center">
         <h2 className="flex items-center gap-2 text-lg font-semibold text-secondary-800/90">
           <PiSwapDuotone className="h-6 w-6" />

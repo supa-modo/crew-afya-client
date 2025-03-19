@@ -64,7 +64,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
           name: "New Medical Cover",
           href: "/admin/new-cover",
           icon: TbShieldPlus,
-          current: location.pathname === "/admin/covers",
+          current: location.pathname === "/admin/new-cover",
         },
       ],
     },

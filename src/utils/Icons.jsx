@@ -1,5 +1,4 @@
 // This file exports all the icons used in the application
-// Using Heroicons (https://heroicons.com/)
 
 export const HomeIcon = ({ className }) => (
   <svg

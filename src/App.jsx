@@ -22,7 +22,8 @@ import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
 import AdminSystemHealthPage from "./pages/admin/AdminSystemHealthPage";
 import AddNewUserPage from "./pages/admin/AddNewUserPage";
-
+import InsurancePlansPage from "./pages/admin/InsurancePlansPage";
+import NewMedicalCoverPage from "./pages/admin/NewMedicalCoverPage";
 function App() {
   return (
     <ThemeProvider>
@@ -91,6 +92,8 @@ function App() {
               <Route path="dashboard" element={<AdminDashboardPage />} />
               <Route path="users" element={<AdminUsersPage />} />
               <Route path="users/new" element={<AddNewUserPage />} />
+              <Route path="plans" element={<InsurancePlansPage />} />
+              <Route path="new-cover" element={<NewMedicalCoverPage />} />
               <Route path="payments" element={<AdminPaymentsPage />} />
               <Route path="analytics" element={<AdminAnalyticsPage />} />
               <Route path="system-health" element={<AdminSystemHealthPage />} />
