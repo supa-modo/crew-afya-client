@@ -1,22 +1,9 @@
 import React, { useState } from "react";
-import { format } from "date-fns";
-import {
-  FiUser,
-  FiCreditCard,
-  FiFileText,
-  FiActivity,
-  FiSettings,
-  FiMail,
-  FiPhone,
-  FiCalendar,
-  FiMapPin,
-  FiClock,
-  FiX,
-} from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 import { getStatusBadge } from "../../utils/statusBadge";
+import { formatDate } from "../../utils/formatDate";
 // Import all tab components
 import UserDetailsProfile from "./tabs/UserDetailsProfile";
-import UserDetailsPlans from "./tabs/UserDetailsPlans";
 import UserDetailsPayments from "./tabs/UserDetailsPayments";
 import UserDetailsDocuments from "./tabs/UserDetailsDocuments";
 import UserDetailsActivity from "./tabs/UserDetailsActivity";
@@ -31,13 +18,11 @@ import {
 } from "react-icons/tb";
 import {
   PiClockUserDuotone,
-  PiFileDuotone,
   PiFilesDuotone,
   PiGearDuotone,
   PiMapPinAreaBold,
   PiUserDuotone,
 } from "react-icons/pi";
-import { FaCreditCard } from "react-icons/fa";
 import { HiCreditCard } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -92,16 +77,6 @@ const UserDetailsSidebar = ({
         duration: 0.3,
       },
     },
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    try {
-      return format(new Date(dateString), "MMM d, yyyy");
-    } catch (error) {
-      console.error("Invalid date format:", error);
-      return "N/A";
-    }
   };
 
   const navItems = [
