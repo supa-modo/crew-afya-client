@@ -1,11 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  SearchIcon,
-  PencilIcon,
-  RefreshIcon,
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-} from "../../utils/Icons";
+
 import { mockUsers } from "../../data/mockUsers";
 import { formatDate } from "../../utils/formatDate";
 import {
@@ -15,6 +9,8 @@ import {
 } from "react-icons/ri";
 import { TbEyeEdit, TbRefresh } from "react-icons/tb";
 import Pagination from "../../components/common/Pagination";
+import { FaSearch, FaFilter } from "react-icons/fa";
+import { getAllUsers } from "../../services/userService";
 
 const UserManagement = ({
   onUserSelect,
@@ -29,6 +25,7 @@ const UserManagement = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [sortBy, setSortBy] = useState("createdAt");
@@ -39,6 +36,7 @@ const UserManagement = ({
     fetchUsers();
   }, [
     currentPage,
+    pageSize,
     sortBy,
     sortOrder,
     filterRole,
@@ -50,97 +48,26 @@ const UserManagement = ({
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      // In a real implementation, this would call the API
-      // const response = await getUsers({
-      //   page: currentPage,
-      //   limit: 10,
-      //   search: searchTerm,
-      //   sortBy,
-      //   sortOrder,
-      //   role: filterRole !== "all" ? filterRole : undefined,
-      //   isActive: filterStatus !== "all" ? filterStatus === "active" : undefined,
-      //   plan: filterPlan !== "all" ? filterPlan : undefined,
-      // });
+      const response = await getAllUsers({
+        page: currentPage,
+        limit: pageSize,
+        search: searchTerm,
+        sortBy,
+        sortOrder,
+        role: filterRole !== "all" ? filterRole : undefined,
+        isActive:
+          filterStatus !== "all" ? filterStatus === "active" : undefined,
+        plan: filterPlan !== "all" ? filterPlan : undefined,
+      });
 
-      // Mock API response
-      setTimeout(() => {
-        // Filter users based on search term
-        let filteredUsers = [...mockUsers];
+      console.log(response.data);
 
-        if (searchTerm) {
-          const search = searchTerm.toLowerCase();
-          filteredUsers = filteredUsers.filter(
-            (user) =>
-              user.firstName.toLowerCase().includes(search) ||
-              user.lastName.toLowerCase().includes(search) ||
-              user.email.toLowerCase().includes(search) ||
-              user.phoneNumber.includes(search)
-          );
-        }
+      setUsers(response.data);
 
-        // Filter by role
-        if (filterRole !== "all") {
-          filteredUsers = filteredUsers.filter(
-            (user) => user.role === filterRole
-          );
-        }
+      setTotalUsers(response.data.length);
+      setTotalPages(Math.ceil(response.data.length / pageSize));
 
-        // Filter by status
-        if (filterStatus !== "all") {
-          const isActive = filterStatus === "active";
-          filteredUsers = filteredUsers.filter(
-            (user) => user.isActive === isActive
-          );
-        }
-
-        // Filter by plan
-        if (filterPlan !== "all") {
-          filteredUsers = filteredUsers.filter((user) => {
-            return (
-              user.plan &&
-              user.plan.name &&
-              user.plan.name.toLowerCase().includes(filterPlan.toLowerCase())
-            );
-          });
-        }
-
-        // Sort users
-        filteredUsers.sort((a, b) => {
-          if (sortBy === "name") {
-            const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
-            const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
-            return sortOrder === "asc"
-              ? nameA.localeCompare(nameB)
-              : nameB.localeCompare(nameA);
-          } else if (sortBy === "createdAt") {
-            return sortOrder === "asc"
-              ? new Date(a.createdAt) - new Date(b.createdAt)
-              : new Date(b.createdAt) - new Date(a.createdAt);
-          } else if (sortBy === "lastLogin") {
-            return sortOrder === "asc"
-              ? new Date(a.lastLogin) - new Date(b.lastLogin)
-              : new Date(b.lastLogin) - new Date(a.lastLogin);
-          }
-          return 0;
-        });
-
-        // Handle pagination
-        const totalUsersCount = filteredUsers.length;
-        const itemsPerPage = 10;
-        const totalPagesCount = Math.ceil(totalUsersCount / itemsPerPage);
-
-        // Calculate pagination indexes
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-
-        // Get users for current page
-        const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
-
-        setUsers(paginatedUsers);
-        setTotalUsers(totalUsersCount);
-        setTotalPages(totalPagesCount);
-        setLoading(false);
-      }, 500);
+      setLoading(false);
     } catch (err) {
       console.error("Error fetching users:", err);
       setError(err.message || "Failed to load users");
@@ -166,14 +93,14 @@ const UserManagement = ({
   const handleToggleStatus = async (userId, currentStatus) => {
     try {
       // In a real implementation, this would call the API
-      // await toggleUserStatus(userId, !currentStatus);
+      await toggleUserStatus(userId, !currentStatus);
 
       // Mock API call
-      setUsers(
-        users.map((user) =>
-          user.id === userId ? { ...user, isActive: !currentStatus } : user
-        )
-      );
+      // setUsers(
+      //   users.map((user) =>
+      //     user.id === userId ? { ...user, isActive: !currentStatus } : user
+      //   )
+      // );
     } catch (err) {
       console.error("Error toggling user status:", err);
       setError(err.message || "Failed to update user status");
@@ -277,166 +204,206 @@ const UserManagement = ({
             <TbRefresh className="h-5 w-5 text-gray-400 hover:text-gray-600" />
           </button>
         </form>
-        <div className="flex gap-2 w-full sm:w-auto flex-wrap">
-          <select
-            className="border border-gray-300 rounded-lg text-sm sm:text-[0.92rem] text-gray-600 font-medium px-3 py-2 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-            value={filterPlan}
-            onChange={(e) => setFilterPlan(e.target.value)}
-          >
-            <option value="all">All Plans</option>
-            <option value="Crew Afya Lite">Crew Afya Lite</option>
-            <option value="Crew Afya - (Up to M+3)">
-              Crew Afya - (Up to M+3)
-            </option>
-          </select>
-          <select
-            className="border border-gray-300 rounded-lg text-sm sm:text-[0.92rem] text-gray-600 font-medium px-3 py-2 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-            value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
-          >
-            <option value="all">All Roles</option>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-            <option value="superadmin">Super Admin</option>
-          </select>
-          <select
-            className="border border-gray-300 rounded-lg text-sm sm:text-[0.92rem] text-gray-600 font-medium px-3 py-2 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
+
+        {/* Filters */}
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <div className="flex-1 md:flex-initial">
+            <label htmlFor="role-filter" className="sr-only">
+              Filter by role
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <FaFilter className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              </div>
+              <select
+                id="role-filter"
+                value={filterRole}
+                onChange={(e) => setFilterRole(e.target.value)}
+                className="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 p-2.5"
+              >
+                <option value="all">All Roles</option>
+                <option value="user">Regular User</option>
+                <option value="admin">Admin</option>
+                <option value="superadmin">Super Admin</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex-1 md:flex-initial">
+            <label htmlFor="status-filter" className="sr-only">
+              Filter by status
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <FaFilter className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              </div>
+              <select
+                id="status-filter"
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 p-2.5"
+              >
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="pending">Pending</option>
+                <option value="suspended">Suspended</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
-      {error && (
-        <div
-          className="bg-red-200 border-l-4 border-red-500 text-red-700 p-4 mb-6 mx-4"
-          role="alert"
-        >
-          <p>{error}</p>
-        </div>
-      )}
-
+      {/* Table section */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800">
-            <tr>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider cursor-pointer"
-                onClick={() => handleSort("name")}
+        {loading ? (
+          <div className="text-center py-8">
+            <div className="spinner-border inline-block" role="status">
+              <svg
+                className="animate-spin h-8 w-8 text-admin-600"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
               >
-                <div className="flex items-center">
-                  Name {renderSortIcon("name")}
-                </div>
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider"
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            </div>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">
+              Loading users...
+            </p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-8">
+            <div className="text-red-500 text-lg mb-2">
+              <svg
+                className="inline-block h-8 w-8 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                Contact
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider"
-              >
-                Plan
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider"
-              >
-                Role
-              </th>
-              
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider cursor-pointer"
-                onClick={() => handleSort("createdAt")}
-              >
-                <div className="flex items-center">
-                  Joined {renderSortIcon("createdAt")}
-                </div>
-              </th>
-              <th
-                scope="col"
-                className="px-4 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider cursor-pointer"
-                onClick={() => handleSort("lastLogin")}
-              >
-                <div className="flex items-center">
-                  Last Login {renderSortIcon("lastLogin")}
-                </div>
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider"
-              >
-                Status
-              </th>
-              <th
-                scope="col"
-                className="px-4 py-3 text-center text-xs font-semibold text-admin-600 dark:text-admin-400 uppercase tracking-wider"
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-            {loading ? (
-              // Loading skeleton
-              [...Array(5)].map((_, index) => (
-                <tr key={index} className="animate-pulse">
-                  <td className="px-6 py-3 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-center">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 ml-auto"></div>
-                  </td>
-                </tr>
-              ))
-            ) : users.length === 0 ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Error
+            </div>
+            <p className="text-gray-600 dark:text-gray-400">{error}</p>
+            <button
+              onClick={fetchUsers}
+              className="mt-4 px-4 py-2 bg-admin-600 text-white rounded hover:bg-admin-700"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : users.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-600 dark:text-gray-400">
+              No users found. Try adjusting your filters.
+            </p>
+          </div>
+        ) : (
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <td
-                  colSpan="7"
-                  className="px-6 py-4 whitespace-nowrap text-center text-gray-500 dark:text-gray-400"
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
+                  onClick={() => handleSort("firstName")}
                 >
-                  No users found
-                </td>
+                  <div className="flex items-center">
+                    Name {renderSortIcon("firstName")}
+                  </div>
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
+                  onClick={() => handleSort("phoneNumber")}
+                >
+                  <div className="flex items-center">
+                    Contact {renderSortIcon("phoneNumber")}
+                  </div>
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
+                  onClick={() => handleSort("idNumber")}
+                >
+                  <div className="flex items-center">
+                    ID Number {renderSortIcon("idNumber")}
+                  </div>
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                >
+                  <div className="flex items-center">Plan</div>
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                >
+                  <div className="flex items-center">Role</div>
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
+                  onClick={() => handleSort("createdAt")}
+                >
+                  <div className="flex items-center">
+                    Joined {renderSortIcon("createdAt")}
+                  </div>
+                </th>
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                >
+                  <div className="flex items-center">Sacco</div>
+                </th>
+                <th
+                  scope="col"
+                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                >
+                  <div className="flex items-center">Route / County</div>
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                >
+                  Status
+                </th>
+                <th scope="col" className="relative px-6 py-3">
+                  <span className="sr-only">Actions</span>
+                </th>
               </tr>
-            ) : (
-              users.map((user) => (
+            </thead>
+            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
+              {users.map((user) => (
                 <tr
                   key={user.id}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <td
-                    className="px-6 py-3 whitespace-nowrap"
+                    className="px-6 py-3 whitespace-nowrap cursor-pointer"
                     onClick={() => handleViewUser(user)}
                   >
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 bg-admin-100 rounded-full flex items-center justify-center">
-                        <span className="text-admin-800 font-medium">
+                      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-admin-100 dark:bg-admin-900 flex items-center justify-center">
+                        <span className="text-admin-700 dark:text-admin-300 font-medium">
                           {user.firstName.charAt(0)}
                           {user.lastName.charAt(0)}
                         </span>
@@ -445,111 +412,119 @@ const UserManagement = ({
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
                           {user.firstName} {user.lastName}
                         </div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                          {user.membershipNumber || "No Membership Number"}
+                        </div>
                       </div>
                     </div>
                   </td>
                   <td
-                    className="px-6 py-3 whitespace-nowrap"
+                    className="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 cursor-pointer"
                     onClick={() => handleViewUser(user)}
                   >
-                    <div className="text-sm text-gray-900 dark:text-white">
-                      {user.email}
-                    </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {user.phoneNumber}
+                    <div>
+                      <div>{user.phoneNumber}</div>
+                      <div>{user.email || "No Email"}</div>
                     </div>
                   </td>
                   <td
-                    className="px-6 py-3 whitespace-nowrap"
+                    className="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 cursor-pointer"
                     onClick={() => handleViewUser(user)}
                   >
-                    {user.plan ? (
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-gray-900 dark:text-white">
-                          {formatPlanName(user.plan)}
-                        </span>
-                        <span
-                          className={`mt-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPlanStatusClass(
-                            user.plan.status
-                          )}`}
-                        >
-                          {user.plan.status
-                            ? user.plan.status.charAt(0).toUpperCase() +
-                              user.plan.status.slice(1)
-                            : "N/A"}
-                        </span>
+                    {user.idNumber}
+                  </td>
+                  <td
+                    className="px-6 py-3 whitespace-nowrap text-sm cursor-pointer"
+                    onClick={() => handleViewUser(user)}
+                  >
+                    {user.insuranceCoverage ? (
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-white">
+                          {formatPlanName(user.insuranceCoverage.plan)}
+                        </div>
+                        <div>
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPlanStatusClass(
+                              user.insuranceCoverage.status
+                            )}`}
+                          >
+                            {user.insuranceCoverage.status}
+                          </span>
+                        </div>
                       </div>
                     ) : (
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                      <span className="text-gray-500 dark:text-gray-400">
                         No Plan
                       </span>
                     )}
                   </td>
                   <td
-                    className="px-3 py-3 whitespace-nowrap"
+                    className="px-6 py-3 whitespace-nowrap text-sm cursor-pointer"
                     onClick={() => handleViewUser(user)}
                   >
                     <span
-                      className={`px-4 inline-flex text-xs leading-5 font-semibold rounded-lg ${
-                        user.role === "superadmin"
-                          ? "bg-purple-200 text-purple-800 dark:bg-purple-900 dark:text-purple-300"
-                          : user.role === "admin"
-                          ? "bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-                          : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        user.role === "admin" || user.role === "superadmin"
+                          ? "bg-admin-100 text-admin-800 dark:bg-admin-900 dark:text-admin-200"
+                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
                       }`}
                     >
-                      {user.role === "superadmin"
-                        ? "Super Admin"
-                        : user.role === "admin"
-                        ? "Admin"
-                        : "User"}
+                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                     </span>
                   </td>
-                 
                   <td
-                    className="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
+                    className="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 cursor-pointer"
                     onClick={() => handleViewUser(user)}
                   >
                     {formatDate(user.createdAt)}
                   </td>
                   <td
-                    className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
+                    className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 cursor-pointer"
                     onClick={() => handleViewUser(user)}
                   >
-                    {formatDate(user.lastLogin)}
+                    {user.sacco || "N/A"}
                   </td>
                   <td
-                    className="px-3 py-3 whitespace-nowrap"
+                    className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 cursor-pointer"
+                    onClick={() => handleViewUser(user)}
+                  >
+                    {user.route || user.county || "N/A"}
+                  </td>
+                  <td
+                    className="px-3 py-3 whitespace-nowrap cursor-pointer"
                     onClick={() => handleViewUser(user)}
                   >
                     <span
-                      className={`px-4 inline-flex text-xs leading-5 font-semibold rounded-lg ${
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         user.isActive
-                          ? "bg-green-200 text-green-700 dark:bg-secondary-900 dark:text-green-300"
-                          : "bg-red-200 text-red-700 dark:bg-red-900 dark:text-red-300"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                       }`}
                     >
                       {user.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td className="pr-6 py-3 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                     {renderUserActions(user)}
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Pagination */}
-      {!loading && users.length > 0 && (
+      {!loading && !error && users.length > 0 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={totalUsers}
-          pageSize={10}
+          pageSize={pageSize}
           onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+          pageSizeOptions={[10, 25, 50, 100]}
+          className="mt-4"
         />
       )}
     </div>

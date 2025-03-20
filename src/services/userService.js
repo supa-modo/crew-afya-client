@@ -104,3 +104,144 @@ export const verifyPhoneNumber = async (phoneNumber, verificationCode) => {
     throw error.response?.data || { message: "Failed to verify phone number" };
   }
 };
+
+/**
+ * Get all users (admin)
+ * @param {Object} params - Query parameters (search, role, status, page, limit)
+ * @returns {Promise} Promise with users data
+ */
+export const getAllUsers = async (params = {}) => {
+  try {
+    const response = await api.get("/users", { params });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to fetch users" };
+  }
+};
+
+/**
+ * Get user by ID (admin)
+ * @param {string} id - User ID
+ * @returns {Promise} Promise with user data
+ */
+export const getUserById = async (id) => {
+  try {
+    const response = await api.get(`/users/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to fetch user" };
+  }
+};
+
+/**
+ * Create new user (admin)
+ * @param {Object} userData - User data
+ * @returns {Promise} Promise with created user data
+ */
+export const createUser = async (userData) => {
+  try {
+    const response = await api.post("/users", userData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to create user" };
+  }
+};
+
+/**
+ * Update user (admin)
+ * @param {string} id - User ID
+ * @param {Object} userData - User data to update
+ * @returns {Promise} Promise with updated user data
+ */
+export const updateUser = async (id, userData) => {
+  try {
+    const response = await api.put(`/users/${id}`, userData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to update user" };
+  }
+};
+
+/**
+ * Toggle user active status (admin)
+ * @param {string} id - User ID
+ * @returns {Promise} Promise with updated status
+ */
+export const toggleUserStatus = async (id) => {
+  try {
+    const response = await api.patch(`/users/${id}/toggle-status`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to toggle user status" };
+  }
+};
+
+/**
+ * Add insurance plan to user (admin)
+ * @param {string} id - User ID
+ * @param {Object} insuranceData - Insurance data (planId, paymentFrequency)
+ * @returns {Promise} Promise with insurance coverage data
+ */
+export const addUserInsurance = async (id, insuranceData) => {
+  try {
+    const response = await api.post(`/users/${id}/insurance`, insuranceData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to add insurance" };
+  }
+};
+
+/**
+ * Update user insurance (admin)
+ * @param {string} id - User ID
+ * @param {Object} insuranceData - Insurance data to update
+ * @returns {Promise} Promise with updated insurance coverage data
+ */
+export const updateUserInsurance = async (id, insuranceData) => {
+  try {
+    const response = await api.put(`/users/${id}/insurance`, insuranceData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to update insurance" };
+  }
+};
+
+/**
+ * Get all plans
+ * @returns {Promise} Promise with plans data
+ */
+export const getAllPlans = async () => {
+  try {
+    const response = await api.get("/plans");
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to fetch plans" };
+  }
+};
+
+/**
+ * Get plan by ID
+ * @param {string} id - Plan ID
+ * @returns {Promise} Promise with plan data
+ */
+export const getPlanById = async (id) => {
+  try {
+    const response = await api.get(`/plans/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to fetch plan" };
+  }
+};
+
+/**
+ * Initialize default plans (admin)
+ * @returns {Promise} Promise with success message
+ */
+export const initializeDefaultPlans = async () => {
+  try {
+    const response = await api.post("/plans/init");
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to initialize plans" };
+  }
+};

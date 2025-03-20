@@ -437,7 +437,7 @@ const RegisterForm = () => {
       navigate("/login", {
         state: {
           message:
-            "Registration successful! You are now a member of Matatu Workers Union. Please log in with your credentials.",
+            "Registration successful! You are now a member of Crew Afya. Please log in with your credentials.",
           type: "success",
         },
       });
@@ -491,7 +491,7 @@ const RegisterForm = () => {
       >
         <h2 className="text-base sm:text-lg font-semibold text-primary-600 dark:text-primary-400">
           {step === 1 ? (
-            "Welcome to Matatu Workers Union"
+            "Welcome to CrewAfya Care"
           ) : step === 2 ? (
             "Verify Your Phone Number"
           ) : (

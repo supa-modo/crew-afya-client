@@ -1,7 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
-import { FaUserPlus, FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 
 // Import our components
@@ -10,22 +10,36 @@ import MedicalPlanSelector from "../../components/admin/MedicalPlanSelector";
 import DocumentUploadSection from "../../components/admin/DocumentUploadSection";
 import { TbHome2 } from "react-icons/tb";
 
+// Import services
+import { createUser, getAllPlans } from "../../services/userService";
+
 const AddNewUserPage = () => {
   const { darkMode } = useTheme();
   const navigate = useNavigate();
 
-  // Form data state - updated to use fullName instead of firstName/lastName
+  // Form data state - Using fields from UserInfoForm
   const [formData, setFormData] = useState({
-    fullName: "",
+    firstName: "",
+    lastName: "",
+    otherNames: "",
     email: "",
     phoneNumber: "",
-    role: "user",
+    idNumber: "", // This would be nationalId in the form but idNumber in the API
     password: "",
-    nationalId: "",
+    gender: "",
+    county: "",
+    sacco: "",
+    route: "",
+    role: "user",
   });
 
   // Plan selection state
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [paymentFrequency, setPaymentFrequency] = useState("daily");
+
+  // Available plans state
+  const [availablePlans, setAvailablePlans] = useState([]);
+  const [loadingPlans, setLoadingPlans] = useState(true);
 
   // Documents state
   const [documents, setDocuments] = useState([]);
@@ -35,43 +49,142 @@ const AddNewUserPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formCompleted, setFormCompleted] = useState(false);
 
-  // Available plans with payment frequencies
-  const availablePlans = [
-    {
-      id: "plan1",
-      name: "Crew Afya Lite",
-      description: "Basic medical coverage with outpatient up to 20,000",
-      forWho: "For Driver/Conductor",
-      premiums: {
-        daily: 24,
-        monthly: 713,
-        annual: 8565,
-      },
-      benefits: [
-        { name: "Inpatient", limit: "200,000" },
-        { name: "Maternity (Within Inpatient)", limit: "20,000" },
-        { name: "Outpatient - Capitation", limit: "Up to 20,000" },
-        { name: "Optical + Free Eye Test", limit: "5,000" },
-      ],
-    },
-    {
-      id: "plan2",
-      name: "Crew Afya - (Up to M+3)",
-      description: "Family coverage for up to 4 members with enhanced benefits",
-      forWho: "For Driver/Conductor + Dependents",
-      premiums: {
-        daily: 55,
-        monthly: 1661,
-        annual: 19933,
-      },
-      benefits: [
-        { name: "Inpatient", limit: "200,000" },
-        { name: "Maternity (Within Inpatient)", limit: "20,000" },
-        { name: "Outpatient - Capitation", limit: "Up to 20,000" },
-        { name: "Wellness Support", limit: "Group Sessions + Individual" },
-      ],
-    },
-  ];
+  // Fetch available plans
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        setLoadingPlans(true);
+        const response = await getAllPlans();
+        if (response.success && response.data && response.data.length > 0) {
+          // Map API data to the format expected by MedicalPlanSelector
+          setAvailablePlans(
+            response.data.map((plan) => ({
+              id: plan.id,
+              name: plan.name,
+              description: plan.description,
+              forWho: plan.forDependents
+                ? "For Driver/Conductor + Dependents"
+                : "For Driver/Conductor",
+              premiums: {
+                daily: plan.dailyPremium,
+                monthly: plan.monthlyPremium,
+                annual: plan.annualPremium,
+              },
+              benefits: [
+                {
+                  name: "Inpatient",
+                  limit: plan.inpatientLimit.toLocaleString(),
+                },
+                {
+                  name: "Maternity (Within Inpatient)",
+                  limit: plan.maternityLimit.toLocaleString(),
+                },
+                {
+                  name: "Outpatient - Capitation",
+                  limit: `Up to ${plan.outpatientLimit.toLocaleString()}`,
+                },
+                {
+                  name: "Optical + Free Eye Test",
+                  limit: plan.opticalLimit.toLocaleString(),
+                },
+                { name: "Wellness Support", limit: plan.wellnessSupport },
+              ],
+            }))
+          );
+        } else {
+          // Use default plans if API doesn't return any
+          setAvailablePlans([
+            {
+              id: "plan1",
+              name: "Crew Afya Lite",
+              description:
+                "Basic medical coverage with outpatient up to 20,000",
+              forWho: "For Driver/Conductor",
+              premiums: {
+                daily: 24,
+                monthly: 713,
+                annual: 8565,
+              },
+              benefits: [
+                { name: "Inpatient", limit: "200,000" },
+                { name: "Maternity (Within Inpatient)", limit: "20,000" },
+                { name: "Outpatient - Capitation", limit: "Up to 20,000" },
+                { name: "Optical + Free Eye Test", limit: "5,000" },
+              ],
+            },
+            {
+              id: "plan2",
+              name: "Crew Afya - (Up to M+3)",
+              description:
+                "Family coverage for up to 4 members with enhanced benefits",
+              forWho: "For Driver/Conductor + Dependents",
+              premiums: {
+                daily: 55,
+                monthly: 1661,
+                annual: 19933,
+              },
+              benefits: [
+                { name: "Inpatient", limit: "200,000" },
+                { name: "Maternity (Within Inpatient)", limit: "20,000" },
+                { name: "Outpatient - Capitation", limit: "Up to 20,000" },
+                {
+                  name: "Wellness Support",
+                  limit: "Group Sessions + Individual",
+                },
+              ],
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error("Error fetching plans:", error);
+        // Fallback to default plans
+        setAvailablePlans([
+          {
+            id: "plan1",
+            name: "Crew Afya Lite",
+            description: "Basic medical coverage with outpatient up to 20,000",
+            forWho: "For Driver/Conductor",
+            premiums: {
+              daily: 24,
+              monthly: 713,
+              annual: 8565,
+            },
+            benefits: [
+              { name: "Inpatient", limit: "200,000" },
+              { name: "Maternity (Within Inpatient)", limit: "20,000" },
+              { name: "Outpatient - Capitation", limit: "Up to 20,000" },
+              { name: "Optical + Free Eye Test", limit: "5,000" },
+            ],
+          },
+          {
+            id: "plan2",
+            name: "Crew Afya - (Up to M+3)",
+            description:
+              "Family coverage for up to 4 members with enhanced benefits",
+            forWho: "For Driver/Conductor + Dependents",
+            premiums: {
+              daily: 55,
+              monthly: 1661,
+              annual: 19933,
+            },
+            benefits: [
+              { name: "Inpatient", limit: "200,000" },
+              { name: "Maternity (Within Inpatient)", limit: "20,000" },
+              { name: "Outpatient - Capitation", limit: "Up to 20,000" },
+              {
+                name: "Wellness Support",
+                limit: "Group Sessions + Individual",
+              },
+            ],
+          },
+        ]);
+      } finally {
+        setLoadingPlans(false);
+      }
+    };
+
+    fetchPlans();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -85,13 +198,16 @@ const AddNewUserPage = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Required fields
+    // Required fields based on User model requirements
     const requiredFields = [
-      "fullName",
-      "email",
+      "firstName",
+      "lastName",
       "phoneNumber",
-      "role",
+      "idNumber",
       "password",
+      "gender",
+      "county",
+      "sacco",
     ];
 
     requiredFields.forEach((field) => {
@@ -100,15 +216,7 @@ const AddNewUserPage = () => {
       }
     });
 
-    // Validate full name - must have at least first and last name
-    if (formData.fullName) {
-      const nameParts = formData.fullName.trim().split(/\s+/);
-      if (nameParts.length < 2) {
-        newErrors.fullName = "Please enter full name (first and last name)";
-      }
-    }
-
-    // Email validation
+    // Email validation if provided
     if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
@@ -146,38 +254,32 @@ const AddNewUserPage = () => {
     setIsSubmitting(true);
 
     try {
-      // Parse the full name into first name and last name for API
-      const nameParts = formData.fullName.trim().split(/\s+/);
-      const firstName = nameParts[0];
-      const lastName = nameParts.slice(1).join(" "); // Combine rest as last name
-
-      // Prepare data for submission - format for API
+      // Map the form data fields to the API expected format
       const userData = {
-        firstName,
-        lastName,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        role: formData.role,
-        password: formData.password,
-        nationalId: formData.nationalId,
-        plan: selectedPlan,
-        documents: documents,
+        ...formData,
+        planId: selectedPlan.id,
+        paymentFrequency: selectedPlan.selectedFrequency || paymentFrequency,
       };
 
-      // Mock API call - would be replaced with actual API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log("Creating user with data:", userData);
+      // Create the user via API
+      const response = await createUser(userData);
 
-      // Show success
-      setFormCompleted(true);
+      if (response.success) {
+        // Show success
+        setFormCompleted(true);
 
-      // In a real app, you would navigate after a successful creation
-      setTimeout(() => {
-        navigate("/admin/users");
-      }, 2000);
+        // Navigate after a short delay
+        setTimeout(() => {
+          navigate("/admin/users");
+        }, 2000);
+      } else {
+        setErrors({ form: response.message || "Failed to create user" });
+      }
     } catch (error) {
       console.error("Error creating user:", error);
-      setErrors({ form: "Failed to create user. Please try again." });
+      setErrors({
+        form: error.message || "Failed to create user. Please try again.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -185,6 +287,11 @@ const AddNewUserPage = () => {
 
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
+    // Update payment frequency from plan selection if available
+    if (plan.selectedFrequency) {
+      setPaymentFrequency(plan.selectedFrequency);
+    }
+
     if (errors.plan) {
       setErrors((prev) => ({ ...prev, plan: "" }));
     }
@@ -310,14 +417,14 @@ const AddNewUserPage = () => {
                   </div>
                 )}
 
-                {/* Section 1: User Information */}
+                {/* Use UserInfoForm component */}
                 <UserInfoForm
                   formData={formData}
                   handleChange={handleChange}
                   errors={errors}
                 />
 
-                {/* Section 2: Medical Cover Plan */}
+                {/* Medical Cover Plan - Using MedicalPlanSelector */}
                 <MedicalPlanSelector
                   availablePlans={availablePlans}
                   selectedPlan={selectedPlan}
@@ -326,10 +433,15 @@ const AddNewUserPage = () => {
                 />
 
                 {/* Section 3: Documents */}
-                <DocumentUploadSection
-                  documents={documents}
-                  setDocuments={setDocuments}
-                />
+                <div className="pt-6 mt-8 border-t border-gray-200 dark:border-gray-700">
+                  <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                    Documents
+                  </h2>
+                  <DocumentUploadSection
+                    documents={documents}
+                    setDocuments={setDocuments}
+                  />
+                </div>
 
                 <div className="pt-6 mt-8 border-t border-gray-200 dark:border-gray-700">
                   <div className="flex justify-end space-x-3">
