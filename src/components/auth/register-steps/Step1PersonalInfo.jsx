@@ -22,7 +22,7 @@ const Step1PersonalInfo = ({
           <button
             type="button"
             onClick={() => handleGenderSelect("Male")}
-            className={`flex items-center justify-center py-2 px-4 border ${
+            className={`flex items-center justify-center py-1.5 sm:py-2 px-4 border ${
               formData.gender === "Male"
                 ? "border-primary-500 bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
                 : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800"
@@ -41,7 +41,7 @@ const Step1PersonalInfo = ({
           <button
             type="button"
             onClick={() => handleGenderSelect("Female")}
-            className={`flex items-center justify-center py-2 px-4 border ${
+            className={`flex items-center justify-center py-1.5 sm:py-2 px-4 border ${
               formData.gender === "Female"
                 ? "border-primary-500 bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
                 : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800"
