@@ -25,8 +25,9 @@ const CoverageUtilization = () => {
       <div className="space-y-4 mb-6">
         {[
           { name: "Inpatient", used: 50000, total: 200000 },
-          { name: "Outpatient", used: 8500, total: 20000 },
-          { name: "Optical", used: 3000, total: 5000 },
+          { name: "Outpatient", used: 13500, total: 20000 },
+          { name: "Optical", used: 5000, total: 5000 },
+          { name: "Dental", used: 8000, total: 20000 },
         ].map((benefit) => {
           const percentage = (benefit.used / benefit.total) * 100;
           return (

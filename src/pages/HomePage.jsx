@@ -113,7 +113,7 @@ const HomePage = () => {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight animate-fadeIn pt-10">
                 Empowering
                 <br />
-                <span className="text-secondary-300 mr-2">Matatu Workers</span>
+                <span className="text-secondary-300 mr-1 sm:mr-2">Matatu Workers</span>
                 Through Unity & Benefits
               </h1>
               <p className="mt-6 text-base sm:text-lg text-white text-opacity-90 max-w-2xl">
@@ -134,13 +134,13 @@ const HomePage = () => {
                   <>
                     <button
                       onClick={(e) => handleAuthAwareNavigation(e, "/register")}
-                      className="text-sm sm:text-base btn bg-white text-primary-700 hover:bg-gray-100 hover:text-primary-800 px-10 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
+                      className="text-[0.8rem] sm:text-sm md:text-base btn bg-white text-primary-700 hover:bg-gray-100 hover:text-primary-800 px-10 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
                     >
                       Join the Union <FiArrowRight className="ml-2" />
                     </button>
                     <button
                       onClick={(e) => handleAuthAwareNavigation(e, "/login")}
-                      className="text-sm sm:text-base btn bg-transparent border-2 border-white text-white hover:bg-white/10 px-12 py-3 font-medium rounded-lg flex items-center"
+                      className="text-[0.8rem] sm:text-sm md:text-base btn bg-transparent border-2 border-white text-white hover:bg-white/10 px-12 py-3 font-medium rounded-lg flex items-center"
                     >
                       Member Login
                     </button>

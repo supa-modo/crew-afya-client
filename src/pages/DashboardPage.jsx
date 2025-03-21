@@ -242,7 +242,7 @@ const DashboardPage = () => {
         {/* Breadcrumb */}
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
           <nav className="flex" aria-label="Breadcrumb">
-            <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+            <ol className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
               <li>
                 <Link
                   to="/"
@@ -310,11 +310,11 @@ const DashboardPage = () => {
             </div>
 
             <div className="flex flex-col md:flex-row gap-3 px-3 sm:px-6 lg:px-6 mb-3 sm:mb-4 md:mb-6">
-              <div className="md:w-[50%] bg-gradient-to-r from-primary-800 via-primary-700 to-primary-600 rounded-2xl p-5 sm:p-6 text-white shadow-md">
+              <div className="md:w-[50%] bg-gradient-to-r from-primary-800 via-primary-700 to-primary-600 rounded-2xl p-5 sm:p-6 text-white shadow-md relative">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="opacity-80 text-sm ">
+                      <span className="opacity-80 text-xs sm:text-sm ">
                         Matatu Workers Union
                       </span>
                       <div className="w-1 h-1 rounded-full bg-white"></div>
@@ -332,22 +332,27 @@ const DashboardPage = () => {
                         <div className="opacity-80 text-[0.7rem] sm:text-xs">
                           Member ID
                         </div>
-                        <div>{user?.membershipNumber || "-------"}</div>
+                        <div className="text-xs sm:text-sm text-secondary-500">
+                          {user?.membershipNumber || "-------"}
+                        </div>
                       </div>
                       <div>
                         <div className="opacity-80 text-[0.7rem] sm:text-xs">
                           Operation Route
                         </div>
-                        <div>{user?.route || "125"}</div>
+                        <div className="text-xs sm:text-sm text-amber-500">
+                          {user?.route || "125"}
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="flex h-12 w-12 md:h-24 md:w-24 rounded-full bg-white/20 items-center justify-center">
-                    <TbBus className="h-7 w-7 md:h-14 md:w-14 text-white" />
+
+                  <div className="absolute top-5 right-5 flex h-12 w-12 md:h-20 md:w-20 rounded-full bg-white/20 items-center justify-center">
+                    <TbBus className="h-7 w-7 md:h-12 md:w-12 text-white" />
                   </div>
                 </div>
 
-                <div className="mt-4 sm:mt-6 pt-4 border-t border-white/20 flex justify-between text-xs sm:text-sm">
+                <div className="mt-4 sm:mt-6 pt-4 border-t border-white/20 flex justify-between text-[0.7rem] sm:text-xs md:text-sm">
                   <div className="flex items-center ">
                     <TbCalendarEvent className="mr-2 h-4 w-4" />
                     <span className="hidden sm:inline mr-1">Member since:</span>
@@ -434,7 +439,7 @@ const DashboardPage = () => {
               ].map((tab) => (
                 <button
                   key={tab.id}
-                  className={`flex items-center px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                     activeTab === tab.id
                       ? "bg-primary-200 text-primary-700 dark:bg-primary-900/50 dark:text-primary-400"
                       : "text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
@@ -452,35 +457,32 @@ const DashboardPage = () => {
         {/* Main Content - Overview Section */}
         {activeTab === "overview" && (
           <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-            
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Main content area - 2 columns on large screens */}
-              
+
               <div className="lg:col-span-2 space-y-6">
-                
-          <div className="bg-white dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-                {/* Coverage Utilization */}
-                <CoverageUtilization />
+                <div className="bg-white dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                  {/* Coverage Utilization */}
+                  <CoverageUtilization />
 
-                {/* Recent Payments Section */}
-                <div className="mt-8 px-4 sm:px-6">
-                  <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 mb-1.5  flex items-center">
-                    <MdPayments className="mr-2 h-6 w-6 text-green-700" />
-                    Recent Payments
-                  </h3>
-                  <PaymentHistory />
+                  {/* Recent Payments Section */}
+                  <div className="mt-8 px-4 sm:px-6">
+                    <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 mb-1.5  flex items-center">
+                      <MdPayments className="mr-2 h-6 w-6 text-green-700" />
+                      Recent Payments
+                    </h3>
+                    <PaymentHistory />
+                  </div>
+
+                  {/* Documents Section */}
+                  <DocumentsSection
+                    documents={documents}
+                    isLoadingDocs={isLoadingDocs}
+                    handleDeleteDocument={handleDeleteDocument}
+                    isSubmitting={isSubmitting}
+                  />
                 </div>
-
-                {/* Documents Section */}
-                <DocumentsSection
-                  documents={documents}
-                  isLoadingDocs={isLoadingDocs}
-                  handleDeleteDocument={handleDeleteDocument}
-                  isSubmitting={isSubmitting}
-                />
               </div>
-              </div>
-
 
               {/* Right Sidebar */}
               <div className="space-y-6">
