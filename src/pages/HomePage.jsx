@@ -80,7 +80,7 @@ const HomePage = () => {
       }
 
       if (counterProviders) {
-        animateValue("counter-providers", 0, 100, 1000);
+        animateValue("counter-providers", 0, 85, 1000);
       }
     }, 500); // 500ms delay
 
@@ -94,9 +94,9 @@ const HomePage = () => {
         {/* Background image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/afya1.jpg"
+            src="/matwana.jpg"
             alt="Background"
-            className="w-full h-full object-cover opacity-20 mix-blend-overlay"
+            className="w-full h-full object-cover opacity-30 mix-blend-overlay"
           />
         </div>
 
@@ -111,15 +111,15 @@ const HomePage = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="md:w-1/2 mb-12 md:-mb-10 flex flex-col justify-end ">
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight animate-fadeIn pt-10">
-                Transform Your
+                Empowering
                 <br />
-                <span className="text-secondary-300 mr-2">Health Coverage</span>
-                Payment Experience & Management
+                <span className="text-secondary-300 mr-2">Matatu Workers</span>
+                Through Unity & Benefits
               </h1>
               <p className="mt-6 text-base sm:text-lg text-white text-opacity-90 max-w-2xl">
-                Our comprehensive platform streamlines your medical cover
-                management, making premium payments, coverage tracking, and
-                financial planning seamless.
+                Our comprehensive platform provides matatu operators with union
+                membership management, affordable loan services, and quality
+                medical insurance coverage, all in one place.
               </p>
 
               <div className="mt-8 flex space-x-4">
@@ -136,13 +136,13 @@ const HomePage = () => {
                       onClick={(e) => handleAuthAwareNavigation(e, "/register")}
                       className="text-sm sm:text-base btn bg-white text-primary-700 hover:bg-gray-100 hover:text-primary-800 px-10 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
                     >
-                      Get Started <FiArrowRight className="ml-2" />
+                      Join the Union <FiArrowRight className="ml-2" />
                     </button>
                     <button
                       onClick={(e) => handleAuthAwareNavigation(e, "/login")}
                       className="text-sm sm:text-base btn bg-transparent border-2 border-white text-white hover:bg-white/10 px-12 py-3 font-medium rounded-lg flex items-center"
                     >
-                      Sign In
+                      Member Login
                     </button>
                   </>
                 )}
@@ -162,8 +162,8 @@ const HomePage = () => {
                       ))}
                     </div>
                     <p className="text-white text-opacity-90">
-                      <span className="font-semibold">10,000+</span> users trust
-                      our platform
+                      <span className="font-semibold">10,000+</span> matatu
+                      operators trust our union
                     </p>
                   </>
                 )}
@@ -194,10 +194,10 @@ const HomePage = () => {
                     </div>
                     <div className="ml-3">
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        Payment Complete
+                        Membership Active
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Insurance premium paid
+                        Union dues paid successfully
                       </p>
                     </div>
                   </div>
@@ -210,7 +210,7 @@ const HomePage = () => {
                     </div>
                     <div className="ml-3">
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        Coverage Active
+                        Medical Cover Active
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
                         Expires in 30 days
@@ -259,10 +259,10 @@ const HomePage = () => {
                 </div>
 
                 <h3 className="mt-1  text-green-700 font-semibold dark:text-gray-300 ">
-                  Active Users
+                  Registered Members
                 </h3>
                 <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
-                  Managing their health coverage
+                  Active matatu operators in our union
                 </p>
               </div>
             </div>
@@ -282,10 +282,10 @@ const HomePage = () => {
                 </div>
 
                 <h3 className="mt-1 text-green-700 font-semibold dark:text-gray-300 ">
-                  Payments Processed
+                  Loans Disbursed
                 </h3>
                 <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
-                  Secure transactions completed
+                  In KSh to matatu operators
                 </p>
               </div>
             </div>
@@ -305,10 +305,10 @@ const HomePage = () => {
                 </div>
 
                 <h3 className="mt-1 text-green-700 font-semibold dark:text-gray-300 ">
-                  Satisfaction Rate
+                  Medical Coverage
                 </h3>
                 <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
-                  From our subscribed members
+                  Operators with active health insurance
                 </p>
               </div>
             </div>
@@ -321,14 +321,15 @@ const HomePage = () => {
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-10 md:mb-14">
             <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
-              Features
+              Union Benefits
             </h2>
             <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-gray-600 dark:text-white">
-              Everything You Need in One Place
+              Comprehensive Support for Matatu Operators
             </h2>
             <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Our comprehensive platform provides you with all the tools to
-              manage your health insurance payments and coverage effectively.
+              Our union provides matatu operators with access to essential
+              services including affordable loans, medical insurance, and
+              supportive community resources.
             </p>
           </div>
 
@@ -336,58 +337,58 @@ const HomePage = () => {
             {[
               {
                 icon: <TbShieldHalfFilled className="h-6 w-6" />,
-                title: "Coverage Tracking",
+                title: "Medical Coverage",
                 description:
-                  "Monitor your insurance coverage limits and usage in real-time with detailed visualizations.",
+                  "Access to affordable health insurance plans for you and your family with comprehensive benefits.",
                 color: "primary",
               },
               {
                 icon: <TbCreditCardFilled className="h-6 w-6" />,
-                title: "Premium Payments",
+                title: "Affordable Loans",
                 description:
-                  "Pay your premiums easily using M-Pesa and track your payment history in one place.",
+                  "Low-interest loans for emergency needs, vehicle improvements, and business expansion.",
                 color: "red",
               },
               {
                 icon: <MdOutlinePhoneIphone className="h-6 w-6" />,
                 title: "USSD Access",
                 description:
-                  "Access your account and make payments via USSD on any feature phone for universal access.",
+                  "Manage your membership, loans, and insurance via USSD on any feature phone.",
                 color: "orange",
               },
               {
                 icon: <PiChartLineUpDuotone className="h-6 w-6" />,
-                title: "Payment Analytics",
+                title: "Financial Growth",
                 description:
-                  "Track your payment history and analyze your insurance spending with interactive charts.",
+                  "Track your savings, loan repayments, and insurance contributions with detailed analytics.",
                 color: "indigo",
               },
               {
                 icon: <PiUserDuotone className="h-6 w-6" />,
-                title: "User Profiles",
+                title: "Union Membership",
                 description:
-                  "Manage your personal details and upload required documents securely in your profile.",
+                  "Official recognition as a union member with representation and collective bargaining.",
                 color: "purple",
               },
               {
                 icon: <TbLockSquareRounded className="h-7 w-7" />,
-                title: "Secure Access",
+                title: "Secure Transactions",
                 description:
-                  "Multi-factor authentication and encryption ensure your financial data stays protected.",
+                  "Safe payment processing for dues, loan repayments, and insurance premiums via M-Pesa.",
                 color: "blue",
               },
               {
                 icon: <TbCalendarCheck className="h-6 w-6" />,
-                title: "Scheduled Payments",
+                title: "Flexible Payments",
                 description:
-                  "Set up recurring payments on daily, weekly, or monthly schedules for your convenience.",
+                  "Set up daily, weekly, or monthly payment schedules for premiums and loan repayments.",
                 color: "red",
               },
               {
                 icon: <TbFileText className="h-6 w-6" />,
-                title: "Insurance Documentation",
+                title: "Documentation Support",
                 description:
-                  "Access and store all your insurance policy documents in one secure location.",
+                  "Access and store important documents including membership certificates and loan agreements.",
                 color: "pink",
               },
             ].map((feature, index) => (
@@ -418,14 +419,14 @@ const HomePage = () => {
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
-              Simple Process
+              Membership Process
             </h2>
             <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-green-700 dark:text-white">
-              How It Works
+              How to Join & Benefit
             </h2>
             <p className="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Our platform makes managing your health insurance payments as
-              simple as possible.
+              Becoming a member of our matatu workers union is simple and
+              provides immediate access to benefits.
             </p>
           </div>
 
@@ -437,30 +438,30 @@ const HomePage = () => {
               {[
                 {
                   step: "01",
-                  title: "Create Account",
+                  title: "Register as Member",
                   description:
-                    "Sign up with your email or phone number and verify your identity with a one-time password.",
+                    "Sign up with your ID number, phone number, and route details to become an official union member.",
                   icon: <PiUserDuotone className="h-8 w-8" />,
                 },
                 {
                   step: "02",
-                  title: "Choose Coverage",
+                  title: "Select Your Benefits",
                   description:
-                    "Select your preferred insurance coverage type from our available options.",
+                    "Choose from our loan products and medical insurance plans based on your needs and eligibility.",
                   icon: <TbShieldHalfFilled className="h-8 w-8" />,
                 },
                 {
                   step: "03",
                   title: "Set Up Payments",
                   description:
-                    "Configure your payment schedule and link your preferred payment method.",
+                    "Configure your payment schedule for union dues, loan repayments, and insurance premiums.",
                   icon: <TbCreditCardFilled className="h-8 w-8" />,
                 },
                 {
                   step: "04",
-                  title: "Monitor Coverage",
+                  title: "Access Benefits",
                   description:
-                    "Track your coverage, payments, and account status through your personalized dashboard.",
+                    "Track your membership status, loan applications, and insurance coverage through your dashboard.",
                   icon: <PiChartLineUpDuotone className="h-8 w-8" />,
                 },
               ].map((step, index) => (
@@ -486,209 +487,152 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Demo Video Section */}
-      {/* <div
-        id="demo-video"
-        className="py-24 bg-gray-900 text-white relative overflow-hidden"
-      >
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('/api/placeholder/1920/1080')] bg-cover bg-center"></div>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-base font-semibold text-primary-400 uppercase tracking-wide">
-              See It In Action
+      {/* Insurance Plans Section */}
+      <div id="insurance-plans" className="py-24 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-10 md:mb-14">
+            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+              Medical Insurance
             </h2>
-            <h2 className="mt-2 text-4xl font-bold text-white">
-              Watch How Our Platform Works
+            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-gray-600 dark:text-white">
+              Affordable Health Coverage Plans
             </h2>
-            <p className="mt-4 text-xl text-gray-300 max-w-2xl mx-auto">
-              Get a quick overview of our platform's key features and how they
-              can help you manage your health insurance.
+            <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Choose from our carefully selected medical insurance plans
+              designed specifically for matatu operators.
             </p>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl overflow-hidden shadow-2xl border border-gray-700 aspect-w-16 aspect-h-9 max-w-4xl mx-auto">
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="p-12 text-center">
-                <div className="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-6 cursor-pointer hover:bg-primary-700 transition-colors">
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M8 5v14l11-7z"></path>
-                  </svg>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 transform transition-transform hover:scale-105">
+              <div className="bg-primary-500 p-6 text-white">
+                <h3 className="text-xl sm:text-2xl font-bold">
+                  Crew Afya Lite
+                </h3>
+                <p className="mt-1 text-primary-100">For Driver/Conductor</p>
+                <div className="mt-4 flex items-baseline">
+                  <span className="text-2xl sm:text-3xl font-bold">KSh 24</span>
+                  <span className="ml-1 text-sm">/day</span>
                 </div>
-                <p className="text-lg text-gray-300">
-                  Click to play demo video
+                <p className="mt-1 text-sm text-primary-100">
+                  or KSh 713/month (KSh 8,565/year)
                 </p>
               </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
-      {/* Testimonials Section */}
-      {/* <div id="testimonials" className="py-24 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
-              Testimonials
-            </h2>
-            <h2 className="mt-2 text-4xl font-bold text-gray-900 dark:text-white">
-              What Our Users Say
-            </h2>
-            <p className="mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Hear from our satisfied users about how our platform has
-              transformed their insurance management experience.
-            </p>
-          </div>
-
-          <div className="relative">
-            <div className="flex overflow-hidden">
-              <div
-                className="flex transition-transform duration-500"
-                style={{
-                  transform: `translateX(-${activeTestimonial * 100}%)`,
-                }}
-              >
-                {testimonials.map((testimonial, index) => (
-                  <div key={index} className="w-full flex-shrink-0 px-4">
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 h-full">
-                      <div className="flex items-center mb-6">
-                        <div className="flex-shrink-0">
-                          <img
-                            src={testimonial.avatar}
-                            alt={testimonial.name}
-                            className="h-12 w-12 rounded-full"
-                          />
-                        </div>
-                        <div className="ml-4">
-                          <h4 className="text-lg font-bold text-gray-900 dark:text-white">
-                            {testimonial.name}
-                          </h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {testimonial.role}
-                          </p>
-                        </div>
-                      </div>
-                      <p className="text-gray-700 dark:text-gray-300 text-lg italic">
-                        "{testimonial.content}"
-                      </p>
-                      <div className="mt-6 flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <svg
-                            key={star}
-                            className="h-5 w-5 text-yellow-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            // Navigation dots 
-            <div className="flex justify-center mt-8 space-x-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveTestimonial(index)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
-                    activeTestimonial === index
-                      ? "bg-primary-600"
-                      : "bg-gray-300 dark:bg-gray-600"
-                  }`}
-                  aria-label={`Go to testimonial ${index + 1}`}
-                />
-              ))}
-            </div>
-
-            // Navigation arrows 
-            <div className="hidden md:block">
-              <button
-                onClick={() =>
-                  setActiveTestimonial(Math.max(0, activeTestimonial - 1))
-                }
-                className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-white dark:bg-gray-800 shadow-lg rounded-full w-10 h-10 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-              <button
-                onClick={() =>
-                  setActiveTestimonial(
-                    Math.min(testimonials.length - 1, activeTestimonial + 1)
-                  )
-                }
-                className="absolute top-1/2 -right-4 transform -translate-y-1/2 bg-white dark:bg-gray-800 shadow-lg rounded-full w-10 h-10 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
-      {/* CTA Section */}
-      <div className="">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 md:pb-20">
-          <div className="bg-white border border-gray-200  dark:border-gray-700 dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
-            <div className="md:flex">
-              <div className="md:w-1/2 p-8 md:p-12">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                  Ready to transform your insurance management?
-                </h2>
-                <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400">
-                  Join thousands of users who are simplifying their health
-                  insurance payments and coverage tracking.
-                </p>
-                <div className="mt-6 md:mt-8">
+              <div className="p-6">
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <svg
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span>Inpatient Coverage: KSh 200,000</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span>Maternity: KSh 20,000</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span>Outpatient: Up to KSh 20,000</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span>Optical Coverage: KSh 5,000</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span>Accident Coverage: KSh 50,000</span>
+                  </li>
+                </ul>
+                <div className="mt-6">
                   <Link
                     to={isAuthenticated ? "/dashboard" : "/register"}
-                    className="btn btn-primary px-8 py-3 text-sm sm:text-base font-medium rounded-lg shadow-lg hover:shadow-xl transition-all"
+                    className="block w-full text-center bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-lg font-medium"
                   >
-                    {isAuthenticated ? "Go to Dashboard" : "Get Started Now"}
+                    {isAuthenticated ? "Select Plan" : "Join & Select"}
                   </Link>
                 </div>
               </div>
-              <div className="md:w-1/2 border-l border-gray-200 dark:border-gray-700 bg-gradient-to-br from-primary-500 to-secondary-600 dark:from-primary-700 dark:to-secondary-800 p-8 md:p-12 text-white">
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold">
-                  Why Choose Us?
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 transform transition-transform hover:scale-105">
+              <div className="bg-secondary-500 p-6 text-white">
+                <h3 className="text-xl sm:text-2xl font-bold">
+                  Crew Afya - (Up to M+3)
                 </h3>
-                <ul className="mt-3 md:mt-6 space-y-3 sm:space-y-4 ">
+                <p className="mt-1 text-secondary-100">
+                  For Driver/Conductor + Dependents
+                </p>
+                <div className="mt-4 flex items-baseline">
+                  <span className="text-2xl sm:text-3xl font-bold">KSh 55</span>
+                  <span className="ml-1 text-sm">/day</span>
+                </div>
+                <p className="mt-1 text-sm text-secondary-100">
+                  or KSh 1,661/month (KSh 19,933/year)
+                </p>
+              </div>
+              <div className="p-6">
+                <ul className="space-y-3">
                   <li className="flex items-start">
                     <svg
-                      className="h-6 w-6 text-white mr-2"
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -700,13 +644,11 @@ const HomePage = () => {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span className="text-sm md:text-base">
-                      Comprehensive medical insurance coverage tracking
-                    </span>
+                    <span>Inpatient Coverage: KSh 200,000</span>
                   </li>
                   <li className="flex items-start">
                     <svg
-                      className="h-6 w-6 text-white mr-2"
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -718,13 +660,11 @@ const HomePage = () => {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span className="text-sm md:text-base">
-                      Secure payment processing via M-Pesa
-                    </span>
+                    <span>Maternity: KSh 20,000</span>
                   </li>
                   <li className="flex items-start">
                     <svg
-                      className="h-6 w-6 text-white mr-2"
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -736,13 +676,11 @@ const HomePage = () => {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span className="text-sm md:text-base">
-                      Universal access through web and USSD
-                    </span>
+                    <span>Outpatient: Up to KSh 20,000</span>
                   </li>
                   <li className="flex items-start">
                     <svg
-                      className="h-6 w-6 text-white mr-2"
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -754,13 +692,330 @@ const HomePage = () => {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span className="text-sm md:text-base">
-                      Payment history tracking and analytics with statements
-                    </span>
+                    <span>Covers Spouse & Up to 3 Children</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span>Individual Wellness Support Sessions</span>
                   </li>
                 </ul>
+                <div className="mt-6">
+                  <Link
+                    to={isAuthenticated ? "/dashboard" : "/register"}
+                    className="block w-full text-center bg-secondary-500 hover:bg-secondary-600 text-white py-2 px-4 rounded-lg font-medium"
+                  >
+                    {isAuthenticated ? "Select Plan" : "Join & Select"}
+                  </Link>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Loan Services Section */}
+      <div id="loan-services" className="py-24">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-10 md:mb-14">
+            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+              Financial Support
+            </h2>
+            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-gray-600 dark:text-white">
+              Union Loan Products
+            </h2>
+            <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Access low-interest loans designed for matatu operators at various
+              stages of business growth.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                title: "Emergency Loan",
+                amount: "KSh 50,000",
+                interest: "10% p.a.",
+                period: "Up to 6 months",
+                eligibility: "Active membership for 3+ months",
+                color: "red",
+              },
+              {
+                title: "Vehicle Improvement",
+                amount: "KSh 200,000",
+                interest: "12% p.a.",
+                period: "Up to 24 months",
+                eligibility: "Active membership for 6+ months",
+                color: "blue",
+              },
+              {
+                title: "Business Expansion",
+                amount: "KSh 500,000",
+                interest: "14% p.a.",
+                period: "Up to 36 months",
+                eligibility:
+                  "Active membership for 12+ months, good repayment history",
+                color: "green",
+              },
+              {
+                title: "Fleet Addition",
+                amount: "KSh 1,000,000",
+                interest: "15% p.a.",
+                period: "Up to 48 months",
+                eligibility:
+                  "Active membership for 24+ months, collateral required",
+                color: "purple",
+              },
+            ].map((loan, index) => (
+              <div
+                key={index}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 transform transition-transform hover:scale-105"
+              >
+                <div className={`bg-${loan.color}-500 p-5 text-white`}>
+                  <h3 className="text-lg sm:text-xl font-bold">{loan.title}</h3>
+                  <div className="mt-2 flex items-baseline">
+                    <span className="text-xl sm:text-2xl font-bold">
+                      {loan.amount}
+                    </span>
+                    <span className="ml-2 text-sm">max</span>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <svg
+                        className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      <span>Interest Rate: {loan.interest}</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg
+                        className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      <span>Repayment: {loan.period}</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg
+                        className="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      <span className="text-sm">
+                        Eligibility: {loan.eligibility}
+                      </span>
+                    </li>
+                  </ul>
+                  <div className="mt-4">
+                    <Link
+                      to={isAuthenticated ? "/loans" : "/register"}
+                      className={`block w-full text-center bg-${loan.color}-500 hover:bg-${loan.color}-600 text-white py-2 px-4 rounded-lg font-medium`}
+                    >
+                      {isAuthenticated ? "Apply Now" : "Join to Apply"}
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Testimonials Section */}
+      <div id="testimonials" className="py-24 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-10 md:mb-14">
+            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+              Union Member Stories
+            </h2>
+            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-gray-600 dark:text-white">
+              What Our Members Say
+            </h2>
+            <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Hear from matatu operators who have benefited from our union
+              services and support.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "John Mwangi",
+                role: "Matatu Driver, Route 125",
+                image: "/testimonial1.jpg",
+                quote:
+                  "The union helped me access affordable medical coverage for my family. When my son got sick, I didn't have to worry about the hospital bills.",
+              },
+              {
+                name: "Mary Kamau",
+                role: "Matatu Owner, Nairobi East",
+                image: "/testimonial2.jpg",
+                quote:
+                  "I took a vehicle improvement loan to upgrade my matatu's safety features. The low interest rate and flexible payment terms made it very manageable.",
+              },
+              {
+                name: "David Ochieng",
+                role: "Matatu Conductor, Route 58",
+                image: "/testimonial3.jpg",
+                quote:
+                  "The USSD service is incredibly convenient. I can check my insurance status and make payments even when I'm on the road without a smartphone.",
+              },
+            ].map((testimonial, index) => (
+              <div
+                key={index}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+              >
+                <div className="flex items-center mb-4">
+                  <div className="h-12 w-12 rounded-full bg-gray-200 overflow-hidden">
+                    <img
+                      src={testimonial.image || "/avatar-placeholder.png"}
+                      alt={testimonial.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                      {testimonial.name}
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {testimonial.role}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-gray-600 dark:text-gray-300 italic">
+                  "{testimonial.quote}"
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Call to Action Section */}
+      <div className="py-16 bg-primary-600">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
+            Join the Matatu Workers Union Today
+          </h2>
+          <p className="mt-4 text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto">
+            Get access to affordable medical coverage, low-interest loans, and
+            the security of being part of Kenya's largest matatu operators
+            union.
+          </p>
+          <div className="mt-8 flex justify-center">
+            <Link
+              to="/register"
+              className="text-base sm:text-lg px-8 py-3 bg-white text-primary-600 font-medium rounded-lg shadow-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1"
+            >
+              Register Now
+            </Link>
+            <Link
+              to="/about"
+              className="ml-4 text-base sm:text-lg px-8 py-3 bg-transparent border-2 border-white text-white font-medium rounded-lg hover:bg-white/10 transition-all"
+            >
+              Learn More
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div id="faq" className="py-24 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+              Frequently Asked Questions
+            </h2>
+            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-700 dark:text-white">
+              Common Questions About Our Union
+            </h2>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {[
+              {
+                question:
+                  "How do I become a member of the Matatu Workers Union?",
+                answer:
+                  "To become a member, you need to register with your ID number, phone number, and route details. You can register online through our website or via USSD by dialing *456*789#.",
+              },
+              {
+                question: "What are the membership fees?",
+                answer:
+                  "The union charges a monthly membership fee of KSh 300, which can be paid daily, weekly, or monthly through M-Pesa. This fee gives you access to all union benefits including loan eligibility and representation.",
+              },
+              {
+                question:
+                  "How do I access medical insurance through the union?",
+                answer:
+                  "After becoming a member, you can select one of our medical insurance plans and set up your payment schedule. Coverage begins immediately after your first payment is processed.",
+              },
+              {
+                question: "What types of loans does the union offer?",
+                answer:
+                  "We offer emergency loans (up to KSh 50,000), vehicle improvement loans (up to KSh 200,000), business expansion loans (up to KSh 500,000), and fleet addition loans (up to KSh 1,000,000), with interest rates ranging from 10% to 15% p.a.",
+              },
+              {
+                question:
+                  "How long does it take to process a loan application?",
+                answer:
+                  "Emergency loans are processed within 24 hours, while other loan types typically take 3-5 business days for approval and disbursement after all required documentation is submitted.",
+              },
+              {
+                question:
+                  "Can I manage my account if I don't have a smartphone?",
+                answer:
+                  "Yes, our USSD service allows you to register, check your membership status, view loan balances, check insurance coverage, and make payments using any mobile phone by dialing *456*789#.",
+              },
+            ].map((faq, index) => (
+              <div
+                key={index}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700"
+              >
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                  {faq.question}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">{faq.answer}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

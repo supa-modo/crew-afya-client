@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
 import ConfirmationModal from "../common/ConfirmationModal";
-import { TbCloudUpload, TbDownload, TbTrash } from "react-icons/tb";
+import { TbCloudUpload, TbDownload, TbTrash, TbCheck } from "react-icons/tb";
 import {
   PiFilePdfDuotone,
   PiFilesDuotone,
   PiImageDuotone,
 } from "react-icons/pi";
-import {
-  getUserDocuments,
-  deleteUserDocument,
-} from "../../services/documentService";
+import { deleteUserDocument } from "../../services/documentService";
 
 const DocumentsTab = ({
   documents,
@@ -17,9 +14,10 @@ const DocumentsTab = ({
   uploadProgress,
   hasIdDocument,
   handleFileUploadClick,
-  handleDeleteDocument,
-  setShowUploadModal,
   isSubmitting,
+  setIsSubmitting,
+  setMessage,
+  fetchDocuments,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState(null);
@@ -29,16 +27,31 @@ const DocumentsTab = ({
     setShowDeleteModal(true);
   };
 
-
   const confirmDelete = async () => {
     if (documentToDelete) {
       try {
-          await handleDeleteDocument(documentToDelete.id);
-          setShowDeleteModal(false);
-        setDocumentToDelete(null);
+        setIsSubmitting(true);
+        const response = await deleteUserDocument(documentToDelete.id);
+
+        if (response?.success) {
+          await fetchDocuments();
+          setMessage({
+            type: "success",
+            text: response.message || "Document deleted successfully",
+          });
+        } else {
+          throw new Error(response?.message || "Failed to delete document");
+        }
       } catch (error) {
         console.error("Error deleting document:", error);
-        setError("Failed to delete document. Please try again.");
+        setMessage({
+          type: "error",
+          text: error.message || "Failed to delete document. Please try again.",
+        });
+      } finally {
+        setIsSubmitting(false);
+        setShowDeleteModal(false);
+        setDocumentToDelete(null);
       }
     }
   };
@@ -247,12 +260,14 @@ const DocumentsTab = ({
                       </span>
                     </div>
                     {doc.isVerified && (
-                      <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                      <span className="inline-flex items-center mt-1 px-4 py-0.5 sm:py-1 rounded-md text-xs font-medium bg-green-200 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                        <TbCheck className="mr-1 h-4 w-4" />
                         Verified
                       </span>
                     )}
                   </div>
                 </div>
+
                 <div className="flex space-x-3 items-center">
                   <a
                     href={doc.fileUrl}

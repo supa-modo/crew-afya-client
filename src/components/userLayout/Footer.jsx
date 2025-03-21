@@ -18,12 +18,12 @@ const Footer = () => {
                 alt="CrewAfya"
               />
               <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
-                CrewAfya Care
+                Matatu Workers Union
               </span>
             </Link>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Streamlining health insurance premium collections and financial
-              record-keeping.
+              Streamlining Union membership management, medical coverage, and
+              loan applications all in one place.
             </p>
             <div className="mt-4 flex space-x-4">
               <a
@@ -201,10 +201,10 @@ const Footer = () => {
           <div className="flex items-center mb-4 md:mb-0">
             <img className="h-7 w-auto mr-2" src="/logo.png" alt="CrewAfya" />
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              &copy; {currentYear} CrewAfya. All rights reserved.
+              &copy; {currentYear} Matatu Wokers Union. All rights reserved.
             </span>
           </div>
-          <div className="mt-4 md:mt-0 flex space-x-6">
+          <div className="mt-3 md:mt-0 flex space-x-6">
             <Link
               to="/privacy"
               className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"

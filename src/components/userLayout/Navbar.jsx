@@ -149,11 +149,11 @@ const Navbar = () => {
                     />
                   </div>
                   <div className="flex flex-col leading-none">
-                    <span className="text-xl font-bold bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent dark:from-primary-400 dark:to-primary-500">
-                      CrewAfya
+                    <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent dark:from-primary-400 dark:to-primary-500">
+                      Matatu Workers
                     </span>
                     <span className="text-lg sm:text-xl -mt-2.5 sm:-mt-2 font-bold  bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent dark:from-primary-400 dark:to-primary-500">
-                      Care
+                      Union
                     </span>
                   </div>
                 </div>
@@ -296,7 +296,7 @@ const Navbar = () => {
                               <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
                                 {user?.email}
                               </p>
-                            </div>  
+                            </div>
                             <div className="py-1">
                               <Link
                                 to="/profile"

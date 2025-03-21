@@ -13,12 +13,12 @@ import {
   PiFilePdfDuotone,
   PiFilesDuotone,
   PiImageDuotone,
+  PiWarningDuotone,
 } from "react-icons/pi";
 import {
   TbCalendarDot,
   TbCheck,
   TbDownload,
-  TbFileText,
   TbTrash,
   TbUpload,
 } from "react-icons/tb";
@@ -28,6 +28,7 @@ import {
   deleteUserDocument,
   verifyDocument,
 } from "../../../services/documentService";
+import ConfirmationModal from "../../common/ConfirmationModal";
 
 const UserDetailsDocuments = ({ user }) => {
   const [uploadingDocument, setUploadingDocument] = useState(false);
@@ -40,6 +41,12 @@ const UserDetailsDocuments = ({ user }) => {
   const [documents, setDocuments] = useState([]);
   const [isLoadingDocs, setIsLoadingDocs] = useState(false);
   const [documentDescription, setDocumentDescription] = useState("");
+
+  // state for document deletion
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState(null);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [documentToVerify, setDocumentToVerify] = useState(null);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -73,25 +80,27 @@ const UserDetailsDocuments = ({ user }) => {
     }
   };
 
- 
   const fetchDocuments = async () => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      setError("No user selected");
+      return;
+    }
 
     try {
       setIsLoadingDocs(true);
+      setError(null);
       const response = await getUserDocumentsByAdmin(user.id);
 
-      // Check if response exists and has data
-      if (response && response.data) {
+      if (response && response.success) {
         setDocuments(response.data || []);
-        
       } else {
-        // Handle case where response structure is different
-        setDocuments(response || []);
+        setDocuments([]);
+        setError("No documents found");
       }
     } catch (error) {
       console.error("Error fetching documents:", error);
-      setError("Failed to fetch documents. Please try again.");
+      setError(error.message || "Failed to fetch documents. Please try again.");
+      setDocuments([]);
     } finally {
       setIsLoadingDocs(false);
     }
@@ -105,16 +114,21 @@ const UserDetailsDocuments = ({ user }) => {
   }, [user?.id]);
 
   const handleSubmitUpload = async () => {
-    if (!documentType || !documentName || !selectedFile || !user?.id) {
-      setError("Please fill in all required fields");
+    if (!user?.id) {
+      setError("No user selected");
       return;
     }
 
-    setIsSubmitting(true);
-    setError(null);
-    setSuccess(null);
+    if (!selectedFile || !documentType) {
+      setError("Please select a file and document type");
+      return;
+    }
 
     try {
+      setIsSubmitting(true);
+      setError(null);
+      setSuccess(null);
+
       // Create FormData for file upload
       const formData = new FormData();
       formData.append("file", selectedFile);
@@ -125,22 +139,20 @@ const UserDetailsDocuments = ({ user }) => {
       }
 
       // Call API to upload document for the user (admin function)
-      const response = await uploadUserDocument(user.id, formData);
+      const response = await uploadUserDocument(user?.id, formData);
 
-      if (response && response.success) {
-        setSuccess("Document uploaded successfully");
-
-        // Refresh the documents list
+      if (response.success) {
+        setSuccess(response.message);
         await fetchDocuments();
 
         // Reset form
         handleCancelUpload();
       } else {
-        throw new Error("Failed to upload document");
+        throw new Error(response.message || "Failed to upload document");
       }
     } catch (error) {
       console.error("Upload error:", error);
-      setError("Failed to upload document. Please try again.");
+      setError(error.message || "Failed to upload document. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -149,10 +161,6 @@ const UserDetailsDocuments = ({ user }) => {
   const handleDeleteDocument = async (documentId) => {
     if (!documentId) return;
 
-    if (!confirm("Are you sure you want to delete this document?")) {
-      return;
-    }
-
     try {
       setIsSubmitting(true);
       setError(null);
@@ -160,16 +168,17 @@ const UserDetailsDocuments = ({ user }) => {
 
       const response = await deleteUserDocument(documentId);
 
-      if (response && response.success) {
-        setSuccess("Document deleted successfully");
-        // Refresh documents after deletion
-        await fetchDocuments();
+      if (response?.success) {
+        setSuccess(
+          response.message || "Document deleted successfully",
+          await fetchDocuments()
+        );
       } else {
-        throw new Error("Failed to delete document");
+        throw new Error(response?.message || "Failed to delete document");
       }
     } catch (error) {
       console.error("Delete error:", error);
-      setError("Failed to delete document. Please try again.");
+      setError(error.message || "Failed to delete document. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -185,16 +194,15 @@ const UserDetailsDocuments = ({ user }) => {
 
       const response = await verifyDocument(documentId);
 
-      if (response && response.success) {
-        setSuccess("Document verified successfully");
-        // Refresh documents to show verified status
+      if (response?.success) {
+        setSuccess(response.message || "Document verified successfully");
         await fetchDocuments();
       } else {
-        throw new Error("Failed to verify document");
+        throw new Error(response?.message || "Failed to verify document");
       }
     } catch (error) {
       console.error("Verification error:", error);
-      setError("Failed to verify document. Please try again.");
+      setError(error.message || "Failed to verify document. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -224,7 +232,7 @@ const UserDetailsDocuments = ({ user }) => {
       </div>
 
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-400 p-4 dark:bg-red-900/20 dark:border-red-600 mb-4">
+        <div className="bg-red-100 border-l-4 border-red-400 p-4 dark:bg-red-900/20 dark:border-red-600 mb-4">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg
@@ -248,7 +256,7 @@ const UserDetailsDocuments = ({ user }) => {
       )}
 
       {success && (
-        <div className="bg-green-50 border-l-4 border-green-400 p-4 dark:bg-green-900/20 dark:border-green-600 mb-4">
+        <div className="bg-green-100 border-l-4 border-green-400 p-4 dark:bg-green-900/20 dark:border-green-600 mb-4">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg
@@ -426,15 +434,15 @@ const UserDetailsDocuments = ({ user }) => {
                       <div className="flex items-center space-x-3">
                         <div className="flex-shrink-0">
                           {doc?.mimeType?.startsWith("image/") ? (
-                            <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 flex items-center justify-center">
+                            <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-gray-700 flex items-center justify-center">
                               <PiImageDuotone className="h-6 w-6 text-blue-500" />
                             </div>
                           ) : doc?.mimeType === "application/pdf" ? (
-                            <div className="h-10 w-10 rounded-lg bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+                            <div className="h-12 w-12 rounded-lg bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
                               <PiFilePdfDuotone className="h-6 w-6 text-red-500" />
                             </div>
                           ) : (
-                            <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+                            <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
                               <svg
                                 className="h-6 w-6 text-blue-500"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -453,10 +461,10 @@ const UserDetailsDocuments = ({ user }) => {
                           )}
                         </div>
                         <div>
-                          <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                          <h4 className="text-sm font-semibold text-gray-600 dark:text-white">
                             {doc.name}
                           </h4>
-                          <div className="mt-1 flex items-center">
+                          <div className="mt-0.5 flex items-center">
                             <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
                               {doc.type}
                             </span>
@@ -467,21 +475,7 @@ const UserDetailsDocuments = ({ user }) => {
                               {(doc.fileSize / 1024).toFixed(1)} KB
                             </span>
                           </div>
-                          {doc.isVerified ? (
-                            <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
-                              <TbCheck className="mr-1 h-3 w-3" />
-                              Verified
-                            </span>
-                          ) : (
-                            <button
-                              onClick={() => handleVerifyDocument(doc.id)}
-                              disabled={isSubmitting}
-                              className="inline-flex items-center mt-1 px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 hover:bg-yellow-200 dark:hover:bg-yellow-900/40"
-                            >
-                              <TbCheck className="mr-1 h-3 w-3" />
-                              Verify
-                            </button>
-                          )}
+                          
                         </div>
                       </div>
                       <div className="mt-3 pl-2 flex items-center text-xs text-gray-500 dark:text-gray-400">
@@ -490,35 +484,92 @@ const UserDetailsDocuments = ({ user }) => {
                       </div>
                     </div>
                   </div>
+                  <div className="flex items-center gap-6">
+                  {doc.isVerified ? (
+                            <span className="inline-flex items-center mt-1 px-4 py-1 rounded-md text-xs font-medium bg-green-200 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                              <TbCheck className="mr-1 h-3 w-3" />
+                              Verified
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => {
+                                setDocumentToVerify(doc);
+                                setShowVerifyModal(true);
+                              }}
+                              disabled={isSubmitting || doc.isVerified}
+                              className="inline-flex items-center mt-1 px-4 py-0.5 rounded-md text-xs font-medium bg-yellow-200 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 hover:bg-yellow-200 dark:hover:bg-yellow-900/40"
+                            >
+                              <TbCheck className="mr-1 h-3 w-3" />
+                              Verify
+                            </button>
+                          )}
+
                   <div className="flex space-x-4 items-center">
-                    <button
-                      onClick={() => handleViewDocument(doc.fileUrl)}
-                      className="text-secondary-600 hover:text-secondary-700 dark:hover:text-gray-300"
-                      title="View Document"
-                    >
-                      <TbDownload className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteDocument(doc.id)}
-                      disabled={isSubmitting}
-                      className="text-red-600/70 hover:text-red-500 dark:hover:text-red-400 disabled:opacity-50"
-                      title="Delete Document"
-                    >
-                      <TbTrash className="h-6 w-6" />
-                    </button>
+                  
+                  <button
+                    onClick={() => handleViewDocument(doc.fileUrl)}
+                    className="text-secondary-600 hover:text-secondary-700 dark:hover:text-gray-300"
+                    title="View Document"
+                  >
+                    <TbDownload className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setDocumentToDelete(doc);
+                      setShowDeleteModal(true);
+                    }}
+                    disabled={isSubmitting}
+                    className="text-red-600/70 hover:text-red-500 dark:hover:text-red-400 disabled:opacity-50"
+                    title="Delete Document"
+                  >
+                    <TbTrash className="h-6 w-6" />
+                  </button>
+                </div>
                   </div>
+                  
                 </div>
               </div>
             ))}
           </ul>
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg p-6 text-center">
+        <div className="bg-white dark:bg-gray-800 shadow-md border overflow-hidden rounded-lg px-6 py-10 text-center">
+          <PiWarningDuotone className="h-14 w-14 text-yellow-500 mx-auto mb-4" />
           <p className="text-gray-500 dark:text-gray-400">
-            No documents found.
+            No documents found for this user. Upload to view documents.
           </p>
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={() => {
+          handleDeleteDocument(documentToDelete?.id);
+          setShowDeleteModal(false);
+        }}
+        title="Delete Document"
+        message={`Are you sure you want to delete "${documentToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        isLoading={isSubmitting}
+      />
+
+      <ConfirmationModal
+        isOpen={showVerifyModal}
+        onClose={() => setShowVerifyModal(false)}
+        onConfirm={() => {
+          handleVerifyDocument(documentToVerify?.id);
+          setShowVerifyModal(false);
+        }}
+        title="Verify Document"
+        message={`Are you sure you want to verify "${documentToVerify?.name}"?`}
+        confirmText="Verify"
+        isLoading={isSubmitting}
+        confirmButtonClass="bg-yellow-600 hover:bg-yellow-700"
+        icon={
+          <FiCheck className="h-8 w-8 text-yellow-600 dark:text-yellow-500" />
+        }
+      />
     </div>
   );
 };

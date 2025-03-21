@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { FaSave } from "react-icons/fa";
-import { FiUser, FiMail, FiPhone, FiSave } from "react-icons/fi";
 import { PiUserDuotone } from "react-icons/pi";
 import { TbMailFilled, TbPhone, TbUserEdit } from "react-icons/tb";
 const PersonalInfoTab = ({
@@ -14,7 +13,7 @@ const PersonalInfoTab = ({
   return (
     <div className="px-6 py-6 md:h-[26.5rem]">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white flex items-center">
           <PiUserDuotone className="h-5 w-5 mx-2 text-secondary-700" />
           <span className="text-secondary-800 pl-1 dark:text-secondary-600">
             Personal Information
@@ -23,7 +22,7 @@ const PersonalInfoTab = ({
         <button
           type="button"
           onClick={() => setIsEditing(!isEditing)}
-          className={`px-6 py-1.5 border   flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
+          className={`px-4 sm:px-6 py-1 sm:py-1.5 border   flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
             isEditing
               ? "bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
               : "bg-primary-100 dark:bg-primary-800/50 border-primary-200 dark:border-gray-600 text-primary-700 dark:text-primary-400"
@@ -55,10 +54,10 @@ const PersonalInfoTab = ({
                 value={formData.firstName}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className={`w-full pl-10 pr-4 py-2 border ${
+                className={`w-full text-sm sm:text-base pl-10 pr-4 py-2 border ${
                   isEditing
                     ? "border-gray-300 dark:border-gray-600 text-primary-800 dark:text-primary-800"
-                    : "border-transparent bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-white"
+                    : "border-transparent bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white"
                 } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium`}
               />
             </div>
@@ -80,10 +79,10 @@ const PersonalInfoTab = ({
                 value={formData.lastName}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className={`w-full pl-10 pr-4 py-2 border ${
+                className={`w-full text-sm sm:text-base pl-10 pr-4 py-2 border ${
                   isEditing
                     ? "border-gray-300 dark:border-gray-600 text-primary-800 dark:text-primary-800"
-                    : "border-transparent bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-white"
+                    : "border-transparent bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white"
                 } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium`}
               />
             </div>
@@ -106,10 +105,10 @@ const PersonalInfoTab = ({
                 value={formData.otherNames || ""}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className={`w-full pl-10 pr-4 py-2 border ${
+                className={`w-full text-sm sm:text-base pl-10 pr-4 py-2 border ${
                   isEditing
                     ? "border-gray-300 dark:border-gray-600 text-primary-800 dark:text-primary-800"
-                    : "border-transparent bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-white"
+                    : "border-transparent bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white"
                 } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium`}
               />
             </div>
@@ -131,10 +130,10 @@ const PersonalInfoTab = ({
                 value={formData.email}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className={`w-full pl-10 pr-4 py-2 border ${
+                className={`w-full text-sm sm:text-base pl-10 pr-4 py-2 border ${
                   isEditing
                     ? "border-gray-300 dark:border-gray-600 text-primary-800 dark:text-primary-800"
-                    : "border-transparent bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-white"
+                    : "border-transparent bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white"
                 } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium`}
               />
             </div>
@@ -156,10 +155,10 @@ const PersonalInfoTab = ({
                 value={formData.phoneNumber}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className={`w-full pl-10 pr-4 py-2 border ${
+                className={`w-full text-sm sm:text-base pl-10 pr-4 py-2 border ${
                   isEditing
                     ? "border-gray-300 dark:border-gray-600 text-primary-800 dark:text-primary-800"
-                    : "border-transparent bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-white"
+                    : "border-transparent bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white"
                 } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium`}
               />
             </div>

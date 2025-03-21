@@ -41,7 +41,7 @@ export const uploadDocument = async (file, name, type, description = "") => {
 export const getUserDocuments = async () => {
   try {
     const response = await apiGet("/documents");
-    
+
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -73,7 +73,11 @@ export const getDocumentById = async (id) => {
 export const deleteUserDocument = async (id) => {
   try {
     const response = await apiDelete(`/documents/${id}`);
-    return response.data;
+    // Ensure consistent response structure
+    return {
+      success: response.data?.success || true,
+      message: response.data?.message || "Document deleted successfully",
+    };
   } catch (error) {
     console.error("Failed to delete document:", error);
     throw error;
@@ -88,7 +92,6 @@ export const deleteUserDocument = async (id) => {
  */
 export const uploadUserDocument = async (userId, formData) => {
   try {
-    // Create custom config for multipart/form-data
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -96,14 +99,21 @@ export const uploadUserDocument = async (userId, formData) => {
     };
 
     const response = await apiPost(
-      `/users/${userId}/documents`,
+      `/documents/users/${userId}`,
       formData,
       config
     );
-    return response.data;
+    return {
+      success: true,
+      data: response.data,
+      message: "Document uploaded successfully",
+    };
   } catch (error) {
     console.error("Failed to upload document for user:", error);
-    throw error;
+    throw new Error(
+      error.response?.data?.message ||
+        "Failed to upload document. Please try again."
+    );
   }
 };
 
@@ -114,8 +124,8 @@ export const uploadUserDocument = async (userId, formData) => {
  */
 export const getUserDocumentsByAdmin = async (userId) => {
   try {
-    const response = await apiGet(`/users/${userId}/documents`);
-    return response.data;
+    const response = await apiGet(`/documents/users/${userId}`);
+    return response; // Return the entire response
   } catch (error) {
     console.error("Failed to fetch user documents:", error);
     throw error;
@@ -130,7 +140,10 @@ export const getUserDocumentsByAdmin = async (userId) => {
 export const verifyDocument = async (documentId) => {
   try {
     const response = await apiPatch(`/documents/${documentId}/verify`);
-    return response.data;
+    return {
+      success: response.data?.success || true,
+      message: response.data?.message || "Document verified successfully",
+    };
   } catch (error) {
     console.error("Failed to verify document:", error);
     throw error;

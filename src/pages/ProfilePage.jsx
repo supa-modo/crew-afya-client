@@ -33,7 +33,6 @@ import PhoneVerificationModal from "../components/profilepage/PhoneVerificationM
 import ConfirmationModal from "../components/common/ConfirmationModal";
 import {
   PiFilesDuotone,
-  PiLockKeyDuotone,
   PiUserDuotone,
   PiUserGearDuotone,
 } from "react-icons/pi";
@@ -96,12 +95,21 @@ const ProfilePage = () => {
       // Check if response exists and has data
       if (response && response.data) {
         setDocuments(response.data || []);
-        // Check if user has uploaded an ID document
-        const hasId = response.data.some((doc) => doc.type === "identity");
-        setHasIdDocument(hasId);
+
+        // Fix for checking if an ID document exists
+        const docs = Array.isArray(response.data) ? response.data : [];
+        const hasId = docs.some((doc) => doc.type === "identity");
+        console.log("Has ID document:", hasId);
+        setHasIdDocument(!!hasId); // Use !! to ensure it's a boolean
       } else {
         // Handle case where response structure is different
         setDocuments(response || []);
+
+        // Also check in this case
+        const docs = Array.isArray(response) ? response : [];
+        const hasId = docs.some((doc) => doc.type === "identity");
+        console.log("Has ID document (alternative path):", hasId);
+        setHasIdDocument(!!hasId);
       }
     } catch (error) {
       console.error("Error fetching documents:", error);
@@ -109,6 +117,8 @@ const ProfilePage = () => {
         type: "error",
         text: "Failed to fetch documents. Please try again.",
       });
+      // Set hasIdDocument to false on error
+      setHasIdDocument(false);
     } finally {
       setIsLoadingDocs(false);
     }
@@ -343,60 +353,29 @@ const ProfilePage = () => {
     }
   };
 
-  const handleDeleteClick = (document) => {
-    setDocumentToDelete(document);
-    setShowDeleteModal(true);
-  };
+  // const confirmDelete = async () => {
+  //   if (documentToDelete) {
+  //     try {
+  //       setIsSubmitting(true);
+  //       await deleteUserDocument(documentToDelete.id);
+  //       await fetchDocuments();
 
-  const confirmDelete = async () => {
-    if (documentToDelete) {
-      try {
-        setIsSubmitting(true);
-        await deleteUserDocument(documentToDelete.id);
-        await fetchDocuments();
-
-        setMessage({
-          type: "success",
-          text: "Document deleted successfully",
-        });
-      } catch (error) {
-        setMessage({
-          type: "error",
-          text: error.message || "Failed to delete document",
-        });
-      } finally {
-        setIsSubmitting(false);
-        setShowDeleteModal(false);
-        setDocumentToDelete(null);
-      }
-    }
-  };
-
-  const handleDeleteDocument = async (documentId) => {
-    try {
-      setIsSubmitting(true);
-      const response = await deleteUserDocument(documentId);
-
-      if (response && response.success) {
-        // Refresh documents after deletion
-        await fetchDocuments();
-        setMessage({
-          type: "success",
-          text: "Document deleted successfully",
-        });
-      } else {
-        throw new Error(response?.message || "Failed to delete document");
-      }
-    } catch (error) {
-      console.error("Delete document error:", error);
-      setMessage({
-        type: "error",
-        text: error.message || "Failed to delete document. Please try again.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  //       setMessage({
+  //         type: "success",
+  //         text: "Document deleted successfully",
+  //       });
+  //     } catch (error) {
+  //       setMessage({
+  //         type: "error",
+  //         text: error.message || "Failed to delete document",
+  //       });
+  //     } finally {
+  //       setIsSubmitting(false);
+  //       setShowDeleteModal(false);
+  //       setDocumentToDelete(null);
+  //     }
+  //   }
+  // };
 
   const handleRequestVerificationCode = async () => {
     try {
@@ -637,9 +616,10 @@ const ProfilePage = () => {
                 uploadProgress={uploadProgress}
                 hasIdDocument={hasIdDocument}
                 handleFileUploadClick={handleFileUploadClick}
-                handleDeleteDocument={handleDeleteDocument}
                 setShowUploadModal={setShowUploadModal}
-                isSubmitting={isSubmitting}
+                setIsSubmitting={setIsSubmitting}
+                setMessage={setMessage}
+                fetchDocuments={fetchDocuments}
               />
             )}
           </div>
@@ -668,7 +648,7 @@ const ProfilePage = () => {
       />
 
       {/* Confirmation Modal */}
-      <ConfirmationModal
+      {/* <ConfirmationModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
@@ -676,7 +656,7 @@ const ProfilePage = () => {
         message={`Are you sure you want to delete "${documentToDelete?.name}"? This action cannot be undone.`}
         confirmText="Delete"
         isLoading={isSubmitting}
-      />
+      /> */}
     </div>
   );
 };

@@ -79,7 +79,7 @@ const LoginPage = () => {
             <span className="text-sm font-medium">{message}</span>
           </motion.div>
         )}
-
+        
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
           <motion.div
             initial={{ opacity: 0 }}
@@ -96,7 +96,7 @@ const LoginPage = () => {
             </div>
             <div className="text-center mb-3 md:mb-4">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
-                CrewAfya Care
+                Matatu Workers Union
               </h1>
               <p className="text-gray-400 text-sm lg:text-base">
                 Enter your login credentials to continue
