@@ -408,55 +408,55 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
             <tr>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 <div className="flex items-center">
-                  <TbCalendarDot className="mr-2 h-5 w-5" />
+                  <TbCalendarDot className="mr-2 h-4 sm:h-5 w-4 sm:w-5" />
                   Date
                 </div>
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 <div className="flex items-center">
-                  <HiCash className="mr-2 h-5 w-5" />
+                  <HiCash className="mr-2 h-4 sm:h-5 w-4 sm:w-5" />
                   Amount
                 </div>
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 <div className="flex items-center">
-                  <TbCreditCard className="mr-2 h-5 w-5" />
+                  <TbCreditCard className="mr-2 h-4 sm:h-5 w-4 sm:w-5" />
                   Method
                 </div>
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 <div className="flex items-center">
-                  <TbShieldHalfFilled className="mr-2 h-5 w-5" />
+                  <TbShieldHalfFilled className="mr-2 h-4 sm:h-5 w-4 sm:w-5" />
                   Medical Cover
                 </div>
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 Reference Code
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 Status
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-right text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
+                className="px-6 py-3 text-right text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 Actions
               </th>
@@ -469,10 +469,10 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                 className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-700 dark:text-gray-400">
+                  <div className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400">
                     {formatDate(payment.date)}
                   </div>
-                  <div className="text-xs font-medium text-gray-500 dark:text-gray-500">
+                  <div className="text-[0.7rem] sm:text-xs font-medium text-gray-500 dark:text-gray-500">
                     {new Date(payment.date).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -480,12 +480,12 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-700 dark:text-gray-400">
+                  <div className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400">
                     {formatCurrency(payment.amount)}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="inline-flex items-center px-3 py-0.5 rounded-md text-sm font-medium dark:text-blue-400">
+                  <div className="inline-flex items-center px-3 py-0.5 rounded-md text-xs sm:text-sm font-medium dark:text-blue-400">
                   {payment.method === "M-Pesa" ? (
                           <MpesaIcon width={60} height={20} />
                         ) : payment.method === "Card" ? (
@@ -499,16 +499,16 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                         )}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                   {payment.plan || "Crew Afya Lite"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                   {payment.reference || "-"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusBadge status={payment.status} />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td className="px-6 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
                   {payment.status === "completed" && (
                     <button
                       onClick={() => handleDownloadReceipt(payment)}
@@ -534,7 +534,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md ${
+              className={`relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-xs sm:text-sm font-medium rounded-md ${
                 currentPage === 1
                   ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
                   : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -545,7 +545,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md ${
+              className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-xs sm:text-sm font-medium rounded-md ${
                 currentPage === totalPages
                   ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
                   : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -556,7 +556,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
           </div>
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm text-gray-700 dark:text-gray-300">
+              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                 Showing{" "}
                 <span className="font-medium">
                   {(currentPage - 1) * pageSize + 1}
@@ -578,7 +578,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 text-sm font-medium ${
+                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 text-xs sm:text-sm font-medium ${
                     currentPage === 1
                       ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
                       : "text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -591,7 +591,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                   <button
                     key={index}
                     onClick={() => handlePageChange(index + 1)}
-                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                    className={`relative inline-flex items-center px-4 py-2 border text-xs sm:text-sm font-medium ${
                       currentPage === index + 1
                         ? "z-10 bg-primary-50 dark:bg-primary-900/30 border-primary-500 text-primary-600 dark:text-primary-400"
                         : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -603,7 +603,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 text-sm font-medium ${
+                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 text-xs sm:text-sm font-medium ${
                     currentPage === totalPages
                       ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
                       : "text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
