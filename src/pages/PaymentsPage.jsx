@@ -321,7 +321,7 @@ const PaymentsPage = () => {
 
           {/* Payment History Section */}
           <div className="bg-white dark:bg-gray-800 overflow-hidden ">
-            <div className="p-6">
+            <div className="py-6 sm:px-6 px-2">
               <PaymentHistory title="Payments History" />
             </div>
           </div>
