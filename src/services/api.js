@@ -161,9 +161,9 @@ export const apiGet = async (endpoint, params = {}) => {
   }
 };
 
-export const apiPost = async (endpoint, data = {}) => {
+export const apiPost = async (endpoint, data = {}, config = {}) => {
   try {
-    const response = await api.post(endpoint, data);
+    const response = await api.post(endpoint, data, config);
     return response.data;
   } catch (error) {
     throw handleApiError(error);
@@ -173,6 +173,15 @@ export const apiPost = async (endpoint, data = {}) => {
 export const apiPut = async (endpoint, data = {}) => {
   try {
     const response = await api.put(endpoint, data);
+    return response.data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
+};
+
+export const apiPatch = async (endpoint, data = {}) => {
+  try {
+    const response = await api.patch(endpoint, data);
     return response.data;
   } catch (error) {
     throw handleApiError(error);

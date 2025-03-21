@@ -18,6 +18,8 @@ import {
   TbShieldCheck,
 } from "react-icons/tb";
 import { MdHealthAndSafety } from "react-icons/md";
+import { createPlan } from "../../services/planService";
+import { PlanType } from "../../constants/enums";
 
 const NewMedicalCoverPage = () => {
   const navigate = useNavigate();
@@ -183,11 +185,44 @@ const NewMedicalCoverPage = () => {
     setIsSubmitting(true);
 
     try {
-      // In a real app, you would call the API to create the plan
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Transform frontend form data to backend model format
+      const planTypeValue = formData.forWho.toLowerCase().includes("depend")
+        ? PlanType.FAMILY
+        : PlanType.LITE;
 
-      // For demo purposes, console log the data
-      console.log("Creating new plan:", formData);
+      const planData = {
+        name: formData.name,
+        description: formData.description,
+        type: planTypeValue,
+        dailyPremium: parseFloat(formData.premiums.daily),
+        monthlyPremium: parseFloat(formData.premiums.monthly),
+        annualPremium: parseFloat(formData.premiums.annual),
+        inpatientLimit: parseFloat(
+          formData.coverageDetails.inpatient.replace(/,/g, "")
+        ),
+        outpatientLimit: parseFloat(
+          formData.coverageDetails.outpatient.replace(/[^0-9]/g, "")
+        ),
+        maternityLimit: parseFloat(
+          formData.coverageDetails.maternity.replace(/,/g, "")
+        ),
+        opticalLimit: parseFloat(
+          formData.coverageDetails.optical.replace(/,/g, "")
+        ),
+        accidentLimit: 50000, // Default value
+        disabilityCompensation: 50000, // Default value
+        lastExpense: 50000, // Default value
+        emergencyEvacuation: 10000, // Default value
+        dailyCashCompensation: 800, // Default value
+        wellnessSupport: formData.forWho.toLowerCase().includes("depend")
+          ? "Group Sessions + Individual"
+          : "Group Sessions",
+        forDependents: formData.forWho.toLowerCase().includes("depend"),
+        isActive: formData.status === "active",
+      };
+
+      // Call API to create plan
+      const response = await createPlan(planData);
 
       // Navigate to plans page after successful creation
       navigate("/admin/plans", {
@@ -198,7 +233,12 @@ const NewMedicalCoverPage = () => {
       });
     } catch (error) {
       console.error("Error creating plan:", error);
-      setErrors({ form: "Failed to create plan. Please try again." });
+
+      // Display the specific error message from the backend
+      setErrors({
+        form: error.message || "Failed to create plan. Please try again.",
+      });
+
       window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setIsSubmitting(false);

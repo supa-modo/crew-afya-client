@@ -7,7 +7,6 @@ import { FiAlertCircle } from "react-icons/fi";
 // Import our components
 import UserInfoForm from "../../components/admin/UserInfoForm";
 import MedicalPlanSelector from "../../components/admin/MedicalPlanSelector";
-import DocumentUploadSection from "../../components/admin/DocumentUploadSection";
 import { TbHome2 } from "react-icons/tb";
 
 // Import services
@@ -248,6 +247,8 @@ const AddNewUserPage = () => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      // Scroll to top to show errors
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -256,9 +257,20 @@ const AddNewUserPage = () => {
     try {
       // Map the form data fields to the API expected format
       const userData = {
-        ...formData,
-        planId: selectedPlan.id,
-        paymentFrequency: selectedPlan.selectedFrequency || paymentFrequency,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        otherNames: formData.otherNames || null,
+        email: formData.email || null,
+        phoneNumber: formData.phoneNumber,
+        idNumber: formData.idNumber,
+        password: formData.password,
+        gender: formData.gender || null,
+        county: formData.county || null,
+        sacco: formData.sacco || null,
+        route: formData.route || null,
+        role: formData.role,
+        planId: selectedPlan ? selectedPlan.id : null,
+        paymentFrequency: paymentFrequency,
       };
 
       // Create the user via API
@@ -277,9 +289,14 @@ const AddNewUserPage = () => {
       }
     } catch (error) {
       console.error("Error creating user:", error);
+
+      // Display the specific error message from the backend
       setErrors({
         form: error.message || "Failed to create user. Please try again.",
       });
+
+      // Scroll to top to show errors
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setIsSubmitting(false);
     }
@@ -409,8 +426,8 @@ const AddNewUserPage = () => {
                         <FiAlertCircle className="h-5 w-5 text-red-400" />
                       </div>
                       <div className="ml-3">
-                        <p className="text-sm text-red-700 dark:text-red-400">
-                          {errors.form}
+                        <p className="text-sm font-medium text-red-700 dark:text-red-400">
+                          Error: {errors.form}
                         </p>
                       </div>
                     </div>
@@ -431,17 +448,6 @@ const AddNewUserPage = () => {
                   handlePlanSelect={handlePlanSelect}
                   error={errors.plan}
                 />
-
-                {/* Section 3: Documents */}
-                <div className="pt-6 mt-8 border-t border-gray-200 dark:border-gray-700">
-                  <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-                    Documents
-                  </h2>
-                  <DocumentUploadSection
-                    documents={documents}
-                    setDocuments={setDocuments}
-                  />
-                </div>
 
                 <div className="pt-6 mt-8 border-t border-gray-200 dark:border-gray-700">
                   <div className="flex justify-end space-x-3">

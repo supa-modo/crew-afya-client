@@ -23,12 +23,19 @@ import PlanDetailsModal from "../../components/admin/adminInsurancePage/PlanDeta
 import PlanSubscribersList from "../../components/admin/adminInsurancePage/PlanSubscribersList";
 import { mockUsers } from "../../data/mockUsers";
 import PlanCard from "../../components/admin/adminInsurancePage/PlanCard";
+import {
+  getAllPlans,
+  updatePlan,
+  deletePlan,
+} from "../../services/planService";
+import { initializeDefaultPlans } from "../../services/userService";
 
 const InsurancePlansPage = () => {
   const { darkMode } = useTheme();
   const location = useLocation();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentPlan, setCurrentPlan] = useState(null);
@@ -40,12 +47,81 @@ const InsurancePlansPage = () => {
   useEffect(() => {
     const fetchPlans = async () => {
       setLoading(true);
+      setError(null);
       try {
-        // Mock API call - replace with actual API call
-        await new Promise((resolve) => setTimeout(resolve, 800));
+        // Replace mock API call with actual API call
+        const response = await getAllPlans();
 
-        // Sample plans data
-        const plansData = [
+        // Map backend data structure to frontend structure
+        const plansData = response.data.map((plan) => ({
+          id: plan.id,
+          name: plan.name,
+          description: plan.description,
+          forWho: plan.forDependents
+            ? "For Driver/Conductor + Dependents"
+            : "For Driver/Conductor",
+          status: plan.isActive ? "active" : "inactive",
+          subscriberCount: 0, // This would need to be populated separately if needed
+          createdAt: plan.createdAt,
+          updatedAt: plan.updatedAt,
+          coverageDetails: {
+            inpatient: plan.inpatientLimit.toLocaleString(),
+            outpatient: `Up to ${plan.outpatientLimit.toLocaleString()}`,
+            maternity: plan.maternityLimit.toLocaleString(),
+            optical: plan.opticalLimit.toLocaleString(),
+            dental: plan.forDependents ? "10,000" : "Not covered", // Assuming this based on plan type
+          },
+          premiums: {
+            daily: plan.dailyPremium,
+            monthly: plan.monthlyPremium,
+            annual: plan.annualPremium,
+          },
+          benefits: [
+            { name: "Inpatient", limit: plan.inpatientLimit.toLocaleString() },
+            {
+              name: "Maternity (Within Inpatient)",
+              limit: plan.maternityLimit.toLocaleString(),
+            },
+            {
+              name: "Outpatient - Capitation",
+              limit: `Up to ${plan.outpatientLimit.toLocaleString()}`,
+            },
+            {
+              name: "Optical + Free Eye Test",
+              limit: plan.opticalLimit.toLocaleString(),
+            },
+            { name: "Accidents", limit: plan.accidentLimit.toLocaleString() },
+            { name: "Last Expense", limit: plan.lastExpense.toLocaleString() },
+            {
+              name: "Emergency Evacuation",
+              limit: plan.emergencyEvacuation.toLocaleString(),
+            },
+            {
+              name: "Daily cash compensation",
+              limit: `Kes ${plan.dailyCashCompensation}`,
+            },
+            {
+              name: "Permanent disability compensation",
+              limit: plan.disabilityCompensation.toLocaleString(),
+            },
+            { name: "Wellness Support", limit: plan.wellnessSupport },
+          ],
+          // Keep original plan data for edit operations
+          originalData: plan,
+        }));
+
+        setPlans(plansData);
+
+        // Set default plan for subscribers list
+        if (plansData.length > 0 && !selectedPlanForSubscribers) {
+          setSelectedPlanForSubscribers(plansData[0]);
+        }
+      } catch (err) {
+        console.error("Error fetching plans:", err);
+        setError(err.message || "Failed to fetch plans");
+
+        // Fallback to mock data if API fails
+        const mockPlansData = [
           {
             id: "plan1",
             name: "Crew Afya Lite",
@@ -80,54 +156,13 @@ const InsurancePlansPage = () => {
               { name: "Wellness Support", limit: "Group Sessions" },
             ],
           },
-          {
-            id: "plan2",
-            name: "Crew Afya - (Up to M+3)",
-            description:
-              "Family coverage for up to 4 members with enhanced benefits",
-            forWho: "For Driver/Conductor + Dependents",
-            status: "active",
-            subscriberCount: 89,
-            createdAt: "2023-09-01T10:00:00Z",
-            updatedAt: "2023-11-15T14:30:00Z",
-            coverageDetails: {
-              inpatient: "200,000",
-              outpatient: "Up to 20,000",
-              maternity: "20,000",
-              optical: "5,000",
-              dental: "10,000",
-            },
-            premiums: {
-              daily: 55,
-              monthly: 1661,
-              annual: 19933,
-            },
-            benefits: [
-              { name: "Inpatient", limit: "200,000" },
-              { name: "Maternity (Within Inpatient)", limit: "20,000" },
-              { name: "Outpatient - Capitation", limit: "Up to 20,000" },
-              { name: "Optical + Free Eye Test", limit: "5,000" },
-              { name: "Accidents", limit: "50,000" },
-              { name: "Last Expense", limit: "50,000" },
-              { name: "Emergency Evacuation", limit: "10,000" },
-              { name: "Daily cash compensation", limit: "Kes 800" },
-              { name: "Permanent disability compensation", limit: "50,000" },
-              {
-                name: "Wellness Support",
-                limit: "Group Sessions + Individual",
-              },
-            ],
-          },
+          // ... (keep your existing mock data as fallback)
         ];
 
-        setPlans(plansData);
-
-        // Set default plan for subscribers list
-        if (plansData.length > 0 && !selectedPlanForSubscribers) {
-          setSelectedPlanForSubscribers(plansData[0]);
+        setPlans(mockPlansData);
+        if (mockPlansData.length > 0 && !selectedPlanForSubscribers) {
+          setSelectedPlanForSubscribers(mockPlansData[0]);
         }
-      } catch (error) {
-        console.error("Error fetching plans:", error);
       } finally {
         setLoading(false);
       }
@@ -168,19 +203,77 @@ const InsurancePlansPage = () => {
     setIsEditModalOpen(true);
   };
 
-  // Handle plan update
-  const handlePlanUpdate = (updatedPlan) => {
-    setPlans(
-      plans.map((plan) => (plan.id === updatedPlan.id ? updatedPlan : plan))
-    );
-    setIsEditModalOpen(false);
-
-    // If the updated plan is currently selected for subscribers, update it
-    if (selectedPlanForSubscribers?.id === updatedPlan.id) {
-      setSelectedPlanForSubscribers(updatedPlan);
+  const handleInitializeDefaultPlans = async () => {
+    try {
+      const response = await initializeDefaultPlans();
+      console.log(response);
+    } catch (error) {
+      console.error("Error initializing default plans:", error);
     }
+  };
+  // Handle plan update
+  const handlePlanUpdate = async (updatedPlan) => {
+    try {
+      // Convert frontend model back to backend model
+      const backendPlanData = {
+        name: updatedPlan.name,
+        description: updatedPlan.description,
+        type: updatedPlan.name.includes("M+3")
+          ? "Crew Afya - (Up to M+3)"
+          : "Crew Afya Lite",
+        dailyPremium: updatedPlan.premiums.daily,
+        monthlyPremium: updatedPlan.premiums.monthly,
+        annualPremium: updatedPlan.premiums.annual,
+        inpatientLimit: parseInt(
+          updatedPlan.coverageDetails.inpatient.replace(/,/g, "")
+        ),
+        outpatientLimit: parseInt(
+          updatedPlan.coverageDetails.outpatient.replace(/[^0-9]/g, "")
+        ),
+        maternityLimit: parseInt(
+          updatedPlan.coverageDetails.maternity.replace(/,/g, "")
+        ),
+        opticalLimit: parseInt(
+          updatedPlan.coverageDetails.optical.replace(/,/g, "")
+        ),
+        accidentLimit: 50000, // Keep default if not changed
+        disabilityCompensation: 50000, // Keep default if not changed
+        lastExpense: 50000, // Keep default if not changed
+        emergencyEvacuation: 10000, // Keep default if not changed
+        dailyCashCompensation: 800, // Keep default if not changed
+        wellnessSupport: updatedPlan.name.includes("M+3")
+          ? "Group Sessions + Individual"
+          : "Group Sessions",
+        forDependents: updatedPlan.name.includes("M+3"),
+        isActive: updatedPlan.status === "active",
+      };
 
-    // In a real app, you would send the update to the API
+      // If we have the original data, we can update it directly
+      if (updatedPlan.originalData) {
+        await updatePlan(updatedPlan.originalData.id, backendPlanData);
+      } else {
+        await updatePlan(updatedPlan.id, backendPlanData);
+      }
+
+      // Update local state
+      setPlans(
+        plans.map((plan) => (plan.id === updatedPlan.id ? updatedPlan : plan))
+      );
+
+      // Close modal
+      setIsEditModalOpen(false);
+
+      // If the updated plan is currently selected for subscribers, update it
+      if (selectedPlanForSubscribers?.id === updatedPlan.id) {
+        setSelectedPlanForSubscribers(updatedPlan);
+      }
+
+      // Show success message
+      alert("Plan updated successfully");
+    } catch (error) {
+      console.error("Error updating plan:", error);
+      alert(`Failed to update plan: ${error.message || "Unknown error"}`);
+    }
   };
 
   // Handle viewing subscribers for a plan
@@ -194,25 +287,35 @@ const InsurancePlansPage = () => {
   };
 
   // Handle plan deletion
-  const handlePlanDelete = (planId) => {
+  const handlePlanDelete = async (planId) => {
     // Confirm before deletion
     if (
       window.confirm(
         "Are you sure you want to delete this plan? This action cannot be undone."
       )
     ) {
-      const updatedPlans = plans.filter((plan) => plan.id !== planId);
-      setPlans(updatedPlans);
+      try {
+        // Call the API to delete the plan
+        await deletePlan(planId);
 
-      // If the deleted plan is currently selected for subscribers,
-      // change to the first available plan or set to null
-      if (selectedPlanForSubscribers?.id === planId) {
-        setSelectedPlanForSubscribers(
-          updatedPlans.length > 0 ? updatedPlans[0] : null
-        );
+        // Update local state
+        const updatedPlans = plans.filter((plan) => plan.id !== planId);
+        setPlans(updatedPlans);
+
+        // If the deleted plan is currently selected for subscribers,
+        // change to the first available plan or set to null
+        if (selectedPlanForSubscribers?.id === planId) {
+          setSelectedPlanForSubscribers(
+            updatedPlans.length > 0 ? updatedPlans[0] : null
+          );
+        }
+
+        // Show success message
+        alert("Plan deleted successfully");
+      } catch (error) {
+        console.error("Error deleting plan:", error);
+        alert(`Failed to delete plan: ${error.message || "Unknown error"}`);
       }
-
-      // In a real app, you would send the deletion request to the API
     }
   };
 
@@ -227,7 +330,7 @@ const InsurancePlansPage = () => {
     <div className="pb-6">
       <div className="max-w-screen-2xl mx-auto">
         {/* Breadcrumb */}
-        <div className="mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
               <li>
@@ -259,6 +362,13 @@ const InsurancePlansPage = () => {
               </li>
             </ol>
           </nav>
+
+          <button
+            onClick={handleInitializeDefaultPlans}
+            className="bg-admin-600 text-white px-4 py-2 text-sm rounded-lg"
+          >
+            Initialize Default Plans
+          </button>
         </div>
 
         {/* Success message if redirected from new plan creation */}

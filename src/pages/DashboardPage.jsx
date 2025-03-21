@@ -12,7 +12,7 @@ import ChangeFrequencyModal from "../components/payment/ChangeFrequencyModal";
 import DocumentUploadModal from "../components/profilepage/DocumentUploadModal";
 import ConfirmationModal from "../components/common/ConfirmationModal";
 import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   TbActivity,
   TbCreditCardPay,
@@ -32,30 +32,22 @@ import {
 } from "react-icons/pi";
 import { MdPayments } from "react-icons/md";
 import {
-  uploadDocument,
   getUserDocuments,
-  deleteDocument,
+  deleteUserDocument,
+  uploadDocument,
 } from "../services/documentService";
 
 const DashboardPage = () => {
-  const [activeTab, setActiveTab] = useState("overview");
   const { user } = useAuth();
   const [userSubscription, setUserSubscription] = useState(null);
   const [isFrequencyModalOpen, setIsFrequencyModalOpen] = useState(false);
   const [nextPaymentDate, setNextPaymentDate] = useState("April 15, 2025");
+  const navigate = useNavigate();
 
   // Document states
   const [documents, setDocuments] = useState([]);
   const [isLoadingDocs, setIsLoadingDocs] = useState(false);
-  const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [documentData, setDocumentData] = useState({
-    name: "",
-    type: "",
-    description: "",
-    file: null,
-  });
-  const [fileError, setFileError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState(null);
@@ -67,7 +59,7 @@ const DashboardPage = () => {
       setUserSubscription(JSON.parse(subscription));
     }
 
-    // Fetch documents
+    // Fetch documents on component mount
     fetchDocuments();
   }, []);
 
@@ -75,9 +67,20 @@ const DashboardPage = () => {
     try {
       setIsLoadingDocs(true);
       const response = await getUserDocuments();
-      setDocuments(response.data);
+
+      // Check if response exists and has data
+      if (response && response.data) {
+        setDocuments(response.data || []);
+      } else {
+        // Handle case where response structure is different
+        setDocuments(response || []);
+      }
     } catch (error) {
-      console.error("Failed to fetch documents:", error);
+      console.error("Error fetching documents:", error);
+      setMessage({
+        type: "error",
+        text: "Failed to fetch documents. Please try again.",
+      });
     } finally {
       setIsLoadingDocs(false);
     }
@@ -129,123 +132,6 @@ const DashboardPage = () => {
     }
   };
 
-  const handleFileUploadClick = () => {
-    setShowUploadModal(true);
-  };
-
-  const handleDocumentDataChange = (e) => {
-    const { name, value } = e.target;
-    setDocumentData((prev) => ({
-      ...prev,
-      [name === "docName"
-        ? "name"
-        : name === "docType"
-        ? "type"
-        : name === "docDescription"
-        ? "description"
-        : name]: value,
-    }));
-  };
-
-  const handleDocumentFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Clear previous errors
-    setFileError("");
-
-    // Validate file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      setFileError("File size must be less than 5MB");
-      return;
-    }
-
-    // Validate file type
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      setFileError(
-        "Only images (JPG, PNG), PDFs, and document files (DOC, DOCX) are allowed"
-      );
-      return;
-    }
-
-    setDocumentData((prev) => ({
-      ...prev,
-      file,
-    }));
-  };
-
-  const handleDocumentSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!documentData.file) {
-      setFileError("Please select a file to upload");
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-      setUploadProgress(0);
-
-      // Simulate upload progress
-      const progressInterval = setInterval(() => {
-        setUploadProgress((prev) => {
-          if (prev >= 95) {
-            clearInterval(progressInterval);
-            return prev;
-          }
-          return prev + 5;
-        });
-      }, 100);
-
-      // Upload the document
-      const response = await uploadDocument(
-        documentData.file,
-        documentData.name,
-        documentData.type,
-        documentData.description
-      );
-
-      clearInterval(progressInterval);
-      setUploadProgress(100);
-
-      // Refresh the documents list
-      await fetchDocuments();
-
-      // Reset form and close modal
-      setDocumentData({
-        name: "",
-        type: "",
-        description: "",
-        file: null,
-      });
-      setShowUploadModal(false);
-    } catch (error) {
-      // Clear the progress interval if it exists
-      clearInterval(progressInterval);
-
-      // Set specific error message based on the error
-      if (error.message && error.message.includes("file")) {
-        setFileError(error.message);
-      } else {
-        console.error("Failed to upload document:", error);
-        // Close the modal to show the error message
-        setShowUploadModal(false);
-      }
-    } finally {
-      setIsSubmitting(false);
-      // Don't reset upload progress immediately to show completion or failure
-      setTimeout(() => setUploadProgress(0), 2000);
-    }
-  };
-
   const handleDeleteClick = (document) => {
     setDocumentToDelete(document);
     setShowDeleteModal(true);
@@ -255,7 +141,7 @@ const DashboardPage = () => {
     if (documentToDelete) {
       try {
         setIsSubmitting(true);
-        await deleteDocument(documentToDelete.id);
+        await deleteUserDocument(documentToDelete.id);
         await fetchDocuments();
       } catch (error) {
         console.error("Failed to delete document:", error);
@@ -485,13 +371,6 @@ const DashboardPage = () => {
                   <PiFilesDuotone className="mr-2 h-7 w-7 text-green-700" />
                   Uploaded Documents
                 </h3>
-                <button
-                  onClick={handleFileUploadClick}
-                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 cursor-pointer"
-                >
-                  <FiUpload className="mr-2 -ml-1 h-4 w-4" />
-                  Upload New Document
-                </button>
               </div>
 
               {uploadProgress > 0 && (
@@ -540,10 +419,12 @@ const DashboardPage = () => {
                       Your insurance documents and receipts will appear here.
                     </p>
                     <button
-                      onClick={handleFileUploadClick}
+                      onClick={() => {
+                        navigate("/profile");
+                      }}
                       className="mt-4 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-primary-600 dark:text-primary-400 rounded-md text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                     >
-                      Upload Document
+                      Upload Your Documents from the profile page
                     </button>
                   </div>
                 </div>
@@ -557,7 +438,7 @@ const DashboardPage = () => {
                       <div className="flex items-start justify-between">
                         <div className="flex items-start space-x-3">
                           <div className="flex-shrink-0">
-                            {doc.mimeType.startsWith("image/") ? (
+                            {doc.mimeType?.startsWith("image/") ? (
                               <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 flex items-center justify-center">
                                 <PiImageDuotone className="h-6 w-6 text-blue-500" />
                               </div>
@@ -611,7 +492,7 @@ const DashboardPage = () => {
                             href={doc.fileUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-primary-600  hover:text-primary-700 dark:hover:text-gray-300 "
+                            className="text-primary-600 hover:text-primary-700 dark:hover:text-gray-300"
                           >
                             <TbDownload className="h-5 w-5" />
                           </a>
@@ -644,7 +525,7 @@ const DashboardPage = () => {
         />
       )}
 
-      {/* Document Upload Modal */}
+      {/* Document Upload Modal
       <DocumentUploadModal
         showUploadModal={showUploadModal}
         setShowUploadModal={setShowUploadModal}
@@ -655,7 +536,7 @@ const DashboardPage = () => {
         handleDocumentSubmit={handleDocumentSubmit}
         isSubmitting={isSubmitting}
         fileError={fileError}
-      />
+      /> */}
 
       {/* Confirmation Modal */}
       <ConfirmationModal

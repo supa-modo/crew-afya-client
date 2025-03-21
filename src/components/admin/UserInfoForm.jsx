@@ -7,6 +7,16 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 const UserInfoForm = ({ formData, handleChange, errors }) => {
   const [showPassword, setShowPassword] = useState(false);
 
+  // Helper to check if an input has a server error
+  const hasServerError = (fieldName) => {
+    if (errors.form) {
+      const lowerCaseError = errors.form.toLowerCase();
+      const lowerCaseField = fieldName.toLowerCase();
+      return lowerCaseError.includes(lowerCaseField);
+    }
+    return false;
+  };
+
   return (
     <div className="mb-8">
       <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-6 flex items-center">
@@ -14,34 +24,95 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
         User Information
       </h2>
 
-      <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <label
-            htmlFor="fullName"
+            htmlFor="firstName"
             className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
           >
-            Full Name
+            First Name
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <PiUserDuotone className="h-5 w-5 text-gray-400" />
             </div>
             <input
-              id="fullName"
-              name="fullName"
+              id="firstName"
+              name="firstName"
               type="text"
-              value={formData.fullName}
+              value={formData.firstName || ""}
               onChange={handleChange}
               required
               className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
-                errors.fullName ? "border-red-300 dark:border-red-500" : ""
+                errors.firstName ? "border-red-300 dark:border-red-500" : ""
               }`}
-              placeholder="John Doe"
+              placeholder="John"
             />
           </div>
-          {errors.fullName && (
+          {errors.firstName && (
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-              {errors.fullName}
+              {errors.firstName}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="lastName"
+            className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+          >
+            Last Name
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <PiUserDuotone className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              value={formData.lastName || ""}
+              onChange={handleChange}
+              required
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+                errors.lastName ? "border-red-300 dark:border-red-500" : ""
+              }`}
+              placeholder="Doe"
+            />
+          </div>
+          {errors.lastName && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              {errors.lastName}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="otherNames"
+            className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+          >
+            Other Names
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <PiUserDuotone className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              id="otherNames"
+              name="otherNames"
+              type="text"
+              value={formData.otherNames || ""}
+              onChange={handleChange}
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+                errors.otherNames ? "border-red-300 dark:border-red-500" : ""
+              }`}
+              placeholder="Middle name"
+            />
+          </div>
+          {errors.otherNames && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              {errors.otherNames}
             </p>
           )}
         </div>
@@ -61,18 +132,24 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               id="email"
               name="email"
               type="email"
-              value={formData.email}
+              value={formData.email || ""}
               onChange={handleChange}
-              required
-              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
-                errors.email ? "border-red-300 dark:border-red-500" : ""
-              }`}
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border ${
+                errors.email || hasServerError("email")
+                  ? "border-red-300 dark:border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
+              } rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200`}
               placeholder="example@email.com"
             />
           </div>
           {errors.email && (
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">
               {errors.email}
+            </p>
+          )}
+          {hasServerError("email") && !errors.email && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              This email is already in use
             </p>
           )}
         </div>
@@ -92,12 +169,14 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               id="phoneNumber"
               name="phoneNumber"
               type="tel"
-              value={formData.phoneNumber}
+              value={formData.phoneNumber || ""}
               onChange={handleChange}
               required
-              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
-                errors.phoneNumber ? "border-red-300 dark:border-red-500" : ""
-              }`}
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border ${
+                errors.phoneNumber || hasServerError("phone")
+                  ? "border-red-300 dark:border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
+              } rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200`}
               placeholder="+254700000000"
             />
           </div>
@@ -106,11 +185,16 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               {errors.phoneNumber}
             </p>
           )}
+          {hasServerError("phone") && !errors.phoneNumber && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              This phone number is already in use
+            </p>
+          )}
         </div>
 
         <div>
           <label
-            htmlFor="nationalId"
+            htmlFor="idNumber"
             className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
           >
             National ID
@@ -120,20 +204,145 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               <TbCreditCard className="h-5 w-5 text-gray-400" />
             </div>
             <input
-              id="nationalId"
-              name="nationalId"
+              id="idNumber"
+              name="idNumber"
               type="text"
-              value={formData.nationalId}
+              value={formData.idNumber || ""}
               onChange={handleChange}
               className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
-                errors.nationalId ? "border-red-300 dark:border-red-500" : ""
+                errors.idNumber ? "border-red-300 dark:border-red-500" : ""
               }`}
               placeholder="Enter ID number"
             />
           </div>
-          {errors.nationalId && (
+          {errors.idNumber && (
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-              {errors.nationalId}
+              {errors.idNumber}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="gender"
+            className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+          >
+            Gender
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <FiUser className="h-5 w-5 text-gray-400" />
+            </div>
+            <select
+              id="gender"
+              name="gender"
+              value={formData.gender || ""}
+              onChange={handleChange}
+              required
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+                errors.gender ? "border-red-300 dark:border-red-500" : ""
+              }`}
+            >
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          {errors.gender && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              {errors.gender}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="county"
+            className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+          >
+            County
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <FiUser className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              id="county"
+              name="county"
+              type="text"
+              value={formData.county || ""}
+              onChange={handleChange}
+              required
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+                errors.county ? "border-red-300 dark:border-red-500" : ""
+              }`}
+              placeholder="Enter county"
+            />
+          </div>
+          {errors.county && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              {errors.county}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="sacco"
+            className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+          >
+            Sacco
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <FiUser className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              id="sacco"
+              name="sacco"
+              type="text"
+              value={formData.sacco || ""}
+              onChange={handleChange}
+              required
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+                errors.sacco ? "border-red-300 dark:border-red-500" : ""
+              }`}
+              placeholder="Enter sacco"
+            />
+          </div>
+          {errors.sacco && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              {errors.sacco}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="route"
+            className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+          >
+            Route
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <FiUser className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              id="route"
+              name="route"
+              type="text"
+              value={formData.route || ""}
+              onChange={handleChange}
+              className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+                errors.route ? "border-red-300 dark:border-red-500" : ""
+              }`}
+              placeholder="Enter route"
+            />
+          </div>
+          {errors.route && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              {errors.route}
             </p>
           )}
         </div>
@@ -152,7 +361,7 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
             <select
               id="role"
               name="role"
-              value={formData.role}
+              value={formData.role || "user"}
               onChange={handleChange}
               required
               className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
@@ -186,7 +395,7 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
               id="password"
               name="password"
               type={showPassword ? "text" : "password"}
-              value={formData.password}
+              value={formData.password || ""}
               onChange={handleChange}
               required
               className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${

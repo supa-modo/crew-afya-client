@@ -10,7 +10,7 @@ import {
 import { TbEyeEdit, TbRefresh } from "react-icons/tb";
 import Pagination from "../../components/common/Pagination";
 import { FaSearch, FaFilter } from "react-icons/fa";
-import { getAllUsers } from "../../services/userService";
+import { getAllUsers, toggleUserStatus } from "../../services/userService";
 
 const UserManagement = ({
   onUserSelect,
@@ -48,31 +48,106 @@ const UserManagement = ({
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await getAllUsers({
+
+      // Prepare query parameters
+      const params = {
         page: currentPage,
         limit: pageSize,
         search: searchTerm,
         sortBy,
         sortOrder,
-        role: filterRole !== "all" ? filterRole : undefined,
-        isActive:
-          filterStatus !== "all" ? filterStatus === "active" : undefined,
-        plan: filterPlan !== "all" ? filterPlan : undefined,
-      });
+      };
 
-      console.log(response.data);
+      // Add filter parameters if they're not "all"
+      if (filterRole !== "all") params.role = filterRole;
+      if (filterStatus !== "all") params.isActive = filterStatus === "active";
+      if (filterPlan !== "all") params.planId = filterPlan;
 
-      setUsers(response.data);
+      const response = await getAllUsers(params);
 
-      setTotalUsers(response.data.length);
-      setTotalPages(Math.ceil(response.data.length / pageSize));
+      // Check if we got a successful response with data
+      if (response.success && response.data) {
+        setUsers(response.data);
+        setTotalUsers(response.count || response.data.length);
+        setTotalPages(
+          Math.ceil((response.count || response.data.length) / pageSize)
+        );
+      } else {
+        // Handle case where API call was successful but no data was returned
+        console.warn("API call successful but no data returned:", response);
+        setError("No users found or error in data format");
+        // Use mock data for development purposes
+        const mockData = generateMockUserData(pageSize);
+        setUsers(mockData);
+        setTotalUsers(100);
+        setTotalPages(10);
+      }
 
       setLoading(false);
     } catch (err) {
       console.error("Error fetching users:", err);
       setError(err.message || "Failed to load users");
+
+      // Use mock data for development purposes
+      const mockData = generateMockUserData(pageSize);
+      setUsers(mockData);
+      setTotalUsers(100);
+      setTotalPages(10);
+
       setLoading(false);
     }
+  };
+
+  // Helper function to generate mock data for development
+  const generateMockUserData = (count) => {
+    return Array(count)
+      .fill()
+      .map((_, index) => ({
+        id: `user-${index + 1}`,
+        firstName: `First${index + 1}`,
+        lastName: `Last${index + 1}`,
+        email: `user${index + 1}@example.com`,
+        phoneNumber: `+2547${String(index + 1).padStart(8, "0")}`,
+        idNumber: `ID${String(1000000 + index).padStart(7, "0")}`,
+        role: index % 5 === 0 ? "admin" : "user",
+        isActive: index % 3 !== 0,
+        county: `County ${(index % 10) + 1}`,
+        sacco: `Sacco ${(index % 8) + 1}`,
+        route: `Route ${(index % 15) + 1}`,
+        membershipStatus: index % 4 === 0 ? "pending" : "active",
+        membershipNumber: `MTU23${String(index + 1).padStart(5, "0")}`,
+        createdAt: new Date(Date.now() - index * 86400000).toISOString(),
+        updatedAt: new Date(Date.now() - index * 43200000).toISOString(),
+        insuranceCoverage:
+          index % 2 === 0
+            ? {
+                id: `coverage-${index}`,
+                planId: index % 2 === 0 ? "plan1" : "plan2",
+                status: index % 4 === 0 ? "inactive" : "active",
+                startDate: new Date(
+                  Date.now() - index * 86400000
+                ).toISOString(),
+                paymentFrequency:
+                  index % 3 === 0
+                    ? "daily"
+                    : index % 3 === 1
+                    ? "monthly"
+                    : "annual",
+                plan: {
+                  id: index % 2 === 0 ? "plan1" : "plan2",
+                  name:
+                    index % 2 === 0
+                      ? "Crew Afya Lite"
+                      : "Crew Afya - (Up to M+3)",
+                  type:
+                    index % 2 === 0
+                      ? "Crew Afya Lite"
+                      : "Crew Afya - (Up to M+3)",
+                  forDependents: index % 2 !== 0,
+                },
+              }
+            : null,
+      }));
   };
 
   const handleSearch = (e) => {
@@ -92,15 +167,15 @@ const UserManagement = ({
 
   const handleToggleStatus = async (userId, currentStatus) => {
     try {
-      // In a real implementation, this would call the API
+      // Make API call to toggle user status
       await toggleUserStatus(userId, !currentStatus);
 
-      // Mock API call
-      // setUsers(
-      //   users.map((user) =>
-      //     user.id === userId ? { ...user, isActive: !currentStatus } : user
-      //   )
-      // );
+      // Optimistically update UI
+      setUsers(
+        users.map((user) =>
+          user.id === userId ? { ...user, isActive: !currentStatus } : user
+        )
+      );
     } catch (err) {
       console.error("Error toggling user status:", err);
       setError(err.message || "Failed to update user status");
@@ -169,7 +244,7 @@ const UserManagement = ({
 
   const getPlanStatusClass = (status) => {
     if (!status)
-      return "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400";
+      return "bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400";
 
     switch (status.toLowerCase()) {
       case "active":
@@ -246,8 +321,28 @@ const UserManagement = ({
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
-                <option value="pending">Pending</option>
-                <option value="suspended">Suspended</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex-1 md:flex-initial">
+            <label htmlFor="plan-filter" className="sr-only">
+              Filter by plan
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <FaFilter className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              </div>
+              <select
+                id="plan-filter"
+                value={filterPlan}
+                onChange={(e) => setFilterPlan(e.target.value)}
+                className="bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 p-2.5"
+              >
+                <option value="all">All Plans</option>
+                <option value="plan1">Crew Afya Lite</option>
+                <option value="plan2">Crew Afya - (Up to M+3)</option>
+                <option value="none">No Plan</option>
               </select>
             </div>
           </div>
@@ -391,7 +486,7 @@ const UserManagement = ({
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-800">
               {users.map((user) => (
                 <tr
                   key={user.id}
@@ -404,15 +499,15 @@ const UserManagement = ({
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10 rounded-full bg-admin-100 dark:bg-admin-900 flex items-center justify-center">
                         <span className="text-admin-700 dark:text-admin-300 font-medium">
-                          {user.firstName.charAt(0)}
-                          {user.lastName.charAt(0)}
+                          {user.firstName?.charAt(0)}
+                          {user.lastName?.charAt(0)}
                         </span>
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
                           {user.firstName} {user.lastName}
                         </div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
                           {user.membershipNumber || "No Membership Number"}
                         </div>
                       </div>
@@ -424,7 +519,7 @@ const UserManagement = ({
                   >
                     <div>
                       <div>{user.phoneNumber}</div>
-                      <div>{user.email || "No Email"}</div>
+                      <div className="text-xs text-amber-700 font-medium">{user.email || "No Email"}</div>
                     </div>
                   </td>
                   <td
@@ -439,12 +534,12 @@ const UserManagement = ({
                   >
                     {user.insuranceCoverage ? (
                       <div>
-                        <div className="font-medium text-gray-900 dark:text-white">
+                        <div className="font-semibold text-gray-600 dark:text-white">
                           {formatPlanName(user.insuranceCoverage.plan)}
                         </div>
                         <div>
                           <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPlanStatusClass(
+                            className={`pl-3 w-full inline-flex text-xs leading-5 font-semibold rounded-full ${getPlanStatusClass(
                               user.insuranceCoverage.status
                             )}`}
                           >
@@ -463,20 +558,20 @@ const UserManagement = ({
                     onClick={() => handleViewUser(user)}
                   >
                     <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      className={`px-3 inline-flex text-xs leading-5 font-semibold rounded-lg ${
                         user.role === "admin" || user.role === "superadmin"
-                          ? "bg-admin-100 text-admin-800 dark:bg-admin-900 dark:text-admin-200"
-                          : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                          ? "bg-admin-200 text-admin-800 dark:bg-admin-900 dark:text-admin-200"
+                          : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
                       }`}
                     >
-                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                      {user.role?.charAt(0).toUpperCase() + user.role?.slice(1)}
                     </span>
                   </td>
                   <td
                     className="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 cursor-pointer"
                     onClick={() => handleViewUser(user)}
                   >
-                    {formatDate(user.createdAt)}
+                    {new Date(user.createdAt).toLocaleDateString()}
                   </td>
                   <td
                     className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 cursor-pointer"
@@ -495,10 +590,10 @@ const UserManagement = ({
                     onClick={() => handleViewUser(user)}
                   >
                     <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      className={`px-3 inline-flex text-xs leading-5 font-semibold rounded-lg ${
                         user.isActive
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                          ? "bg-green-200 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                          : "bg-red-200 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                       }`}
                     >
                       {user.isActive ? "Active" : "Inactive"}

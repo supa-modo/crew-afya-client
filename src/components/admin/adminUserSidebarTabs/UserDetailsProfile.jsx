@@ -1,104 +1,140 @@
 import React, { useState } from "react";
-import {
-  FiSave,
-  FiPlus,
-} from "react-icons/fi";
+import { FiSave, FiPlus } from "react-icons/fi";
 import { formatCurrency } from "../../../utils/formatCurrency";
 import { formatDate, formatDateForInput } from "../../../utils/formatDate";
-import { TbCalendarDot, TbCash, TbClockCheck, TbEdit, TbShieldHalfFilled, TbTrash, TbUserEdit, TbUserX } from "react-icons/tb";
+import {
+  TbCalendarDot,
+  TbCash,
+  TbClockCheck,
+  TbEdit,
+  TbShieldHalfFilled,
+  TbTrash,
+  TbUserEdit,
+  TbUserX,
+} from "react-icons/tb";
 import { MdHealthAndSafety } from "react-icons/md";
 import { PiUserDuotone } from "react-icons/pi";
-const UserDetailsProfile = ({ user }) => {
+import {
+  updateUser,
+  addUserInsurance,
+  updateUserInsurance,
+} from "../../../services/userService";
+
+const UserDetailsProfile = ({ user, onUserUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  // Set up form data with all User model fields
   const [formData, setFormData] = useState({
-    name: user?.name || "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    otherNames: user?.otherNames || "",
     email: user?.email || "",
-    phone: user?.phone || "",
+    phoneNumber: user?.phoneNumber || user?.phone || "",
+    idNumber: user?.idNumber || "",
+    gender: user?.gender || "",
+    county: user?.county || "",
+    sacco: user?.sacco || "",
+    route: user?.route || "",
+    membershipStatus: user?.membershipStatus || "pending",
   });
 
-  // Get the user's plan with more detailed logging
-  // Check for firstName to determine if we're using mockUsers format
-  const fullName = user?.firstName
-    ? `${user.firstName} ${user.lastName}`
-    : user?.name;
+  // Get the user's full name
+  const fullName =
+    user?.firstName && user?.lastName
+      ? `${user.firstName} ${user.lastName}${
+          user.otherNames ? ` ${user.otherNames}` : ""
+        }`
+      : user?.name || "Unknown User";
 
-
-  // Try to access user plan data directly
-  let plan = user?.plan || null;
-
-  // If plan is still null but we have user ID, try to get from mockUsers directly
-  if (!plan && user?.id) {
-    console.log(
-      "Plan not found in user object, attempting to fetch from mockUsers"
-    );
-    try {
-      // Dynamically import mockUsers to get the data directly
-      import("../../../data/mockUsers")
-        .then((module) => {
-          const mockUsers = module.mockUsers;
-          const userFromMock = mockUsers.find((u) => u.id === user.id);
-          if (userFromMock?.plan) {
-            console.log("Found plan in mockUsers:", userFromMock.plan);
-            plan = userFromMock.plan;
-            // Force component update
-            setLoading(true);
-            setTimeout(() => setLoading(false), 100);
-          }
-        })
-        .catch((err) => console.error("Error importing mockUsers:", err));
-    } catch (error) {
-      console.error("Error accessing mockUsers:", error);
-    }
-  }
+  // Get insurance coverage data
+  const insuranceCoverage = user?.insuranceCoverage || null;
+  const plan = insuranceCoverage?.plan || user?.plan || null;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes(".")) {
-      const [parent, child] = name.split(".");
-      setFormData({
-        ...formData,
-        [parent]: {
-          ...formData[parent],
-          [child]: value,
-        },
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
-  const handleSubmit = (e) => {
+  const handleEditClick = () => {
+    // Initialize form data with current user data
+    setFormData({
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      otherNames: user?.otherNames || "",
+      email: user?.email || "",
+      phoneNumber: user?.phoneNumber || user?.phone || "",
+      idNumber: user?.idNumber || "",
+      gender: user?.gender || "",
+      county: user?.county || "",
+      sacco: user?.sacco || "",
+      route: user?.route || "",
+      membershipStatus: user?.membershipStatus || "pending",
+    });
+
+    setIsEditing(true);
+    setError(null);
+    setSuccess(null);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setError(null);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Updating user profile with:", formData);
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
 
-    // Simulating API call
-    setTimeout(() => {
-      setIsEditing(false);
-      // In a real app, we would update the user state here
-    }, 500);
-  };
+    try {
+      // Call API to update user
+      const response = await updateUser(user.id, formData);
 
-  // Helper function to get CSS class for plan status
-  const getPlanStatusClass = (status) => {
-    switch (status?.toLowerCase()) {
-      case "active":
-        return "bg-green-200 text-green-800 dark:bg-green-900/20 dark:text-green-400";
-      case "expired":
-        return "bg-red-200 text-red-800 dark:bg-red-900/20 dark:text-red-400";
-      case "suspended":
-        return "bg-yellow-200 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400";
-      default:
-        return "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-400";
+      if (response.success) {
+        setSuccess("User details updated successfully");
+        setIsEditing(false);
+
+        // If onUserUpdate function is provided, call it with updated user data
+        if (typeof onUserUpdate === "function") {
+          onUserUpdate(response.data);
+        }
+      }
+    } catch (error) {
+      setError(error.message || "Failed to update user");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Helper function to format payment frequency
+  const getPlanStatusClass = (status) => {
+    if (!status)
+      return "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+
+    switch (status.toLowerCase()) {
+      case "active":
+        return "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200";
+      case "inactive":
+        return "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+      case "expiring":
+        return "bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+      case "expired":
+        return "bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200";
+      default:
+        return "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+    }
+  };
+
   const formatPaymentFrequency = (frequency) => {
-    switch (frequency) {
+    if (!frequency) return "N/A";
+
+    switch (frequency.toLowerCase()) {
       case "daily":
         return "Daily";
       case "monthly":
@@ -106,387 +142,669 @@ const UserDetailsProfile = ({ user }) => {
       case "annual":
         return "Annual";
       default:
-        return "Monthly";
+        return frequency;
     }
   };
 
-  // Plan management handlers
-  const handleAddPlan = () => {
-    console.log("Add new plan");
-    // Would open a modal or navigate to plan creation form
-  };
-
-  const handleEditPlan = (plan) => {
-    console.log("Edit plan:", plan);
-    // Would open a modal with plan details for editing
-  };
-
-  const handleDeletePlan = (planId) => {
-    console.log("Delete plan with ID:", planId);
-    // Would show confirmation dialog before deletion
-  };
-
   return (
-    <div className="py-6 px-2">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="flex items-center gap-2 text-lg font-semibold text-secondary-800/90">
-          <PiUserDuotone className="h-6 w-6" />
-          <span className="">Profile Information</span>
-        </h2>
-        <button
-          type="button"
-          onClick={() => setIsEditing(!isEditing)}
-          className={`inline-flex items-center px-4 py-1.5 border ${
-            isEditing
-              ? "border-red-300 text-red-700 dark:border-red-600 dark:text-red-400 bg-white dark:bg-gray-800"
-              : "border-secondary-700 text-secondary-700 dark:text-gray-300 bg-white dark:bg-gray-800"
-          } rounded-lg text-sm font-medium shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700`}
-        >
-          {isEditing ? (
-            <>
-              <TbUserX className="mr-1.5 -ml-1 h-5 w-5" />
-              Cancel
-            </>
-          ) : (
-            <>
-              <TbUserEdit className="mr-1.5 -ml-1 h-5 w-5" />
-              Edit Profile
-            </>
-          )}
-        </button>
-      </div>
-
-      {/* Profile Display (Read-only view) */}
-      {!isEditing && (
-        <div className="mt-5 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Full Name
-              </h3>
-              <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-                {fullName || user?.name || "N/A"}
-              </p>
+    <div className="space-y-4">
+      {error && (
+        <div className="bg-red-100 border-l-4 border-red-400 p-4 dark:bg-red-900/20 dark:border-red-600">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-red-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </div>
-            <div>
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Email Address
-              </h3>
-              <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-                {user?.email || "N/A"}
-              </p>
+            <div className="ml-3">
+              <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
             </div>
-            <div>
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Phone Number
-              </h3>
-              <p className="mt-1 text-sm font-semibold text-gray-700 dark:text-white">
-                {user?.phone || user?.phoneNumber || "N/A"}
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-5 border-t border-gray-200 dark:border-gray-700">
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
-              Account Details
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Account Status
-                </h4>
-                <p className="mt-1 text-sm text-gray-900 dark:text-white capitalize">
-                  {user?.status ||
-                    (user?.isActive ? "active" : "inactive") ||
-                    "N/A"}
-                </p>
-              </div>
-              <div>
-                <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                  User Role
-                </h4>
-                <p className="mt-1 text-sm text-gray-900 dark:text-white capitalize">
-                  {user?.role || "N/A"}
-                </p>
-              </div>
-              <div>
-                <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Account Created
-                </h4>
-                <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {formatDate(user?.createdAt)}
-                </p>
-              </div>
-              <div>
-                <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Last Login
-                </h4>
-                <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {formatDate(user?.lastLogin)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Insurance Plans Section */}
-          <div className="pt-5 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="flex items-center gap-2 text-lg font-semibold text-secondary-800/90 ">
-                <MdHealthAndSafety className="h-6 w-6" />
-                <span className="">Medical Cover Plan</span>
-              </h2>
-
-              {!plan && (
-                <button
-                  onClick={handleAddPlan}
-                  className="inline-flex items-center px-3 py-1.5 border border-green-500 text-green-700 bg-green-50 hover:bg-green-100 dark:bg-green-900/10 dark:text-green-400 dark:border-green-800 dark:hover:bg-green-900/20 rounded-lg text-sm font-medium shadow-sm"
-                >
-                  <FiPlus className="mr-1.5 -ml-1 h-4 w-4" />
-                  Add Plan
-                </button>
-              )}
-            </div>
-
-            {/* Medical Cover Plan */}
-            {loading ? (
-              <div className="flex justify-center items-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-admin-600"></div>
-                <span className="ml-2 text-gray-500 dark:text-gray-400">
-                  Loading plan...
-                </span>
-              </div>
-            ) : plan ? (
-              <div className="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
-                <div className="px-2 py-4 sm:px-6 flex justify-between items-start bg-admin-100 dark:bg-admin-800/10">
-                  <div>
-                    <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300 flex items-center">
-                      {plan.name}
-                      <span
-                        className={`ml-2 px-3 inline-flex text-xs leading-5 font-semibold rounded-full ${getPlanStatusClass(
-                          plan.status
-                        )}`}
-                      >
-                        {plan.status?.charAt(0).toUpperCase() +
-                          plan.status?.slice(1)}
-                      </span>
-                    </h4>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                      {plan.provider || "Crew Afya"}
-                      {plan.policyNumber && ` • Policy #${plan.policyNumber}`}
-                    </p>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                      <span className="font-medium">{plan.forWho}</span>
-                    </p>
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      type="button"
-                      onClick={() => handleEditPlan(plan)}
-                      className="inline-flex items-center p-1.5 border border-gray-300 shadow-sm text-xs rounded-md text-gray-700 bg-white hover:bg-admin-100 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-admin-600"
-                      title="Edit Plan"
-                    >
-                      <TbEdit className="h-[1.1rem] w-[1.1rem]" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDeletePlan(plan.id)}
-                      className="inline-flex items-center p-1.5 border border-red-300 shadow-sm text-xs rounded-md text-red-700 bg-white hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-800/30"
-                      title="Delete Plan"
-                    >
-                      <TbTrash className="h-[1.1rem] w-[1.1rem]" />
-                    </button>
-                  </div>
-                </div>
-                <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-4 sm:px-6">
-                  <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-4">
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
-                        <TbCalendarDot className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" />
-                        Coverage Period
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                        {formatDate(plan.startDate)} -{" "}
-                        {formatDate(plan.endDate)}
-                      </dd>
-                    </div>
-
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
-                        <TbClockCheck className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" />
-                        Payment Frequency
-                      </dt>
-                      <dd className="mt-1 pl-4 text-sm text-gray-900 dark:text-white capitalize">
-                        {formatPaymentFrequency(plan.paymentFrequency)}
-                      </dd>
-                    </div>
-
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
-                        <TbCash className="mr-1 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                        Cost ({formatPaymentFrequency(plan.paymentFrequency)})
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white font-semibold">
-                        {formatCurrency(plan.cost)}
-                      </dd>
-                    </div>
-
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        Other Payment Options
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                        <div className="space-y-1">
-                          {plan.paymentFrequency !== "daily" &&
-                            plan.premiums?.daily && (
-                              <div>
-                                Daily: {formatCurrency(plan.premiums.daily)}
-                              </div>
-                            )}
-                          {plan.paymentFrequency !== "monthly" &&
-                            plan.premiums?.monthly && (
-                              <div>
-                                Monthly: {formatCurrency(plan.premiums.monthly)}
-                              </div>
-                            )}
-                          {plan.paymentFrequency !== "annual" &&
-                            plan.premiums?.annual && (
-                              <div>
-                                Annual: {formatCurrency(plan.premiums.annual)}
-                              </div>
-                            )}
-                        </div>
-                      </dd>
-                    </div>
-
-                    {plan.coverage && (
-                      <div className="sm:col-span-4">
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                          Coverage
-                        </dt>
-                        <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                          {plan.coverage}
-                        </dd>
-                      </div>
-                    )}
-
-                    {plan.benefits && plan.benefits.length > 0 && (
-                      <div className="sm:col-span-4">
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                          Benefits
-                        </dt>
-                        <dd className="mt-1">
-                          <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
-                            {plan.benefits.map((benefit, index) => (
-                              <li key={index} className="text-sm">
-                                <span className="font-medium text-gray-900 dark:text-white">
-                                  {benefit.name}:
-                                </span>{" "}
-                                <span className="text-gray-700 dark:text-gray-300">
-                                  {benefit.limit}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                        </dd>
-                      </div>
-                    )}
-                  </dl>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg p-6 text-center">
-                <p className="text-gray-500 dark:text-gray-400 mb-4">
-                  No insurance plan found. Click "Add Plan" to add a new medical
-                  cover for the user.
-                </p>
-              </div>
-            )}
           </div>
         </div>
       )}
 
-      {/* Profile Edit Form */}
-      {isEditing && (
-        <form onSubmit={handleSubmit} className="mt-5 space-y-6">
-          <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+      {success && (
+        <div className="bg-green-100 border-l-4 border-green-400 p-4 dark:bg-green-900/20 dark:border-green-600">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-green-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
               >
-                Full Name
-              </label>
-              <div className="mt-1">
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
                 />
-              </div>
+              </svg>
             </div>
-
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Email Address
-              </label>
-              <div className="mt-1">
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
+            <div className="ml-3">
+              <p className="text-sm text-green-700 dark:text-green-400">
+                {success}
+              </p>
             </div>
+          </div>
+        </div>
+      )}
 
-            <div className="sm:col-span-3">
-              <label
-                htmlFor="phone"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Phone Number
-              </label>
-              <div className="mt-1">
-                <input
-                  type="tel"
-                  name="phone"
-                  id="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-semibold text-amber-800 dark:text-white flex items-center">
+          <PiUserDuotone className="mr-2 h-5 w-5 text-amber-700" />
+          Personal Information
+        </h2>
+        {!isEditing ? (
+          <button
+            onClick={handleEditClick}
+            className="flex items-center pr-6 text-sm text-admin-600 hover:text-admin-700 dark:text-admin-400 dark:hover:text-admin-300"
+          >
+            <TbEdit className="mr-1 h-5 w-5" />
+            Edit
+          </button>
+        ) : null}
+      </div>
+
+      {!isEditing ? (
+        <div className="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
+          <div className="px-4 py-5 sm:p-6">
+            <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 md:grid-cols-3">
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  Full Name
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-100">
+                  {fullName}
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  ID Number
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-100">
+                  {user?.idNumber || "N/A"}
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  Email Address
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-100">
+                  {user?.email || "N/A"}
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  Phone Number
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-100">
+                  {user?.phoneNumber || user?.phone || "N/A"}
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  Gender
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-100 capitalize">
+                  {user?.gender || "N/A"}
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  Membership Status
+                </dt>
+                <dd className="mt-1">
+                  <span
+                    className={`px-4 py-1 text-xs font-medium rounded-lg ${getPlanStatusClass(
+                      user?.membershipStatus
+                    )}`}
+                  >
+                    {user?.membershipStatus || "pending"}
+                  </span>
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  Membership Number
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-100">
+                  {user?.membershipNumber || "Not assigned"}
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  Membership Date
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-100">
+                  {user?.membershipDate
+                    ? formatDate(user.membershipDate)
+                    : "Not assigned"}
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  County
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-100">
+                  {user?.county || "N/A"}
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  SACCO
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-100">
+                  {user?.sacco || "N/A"}
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  Route
+                </dt>
+                <dd className="mt-1 text-sm font-medium text-gray-600 dark:text-gray-100">
+                  {user?.route || "N/A"}
+                </dd>
+              </div>
+              <div className="sm:col-span-1">
+                <dt className="text-sm  text-gray-400 dark:text-gray-500">
+                  Account Status
+                </dt>
+                <dd className="mt-1">
+                  <span
+                    className={`px-4 py-1 text-xs font-medium rounded-lg ${
+                      user?.isActive
+                        ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
+                        : "bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200"
+                    }`}
+                  >
+                    {user?.isActive ? "Active" : "Inactive"}
+                  </span>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg border border-gray-200 dark:border-gray-700"
+        >
+          <div className="px-4 py-5 sm:p-6">
+            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  First Name
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="firstName"
+                    id="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    required
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Last Name
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="lastName"
+                    id="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    required
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="otherNames"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Other Names
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="otherNames"
+                    id="otherNames"
+                    value={formData.otherNames}
+                    onChange={handleInputChange}
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-3">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Email Address
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-3">
+                <label
+                  htmlFor="phoneNumber"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Phone Number
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    id="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    required
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-3">
+                <label
+                  htmlFor="idNumber"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  ID Number
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="idNumber"
+                    id="idNumber"
+                    value={formData.idNumber}
+                    onChange={handleInputChange}
+                    required
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-3">
+                <label
+                  htmlFor="gender"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Gender
+                </label>
+                <div className="mt-1">
+                  <select
+                    id="gender"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="county"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  County
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="county"
+                    id="county"
+                    value={formData.county}
+                    onChange={handleInputChange}
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="sacco"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  SACCO
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="sacco"
+                    id="sacco"
+                    value={formData.sacco}
+                    onChange={handleInputChange}
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="route"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Route
+                </label>
+                <div className="mt-1">
+                  <input
+                    type="text"
+                    name="route"
+                    id="route"
+                    value={formData.route}
+                    onChange={handleInputChange}
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-3">
+                <label
+                  htmlFor="membershipStatus"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Membership Status
+                </label>
+                <div className="mt-1">
+                  <select
+                    id="membershipStatus"
+                    name="membershipStatus"
+                    value={formData.membershipStatus}
+                    onChange={handleInputChange}
+                    className="shadow-sm py-2 px-3 border border-gray-300 focus:ring-1 focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
-
-          <div className="pt-5">
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={() => setIsEditing(false)}
-                className="bg-white dark:bg-gray-800 py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-admin-600 hover:bg-admin-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
-              >
-                <FiSave className="mr-2 -ml-1 h-4 w-4" />
-                Save
-              </button>
-            </div>
+          <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700 text-right sm:px-6 flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-500"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-admin-600 hover:bg-admin-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 disabled:opacity-50"
+            >
+              {loading ? (
+                <>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <FiSave className="mr-1.5 h-4 w-4" />
+                  Save Changes
+                </>
+              )}
+            </button>
           </div>
         </form>
       )}
+
+      {/* Insurance Plans Section */}
+      <div className="pt-5 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-secondary-800/90 ">
+            <MdHealthAndSafety className="h-6 w-6" />
+            <span className="">Medical Cover Plan</span>
+          </h2>
+
+          {!plan && (
+            <button
+              // onClick={handleAddPlan}
+              className="inline-flex items-center px-3 py-1.5 border border-green-500 text-green-700 bg-green-50 hover:bg-green-100 dark:bg-green-900/10 dark:text-green-400 dark:border-green-800 dark:hover:bg-green-900/20 rounded-lg text-sm font-medium shadow-sm"
+            >
+              <FiPlus className="mr-1.5 -ml-1 h-4 w-4" />
+              Add Plan
+            </button>
+          )}
+        </div>
+
+        {/* Medical Cover Plan */}
+        {insuranceCoverage || plan ? (
+          <div className="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="px-2 py-4 sm:px-6 flex justify-between items-start bg-admin-100 dark:bg-admin-800/10">
+              <div>
+                <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300 flex items-center">
+                  {plan.name}
+                  <span
+                    className={`ml-2 px-3 inline-flex text-xs leading-5 font-semibold rounded-full ${getPlanStatusClass(
+                      insuranceCoverage?.status
+                    )}`}
+                  >
+                    {insuranceCoverage?.status?.charAt(0).toUpperCase() +
+                      insuranceCoverage?.status?.slice(1)}
+                  </span>
+                </h4>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  {insuranceCoverage?.provider || "Crew Afya"}
+                  {(insuranceCoverage?.policyNumber &&
+                    ` • Policy #${insuranceCoverage?.policyNumber}`) ||
+                    " • Policy #CWA-243567"}
+                </p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  <span className="font-medium">
+                    {plan.forWho || "Matatu Drivers"}
+                  </span>
+                </p>
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  type="button"
+                  // onClick={() => handleEditPlan(plan)}
+                  className="inline-flex items-center p-1.5 border border-gray-300 shadow-sm text-xs rounded-md text-gray-700 bg-white hover:bg-admin-100 focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-admin-600"
+                  title="Edit Plan"
+                >
+                  <TbEdit className="h-[1.1rem] w-[1.1rem]" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDeletePlan(plan.id)}
+                  className="inline-flex items-center p-1.5 border border-red-300 shadow-sm text-xs rounded-md text-red-700 bg-white hover:bg-red-100 focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-800/30"
+                  title="Delete Plan"
+                >
+                  <TbTrash className="h-[1.1rem] w-[1.1rem]" />
+                </button>
+              </div>
+            </div>
+            <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-4 sm:px-6">
+              <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-4">
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                    <TbCalendarDot className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                    Coverage Period
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                    {formatDate(insuranceCoverage?.startDate)} -{" "}
+                    {formatDate(insuranceCoverage?.endDate)}
+                  </dd>
+                </div>
+
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                    <TbClockCheck className="mr-1 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                    Payment Frequency
+                  </dt>
+                  <dd className="mt-1 pl-4 text-sm text-gray-900 dark:text-white capitalize">
+                    {formatPaymentFrequency(
+                      insuranceCoverage?.paymentFrequency
+                    )}
+                  </dd>
+                </div>
+
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                    <TbCash className="mr-1 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    Cost (
+                    {formatPaymentFrequency(
+                      insuranceCoverage?.paymentFrequency
+                    )}
+                    )
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-white font-semibold">
+                    {formatCurrency(insuranceCoverage?.cost || 8500)}
+                  </dd>
+                </div>
+
+                <div className="sm:col-span-1">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Other Payment Options
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                    <div className="space-y-1">
+                      {insuranceCoverage?.paymentFrequency !== "daily" &&
+                        insuranceCoverage?.premiums?.daily && (
+                          <div>
+                            Daily:{" "}
+                            {formatCurrency(
+                              insuranceCoverage?.premiums.daily || 55
+                            )}
+                          </div>
+                        )}
+                      {insuranceCoverage?.paymentFrequency !== "monthly" &&
+                        insuranceCoverage?.premiums?.monthly && (
+                          <div>
+                            Monthly:{" "}
+                            {formatCurrency(
+                              insuranceCoverage?.premiums.monthly || 1000
+                            )}
+                          </div>
+                        )}
+                      {insuranceCoverage?.paymentFrequency !== "annual" &&
+                        insuranceCoverage?.premiums?.annual && (
+                          <div>
+                            Annual:{" "}
+                            {formatCurrency(
+                              insuranceCoverage?.premiums.annual || 100000
+                            )}
+                          </div>
+                        )}
+                    </div>
+                  </dd>
+                </div>
+
+                {/* {plan.coverage && ( */}
+                {plan.coverage || (
+                  <div className="sm:col-span-4">
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      Coverage
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                      {plan.coverage || "N/A"}
+                    </dd>
+                  </div>
+                )}
+
+                {plan.benefits && plan.benefits.length > 0 && (
+                  <div className="sm:col-span-4">
+                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                      Benefits
+                    </dt>
+                    <dd className="mt-1">
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
+                        {plan.benefits.map((benefit, index) => (
+                          <li key={index} className="text-sm">
+                            <span className="font-medium text-gray-900 dark:text-white">
+                              {benefit.name}:
+                            </span>{" "}
+                            <span className="text-gray-700 dark:text-gray-300">
+                              {benefit.limit}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg border border-gray-200 dark:border-gray-700 mt-3 p-6 text-center">
+            <p className="text-gray-500 dark:text-gray-400">
+              No insurance coverage found for this user.
+            </p>
+            <button
+              onClick={() => {
+                // Handle adding insurance here
+                console.log("Add insurance for user:", user.id);
+              }}
+              className="mt-3 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-admin-600 hover:bg-admin-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
+            >
+              <FiPlus className="mr-1.5 -ml-1 h-4 w-4" />
+              Add Insurance Plan
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

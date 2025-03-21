@@ -106,8 +106,8 @@ export const verifyPhoneNumber = async (phoneNumber, verificationCode) => {
 };
 
 /**
- * Get all users (admin)
- * @param {Object} params - Query parameters (search, role, status, page, limit)
+ * Get all users with pagination and filtering options
+ * @param {Object} params - Query parameters for filtering, sorting, and pagination
  * @returns {Promise} Promise with users data
  */
 export const getAllUsers = async (params = {}) => {
@@ -120,7 +120,7 @@ export const getAllUsers = async (params = {}) => {
 };
 
 /**
- * Get user by ID (admin)
+ * Get user by ID
  * @param {string} id - User ID
  * @returns {Promise} Promise with user data
  */
@@ -134,7 +134,7 @@ export const getUserById = async (id) => {
 };
 
 /**
- * Create new user (admin)
+ * Create new user
  * @param {Object} userData - User data
  * @returns {Promise} Promise with created user data
  */
@@ -143,14 +143,29 @@ export const createUser = async (userData) => {
     const response = await api.post("/users", userData);
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: "Failed to create user" };
+    // Extract the specific error message from the API response
+    if (error.response && error.response.data) {
+      // If there's a message in the response data, use it
+      if (error.response.data.message) {
+        throw {
+          message: error.response.data.message,
+          status: error.response.status,
+          data: error.response.data,
+        };
+      } else if (typeof error.response.data === "string") {
+        // Sometimes the error might be a string
+        throw { message: error.response.data };
+      }
+    }
+    // Fallback to a more generic message if we can't extract one
+    throw { message: "Failed to create user. Please try again." };
   }
 };
 
 /**
- * Update user (admin)
+ * Update user
  * @param {string} id - User ID
- * @param {Object} userData - User data to update
+ * @param {Object} userData - Updated user data
  * @returns {Promise} Promise with updated user data
  */
 export const updateUser = async (id, userData) => {
@@ -163,16 +178,19 @@ export const updateUser = async (id, userData) => {
 };
 
 /**
- * Toggle user active status (admin)
+ * Toggle user status (active/inactive)
  * @param {string} id - User ID
- * @returns {Promise} Promise with updated status
+ * @param {boolean} active - Whether to set the user as active
+ * @returns {Promise} Promise with updated user data
  */
-export const toggleUserStatus = async (id) => {
+export const toggleUserStatus = async (id, active) => {
   try {
-    const response = await api.patch(`/users/${id}/toggle-status`);
+    const response = await api.patch(`/users/${id}/status`, {
+      isActive: active,
+    });
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: "Failed to toggle user status" };
+    throw error.response?.data || { message: "Failed to update user status" };
   }
 };
 
@@ -192,14 +210,22 @@ export const addUserInsurance = async (id, insuranceData) => {
 };
 
 /**
- * Update user insurance (admin)
- * @param {string} id - User ID
- * @param {Object} insuranceData - Insurance data to update
+ * Update user insurance plan (admin)
+ * @param {string} userId - User ID
+ * @param {string} insuranceId - Insurance coverage ID
+ * @param {Object} insuranceData - Updated insurance data
  * @returns {Promise} Promise with updated insurance coverage data
  */
-export const updateUserInsurance = async (id, insuranceData) => {
+export const updateUserInsurance = async (
+  userId,
+  insuranceId,
+  insuranceData
+) => {
   try {
-    const response = await api.put(`/users/${id}/insurance`, insuranceData);
+    const response = await api.put(
+      `/users/${userId}/insurance/${insuranceId}`,
+      insuranceData
+    );
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "Failed to update insurance" };

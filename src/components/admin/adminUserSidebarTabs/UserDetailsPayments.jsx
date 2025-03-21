@@ -23,6 +23,7 @@ import {
 } from "react-icons/tb";
 import Pagination from "../../common/Pagination";
 import { MpesaIcon } from "../../common/icons";
+import { getUserPayments } from "../../../services/paymentService";
 
 const UserDetailsPayments = ({ user }) => {
   const [payments, setPayments] = useState([]);
@@ -30,100 +31,119 @@ const UserDetailsPayments = ({ user }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [error, setError] = useState(null);
   const paymentsPerPage = 6;
 
   useEffect(() => {
-    // In a real implementation, this would fetch payments from an API
+    // Fetch payments for this user
     const fetchPayments = async () => {
+      if (!user || !user.id) return;
+
       setLoading(true);
+      setError(null);
+
       try {
-        // Mock API response
-        setTimeout(() => {
-          const mockPayments = [
-            {
-              id: "pay1",
-              reference: "MPE123456",
-              amount: 2500,
-              method: "M-Pesa",
-              status: "completed",
-              date: "2023-06-15T14:30:00.000Z",
-              planName: "Basic Health Cover",
-              description: "Monthly payment for June 2023",
-            },
-            {
-              id: "pay2",
-              reference: "MPE789012",
-              amount: 5000,
-              method: "Card Payment",
-              status: "completed",
-              date: "2023-05-15T10:20:00.000Z",
-              planName: "Family Health Plan",
-              description: "Monthly payment for May 2023",
-            },
-            {
-              id: "pay3",
-              reference: "MPE345678",
-              amount: 2500,
-              method: "M-Pesa",
-              status: "completed",
-              date: "2023-04-15T09:45:00.000Z",
-              planName: "Basic Health Cover",
-              description: "Monthly payment for April 2023",
-            },
-            {
-              id: "pay4",
-              reference: "MPE901234",
-              amount: 1200,
-              method: "Bank Transfer",
-              status: "pending",
-              date: "2023-07-01T11:20:00.000Z",
-              planName: "Dental Coverage",
-              description: "Monthly payment for July 2023",
-            },
-            {
-              id: "pay5",
-              reference: "MPE567890",
-              amount: 5000,
-              method: "Card Payment",
-              status: "failed",
-              date: "2023-06-01T16:55:00.000Z",
-              planName: "Family Health Plan",
-              description:
-                "Monthly payment for June 2023 - Failed due to insufficient funds",
-            },
-            {
-              id: "pay6",
-              reference: "MPE234567",
-              amount: 5000,
-              method: "Cash",
-              status: "completed",
-              date: "2023-03-15T13:10:00.000Z",
-              planName: "Family Health Plan",
-              description: "Monthly payment for March 2023",
-            },
-            {
-              id: "pay7",
-              reference: "MPE890123",
-              amount: 2500,
-              method: "M-Pesa",
-              status: "refunded",
-              date: "2023-02-15T08:30:00.000Z",
-              planName: "Basic Health Cover",
-              description:
-                "Monthly payment for February 2023 - Refunded due to plan change",
-            },
-          ];
-          setPayments(mockPayments);
-          setLoading(false);
-        }, 800);
+        const response = await getUserPayments(user.id);
+        if (response.success && response.data) {
+          setPayments(response.data);
+        } else {
+          // If we have an unsuccessful response
+          setError(response.message || "Failed to fetch payments");
+          // Fall back to mock data in development for UI testing
+          if (process.env.NODE_ENV === "development") {
+            // Mock API response for development
+            const mockPayments = [
+              {
+                id: "pay1",
+                reference: "MPE123456",
+                amount: 2500,
+                method: "M-Pesa",
+                status: "completed",
+                date: "2023-06-15T14:30:00.000Z",
+                planName: "Basic Health Cover",
+                description: "Monthly payment for June 2023",
+              },
+              {
+                id: "pay2",
+                reference: "MPE789012",
+                amount: 5000,
+                method: "Card Payment",
+                status: "completed",
+                date: "2023-05-15T10:20:00.000Z",
+                planName: "Family Health Plan",
+                description: "Monthly payment for May 2023",
+              },
+              {
+                id: "pay3",
+                reference: "MPE345678",
+                amount: 2500,
+                method: "M-Pesa",
+                status: "completed",
+                date: "2023-04-15T09:45:00.000Z",
+                planName: "Basic Health Cover",
+                description: "Monthly payment for April 2023",
+              },
+              {
+                id: "pay4",
+                reference: "MPE901234",
+                amount: 1200,
+                method: "Bank Transfer",
+                status: "pending",
+                date: "2023-07-01T11:20:00.000Z",
+                planName: "Dental Coverage",
+                description: "Monthly payment for July 2023",
+              },
+              {
+                id: "pay5",
+                reference: "MPE567890",
+                amount: 5000,
+                method: "Card Payment",
+                status: "failed",
+                date: "2023-06-01T16:55:00.000Z",
+                planName: "Family Health Plan",
+                description:
+                  "Monthly payment for June 2023 - Failed due to insufficient funds",
+              },
+              {
+                id: "pay6",
+                reference: "MPE234567",
+                amount: 5000,
+                method: "Cash",
+                status: "completed",
+                date: "2023-03-15T13:10:00.000Z",
+                planName: "Family Health Plan",
+                description: "Monthly payment for March 2023",
+              },
+              {
+                id: "pay7",
+                reference: "MPE890123",
+                amount: 2500,
+                method: "M-Pesa",
+                status: "refunded",
+                date: "2023-02-15T08:30:00.000Z",
+                planName: "Basic Health Cover",
+                description:
+                  "Monthly payment for February 2023 - Refunded due to plan change",
+              },
+            ];
+            setPayments(mockPayments);
+          }
+        }
       } catch (error) {
         console.error("Error fetching payments:", error);
+        setError(error.message || "Failed to fetch payments");
+
+        // Fall back to mock data in development
+        if (process.env.NODE_ENV === "development") {
+          // Set mock data as above
+        }
+      } finally {
         setLoading(false);
       }
     };
 
     fetchPayments();
-  }, [user.id]);
+  }, [user?.id]);
 
   // Filter payments based on search term and status
   const filteredPayments = payments.filter((payment) => {
@@ -208,12 +228,23 @@ const UserDetailsPayments = ({ user }) => {
     }
   };
 
-  const handleDownloadReceipt = (paymentId) => {
-    // In a real app, this would generate and download a receipt
-    console.log(`Downloading receipt for payment ${paymentId}`);
-    alert(
-      `Receipt for payment ${paymentId} would be downloaded in a real application.`
-    );
+  const handleDownloadReceipt = async (paymentId) => {
+    // In a real app, this would call an API to download a receipt
+    try {
+      // Example of what this might look like
+      // const response = await downloadReceipt(paymentId);
+      // if (response.success && response.fileUrl) {
+      //   window.open(response.fileUrl, '_blank');
+      // }
+
+      console.log(`Downloading receipt for payment ${paymentId}`);
+      alert(
+        `Receipt for payment ${paymentId} would be downloaded in a real application.`
+      );
+    } catch (error) {
+      console.error("Error downloading receipt:", error);
+      alert("Failed to download receipt. Please try again.");
+    }
   };
 
   return (
@@ -225,12 +256,36 @@ const UserDetailsPayments = ({ user }) => {
         </h2>
       </div>
 
+      {error && (
+        <div className="bg-red-50 border-l-4 border-red-400 p-4 dark:bg-red-900/20 dark:border-red-600 mb-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-red-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Search and Filter */}
       <div className="flex flex-col sm:flex-row gap-4 sm:justify-between">
         <div className="relative flex-grow max-w-lg">
           <input
             type="text"
-            placeholder="Search plans..."
+            placeholder="Search payments..."
             className="pl-9 pr-4 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 text-sm text-gray-600/90 sm:text-base transition-colors duration-200 w-full"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -337,7 +392,7 @@ const UserDetailsPayments = ({ user }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       <div className="flex items-center">
-                      {payment.method === "M-Pesa" ? (
+                        {payment.method === "M-Pesa" ? (
                           <MpesaIcon width={60} height={20} />
                         ) : payment.method === "Card" ? (
                           <TbCreditCard className="mr-2 h-5 w-5 text-blue-500" />

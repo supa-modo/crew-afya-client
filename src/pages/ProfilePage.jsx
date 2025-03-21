@@ -15,7 +15,8 @@ import { useAuth } from "../context/AuthContext";
 import {
   uploadDocument,
   getUserDocuments,
-  deleteDocument,
+  deleteUserDocument,
+  uploadUserDocument,
 } from "../services/documentService";
 import {
   updateUserProfile,
@@ -91,15 +92,22 @@ const ProfilePage = () => {
     try {
       setIsLoadingDocs(true);
       const response = await getUserDocuments();
-      setDocuments(response.data);
 
-      // Check if user has uploaded an ID document
-      const hasId = response.data.some((doc) => doc.type === "identity");
-      setHasIdDocument(hasId);
+      // Check if response exists and has data
+      if (response && response.data) {
+        setDocuments(response.data || []);
+        // Check if user has uploaded an ID document
+        const hasId = response.data.some((doc) => doc.type === "identity");
+        setHasIdDocument(hasId);
+      } else {
+        // Handle case where response structure is different
+        setDocuments(response || []);
+      }
     } catch (error) {
+      console.error("Error fetching documents:", error);
       setMessage({
         type: "error",
-        text: error.message || "Failed to fetch documents",
+        text: "Failed to fetch documents. Please try again.",
       });
     } finally {
       setIsLoadingDocs(false);
@@ -268,12 +276,13 @@ const ProfilePage = () => {
       return;
     }
 
+    let progressInterval;
     try {
       setIsSubmitting(true);
       setUploadProgress(0);
 
       // Simulate upload progress
-      const progressInterval = setInterval(() => {
+      progressInterval = setInterval(() => {
         setUploadProgress((prev) => {
           if (prev >= 95) {
             clearInterval(progressInterval);
@@ -283,8 +292,8 @@ const ProfilePage = () => {
         });
       }, 100);
 
-      // Upload the document - make sure we're passing the correct parameters
-      const response = await uploadDocument(
+      // Upload the document
+      await uploadDocument(
         documentData.file,
         documentData.name,
         documentData.type,
@@ -312,7 +321,9 @@ const ProfilePage = () => {
       setShowUploadModal(false);
     } catch (error) {
       // Clear the progress interval if it exists
-      clearInterval(progressInterval);
+      if (progressInterval) clearInterval(progressInterval);
+
+      console.error("Document upload error:", error);
 
       // Set specific error message based on the error
       if (error.message && error.message.includes("file")) {
@@ -320,7 +331,7 @@ const ProfilePage = () => {
       } else {
         setMessage({
           type: "error",
-          text: error.message || "Failed to upload document",
+          text: "Failed to upload document. Please try again.",
         });
         // Close the modal to show the error message
         setShowUploadModal(false);
@@ -341,7 +352,7 @@ const ProfilePage = () => {
     if (documentToDelete) {
       try {
         setIsSubmitting(true);
-        await deleteDocument(documentToDelete.id);
+        await deleteUserDocument(documentToDelete.id);
         await fetchDocuments();
 
         setMessage({
@@ -361,10 +372,29 @@ const ProfilePage = () => {
     }
   };
 
-  const handleDeleteDocument = (documentId) => {
-    const document = documents.find((doc) => doc.id === documentId);
-    if (document) {
-      handleDeleteClick(document);
+  const handleDeleteDocument = async (documentId) => {
+    try {
+      setIsSubmitting(true);
+      const response = await deleteUserDocument(documentId);
+
+      if (response && response.success) {
+        // Refresh documents after deletion
+        await fetchDocuments();
+        setMessage({
+          type: "success",
+          text: "Document deleted successfully",
+        });
+      } else {
+        throw new Error(response?.message || "Failed to delete document");
+      }
+    } catch (error) {
+      console.error("Delete document error:", error);
+      setMessage({
+        type: "error",
+        text: error.message || "Failed to delete document. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

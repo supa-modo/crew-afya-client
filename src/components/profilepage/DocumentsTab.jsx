@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { FiFile, FiUpload, FiTrash2 } from "react-icons/fi";
+import { useEffect, useState } from "react";
 import ConfirmationModal from "../common/ConfirmationModal";
 import { TbCloudUpload, TbDownload, TbTrash } from "react-icons/tb";
 import {
@@ -7,6 +6,10 @@ import {
   PiFilesDuotone,
   PiImageDuotone,
 } from "react-icons/pi";
+import {
+  getUserDocuments,
+  deleteUserDocument,
+} from "../../services/documentService";
 
 const DocumentsTab = ({
   documents,
@@ -20,18 +23,32 @@ const DocumentsTab = ({
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState(null);
-
+  const [error, setError] = useState(null);
   const handleDeleteClick = (document) => {
     setDocumentToDelete(document);
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
+
+  const confirmDelete = async () => {
     if (documentToDelete) {
-      handleDeleteDocument(documentToDelete.id);
-      setShowDeleteModal(false);
-      setDocumentToDelete(null);
+      try {
+          await handleDeleteDocument(documentToDelete.id);
+          setShowDeleteModal(false);
+        setDocumentToDelete(null);
+      } catch (error) {
+        console.error("Error deleting document:", error);
+        setError("Failed to delete document. Please try again.");
+      }
     }
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   return (
@@ -46,13 +63,12 @@ const DocumentsTab = ({
         <button
           type="button"
           onClick={handleFileUploadClick}
-          className=" px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 cursor-pointer"
+          className="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 cursor-pointer"
         >
           <div className="flex items-center justify-center">
-          <TbCloudUpload className="mr-2 -ml-1 h-5 w-5" />
-          <span className="">Upload Document</span>
+            <TbCloudUpload className="mr-2 -ml-1 h-5 w-5" />
+            <span className="">Upload Document</span>
           </div>
-          
         </button>
       </div>
 
@@ -112,6 +128,33 @@ const DocumentsTab = ({
         </div>
       )}
 
+      {error && (
+        <div className="mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700">
+          <div className="flex">
+            <svg
+              className="h-6 w-6 text-red-600"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
+                Error
+              </h3>
+              <div className="mt-2 text-sm text-red-700 dark:text-red-400">
+                <p>{error}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {isLoadingDocs ? (
         <div className="py-8 flex justify-center">
           <svg
@@ -155,7 +198,7 @@ const DocumentsTab = ({
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0">
-                    {doc.mimeType.startsWith("image/") ? (
+                    {doc.mimeType?.startsWith("image/") ? (
                       <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-gray-700 flex items-center justify-center">
                         <PiImageDuotone className="h-6 w-6 text-blue-500" />
                       </div>
@@ -200,7 +243,7 @@ const DocumentsTab = ({
                         •
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {new Date(doc.createdAt).toLocaleDateString()}
+                        {formatDate(doc.createdAt)}
                       </span>
                     </div>
                     {doc.isVerified && (

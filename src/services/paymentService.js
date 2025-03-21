@@ -1,4 +1,5 @@
 import { apiGet, apiPost, apiPut } from "./api";
+import axios from "axios";
 
 // Mock payment data for development
 const MOCK_PAYMENT_HISTORY = [
@@ -148,27 +149,27 @@ export const getPaymentHistory = async (params = {}) => {
 };
 
 // Get payment details
-export const getPaymentDetails = async (paymentId) => {
-  try {
-    // In a real app, this would be an API call
-    // return await apiGet(`/payments/${paymentId}`);
+// export const getPaymentDetails = async (paymentId) => {
+//   try {
+//     // In a real app, this would be an API call
+//     // return await apiGet(`/payments/${paymentId}`);
 
-    // For now, find the payment in our mock data
-    const payment = MOCK_PAYMENT_HISTORY.find((p) => p.id === paymentId);
+//     // For now, find the payment in our mock data
+//     const payment = MOCK_PAYMENT_HISTORY.find((p) => p.id === paymentId);
 
-    if (!payment) {
-      throw new Error("Payment not found");
-    }
+//     if (!payment) {
+//       throw new Error("Payment not found");
+//     }
 
-    return {
-      success: true,
-      data: payment,
-    };
-  } catch (error) {
-    console.error("Error fetching payment details:", error);
-    throw new Error("Failed to fetch payment details");
-  }
-};
+//     return {
+//       success: true,
+//       data: payment,
+//     };
+//   } catch (error) {
+//     console.error("Error fetching payment details:", error);
+//     throw new Error("Failed to fetch payment details");
+//   }
+// };
 
 // Get payment methods
 export const getPaymentMethods = async () => {
@@ -189,4 +190,52 @@ export const getPaymentMethods = async () => {
     console.error("Error fetching payment methods:", error);
     throw new Error("Failed to fetch payment methods");
   }
+};
+
+/**
+ * Get all payments for a user
+ * @param {string} userId - User ID
+ * @returns {Promise} Promise with payments data
+ */
+export const getUserPayments = async (userId) => {
+  try {
+    const response = await apiGet(`/users/${userId}/payments`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to fetch payments" };
+  }
+};
+
+/**
+ * Get payment receipt
+ * @param {string} paymentId - Payment ID
+ * @returns {Promise} Promise with receipt URL
+ */
+export const getPaymentReceipt = async (paymentId) => {
+  try {
+    const response = await apiGet(`/payments/${paymentId}/receipt`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to get receipt" };
+  }
+};
+
+/**
+ * Get payment details
+ * @param {string} paymentId - Payment ID
+ * @returns {Promise} Promise with payment details
+ */
+export const getPaymentDetails = async (paymentId) => {
+  try {
+    const response = await apiGet(`/payments/${paymentId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to get payment details" };
+  }
+};
+
+export default {
+  getUserPayments,
+  getPaymentReceipt,
+  getPaymentDetails,
 };

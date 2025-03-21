@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { getStatusBadge } from "../../utils/statusBadge";
 import { formatDate } from "../../utils/formatDate";
@@ -25,6 +25,7 @@ import {
 import { HiCreditCard } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { getUserById } from "../../services/userService";
 
 const UserDetailsSidebar = ({
   user,
@@ -32,6 +33,7 @@ const UserDetailsSidebar = ({
   onClose,
   activeTab: propActiveTab,
   setActiveTab: propSetActiveTab,
+  onUserUpdate,
 }) => {
   // Internal state for active tab if not provided as prop
   const [internalActiveTab, setInternalActiveTab] = useState("profile");
@@ -40,7 +42,30 @@ const UserDetailsSidebar = ({
   const currentActiveTab = propActiveTab || internalActiveTab;
   const handleTabChange = propSetActiveTab || setInternalActiveTab;
 
-  // If user is not provided or sidebar is not open, return null
+  // Fetch user details when sidebar opens - moved before conditional return
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (user?.id && isOpen && !user.insuranceCoverage) {
+        try {
+          const response = await getUserById(user.id);
+          if (response.success && response.data) {
+            // Update the user object with full details
+            const updatedUser = response.data;
+            // If component receives onUserUpdate prop, call it with updated user data
+            if (typeof onUserUpdate === "function") {
+              onUserUpdate(updatedUser);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      }
+    };
+
+    fetchUserDetails();
+  }, [user?.id, isOpen, onUserUpdate]);
+
+  // Early return after all hooks have been called
   if (!user || !isOpen) return null;
 
   // Animation variants
@@ -84,11 +109,6 @@ const UserDetailsSidebar = ({
       label: "Profile & Insurance Coverage",
       icon: <PiUserDuotone className="h-5 w-5" />,
     },
-    // {
-    //   id: "plans",
-    //   label: "Insurance Plans",
-    //   icon: <TbShieldHalfFilled className="h-6 w-6" />,
-    // },
     {
       id: "payments",
       label: "Payments",
@@ -112,29 +132,23 @@ const UserDetailsSidebar = ({
   ];
 
   // Make sure required user properties exist
-  const userName = user.name || "Unknown User";
-  const userRole = user.role || "member";
+  const userName =
+    user?.firstName && user?.otherNames && user?.lastName
+      ? `${user.firstName} ${user.otherNames} ${user.lastName}`
+      : user?.name || "Unknown User";
+
+  const userRole = user?.role || "member";
+  const userPhone = user?.phoneNumber || user?.phone || "N/A";
+  const userEmail = user?.email || "No email provided";
+  const userStatus = user?.membershipStatus || user?.status || "pending";
+  const userCreatedAt = user?.createdAt || new Date();
+  const userLastLogin = user?.lastLogin || null;
 
   // Render the appropriate tab content based on the active tab
   const renderTabContent = () => {
-    // Create a wrapper for UserDetailsProfile to ensure plan data is passed
-    if (currentActiveTab === "profile") {
-      // Make sure the plan data is properly passed
-      const userWithVerifiedPlan = {
-        ...user,
-        // Ensure plan data is explicitly included
-        plan: user.plan,
-      };
-
-      return <UserDetailsProfile user={userWithVerifiedPlan} />;
-    }
-
     switch (currentActiveTab) {
       case "profile":
-        // This will not be reached due to the condition above
-        return null;
-      // case "plans":
-      //   return <UserDetailsPlans user={user} />;
+        return <UserDetailsProfile user={user} onUserUpdate={onUserUpdate} />;
       case "payments":
         return <UserDetailsPayments user={user} />;
       case "documents":
@@ -142,9 +156,9 @@ const UserDetailsSidebar = ({
       case "activity":
         return <UserDetailsActivity user={user} />;
       case "settings":
-        return <UserDetailsSettings user={user} />;
+        return <UserDetailsSettings user={user} onUserUpdate={onUserUpdate} />;
       default:
-        return <UserDetailsProfile user={user} />;
+        return <UserDetailsProfile user={user} onUserUpdate={onUserUpdate} />;
     }
   };
 
@@ -177,7 +191,7 @@ const UserDetailsSidebar = ({
                   <div className="px-4 py-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-gray-600 dark:text-white">
                       User Information -{" "}
-                      <span className="text-admin-600">{user.name}</span>
+                      <span className="text-amber-800">{userName}</span>
                     </h2>
                     <motion.button
                       onClick={onClose}
@@ -218,7 +232,7 @@ const UserDetailsSidebar = ({
                             </p>
                             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center">
                               <PiClockUserDuotone className="mr-1 h-4 w-4 " />
-                              Member since {formatDate(user.createdAt)}
+                              Member since {formatDate(userCreatedAt)}
                             </p>
                           </motion.div>
 
@@ -238,10 +252,10 @@ const UserDetailsSidebar = ({
                                 <div className="font-medium">
                                   <div className="">Email Address</div>
                                   <Link
-                                    to={`mailto:${user.email}`}
+                                    to={`mailto:${userEmail}`}
                                     className="text-admin-500 hover:text-admin-600 hover:underline"
                                   >
-                                    {user.email || "No email provided"}
+                                    {userEmail}
                                   </Link>
                                 </div>
                               </div>
@@ -250,10 +264,10 @@ const UserDetailsSidebar = ({
                                 <div className="font-medium">
                                   <div className="">Phone Number</div>
                                   <Link
-                                    to={`tel:${user.phone}`}
+                                    to={`tel:${userPhone}`}
                                     className="text-admin-500 hover:text-admin-600 hover:underline"
                                   >
-                                    {user.phone || "N/A"}
+                                    {userPhone}
                                   </Link>
                                 </div>
                               </div>
@@ -263,7 +277,9 @@ const UserDetailsSidebar = ({
                                 <div>
                                   <div className="font-medium">Last seen</div>
                                   <div className="font-medium text-secondary-700">
-                                    {formatDate(user.lastLogin)}
+                                    {userLastLogin
+                                      ? formatDate(userLastLogin)
+                                      : "Never"}
                                   </div>
                                 </div>
                               </div>

@@ -62,33 +62,15 @@ const AdminUsersPage = () => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-                <Link to="/admin/users" className="ml-2 hover:text-admin-600">
-                  User Management
-                </Link>
-              </li>
-              <li className="flex items-center">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
                 <span className="ml-2 text-gray-700 dark:text-gray-300 font-medium">
-                  Add New User
+                  User Management
                 </span>
               </li>
             </ol>
           </nav>
         </div>
         <div className="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h1 className="text-2xl font-semibold text-gray-600">
+          <h1 className="text-2xl font-semibold text-gray-600 dark:text-gray-300">
             Members Management
           </h1>
           <Link
