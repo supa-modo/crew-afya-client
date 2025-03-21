@@ -10,7 +10,7 @@ const ResetPasswordPage = () => {
       {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/afya1.jpg"
+          src="/matwana.jpg"
           alt="Health background"
           className="w-full h-full object-cover"
         />
@@ -51,7 +51,7 @@ const ResetPasswordPage = () => {
         transition={{ duration: 0.8, delay: 0.2 }}
         className="w-full max-w-lg z-20 mt-12 md:mt-24"
       >
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -83,7 +83,7 @@ const ResetPasswordPage = () => {
             ></motion.div>
           </motion.div>
 
-          <div className="px-4 pb-10 bg-gray-50 dark:bg-gray-800/50">
+          <div className="px-4 pb-10">
             <div className="mx-1 sm:mx-4">
               <ResetPasswordForm />
             </div>

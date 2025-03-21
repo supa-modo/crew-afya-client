@@ -33,20 +33,20 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
       ],
     },
     {
-      id: "user-management",
-      label: "User Management",
+      id: "member-management",
+      label: "Member Management",
       items: [
         {
-          name: "Users",
-          href: "/admin/users",
+          name: "Members",
+          href: "/admin/members",
           icon: PiUsersDuotone,
-          current: location.pathname === "/admin/users",
+          current: location.pathname === "/admin/members",
         },
         {
-          name: "Add New User",
-          href: "/admin/users/new",
+          name: "Add New Member",
+          href: "/admin/members/new",
           icon: MdPersonAdd,
-          current: location.pathname === "/admin/users/new",
+          current: location.pathname === "/admin/members/new",
         },
       ],
     },

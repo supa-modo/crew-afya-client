@@ -59,6 +59,34 @@ const Layout = () => {
         {/* Content */}
         <Navbar />
         <main className="flex-grow relative">
+          {/* Subtle grid pattern */}
+          <div className="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none">
+              <svg width="100%" height="100%">
+                <pattern
+                  id="admin-grid"
+                  x="0"
+                  y="0"
+                  width="40"
+                  height="40"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path
+                    d="M40 0 L0 0 L0 40"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="0.5"
+                    className="text-admin-500 dark:text-admin-400"
+                  />
+                </pattern>
+                <rect
+                  x="0"
+                  y="0"
+                  width="100%"
+                  height="100%"
+                  fill="url(#admin-grid)"
+                />
+              </svg>
+            </div>
           <Outlet />
         </main>
         <Footer />

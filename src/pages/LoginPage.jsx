@@ -29,7 +29,7 @@ const LoginPage = () => {
       {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/afya1.jpg"
+          src="/matwana.jpg"
           alt="Health background"
           className="w-full h-full object-cover"
         />
@@ -80,7 +80,7 @@ const LoginPage = () => {
           </motion.div>
         )}
         
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -112,7 +112,7 @@ const LoginPage = () => {
             ></motion.div>
           </motion.div>
 
-          <div className="px-4 pb-10 bg-gray-50 dark:bg-gray-800/50">
+          <div className="px-4 pb-10">
             <LoginForm />
           </div>
         </div>

@@ -99,8 +99,8 @@ function App() {
                 }
               >
                 <Route path="dashboard" element={<AdminDashboardPage />} />
-                <Route path="users" element={<AdminUsersPage />} />
-                <Route path="users/new" element={<AddNewUserPage />} />
+                <Route path="members" element={<AdminUsersPage />} />
+                <Route path="members/new" element={<AddNewUserPage />} />
                 <Route path="plans" element={<InsurancePlansPage />} />
                 <Route path="new-cover" element={<NewMedicalCoverPage />} />
                 <Route path="payments" element={<AdminPaymentsPage />} />
