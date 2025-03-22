@@ -456,7 +456,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-right text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
+                className="px-3 py-3 text-right text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 Actions
               </th>
@@ -508,7 +508,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusBadge status={payment.status} />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
+                <td className="px-3 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
                   {payment.status === "completed" && (
                     <button
                       onClick={() => handleDownloadReceipt(payment)}

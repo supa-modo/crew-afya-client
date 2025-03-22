@@ -113,6 +113,107 @@ export const initiateMpesaPayment = async (paymentData) => {
   }
 };
 
+/**
+ * Initiates an M-Pesa payment request with enhanced validation and error handling
+ * @param {Object} paymentData - Payment data object
+ * @param {number} paymentData.amount - Amount to be paid
+ * @param {string} paymentData.phoneNumber - Phone number in format 254XXXXXXXXX
+ * @param {string} paymentData.description - Payment description
+ * @returns {Promise<Object>} - Response data
+ */
+export const initiateM_PesaPayment = async (paymentData) => {
+  try {
+    // Validate required fields
+    if (!paymentData.amount || !paymentData.phoneNumber) {
+      throw new Error("Amount and phone number are required");
+    }
+
+    // Format phone number
+    let formattedPhone = paymentData.phoneNumber;
+
+    // Remove all non-numeric characters
+    formattedPhone = formattedPhone.replace(/\D/g, "");
+
+    // Format based on prefix
+    if (formattedPhone.startsWith("0")) {
+      formattedPhone = `254${formattedPhone.substring(1)}`;
+    } else if (
+      formattedPhone.startsWith("7") ||
+      formattedPhone.startsWith("1")
+    ) {
+      formattedPhone = `254${formattedPhone}`;
+    } else if (formattedPhone.startsWith("254")) {
+      // Already formatted correctly
+    } else {
+      throw new Error(
+        "Invalid phone number format. Please use a valid Kenyan number."
+      );
+    }
+
+    // Validate phone number format (must be 254 followed by 9 digits)
+    if (!/^254\d{9}$/.test(formattedPhone)) {
+      throw new Error(
+        "Invalid phone number format. Please use a valid Kenyan number."
+      );
+    }
+
+    // Make sure amount is a positive number
+    const amount = Number(paymentData.amount);
+    if (isNaN(amount) || amount <= 0) {
+      throw new Error("Amount must be a valid positive number");
+    }
+
+    // Create final payload
+    const payload = {
+      amount: Math.max(1, Math.round(amount)), // Ensure amount is at least 1 KES and rounded
+      phoneNumber: formattedPhone,
+      description: paymentData.description || "M-Pesa Payment",
+    };
+
+    console.log("Sending M-Pesa payment request:", payload);
+
+    // Make the API call
+    const response = await apiPost("/payments/mpesa", payload);
+
+    if (!response || response.error) {
+      throw new Error(
+        response?.message || "Failed to process payment. Please try again."
+      );
+    }
+
+    return response;
+  } catch (error) {
+    console.error("M-Pesa payment initiation error:", error);
+
+    // Extract the error message from various possible error formats
+    let errorMessage = "Failed to process payment. Please try again.";
+
+    if (error.response?.data?.message) {
+      // Error from axios response
+      errorMessage = error.response.data.message;
+    } else if (error.response?.data?.error) {
+      // Alternative error format
+      errorMessage = error.response.data.error;
+    } else if (error.message && error.message.includes("network")) {
+      // Network error
+      errorMessage =
+        "Network error. Please check your internet connection and try again.";
+    } else if (error.message) {
+      // Direct error message
+      errorMessage = error.message;
+    }
+
+    // If it's an M-Pesa specific error, try to extract more details
+    if (error.response?.data?.errorMessage) {
+      errorMessage = `M-Pesa error: ${error.response.data.errorMessage}`;
+    }
+
+    const enhancedError = new Error(errorMessage);
+    enhancedError.originalError = error;
+    throw enhancedError;
+  }
+};
+
 // Create payment schedule
 export const createPaymentSchedule = async (scheduleData) => {
   try {
@@ -238,4 +339,6 @@ export default {
   getUserPayments,
   getPaymentReceipt,
   getPaymentDetails,
+  initiateM_PesaPayment,
+  initiateMpesaPayment,
 };

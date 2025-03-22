@@ -10,7 +10,7 @@ const Layout = () => {
         {/* Decorative background elements */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           {/* Subtle grid pattern */}
-          <div className="absolute inset-0 opacity-10 dark:opacity-5">
+          <div className="absolute inset-0 opacity-5 dark:opacity-5">
             <svg width="100%" height="100%">
               <pattern
                 id="health-grid"

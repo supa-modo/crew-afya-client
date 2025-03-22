@@ -314,7 +314,7 @@ const DashboardPage = () => {
                         <div className="opacity-80 text-[0.7rem] sm:text-xs">
                           Member ID
                         </div>
-                        <div className="text-[0.7rem] sm:text-xs md:text-sm text-secondary-500">
+                        <div className="text-[0.7rem] sm:text-xs md:text-sm text-secondary-400">
                           {user?.membershipNumber || "-------"}
                         </div>
                       </div>
@@ -339,7 +339,7 @@ const DashboardPage = () => {
                     <TbCalendarEvent className="mr-2 h-4 w-4" />
                     <span className="hidden sm:inline mr-1">Member since:</span>
                     <span className="inline sm:hidden mr-1">Since: </span>
-                    <span className="text-secondary-500 ">
+                    <span className="text-secondary-400 ">
                       {user?.joinDate || "Jan 15, 2023"}
                     </span>
                   </div>

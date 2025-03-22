@@ -7,13 +7,14 @@ import {
   FiAlertTriangle,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import { apiPost } from "../../services/api";
+import { initiateM_PesaPayment } from "../../services/paymentService";
 
 const MakePayment = ({ selectedPlan, frequency }) => {
   let [phoneNumber, setPhoneNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, processing, success, error
   const [errorMessage, setErrorMessage] = useState("");
+  const [checkoutRequestId, setCheckoutRequestId] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,46 +24,57 @@ const MakePayment = ({ selectedPlan, frequency }) => {
       return;
     }
 
-    // Phone validation (simple check for now)
-    const phoneRegex = /^\+?[0-9]{10,15}$/;
+    // Phone validation (more comprehensive check for Kenyan phone numbers)
+    const phoneRegex = /^(?:\+254|254|0)([7][0-9]{8})$/;
     if (!phoneRegex.test(phoneNumber)) {
-      setErrorMessage("Please enter a valid phone number");
+      setErrorMessage(
+        "Please enter a valid Kenyan phone number (e.g., 07XXXXXXXX or +2547XXXXXXXX)"
+      );
       return;
     }
 
     setIsSubmitting(true);
     setPaymentStatus("processing");
+    setErrorMessage("");
 
     try {
-      // Format phone number to ensure it starts with 254 (Kenya)
-      if (phoneNumber.startsWith("0")) {
-        phoneNumber = `254${phoneNumber.substring(1)}`;
-      } else if (phoneNumber.startsWith("+")) {
-        phoneNumber = phoneNumber.substring(1);
+      // Ensure we have a valid amount to send
+      const amount = selectedPlan?.premiums?.[frequency];
+      if (!amount || isNaN(Number(amount))) {
+        throw new Error("Invalid payment amount. Please select a valid plan.");
       }
 
-      // Make API call to initiate payment using our apiPost helper
-      const response = await apiPost("/payments/mpesa", {
-        amount: selectedPlan.premiums[frequency],
+      // Use the enhanced payment service to initiate M-Pesa payment
+      const response = await initiateM_PesaPayment({
+        //TODO: uncomment in production to use the actual amount
+        // amount: Number(amount),
+        amount: 1,
         phoneNumber,
         description: `Payment for ${selectedPlan.name} (${frequency}) medical cover`,
       });
 
-      if (response.success) {
+      if (response && response.success) {
+        // Store checkout request ID for status checking
+        if (response.data && response.data.CheckoutRequestID) {
+          setCheckoutRequestId(response.data.CheckoutRequestID);
+        }
+
         setPaymentStatus("success");
 
         // Reset form after success
         setTimeout(() => {
           setPaymentStatus("idle");
           setPhoneNumber("");
-        }, 3000);
+          setCheckoutRequestId(null);
+        }, 5000);
       } else {
         setPaymentStatus("error");
         setErrorMessage(
-          response.message || "Failed to process payment. Please try again."
+          response?.message || "Failed to process payment. Please try again."
         );
       }
     } catch (error) {
+      console.error("M-Pesa payment error:", error);
       setPaymentStatus("error");
       setErrorMessage(
         error.message || "An unexpected error occurred. Please try again."
@@ -85,6 +97,9 @@ const MakePayment = ({ selectedPlan, frequency }) => {
     setErrorMessage("");
   };
 
+  // Safety check for premium amount
+  const premiumAmount = selectedPlan?.premiums?.[frequency] || 0;
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg py-5 px-2 sm:px-12">
       <h3 className="text-lg font-semibold text-secondary-700 dark:text-white mb-2">
@@ -92,7 +107,7 @@ const MakePayment = ({ selectedPlan, frequency }) => {
       </h3>
       <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
         Please enter your M-Pesa phone number to make a payment for your{" "}
-        {selectedPlan.name} plan.
+        {selectedPlan?.name || "selected"} plan.
       </p>
 
       <AnimatePresence mode="wait">
@@ -115,7 +130,7 @@ const MakePayment = ({ selectedPlan, frequency }) => {
               <input
                 type="text"
                 id="amount"
-                value={selectedPlan.premiums[frequency].toLocaleString()}
+                value={premiumAmount.toLocaleString()}
                 disabled
                 className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-sm sm:text-base rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               />
@@ -136,9 +151,10 @@ const MakePayment = ({ selectedPlan, frequency }) => {
                   type="tel"
                   id="phoneNumber"
                   value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="+254700000000"
+                  onChange={(e) => setPhoneNumber(e.target.value.trim())}
+                  placeholder="07XXXXXXXX"
                   className="block w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 text-sm sm:text-base rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                  autoComplete="tel"
                 />
               </div>
               {errorMessage && (
@@ -146,11 +162,15 @@ const MakePayment = ({ selectedPlan, frequency }) => {
                   {errorMessage}
                 </p>
               )}
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Enter your phone number in the format 07XXXXXXXX or
+                +2547XXXXXXXX
+              </p>
             </div>
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !phoneNumber || !premiumAmount}
               className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm sm:text-base font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               Pay with M-Pesa
@@ -175,7 +195,7 @@ const MakePayment = ({ selectedPlan, frequency }) => {
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-center">
               Please wait while we process your payment of KES{" "}
-              {selectedPlan.premiums[frequency].toLocaleString()} via M-Pesa.
+              {premiumAmount.toLocaleString()} via M-Pesa.
             </p>
           </motion.div>
         )}
@@ -192,12 +212,14 @@ const MakePayment = ({ selectedPlan, frequency }) => {
               <FiCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Payment Successful!
+              Payment Request Sent!
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-center">
-              Your payment of KES{" "}
-              {selectedPlan.premiums[frequency].toLocaleString()} has been
-              processed successfully.
+              An M-Pesa prompt has been sent to your phone ({phoneNumber}).
+            </p>
+            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 text-center">
+              Please enter your M-Pesa PIN when prompted to complete the payment
+              of KES {premiumAmount.toLocaleString()}.
             </p>
           </motion.div>
         )}
