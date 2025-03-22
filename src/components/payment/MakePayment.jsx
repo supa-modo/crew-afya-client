@@ -268,10 +268,10 @@ const MakePayment = ({ selectedPlan, frequency }) => {
             <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
               <FiLoader className="h-8 w-8 text-primary-600 dark:text-primary-400 animate-spin" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
               Processing Payment Request
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-center">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center">
               Please wait while we initiate your payment of KES{" "}
               {premiumAmount.toLocaleString()} via M-Pesa.
             </p>
@@ -289,17 +289,17 @@ const MakePayment = ({ selectedPlan, frequency }) => {
             <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30">
               <FiLoader className="h-8 w-8 text-yellow-600 dark:text-yellow-400 animate-spin" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
               Payment In Progress
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-center">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center">
               An M-Pesa prompt has been sent to your phone ({phoneNumber}).
             </p>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 text-center">
+            <p className="mt-2 text-[0.7rem] sm:text-sm text-gray-500 dark:text-gray-400 text-center">
               Please enter your M-Pesa PIN when prompted to complete the payment
               of KES {premiumAmount.toLocaleString()}.
             </p>
-            <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-center">
+            <p className="mt-4 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400 text-center">
               Waiting for confirmation... This may take a few moments.
             </p>
           </motion.div>
@@ -316,14 +316,14 @@ const MakePayment = ({ selectedPlan, frequency }) => {
             <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
               <FiAlertTriangle className="h-8 w-8 text-orange-600 dark:text-orange-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            <h3 className="text-base sm:text-lg font-medium text-red-500/80 dark:text-white mb-2">
               Payment Status Unknown
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-center mb-2">
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center mb-2">
               We didn't receive confirmation for your payment request. If you
               completed the payment on your phone, it may still be processing.
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
               You can check your payment history later to confirm if it was
               successful.
             </p>
@@ -350,16 +350,16 @@ const MakePayment = ({ selectedPlan, frequency }) => {
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               Payment Successful!
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-center">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center">
               Your payment of KES {premiumAmount.toLocaleString()} has been
               processed successfully.
             </p>
             {mpesaReceiptNumber && (
-              <p className="mt-2 text-sm font-medium text-green-600 dark:text-green-400 text-center">
+              <p className="mt-2 text-xs sm:text-sm font-medium text-green-600 dark:text-green-400 text-center">
                 M-Pesa Receipt: {mpesaReceiptNumber}
               </p>
             )}
-            <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-center">
+            <p className="mt-4 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400 text-center">
               A confirmation message will be sent to your phone shortly.
             </p>
           </motion.div>
@@ -376,7 +376,7 @@ const MakePayment = ({ selectedPlan, frequency }) => {
             <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
               <FiAlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
               Payment Failed
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-4">
