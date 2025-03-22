@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FiCreditCard,
   FiPhone,
@@ -7,7 +7,10 @@ import {
   FiAlertTriangle,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import { initiateM_PesaPayment } from "../../services/paymentService";
+import {
+  initiateM_PesaPayment,
+  checkPaymentStatus,
+} from "../../services/paymentService";
 
 const MakePayment = ({ selectedPlan, frequency }) => {
   let [phoneNumber, setPhoneNumber] = useState("");
@@ -15,21 +18,76 @@ const MakePayment = ({ selectedPlan, frequency }) => {
   const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, processing, success, error
   const [errorMessage, setErrorMessage] = useState("");
   const [checkoutRequestId, setCheckoutRequestId] = useState(null);
+  const [paymentId, setPaymentId] = useState(null);
+  const [statusCheckInterval, setStatusCheckInterval] = useState(null);
+  const [mpesaReceiptNumber, setMpesaReceiptNumber] = useState(null);
+
+  // Cleanup interval on component unmount
+  useEffect(() => {
+    return () => {
+      if (statusCheckInterval) {
+        clearInterval(statusCheckInterval);
+      }
+    };
+  }, [statusCheckInterval]);
+
+  // Function to check payment status
+  const startStatusCheck = (paymentId) => {
+    // Clear any existing interval
+    if (statusCheckInterval) {
+      clearInterval(statusCheckInterval);
+    }
+
+    // Set up status check every 5 seconds
+    const interval = setInterval(async () => {
+      try {
+        const response = await checkPaymentStatus(paymentId);
+
+        if (response && response.success) {
+          const status = response.data.status;
+
+          // If payment completed, show success
+          if (status === "completed") {
+            setPaymentStatus("success");
+            setMpesaReceiptNumber(response.data.mpesaReceiptNumber);
+            clearInterval(interval);
+            setStatusCheckInterval(null);
+
+            // Reset form after success (with delay)
+            setTimeout(() => {
+              setPaymentStatus("idle");
+              setPhoneNumber("");
+              setCheckoutRequestId(null);
+              setPaymentId(null);
+              setMpesaReceiptNumber(null);
+            }, 10000);
+          }
+          // If payment failed, show error
+          else if (status === "failed") {
+            setPaymentStatus("error");
+            setErrorMessage(
+              response.data.failureReason ||
+                "Payment was not completed. Please try again."
+            );
+            clearInterval(interval);
+            setStatusCheckInterval(null);
+          }
+          // Otherwise continue checking (pending status)
+        }
+      } catch (error) {
+        console.error("Error checking payment status:", error);
+        // Don't stop the interval on error, continue checking
+      }
+    }, 5000); // Check every 5 seconds
+
+    setStatusCheckInterval(interval);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!phoneNumber) {
       setErrorMessage("Please enter your M-Pesa phone number");
-      return;
-    }
-
-    // Phone validation (more comprehensive check for Kenyan phone numbers)
-    const phoneRegex = /^(?:\+254|254|0)([7][0-9]{8})$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      setErrorMessage(
-        "Please enter a valid Kenyan phone number (e.g., 07XXXXXXXX or +2547XXXXXXXX)"
-      );
       return;
     }
 
@@ -54,19 +112,35 @@ const MakePayment = ({ selectedPlan, frequency }) => {
       });
 
       if (response && response.success) {
-        // Store checkout request ID for status checking
-        if (response.data && response.data.CheckoutRequestID) {
-          setCheckoutRequestId(response.data.CheckoutRequestID);
+        // Store checkout request ID and payment ID for status checking
+        if (
+          response.data &&
+          response.data.payment &&
+          response.data.stkResponse
+        ) {
+          setCheckoutRequestId(response.data.stkResponse.CheckoutRequestID);
+          setPaymentId(response.data.payment.id);
+
+          // Start checking status
+          startStatusCheck(response.data.payment.id);
         }
 
-        setPaymentStatus("success");
+        setPaymentStatus("waiting");
 
-        // Reset form after success
+        // Set timeout to change status to "timeout" after 2 minutes if no update
         setTimeout(() => {
-          setPaymentStatus("idle");
-          setPhoneNumber("");
-          setCheckoutRequestId(null);
-        }, 5000);
+          setPaymentStatus((currentStatus) => {
+            if (currentStatus === "waiting") {
+              // If still waiting after 2 minutes, show timeout message
+              if (statusCheckInterval) {
+                clearInterval(statusCheckInterval);
+                setStatusCheckInterval(null);
+              }
+              return "timeout";
+            }
+            return currentStatus;
+          });
+        }, 120000); // 2 minutes timeout
       } else {
         setPaymentStatus("error");
         setErrorMessage(
@@ -95,6 +169,10 @@ const MakePayment = ({ selectedPlan, frequency }) => {
   const handleTryAgain = () => {
     setPaymentStatus("idle");
     setErrorMessage("");
+    if (statusCheckInterval) {
+      clearInterval(statusCheckInterval);
+      setStatusCheckInterval(null);
+    }
   };
 
   // Safety check for premium amount
@@ -191,12 +269,70 @@ const MakePayment = ({ selectedPlan, frequency }) => {
               <FiLoader className="h-8 w-8 text-primary-600 dark:text-primary-400 animate-spin" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Processing Payment
+              Processing Payment Request
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-center">
-              Please wait while we process your payment of KES{" "}
+              Please wait while we initiate your payment of KES{" "}
               {premiumAmount.toLocaleString()} via M-Pesa.
             </p>
+          </motion.div>
+        )}
+
+        {paymentStatus === "waiting" && (
+          <motion.div
+            key="waiting"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col items-center py-8"
+          >
+            <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30">
+              <FiLoader className="h-8 w-8 text-yellow-600 dark:text-yellow-400 animate-spin" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              Payment In Progress
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 text-center">
+              An M-Pesa prompt has been sent to your phone ({phoneNumber}).
+            </p>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 text-center">
+              Please enter your M-Pesa PIN when prompted to complete the payment
+              of KES {premiumAmount.toLocaleString()}.
+            </p>
+            <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-center">
+              Waiting for confirmation... This may take a few moments.
+            </p>
+          </motion.div>
+        )}
+
+        {paymentStatus === "timeout" && (
+          <motion.div
+            key="timeout"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col items-center py-8"
+          >
+            <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
+              <FiAlertTriangle className="h-8 w-8 text-orange-600 dark:text-orange-400" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              Payment Status Unknown
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 text-center mb-2">
+              We didn't receive confirmation for your payment request. If you
+              completed the payment on your phone, it may still be processing.
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
+              You can check your payment history later to confirm if it was
+              successful.
+            </p>
+            <button
+              onClick={handleTryAgain}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              Try Again
+            </button>
           </motion.div>
         )}
 
@@ -212,14 +348,19 @@ const MakePayment = ({ selectedPlan, frequency }) => {
               <FiCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Payment Request Sent!
+              Payment Successful!
             </h3>
             <p className="text-gray-600 dark:text-gray-400 text-center">
-              An M-Pesa prompt has been sent to your phone ({phoneNumber}).
+              Your payment of KES {premiumAmount.toLocaleString()} has been
+              processed successfully.
             </p>
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 text-center">
-              Please enter your M-Pesa PIN when prompted to complete the payment
-              of KES {premiumAmount.toLocaleString()}.
+            {mpesaReceiptNumber && (
+              <p className="mt-2 text-sm font-medium text-green-600 dark:text-green-400 text-center">
+                M-Pesa Receipt: {mpesaReceiptNumber}
+              </p>
+            )}
+            <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-center">
+              A confirmation message will be sent to your phone shortly.
             </p>
           </motion.div>
         )}

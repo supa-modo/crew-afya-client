@@ -335,10 +335,39 @@ export const getPaymentDetails = async (paymentId) => {
   }
 };
 
+/**
+ * Check the status of a payment
+ * @param {string} paymentId - Payment ID to check
+ * @returns {Promise<Object>} Response with payment status details
+ */
+export const checkPaymentStatus = async (paymentId) => {
+  try {
+    if (!paymentId) {
+      throw new Error("Payment ID is required");
+    }
+
+    const response = await apiGet(`/payments/${paymentId}/status`);
+    return response;
+  } catch (error) {
+    console.error("Error checking payment status:", error);
+
+    // Extract the error message from various possible error formats
+    let errorMessage = "Failed to check payment status";
+    if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    throw new Error(errorMessage);
+  }
+};
+
 export default {
   getUserPayments,
   getPaymentReceipt,
   getPaymentDetails,
   initiateM_PesaPayment,
   initiateMpesaPayment,
+  checkPaymentStatus,
 };

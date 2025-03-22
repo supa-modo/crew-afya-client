@@ -726,7 +726,7 @@ const HomePage = () => {
       </div>
 
       {/* Loan Services Section */}
-      <div id="loan-services" className="py-24">
+      {/* <div id="loan-services" className="py-24">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-10 md:mb-14">
             <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
@@ -857,7 +857,7 @@ const HomePage = () => {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Testimonials Section */}
       <div id="testimonials" className="py-24 bg-gray-50 dark:bg-gray-900">
