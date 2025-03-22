@@ -110,24 +110,6 @@ const DashboardPage = () => {
       },
     ]);
 
-    // Mock upcoming events
-    setUpcomingEvents([
-      {
-        id: 1,
-        title: "Union General Meeting",
-        date: "October 20, 2023",
-        location: "Nairobi Central Hall",
-        description: "Annual general meeting for all union members",
-      },
-      {
-        id: 2,
-        title: "Health Benefits Workshop",
-        date: "October 25, 2023",
-        location: "Virtual (Zoom)",
-        description: "Learn how to maximize your health coverage benefits",
-      },
-    ]);
-
     // Mock active loans
     setActiveLoans([
       {
@@ -280,7 +262,7 @@ const DashboardPage = () => {
           <div className="bg-white dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
             <div className="px-4 py-5 sm:px-8 sm:py-6 flex flex-col md:flex-row md:items-center md:justify-between">
               <div className="flex items-center space-x-2 font-lexend">
-                <PiUserDuotone className="mr-2 h-8 sm:h-10 w-8 sm:w-10 text-primary-600" />
+                <PiUserDuotone className="hidden md:flex mr-2 h-10 w-10 text-primary-600" />
                 <div>
                   <h1 className="text-lg sm:text-xl lg:text-[1.4rem] font-bold text-secondary-700 dark:text-secondary-500 flex items-center">
                     Welcome, {user?.firstName || "User"}!
@@ -294,14 +276,14 @@ const DashboardPage = () => {
               <div className="mt-4 md:mt-0 flex space-x-4">
                 <Link
                   to="/payments"
-                  className="inline-flex items-center px-3 sm:px-5 py-2 bg-secondary-100 border border-green-600 rounded-lg shadow-sm text-sm font-medium text-green-700 dark:text-green-200  dark:bg-secondary-900 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                  className="inline-flex items-center px-3 sm:px-5 py-2 bg-secondary-100 border border-green-600 rounded-lg shadow-sm text-xs sm:text-sm font-medium text-green-700 dark:text-green-200  dark:bg-secondary-900 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                 >
                   <TbCreditCardPay className="mr-2 h-5 sm:h-6 w-5 sm:w-6" />
                   Make a Payment
                 </Link>
                 <Link
                   to="/profile"
-                  className="inline-flex items-center px-4 sm:px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200"
+                  className="inline-flex items-center px-4 sm:px-6 py-2 border border-transparent rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200"
                 >
                   <PiUserCircle className="mr-2 h-5 sm:h-6 w-5 sm:w-6" />
                   View Profile
@@ -332,7 +314,7 @@ const DashboardPage = () => {
                         <div className="opacity-80 text-[0.7rem] sm:text-xs">
                           Member ID
                         </div>
-                        <div className="text-xs sm:text-sm text-secondary-500">
+                        <div className="text-[0.7rem] sm:text-xs md:text-sm text-secondary-500">
                           {user?.membershipNumber || "-------"}
                         </div>
                       </div>
@@ -340,8 +322,8 @@ const DashboardPage = () => {
                         <div className="opacity-80 text-[0.7rem] sm:text-xs">
                           Operation Route
                         </div>
-                        <div className="text-xs sm:text-sm text-amber-500">
-                          {user?.route || "125"}
+                        <div className="text-[0.7rem] sm:text-xs md:text-sm text-amber-500">
+                          {user?.route || "Thika Road"}
                         </div>
                       </div>
                     </div>
@@ -352,12 +334,12 @@ const DashboardPage = () => {
                   </div>
                 </div>
 
-                <div className="mt-4 sm:mt-6 pt-4 border-t border-white/20 flex justify-between text-[0.7rem] sm:text-xs md:text-sm">
+                <div className="mt-4 sm:mt-6 pt-4 border-t border-white/20 flex justify-between text-[0.68rem]  sm:text-xs md:text-sm">
                   <div className="flex items-center ">
                     <TbCalendarEvent className="mr-2 h-4 w-4" />
                     <span className="hidden sm:inline mr-1">Member since:</span>
                     <span className="inline sm:hidden mr-1">Since: </span>
-                    <span className="text-secondary-500">
+                    <span className="text-secondary-500 ">
                       {user?.joinDate || "Jan 15, 2023"}
                     </span>
                   </div>
@@ -373,10 +355,10 @@ const DashboardPage = () => {
                   <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md px-4 py-3 border border-l-4 border-l-green-500">
                     <div className="flex justify-between">
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-[0.7rem] text-gray-500 dark:text-gray-400">
                           Union Membership
                         </p>
-                        <h3 className="text-xl font-bold text-gray-800 dark:text-white mt-1">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mt-1">
                           Active
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -393,10 +375,10 @@ const DashboardPage = () => {
                   <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md px-4 py-3 border border-l-4 border-l-blue-500">
                     <div className="flex justify-between">
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-[0.7rem] text-gray-500 dark:text-gray-400">
                           Medical Cover
                         </p>
-                        <h3 className="text-xl font-bold text-gray-800 dark:text-white mt-1">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mt-1">
                           Crew Afya Lite
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -466,7 +448,7 @@ const DashboardPage = () => {
                   <CoverageUtilization />
 
                   {/* Recent Payments Section */}
-                  <div className="mt-8 px-4 sm:px-6">
+                  <div className="mt-4 px-1 sm:px-4 md:px-6">
                     <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 mb-1.5  flex items-center">
                       <MdPayments className="mr-2 h-6 w-6 text-green-700" />
                       Recent Payments

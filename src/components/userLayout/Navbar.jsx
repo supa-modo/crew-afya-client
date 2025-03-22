@@ -40,6 +40,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const menuRef = useRef(null);
+  const profileRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,6 +88,24 @@ const Navbar = () => {
       document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isMenuOpen]);
+
+  // Click outside handler for profile dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isProfileOpen &&
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isProfileOpen]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -263,7 +282,7 @@ const Navbar = () => {
                     </button>
 
                     {/* Profile dropdown */}
-                    <div className="relative">
+                    <div className="relative" ref={profileRef}>
                       <button
                         onClick={toggleProfile}
                         className="flex items-center space-x-2 bg-white/20 dark:bg-gray-800/10 p-1.5 pr-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-1 focus:border-primary-500 focus:ring-primary-500 dark:focus:ring-offset-gray-900"

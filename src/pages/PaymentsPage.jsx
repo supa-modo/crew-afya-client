@@ -170,7 +170,7 @@ const PaymentsPage = () => {
       {/* Breadcrumb */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
         <nav className="flex" aria-label="Breadcrumb">
-          <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+          <ol className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
             <li>
               <Link to="/" className="hover:text-primary-600 flex items-center">
                 <TbHome2 className="h-5 w-5 mr-2" />
@@ -203,11 +203,11 @@ const PaymentsPage = () => {
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-5">
         <div className="bg-white flex flex-col md:flex-row justify-between items-center dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
           <div className="px-6 py-5 sm:px-8 sm:py-6">
-            <h1 className="text-lg md:text-xl font-bold text-green-700  flex items-center">
+            <h1 className="text-base sm:text-lg md:text-xl font-bold text-green-700  flex items-center">
               <TbCreditCardFilled className="mr-2 h-6 w-6 text-gray-400" />
               Payments and Health Cover Plans
             </h1>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-1 text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400">
               Make payments and view your payment history. Keep track of your
               insurance premiums and ensure your coverage stays active.
             </p>
@@ -215,7 +215,7 @@ const PaymentsPage = () => {
           <div className="px-6 pb-5 mr-auto md:mr-0 md:px-0 md:py-0">
             {selectedPlan && (
               <button
-                className="btn-primary text-sm text-white md:mr-6 px-4 py-2 rounded-md"
+                className="btn-primary text-xs sm:text-sm text-white md:mr-6 px-4 py-2 rounded-md"
                 onClick={() => handleOpenPlanModal(true)}
               >
                 Change Your Plan
@@ -233,7 +233,7 @@ const PaymentsPage = () => {
               <h3 className="text-base sm:text-lg font-semibold text-primary-600  mb-2">
                 Your Payment Calendar
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Monitor your premium payments and plan your payment schedule
                 effectively.
               </p>
@@ -271,10 +271,10 @@ const PaymentsPage = () => {
                         <div className="flex items-center">
                           <MdOutlineHealthAndSafety className="h-6 w-6 text-primary-600 mt-0.5 mr-1 sm:mr-2 md:mr-3" />
                           <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">
+                            <h3 className="font-medium text-[0.9rem] sm:text-base text-gray-900 dark:text-white">
                               {selectedPlan.name}
                             </h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400">
                               {selectedFrequency.charAt(0).toUpperCase() +
                                 selectedFrequency.slice(1)}{" "}
                               payment of KES{" "}
@@ -308,7 +308,7 @@ const PaymentsPage = () => {
                     </p>
                     <button
                       onClick={() => handleOpenPlanModal(false)}
-                      className="inline-flex items-center px-7 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                      className="inline-flex items-center px-7 py-2 border border-transparent rounded-md shadow-sm text-[0.8rem] sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                     >
                       Select a Plan
                       <FiArrowRight className="ml-2 -mr-1 h-4 w-4" />

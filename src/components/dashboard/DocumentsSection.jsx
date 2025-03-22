@@ -49,7 +49,7 @@ const DocumentsSection = ({
           </svg>
         </div>
       ) : documents.length === 0 ? (
-        <div className="flex items-center justify-center h-48 bg-gray-50 dark:bg-gray-900/50 rounded-md border-2 border-dashed border-gray-300 dark:border-gray-700">
+        <div className="flex items-center justify-center px-2 sm:px-4 md:px-6 h-48 bg-gray-50 dark:bg-gray-900/50 rounded-md border-2 border-dashed border-gray-300 dark:border-gray-700">
           <div className="text-center">
             <PiFilesDuotone className="mx-auto h-12 w-12 text-gray-400" />
             <p className="mt-2 text-sm sm:text-base text-gray-500 dark:text-gray-400">

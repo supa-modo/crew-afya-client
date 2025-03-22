@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { useTheme } from "../../../context/ThemeContext";
@@ -17,6 +17,7 @@ const AdminNavbar = ({ toggleSidebar, title }) => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const profileRef = useRef(null);
 
   // Mock notifications for UI
   const notifications = [
@@ -48,6 +49,24 @@ const AdminNavbar = ({ toggleSidebar, title }) => {
     console.log("Searching for:", searchTerm);
     // Implement search functionality
   };
+
+  // Click outside handler for profile dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        userMenuOpen &&
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [userMenuOpen]);
 
   return (
     <div
@@ -179,22 +198,25 @@ const AdminNavbar = ({ toggleSidebar, title }) => {
           </div>
 
           {/* Profile dropdown */}
-          <div className="ml-3 relative">
+          <div className="ml-3 relative" ref={profileRef}>
             <div>
               <button
                 type="button"
-                className="max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
+                className="max-w-xs flex items-center text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 bg-white/20 dark:bg-gray-800/10 p-1 pr-3 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                 onClick={() => {
                   setUserMenuOpen(!userMenuOpen);
                   setNotificationsOpen(false);
                 }}
               >
                 <span className="sr-only">Open user menu</span>
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-admin-500 to-purple-600 flex items-center justify-center text-white shadow-md">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-admin-500 to-purple-600 flex items-center justify-center text-white shadow-md">
                   {user?.firstName?.charAt(0) || (
                     <UserCircleIcon className="h-8 w-8" />
                   )}
                 </div>
+                <span className="ml-2 text-sm font-semibold text-zinc-500 dark:text-gray-200 hidden md:block">
+                  {user?.firstName} {user?.lastName || ""}
+                </span>
               </button>
             </div>
             {userMenuOpen && (
