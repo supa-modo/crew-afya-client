@@ -131,10 +131,12 @@ const UserDetailsSidebar = ({
     },
   ];
 
-  // Make sure required user properties exist
+  // Calculate these variables inside the render function so they update when user changes
   const userName =
-    user?.firstName && user?.otherNames && user?.lastName
-      ? `${user.firstName} ${user.otherNames} ${user.lastName}`
+    user?.firstName && user?.lastName
+      ? `${user.firstName} ${user.otherNames ? `${user.otherNames} ` : ""}${
+          user.lastName
+        }`
       : user?.name || "Unknown User";
 
   const userRole = user?.role || "member";
@@ -145,8 +147,10 @@ const UserDetailsSidebar = ({
   const userLastLogin = user?.lastLogin || null;
 
   const handleUserUpdate = (updatedUser) => {
-    // Update the user state with the new user data
-    setUser(updatedUser); // Assuming you have a state for user in this component
+    // If component receives onUserUpdate prop, call it with updated user data
+    if (typeof onUserUpdate === "function") {
+      onUserUpdate(updatedUser);
+    }
   };
 
   // Render the appropriate tab content based on the active tab
@@ -232,7 +236,7 @@ const UserDetailsSidebar = ({
                                 className="h-24 w-24 rounded-full border-4 border-admin-200 dark:border-gray-600 shadow-md"
                               />
                               <div className="absolute bottom-1 -right-3">
-                                {getStatusBadge(user.status)}
+                                {getStatusBadge(user.isActive ? "active" : "inactive")}
                               </div>
                             </div>
                             <h2 className="text-xl font-bold text-gray-600 dark:text-white">

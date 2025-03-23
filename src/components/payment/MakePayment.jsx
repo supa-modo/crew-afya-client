@@ -22,6 +22,8 @@ const MakePayment = ({
   selectedPlan,
   frequency,
   initialPaymentType = "medical",
+  activeTab,
+  setActiveTab,
 }) => {
   let [phoneNumber, setPhoneNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,6 +59,7 @@ const MakePayment = ({
       icon: TbShieldHalfFilled,
       color: "primary",
       disabled: false,
+      parentTab: "medical",
     },
     {
       id: "dues",
@@ -64,6 +67,7 @@ const MakePayment = ({
       icon: PiUserDuotone,
       color: "green",
       disabled: false,
+      parentTab: "union",
     },
     {
       id: "loan",
@@ -72,6 +76,7 @@ const MakePayment = ({
       color: "gray",
       disabled: true,
       soon: true,
+      parentTab: null,
     },
   ];
 
@@ -101,7 +106,33 @@ const MakePayment = ({
     }
 
     setActiveTabIndex(newIndex);
-    setPaymentType(paymentTypes[newIndex].id);
+    const newPaymentType = paymentTypes[newIndex].id;
+    setPaymentType(newPaymentType);
+
+    // Sync with parent tab if applicable
+    const parentTab = paymentTypes[newIndex].parentTab;
+    if (parentTab && typeof setActiveTab === "function") {
+      setActiveTab(parentTab);
+    }
+  };
+
+  // Enhanced function to handle payment type change (for desktop)
+  const handlePaymentTypeChange = (typeId) => {
+    if (!typeId) return;
+
+    setPaymentType(typeId);
+
+    // Find the index of the selected payment type
+    const selectedIndex = paymentTypes.findIndex((type) => type.id === typeId);
+    if (selectedIndex !== -1) {
+      setActiveTabIndex(selectedIndex);
+
+      // Sync with parent tab if applicable
+      const parentTab = paymentTypes[selectedIndex].parentTab;
+      if (parentTab && typeof setActiveTab === "function") {
+        setActiveTab(parentTab);
+      }
+    }
   };
 
   // Cleanup interval on component unmount
@@ -425,7 +456,9 @@ const MakePayment = ({
                   <button
                     key={type.id}
                     type="button"
-                    onClick={() => !type.disabled && setPaymentType(type.id)}
+                    onClick={() =>
+                      !type.disabled && handlePaymentTypeChange(type.id)
+                    }
                     disabled={type.disabled}
                     className={`relative flex flex-col items-center justify-center px-4 py-3 rounded-lg border-2 ${
                       type.disabled

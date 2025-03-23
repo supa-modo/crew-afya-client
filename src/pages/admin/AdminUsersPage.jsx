@@ -32,6 +32,12 @@ const AdminUsersPage = () => {
     // Search functionality handled in UserManagement component
   };
 
+  // Add a function to handle user updates
+  const handleUserUpdate = (updatedUser) => {
+    // Update the selectedUser state with the updated user
+    setSelectedUser(updatedUser);
+  };
+
   return (
     <div className="">
       <div className="mx-auto ">
@@ -107,6 +113,7 @@ const AdminUsersPage = () => {
         onClose={handleCloseSidebar}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onUserUpdate={handleUserUpdate}
       />
     </div>
   );

@@ -198,7 +198,19 @@ const PaymentsPage = () => {
   };
 
   return (
-    <div className="py-6 mt-16">
+    <div
+      className="py-6 mt-16 min-h-screen"
+      style={{
+        backgroundImage: "url('/matwana.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+        backgroundRepeat: "no-repeat",
+        position: "relative",
+      }}
+    >
+      
+
       {/* Breadcrumb */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
         <nav className="flex" aria-label="Breadcrumb">
@@ -363,6 +375,8 @@ const PaymentsPage = () => {
                         selectedPlan={selectedPlan}
                         frequency={selectedFrequency}
                         initialPaymentType="medical"
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
                       />
                     </div>
                   ) : (
@@ -499,6 +513,8 @@ const PaymentsPage = () => {
                     }}
                     frequency="monthly"
                     initialPaymentType="dues"
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
                   />
                 </div>
               </div>

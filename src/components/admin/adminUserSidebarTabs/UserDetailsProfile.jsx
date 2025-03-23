@@ -103,11 +103,11 @@ const UserDetailsProfile = ({ user, onUserUpdate }) => {
         setIsEditing(false);
 
         // Refetch user details after successful update
-        const updatedUser = await getUserById(user.id);
-        if (updatedUser.success && updatedUser.data) {
+        const updatedUserResponse = await getUserById(user.id);
+        if (updatedUserResponse.success && updatedUserResponse.data) {
           // If onUserUpdate function is provided, call it with updated user data
           if (typeof onUserUpdate === "function") {
-            onUserUpdate(updatedUser.data);
+            onUserUpdate(updatedUserResponse.data);
           }
         }
       }

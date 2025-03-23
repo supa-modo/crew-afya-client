@@ -9,34 +9,6 @@ const Layout = () => {
       <div className="flex flex-col min-h-screen bg-gradient-to-br from-primary-50 via-gray-50 to-primary-100 dark:from-gray-900 dark:via-gray-800 dark:to-primary-800 relative overflow-hidden">
         {/* Decorative background elements */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-          {/* Subtle grid pattern */}
-          <div className="absolute inset-0 opacity-5 dark:opacity-5">
-            <svg width="100%" height="100%">
-              <pattern
-                id="health-grid"
-                x="0"
-                y="0"
-                width="40"
-                height="40"
-                patternUnits="userSpaceOnUse"
-              >
-                <path
-                  d="M40 0 L0 0 L0 40"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="0.5"
-                  className="text-teal-500 dark:text-teal-400"
-                />
-              </pattern>
-              <rect
-                x="0"
-                y="0"
-                width="100%"
-                height="100%"
-                fill="url(#health-grid)"
-              />
-            </svg>
-          </div>
 
           {/* Medical themed shapes */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-teal-100/30 to-blue-100/20 dark:from-teal-900/20 dark:to-blue-900/10 rounded-full blur-3xl transform translate-x-1/4 -translate-y-1/4"></div>

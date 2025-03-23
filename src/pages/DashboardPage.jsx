@@ -219,7 +219,18 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="py-6 min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div
+      className="py-6 mt-16 min-h-screen"
+      style={{
+        backgroundImage: "url('/matwana.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+        backgroundRepeat: "no-repeat",
+        position: "relative",
+      }}
+    >
+
       {/* Main dashboard content */}
       <div className="pt-16">
         {/* Breadcrumb */}

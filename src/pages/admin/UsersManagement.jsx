@@ -11,6 +11,7 @@ import { TbEyeEdit, TbRefresh } from "react-icons/tb";
 import Pagination from "../../components/common/Pagination";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import { getAllUsers, toggleUserStatus } from "../../services/userService";
+import UserDetailsSidebar from "../../components/admin/UserDetailsSidebar";
 
 const UserManagement = ({
   onUserSelect,
@@ -31,6 +32,9 @@ const UserManagement = ({
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
   const [filterPlan, setFilterPlan] = useState("all");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("profile");
 
   useEffect(() => {
     fetchUsers();
@@ -199,6 +203,37 @@ const UserManagement = ({
     }
   };
 
+  const handleUserUpdate = (updatedUser) => {
+    // Update the user in the local state
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user.id === updatedUser.id
+          ? {
+              ...updatedUser,
+              // Ensure we preserve any display properties
+              name: `${updatedUser.firstName} ${updatedUser.lastName}`,
+              status: updatedUser.isActive ? "active" : "inactive",
+              avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                `${updatedUser.firstName} ${updatedUser.lastName}`
+              )}&background=random`,
+            }
+          : user
+      )
+    );
+
+    // If this is the currently selected user, update the selected user
+    if (selectedUser && selectedUser.id === updatedUser.id) {
+      onUserSelect({
+        ...updatedUser,
+        name: `${updatedUser.firstName} ${updatedUser.lastName}`,
+        status: updatedUser.isActive ? "active" : "inactive",
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
+          `${updatedUser.firstName} ${updatedUser.lastName}`
+        )}&background=random`,
+      });
+    }
+  };
+
   const renderSortIcon = (field) => {
     if (sortBy !== field) return null;
     return sortOrder === "asc" ? "↑" : "↓";
@@ -256,6 +291,11 @@ const UserManagement = ({
       default:
         return "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400";
     }
+  };
+
+  const handleCloseSidebar = () => {
+    setSidebarOpen(false);
+    setSelectedUser(null);
   };
 
   return (
@@ -519,7 +559,9 @@ const UserManagement = ({
                   >
                     <div>
                       <div>{user.phoneNumber}</div>
-                      <div className="text-xs text-amber-700 font-medium">{user.email || "No Email"}</div>
+                      <div className="text-xs text-amber-700 font-medium">
+                        {user.email || "No Email"}
+                      </div>
                     </div>
                   </td>
                   <td
@@ -622,6 +664,16 @@ const UserManagement = ({
           className="mt-4"
         />
       )}
+
+      {/* User Details Sidebar */}
+      <UserDetailsSidebar
+        isOpen={sidebarOpen}
+        user={selectedUser}
+        onClose={handleCloseSidebar}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onUserUpdate={handleUserUpdate}
+      />
     </div>
   );
 };
