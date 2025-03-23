@@ -236,7 +236,9 @@ const UserDetailsSidebar = ({
                                 className="h-24 w-24 rounded-full border-4 border-admin-200 dark:border-gray-600 shadow-md"
                               />
                               <div className="absolute bottom-1 -right-3">
-                                {getStatusBadge(user.isActive ? "active" : "inactive")}
+                                {getStatusBadge(
+                                  user.isActive ? "active" : "inactive"
+                                )}
                               </div>
                             </div>
                             <h2 className="text-xl font-bold text-gray-600 dark:text-white">

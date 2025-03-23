@@ -6,10 +6,27 @@ import AuthRedirect from "../auth/AuthRedirect";
 const Layout = () => {
   return (
     <AuthRedirect>
-      <div className="flex flex-col min-h-screen bg-gradient-to-br from-primary-50 via-gray-50 to-primary-100 dark:from-gray-900 dark:via-gray-800 dark:to-primary-800 relative overflow-hidden">
-        {/* Decorative background elements */}
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      <div
+        className="flex flex-col min-h-screen relative overflow-hidden"
+        style={{
+          backgroundImage: "url('/matwana.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        {/* Background overlay */}
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-primary-50/90 via-gray-50/90 to-primary-100/90 dark:from-gray-900/90 dark:via-gray-800/95 dark:to-primary-800/95"
+          style={{ zIndex: "0" }}
+        ></div>
 
+        {/* Decorative background elements */}
+        <div
+          className="absolute inset-0 pointer-events-none overflow-hidden"
+          style={{ zIndex: "1" }}
+        >
           {/* Medical themed shapes */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-teal-100/30 to-blue-100/20 dark:from-teal-900/20 dark:to-blue-900/10 rounded-full blur-3xl transform translate-x-1/4 -translate-y-1/4"></div>
           <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-tr from-blue-100/30 to-teal-100/20 dark:from-blue-900/20 dark:to-teal-900/10 rounded-full blur-3xl transform -translate-x-1/4 translate-y-1/4"></div>
@@ -30,35 +47,35 @@ const Layout = () => {
 
         {/* Content */}
         <Navbar />
-        <main className="flex-grow relative">
+        <main className="flex-grow relative" style={{ zIndex: "2" }}>
           {/* Subtle grid pattern */}
-          <div className="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none">
-              <svg width="100%" height="100%">
-                <pattern
-                  id="admin-grid"
-                  x="0"
-                  y="0"
-                  width="40"
-                  height="40"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <path
-                    d="M40 0 L0 0 L0 40"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="0.5"
-                    className="text-admin-500 dark:text-admin-400"
-                  />
-                </pattern>
-                <rect
-                  x="0"
-                  y="0"
-                  width="100%"
-                  height="100%"
-                  fill="url(#admin-grid)"
+          <div className="absolute inset-0 opacity-5 pointer-events-none">
+            <svg width="100%" height="100%">
+              <pattern
+                id="admin-grid"
+                x="0"
+                y="0"
+                width="40"
+                height="40"
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d="M40 0 L0 0 L0 40"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="0.5"
+                  className="text-admin-500 dark:text-admin-400"
                 />
-              </svg>
-            </div>
+              </pattern>
+              <rect
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+                fill="url(#admin-grid)"
+              />
+            </svg>
+          </div>
           <Outlet />
         </main>
         <Footer />
