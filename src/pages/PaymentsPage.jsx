@@ -198,10 +198,10 @@ const PaymentsPage = () => {
   };
 
   return (
-    <div
+    <div 
       className="py-6 mt-16 min-h-screen"
       style={{
-        backgroundImage: "url('/matwana.jpg')",
+        backgroundImage: "url('/matwana.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -209,8 +209,12 @@ const PaymentsPage = () => {
         position: "relative",
       }}
     >
+      {/* Overlay div for better text visibility */}
+      <div 
+        className="absolute inset-0 bg-white/90 dark:bg-gray-900/90" 
+        style={{ zIndex: "-1" }}
+      ></div>
       
-
       {/* Breadcrumb */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
         <nav className="flex" aria-label="Breadcrumb">

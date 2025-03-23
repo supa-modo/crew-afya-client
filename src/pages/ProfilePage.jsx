@@ -421,19 +421,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div
-      className="mx-auto mt-12 sm:mt-16 px-4 py-8  relative"
-      style={{
-        backgroundImage: "url('/matwana.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-        backgroundRepeat: "no-repeat",
-        position: "relative",
-      }}
-    >
-      
-
+    <div className="container mx-auto mt-16 px-4 py-8">
       <div className="mb-6">
         <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
           <Link
