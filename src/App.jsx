@@ -104,8 +104,8 @@ function App() {
                 <Route path="plans" element={<InsurancePlansPage />} />
                 <Route path="new-cover" element={<NewMedicalCoverPage />} />
                 <Route path="payments" element={<AdminPaymentsPage />} />
-                <Route path="analytics" element={<AdminAnalyticsPage />} />
-                <Route path="reports" element={<AdminReportsPage />} />
+                <Route path="reports" element={<AdminAnalyticsPage />} />
+                {/* <Route path="reports" element={<AdminReportsPage />} /> */}
                 <Route
                   path="system-health"
                   element={<AdminSystemHealthPage />}

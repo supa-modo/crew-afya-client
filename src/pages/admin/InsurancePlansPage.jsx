@@ -4,10 +4,6 @@ import {
   FiPlus,
   FiSearch,
   FiCheck,
-  FiX,
-  FiFilter,
-  FiChevronRight,
-  FiChevronLeft,
 } from "react-icons/fi";
 import {
   TbHome2,
@@ -418,7 +414,7 @@ const InsurancePlansPage = () => {
               to="/admin/new-cover"
               className="sm:w-[25%] inline-flex items-center px-4 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-admin-600 hover:bg-admin-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
             >
-              <TbShieldPlus className="mr-1.5 h-4 w-4" /> New Plan
+              <TbShieldPlus className="mr-1.5 h-5 w-5" /> New Plan
             </Link>
           </div>
         </div>

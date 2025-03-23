@@ -12,8 +12,9 @@ import {
   FiEye,
   FiUser,
 } from "react-icons/fi";
-import { TbShieldCheck, TbHealthRecognition } from "react-icons/tb";
+import { TbShieldCheck, TbHealthRecognition, TbDownload, TbSearch } from "react-icons/tb";
 import { mockUsers } from "../../../data/mockUsers";
+import { PiUsersDuotone, PiUsersThreeDuotone } from "react-icons/pi";
 
 const PlanSubscribersList = ({ plan }) => {
   const [subscribers, setSubscribers] = useState([]);
@@ -180,8 +181,8 @@ const PlanSubscribersList = ({ plan }) => {
       <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
-              <FiUsers className="mr-2 h-6 w-6 text-admin-600" />
+            <h2 className="text-xl font-bold text-amber-700 dark:text-amber-600 flex items-center">
+              <PiUsersThreeDuotone   className="mr-2 h-8 w-8 text-admin-600" />
               {plan.name} Subscribers
             </h2>
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
@@ -192,9 +193,9 @@ const PlanSubscribersList = ({ plan }) => {
           <div className="flex space-x-3">
             <button
               onClick={handleExport}
-              className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+              className="inline-flex items-center px-4 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
             >
-              <FiDownload className="mr-1.5 h-4 w-4" /> Export
+              <TbDownload className="mr-1.5 h-5 w-5" /> Export
             </button>
           </div>
         </div>
@@ -202,7 +203,7 @@ const PlanSubscribersList = ({ plan }) => {
 
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80">
         <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-[40%]">
             <input
               type="text"
               placeholder="Search subscribers..."
@@ -211,7 +212,7 @@ const PlanSubscribersList = ({ plan }) => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FiSearch className="h-5 w-5 text-gray-400" />
+              <TbSearch className="h-5 w-5 text-gray-400" />
             </div>
           </div>
 

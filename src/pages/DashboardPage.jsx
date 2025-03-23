@@ -50,6 +50,7 @@ import PaymentSchedule from "../components/dashboard/PaymentSchedule";
 import LoanStatus from "../components/dashboard/LoanStatus";
 import PaymentHistory from "../components/payment/PaymentHistory";
 import DocumentsSection from "../components/dashboard/DocumentsSection";
+import UnionDuesSummary from "../components/dashboard/UnionDuesSummary";
 
 const DashboardPage = () => {
   const { user } = useAuth();

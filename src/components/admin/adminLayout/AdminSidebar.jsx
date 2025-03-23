@@ -1,9 +1,21 @@
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "../../../context/ThemeContext";
 import { MdSpaceDashboard, MdPersonAdd } from "react-icons/md";
-import { PiUsersDuotone } from "react-icons/pi";
-import { FaChartLine, FaCreditCard, FaShieldAlt } from "react-icons/fa";
 import {
+  PiGearDuotone,
+  PiIdentificationBadgeDuotone,
+  PiIdentificationCardDuotone,
+  PiIdentificationCardFill,
+  PiUsersDuotone,
+} from "react-icons/pi";
+import {
+  FaChartLine,
+  FaCreditCard,
+  FaIdBadge,
+  FaShieldAlt,
+} from "react-icons/fa";
+import {
+  TbBus,
   TbReportAnalytics,
   TbServer,
   TbSettings,
@@ -13,6 +25,7 @@ import {
 } from "react-icons/tb";
 import { BiSupport } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
+import { RiUserAddLine } from "react-icons/ri";
 
 const AdminSidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
@@ -45,8 +58,14 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
         {
           name: "Add New Member",
           href: "/admin/members/new",
-          icon: MdPersonAdd,
+          icon: RiUserAddLine,
           current: location.pathname === "/admin/members/new",
+        },
+        {
+          name: "Union Dues",
+          href: "/admin/union-dues",
+          icon: TbBus,
+          current: location.pathname === "/admin/union-dues",
         },
       ],
     },
@@ -68,9 +87,10 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
         },
       ],
     },
+    
     {
       id: "payments",
-      label: "Payments",
+      label: "Payments & Loans",
       items: [
         {
           name: "Payments",
@@ -79,37 +99,20 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
           current: location.pathname === "/admin/payments",
         },
         {
-          name: "Analytics",
-          href: "/admin/analytics",
-          icon: FaChartLine,
-          current: location.pathname === "/admin/analytics",
-        },
-      ],
-    },
-    {
-      id: "system",
-      label: "System",
-      items: [
-        {
-          name: "System Health",
-          href: "/admin/system-health",
-          icon: TbServer,
-          current: location.pathname === "/admin/system-health",
+          name: "Loan Applications",
+          href: "/admin/loans",
+          icon: FaCreditCard,
+          current: location.pathname === "/admin/loans",
         },
         {
-          name: "Reports",
+          name: "Reports & Analytics",
           href: "/admin/reports",
-          icon: TbReportAnalytics,
+          icon: FaChartLine,
           current: location.pathname === "/admin/reports",
         },
-        {
-          name: "Security",
-          href: "/admin/security",
-          icon: TbShieldCheckFilled,
-          current: location.pathname === "/admin/security",
-        },
       ],
     },
+
     {
       id: "support-settings",
       label: "Support & Settings",
@@ -123,9 +126,21 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
         {
           name: "Settings",
           href: "/admin/settings",
-          icon: TbSettings,
+          icon: PiGearDuotone,
           current: location.pathname === "/admin/settings",
         },
+        {
+          name: "System Health",
+          href: "/admin/system-health",
+          icon: TbServer,
+          current: location.pathname === "/admin/system-health",
+        },
+        // {
+        //   name: "Reports",
+        //   href: "/admin/reports",
+        //   icon: TbReportAnalytics,
+        //   current: location.pathname === "/admin/reports",
+        // },
       ],
     },
   ];

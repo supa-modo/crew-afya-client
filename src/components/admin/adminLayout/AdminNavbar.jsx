@@ -84,7 +84,7 @@ const AdminNavbar = ({ toggleSidebar, title }) => {
       </button>
       <div className="flex-1 px-4 flex justify-between">
         <div className="flex-1 flex items-center">
-          <h1 className="text-2xl font-semibold text-gray-600">
+          <h1 className="text-lg md:text-2xl font-semibold text-gray-600">
             {title || "Management Panel"}
           </h1>
           <div className="max-w-xl w-full lg:max-w-lg ml-6 hidden md:block">
