@@ -198,7 +198,7 @@ const PaymentsPage = () => {
   };
 
   return (
-    <div className="py-6 mt-16 min-h-screen">
+    <div className="py-6 mt-14 sm:mt-16 min-h-screen">
       {/* Overlay div for better text visibility */}
       <div className="absolute inset-0 " style={{ zIndex: "-1" }}></div>
 

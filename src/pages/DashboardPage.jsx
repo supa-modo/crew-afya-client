@@ -219,7 +219,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="py-6 mt-16 min-h-screen">
+    <div className="pb-6 mt-4 sm:mt-10 min-h-screen">
       {/* Main dashboard content */}
       <div className="pt-16">
         {/* Breadcrumb */}
