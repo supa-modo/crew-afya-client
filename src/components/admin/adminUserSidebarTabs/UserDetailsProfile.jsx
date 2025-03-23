@@ -18,6 +18,7 @@ import {
   updateUser,
   addUserInsurance,
   updateUserInsurance,
+  getUserById,
 } from "../../../services/userService";
 
 const UserDetailsProfile = ({ user, onUserUpdate }) => {
@@ -101,9 +102,13 @@ const UserDetailsProfile = ({ user, onUserUpdate }) => {
         setSuccess("User details updated successfully");
         setIsEditing(false);
 
-        // If onUserUpdate function is provided, call it with updated user data
-        if (typeof onUserUpdate === "function") {
-          onUserUpdate(response.data);
+        // Refetch user details after successful update
+        const updatedUser = await getUserById(user.id);
+        if (updatedUser.success && updatedUser.data) {
+          // If onUserUpdate function is provided, call it with updated user data
+          if (typeof onUserUpdate === "function") {
+            onUserUpdate(updatedUser.data);
+          }
         }
       }
     } catch (error) {

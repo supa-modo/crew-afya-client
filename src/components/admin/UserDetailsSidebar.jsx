@@ -144,11 +144,18 @@ const UserDetailsSidebar = ({
   const userCreatedAt = user?.createdAt || new Date();
   const userLastLogin = user?.lastLogin || null;
 
+  const handleUserUpdate = (updatedUser) => {
+    // Update the user state with the new user data
+    setUser(updatedUser); // Assuming you have a state for user in this component
+  };
+
   // Render the appropriate tab content based on the active tab
   const renderTabContent = () => {
     switch (currentActiveTab) {
       case "profile":
-        return <UserDetailsProfile user={user} onUserUpdate={onUserUpdate} />;
+        return (
+          <UserDetailsProfile user={user} onUserUpdate={handleUserUpdate} />
+        );
       case "payments":
         return <UserDetailsPayments user={user} />;
       case "documents":
@@ -156,9 +163,13 @@ const UserDetailsSidebar = ({
       case "activity":
         return <UserDetailsActivity user={user} />;
       case "settings":
-        return <UserDetailsSettings user={user} onUserUpdate={onUserUpdate} />;
+        return (
+          <UserDetailsSettings user={user} onUserUpdate={handleUserUpdate} />
+        );
       default:
-        return <UserDetailsProfile user={user} onUserUpdate={onUserUpdate} />;
+        return (
+          <UserDetailsProfile user={user} onUserUpdate={handleUserUpdate} />
+        );
     }
   };
 
