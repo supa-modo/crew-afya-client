@@ -256,11 +256,11 @@ const MakePayment = ({
 
         setPaymentStatus("waiting");
 
-        // Set timeout to change status to "timeout" after 2 minutes if no update
+        // Set timeout to change status to "timeout" after 30 seconds if no update
         setTimeout(() => {
           setPaymentStatus((currentStatus) => {
             if (currentStatus === "waiting") {
-              // If still waiting after 2 minutes, show timeout message
+              // If still waiting after 30 seconds, show timeout message
               if (statusCheckInterval) {
                 clearInterval(statusCheckInterval);
                 setStatusCheckInterval(null);
@@ -269,7 +269,7 @@ const MakePayment = ({
             }
             return currentStatus;
           });
-        }, 120000); // 2 minutes timeout
+        }, 30000); // 30 seconds timeout instead of 120000 (2 minutes)
       } else {
         setPaymentStatus("error");
         setErrorMessage(

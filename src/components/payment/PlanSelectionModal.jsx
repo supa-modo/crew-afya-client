@@ -10,6 +10,10 @@ import { TbShieldCheckFilled, TbShieldHalfFilled } from "react-icons/tb";
 import { MdOutlineHealthAndSafety, MdSpaceDashboard } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
 import { PiWarningDuotone } from "react-icons/pi";
+import {
+  initiateM_PesaPayment,
+  checkPaymentStatus,
+} from "../../services/paymentService";
 
 const PlanSelectionModal = ({
   isOpen,
@@ -25,6 +29,12 @@ const PlanSelectionModal = ({
   const [errorMessage, setErrorMessage] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // New state for payment tracking
+  const [checkoutRequestId, setCheckoutRequestId] = useState(null);
+  const [paymentId, setPaymentId] = useState(null);
+  const [statusCheckInterval, setStatusCheckInterval] = useState(null);
+  const [mpesaReceiptNumber, setMpesaReceiptNumber] = useState(null);
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
@@ -63,6 +73,15 @@ const PlanSelectionModal = ({
     }
   }, [isOpen]);
 
+  // Cleanup interval on component unmount
+  useEffect(() => {
+    return () => {
+      if (statusCheckInterval) {
+        clearInterval(statusCheckInterval);
+      }
+    };
+  }, [statusCheckInterval]);
+
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
   };
@@ -91,6 +110,50 @@ const PlanSelectionModal = ({
     }
   };
 
+  // Function to check payment status
+  const startStatusCheck = (paymentId) => {
+    // Clear any existing interval
+    if (statusCheckInterval) {
+      clearInterval(statusCheckInterval);
+    }
+
+    // Set up status check every 5 seconds
+    const interval = setInterval(async () => {
+      try {
+        const response = await checkPaymentStatus(paymentId);
+
+        if (response && response.success) {
+          const status = response.data.status;
+
+          // If payment completed, show success
+          if (status === "completed") {
+            setPaymentStatus("success");
+            setMpesaReceiptNumber(response.data.mpesaReceiptNumber);
+            clearInterval(interval);
+            setStatusCheckInterval(null);
+
+            // Update the user's plan in the parent component
+            onPlanSelected(selectedPlan, selectedFrequency);
+          } else if (status === "failed") {
+            setPaymentStatus("error");
+            setErrorMessage(
+              response.data.failureReason ||
+                "Payment was not completed. Please try again."
+            );
+            clearInterval(interval);
+            setStatusCheckInterval(null);
+          }
+          // Otherwise continue checking (pending status)
+        }
+      } catch (error) {
+        console.error("Error checking payment status:", error);
+        // Don't stop the interval on error, continue checking
+      }
+    }, 5000); // Check every 5 seconds
+
+    setStatusCheckInterval(interval);
+  };
+
   const handleInitiatePayment = async () => {
     if (!phoneNumber) return;
 
@@ -99,50 +162,66 @@ const PlanSelectionModal = ({
     setStep(3); // Move to step 3 immediately when processing starts
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // Format phone number to ensure it starts with 254 (Kenya)
+      let formattedPhone = phoneNumber;
+      if (phoneNumber.startsWith("0")) {
+        formattedPhone = `254${phoneNumber.substring(1)}`;
+      } else if (phoneNumber.startsWith("+")) {
+        formattedPhone = phoneNumber.substring(1);
+      }
 
-      // Randomly simulate success or failure (80% success rate)
-      const isSuccess = Math.random() < 0.8;
+      // Use real payment service
+      const response = await initiateM_PesaPayment({
+        //TODO: uncomment in production to use the actual amount
+        // amount: selectedPlan.premiums[selectedFrequency],
+        amount: 1, // Use 1 KES for testing
+        phoneNumber: formattedPhone,
+        description: `Payment for ${selectedPlan.name} (${selectedFrequency}) medical cover`,
+        paymentType: "medical",
+      });
 
-      if (isSuccess) {
-        setPaymentStatus("success");
+      if (response && response.success) {
+        // Store checkout request ID and payment ID for status checking
+        if (
+          response.data &&
+          response.data.payment &&
+          response.data.stkResponse
+        ) {
+          setCheckoutRequestId(response.data.stkResponse.CheckoutRequestID);
+          setPaymentId(response.data.payment.id);
 
-        // Add to payment history in localStorage
-        const paymentHistory = JSON.parse(
-          localStorage.getItem("paymentHistory") || "[]"
-        );
-
-        // Format phone number to ensure it starts with 254 (Kenya)
-        let formattedPhone = phoneNumber;
-        if (phoneNumber.startsWith("0")) {
-          formattedPhone = `254${phoneNumber.substring(1)}`;
-        } else if (phoneNumber.startsWith("+")) {
-          formattedPhone = phoneNumber.substring(1);
+          // Start checking status
+          startStatusCheck(response.data.payment.id);
         }
 
-        const newPayment = {
-          id: Date.now().toString(),
-          date: new Date().toISOString(),
-          amount: selectedPlan.premiums[selectedFrequency],
-          status: "completed",
-          method: "M-Pesa",
-          reference: `MP${Math.floor(Math.random() * 1000000)}`,
-          plan: selectedPlan.name,
-        };
+        setPaymentStatus("waiting");
 
-        paymentHistory.unshift(newPayment);
-        localStorage.setItem("paymentHistory", JSON.stringify(paymentHistory));
-
-        // Update the user's plan in the parent component
-        onPlanSelected(selectedPlan, selectedFrequency);
+        // Set timeout to change status to "timeout" after 30 seconds if no update (for testing)
+        setTimeout(() => {
+          setPaymentStatus((currentStatus) => {
+            if (currentStatus === "waiting") {
+              // If still waiting after 30 seconds, show timeout message
+              if (statusCheckInterval) {
+                clearInterval(statusCheckInterval);
+                setStatusCheckInterval(null);
+              }
+              return "timeout";
+            }
+            return currentStatus;
+          });
+        }, 30000); // 30 seconds timeout for testing
       } else {
         setPaymentStatus("error");
-        setErrorMessage("Failed to process payment. Please try again.");
+        setErrorMessage(
+          response?.message || "Failed to process payment. Please try again."
+        );
       }
     } catch (error) {
+      console.error("M-Pesa payment error:", error);
       setPaymentStatus("error");
-      setErrorMessage("An unexpected error occurred. Please try again.");
+      setErrorMessage(
+        error.message || "An unexpected error occurred. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }

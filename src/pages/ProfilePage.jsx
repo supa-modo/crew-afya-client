@@ -25,12 +25,11 @@ import {
   verifyPhoneNumber,
 } from "../services/userService";
 import { Link } from "react-router-dom";
-import SecurityTab from "../components/profilepage/SecurityTab";
-import DocumentsTab from "../components/profilepage/DocumentsTab";
-import PersonalInfoTab from "../components/profilepage/PersonalInfoTab";
-import DocumentUploadModal from "../components/profilepage/DocumentUploadModal";
-import PhoneVerificationModal from "../components/profilepage/PhoneVerificationModal";
-import ConfirmationModal from "../components/common/ConfirmationModal";
+import SecurityTab from "./profilepage/SecurityTab";
+import DocumentsTab from "./profilepage/DocumentsTab";
+import PersonalInfoTab from "./profilepage/PersonalInfoTab";
+import DocumentUploadModal from "./profilepage/DocumentUploadModal";
+import PhoneVerificationModal from "./profilepage/PhoneVerificationModal";
 import {
   PiFilesDuotone,
   PiUserDuotone,
@@ -47,6 +46,13 @@ const ProfilePage = () => {
     otherNames: user?.otherNames || "",
     email: user?.email || "",
     phoneNumber: user?.phoneNumber || "",
+    idNumber: user?.idNumber || "",
+    gender: user?.gender || "",
+    county: user?.county || "",
+    sacco: user?.sacco || "",
+    route: user?.route || "",
+    membershipNumber: user?.membershipNumber || "",
+    membershipStatus: user?.membershipStatus || "",
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
@@ -154,6 +160,10 @@ const ProfilePage = () => {
         otherNames: formData.otherNames,
         email: formData.email,
         phoneNumber: formData.phoneNumber,
+        gender: formData.gender,
+        county: formData.county,
+        sacco: formData.sacco,
+        route: formData.route,
       });
 
       // Fix: Check if updateUser exists in the auth context before calling it
@@ -168,6 +178,10 @@ const ProfilePage = () => {
           otherNames: response.data.otherNames || prev.otherNames,
           email: response.data.email || prev.email,
           phoneNumber: response.data.phoneNumber || prev.phoneNumber,
+          gender: response.data.gender || prev.gender,
+          county: response.data.county || prev.county,
+          sacco: response.data.sacco || prev.sacco,
+          route: response.data.route || prev.route,
         }));
       }
 
@@ -421,7 +435,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="container mx-auto mt-16 px-4 py-8">
+    <div className="min-h-screen max-w-screen-2xl mx-auto mt-16 px-4 py-8">
       <div className="mb-6">
         <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
           <Link

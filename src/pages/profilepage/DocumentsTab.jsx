@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ConfirmationModal from "../common/ConfirmationModal";
+import ConfirmationModal from "../../components/common/ConfirmationModal";
 import { TbCloudUpload, TbDownload, TbTrash, TbCheck } from "react-icons/tb";
 import {
   PiFilePdfDuotone,

@@ -9,7 +9,7 @@ import {
 import DashboardSummary from "../components/dashboard/DashboardSummary";
 import PaymentHistory from "../components/payment/PaymentHistory";
 import ChangeFrequencyModal from "../components/payment/ChangeFrequencyModal";
-import DocumentUploadModal from "../components/profilepage/DocumentUploadModal";
+import DocumentUploadModal from "./profilepage/DocumentUploadModal";
 import ConfirmationModal from "../components/common/ConfirmationModal";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";

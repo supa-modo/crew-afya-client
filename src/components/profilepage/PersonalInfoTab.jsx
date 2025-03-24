@@ -1,167 +1,239 @@
-import { useState } from "react";
-import { FaSave } from "react-icons/fa";
-import { PiUserDuotone } from "react-icons/pi";
-import { TbMailFilled, TbPhone, TbUserEdit } from "react-icons/tb";
 const PersonalInfoTab = ({
   formData,
   isEditing,
-  setIsEditing,
   isSubmitting,
   handleChange,
   handleSubmit,
+  setIsEditing,
 }) => {
   return (
-    <div className="px-6 py-6 md:h-[26.5rem]">
+    <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-          <PiUserDuotone className="h-5 w-5 mx-2 text-secondary-700" />
-          <span className="text-secondary-800 pl-1 dark:text-secondary-600">
-            Personal Information
-          </span>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+          Personal Information
         </h2>
-        <button
-          type="button"
-          onClick={() => setIsEditing(!isEditing)}
-          className={`px-4 sm:px-6 py-1 sm:py-1.5 border   flex items-center rounded-lg text-sm font-medium transition-colors duration-200 ${
-            isEditing
-              ? "bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
-              : "bg-primary-100 dark:bg-primary-800/50 border-primary-200 dark:border-gray-600 text-primary-700 dark:text-primary-400"
-          }`}
-        >
-            <TbUserEdit className="h-5 w-5 mr-2" />
-          {isEditing ? "Cancel" : "Edit"}
-        </button>
+        {!isEditing ? (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="px-4 py-2 bg-primary-600 text-white rounded-md text-sm hover:bg-primary-700 transition-colors duration-200"
+          >
+            Edit Profile
+          </button>
+        ) : (
+          <button
+            onClick={() => setIsEditing(false)}
+            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md text-sm hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
+          >
+            Cancel
+          </button>
+        )}
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          
-
-          <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label
               htmlFor="firstName"
-              className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               First Name
             </label>
-            <div className="relative">
-              <PiUserDuotone className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full text-sm sm:text-base pl-10 pr-4 py-2 border ${
-                  isEditing
-                    ? "border-gray-300 dark:border-gray-600 text-primary-800 dark:text-primary-800"
-                    : "border-transparent bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium`}
-              />
-            </div>
+            <input
+              type="text"
+              name="firstName"
+              id="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            />
           </div>
 
           <div>
             <label
               htmlFor="lastName"
-              className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Last Name
             </label>
-            <div className="relative">
-              <PiUserDuotone className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full text-sm sm:text-base pl-10 pr-4 py-2 border ${
-                  isEditing
-                    ? "border-gray-300 dark:border-gray-600 text-primary-800 dark:text-primary-800"
-                    : "border-transparent bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium`}
-              />
-            </div>
-          </div>
+            <input
+              type="text"
+              name="lastName"
+              id="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            />
           </div>
 
           <div>
             <label
               htmlFor="otherNames"
-              className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Other Names
             </label>
-            <div className="relative">
-              <PiUserDuotone className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <input
-                type="text"
-                id="otherNames"
-                name="otherNames"
-                value={formData.otherNames || ""}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full text-sm sm:text-base pl-10 pr-4 py-2 border ${
-                  isEditing
-                    ? "border-gray-300 dark:border-gray-600 text-primary-800 dark:text-primary-800"
-                    : "border-transparent bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium`}
-              />
-            </div>
+            <input
+              type="text"
+              name="otherNames"
+              id="otherNames"
+              value={formData.otherNames || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            />
           </div>
 
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Email Address
             </label>
-            <div className="relative">
-              <TbMailFilled className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full text-sm sm:text-base pl-10 pr-4 py-2 border ${
-                  isEditing
-                    ? "border-gray-300 dark:border-gray-600 text-primary-800 dark:text-primary-800"
-                    : "border-transparent bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium`}
-              />
-            </div>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value={formData.email || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            />
           </div>
 
           <div>
             <label
               htmlFor="phoneNumber"
-              className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Phone Number
             </label>
-            <div className="relative">
-              <TbPhone className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="tel"
-                id="phoneNumber"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full text-sm sm:text-base pl-10 pr-4 py-2 border ${
-                  isEditing
-                    ? "border-gray-300 dark:border-gray-600 text-primary-800 dark:text-primary-800"
-                    : "border-transparent bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-white"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium`}
-              />
-            </div>
+            <input
+              type="tel"
+              name="phoneNumber"
+              id="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="gender"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              Gender
+            </label>
+            <select
+              name="gender"
+              id="gender"
+              value={formData.gender || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="county"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              County
+            </label>
+            <input
+              type="text"
+              name="county"
+              id="county"
+              value={formData.county || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="sacco"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              SACCO
+            </label>
+            <input
+              type="text"
+              name="sacco"
+              id="sacco"
+              value={formData.sacco || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="route"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              Route
+            </label>
+            <input
+              type="text"
+              name="route"
+              id="route"
+              value={formData.route || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="idNumber"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              ID Number
+            </label>
+            <input
+              type="text"
+              name="idNumber"
+              id="idNumber"
+              value={formData.idNumber || ""}
+              disabled={true}
+              className="mt-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 cursor-not-allowed"
+            />
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              ID Number cannot be changed
+            </p>
+          </div>
+
+          <div>
+            <label
+              htmlFor="membershipNumber"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              Membership Number
+            </label>
+            <input
+              type="text"
+              name="membershipNumber"
+              id="membershipNumber"
+              value={formData.membershipNumber || ""}
+              disabled={true}
+              className="mt-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 cursor-not-allowed"
+            />
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Membership Number cannot be changed
+            </p>
           </div>
         </div>
 
@@ -170,7 +242,7 @@ const PersonalInfoTab = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center px-6 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-primary-600 text-white rounded-md text-sm flex items-center hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>
@@ -194,11 +266,11 @@ const PersonalInfoTab = ({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Saving...
+                  Updating...
                 </>
               ) : (
                 <>
-                  <FaSave className="mr-2 -ml-1 h-4 w-4" />
+                  <FiSave className="mr-2 h-4 w-4" />
                   Save Changes
                 </>
               )}

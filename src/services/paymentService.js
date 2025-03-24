@@ -249,28 +249,6 @@ export const getPaymentHistory = async (params = {}) => {
   }
 };
 
-// Get payment details
-// export const getPaymentDetails = async (paymentId) => {
-//   try {
-//     // In a real app, this would be an API call
-//     // return await apiGet(`/payments/${paymentId}`);
-
-//     // For now, find the payment in our mock data
-//     const payment = MOCK_PAYMENT_HISTORY.find((p) => p.id === paymentId);
-
-//     if (!payment) {
-//       throw new Error("Payment not found");
-//     }
-
-//     return {
-//       success: true,
-//       data: payment,
-//     };
-//   } catch (error) {
-//     console.error("Error fetching payment details:", error);
-//     throw new Error("Failed to fetch payment details");
-//   }
-// };
 
 // Get payment methods
 export const getPaymentMethods = async () => {
