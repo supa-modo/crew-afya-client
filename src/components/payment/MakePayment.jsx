@@ -327,7 +327,7 @@ const MakePayment = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg px-2 sm:px-12">
+    <div className="bg-white dark:bg-gray-800 rounded-lg px-2 sm:px-12 pb-2">
       <h3 className="text-lg font-semibold text-secondary-700 dark:text-white mb-2">
         Make a Payment
       </h3>
