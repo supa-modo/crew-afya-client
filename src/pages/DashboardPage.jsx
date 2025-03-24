@@ -447,34 +447,17 @@ const DashboardPage = () => {
                 <div className="bg-white dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
                   {/* Coverage Utilization */}
                   <CoverageUtilization />
-
-                  {/* Recent Payments Section */}
-                  <div className="mt-4 px-1 sm:px-4 md:px-6">
-                    <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 mb-1.5  flex items-center">
-                      <MdPayments className="mr-2 h-6 w-6 text-green-700" />
-                      Recent Payments
-                    </h3>
-                    <PaymentHistory />
-                  </div>
-
-                  {/* Documents Section */}
-                  <DocumentsSection
-                    documents={documents}
-                    isLoadingDocs={isLoadingDocs}
-                    handleDeleteDocument={handleDeleteDocument}
-                    isSubmitting={isSubmitting}
-                  />
                 </div>
               </div>
 
               {/* Right Sidebar */}
               <div className="space-y-6">
                 {/* Payment Schedule */}
-                <PaymentSchedule
+                {/* <PaymentSchedule
                   nextPaymentDate={nextPaymentDate}
                   userSubscription={userSubscription}
                   handleOpenFrequencyModal={handleOpenFrequencyModal}
-                />
+                /> */}
 
                 {/* Support Section */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
@@ -514,6 +497,24 @@ const DashboardPage = () => {
                   </div>
                 </div>
               </div>
+            </div>
+            <div className="bg-white dark:bg-gray-800 mt-6 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+              {/* Recent Payments Section */}
+              <div className="mt-4 px-1 sm:px-4 md:px-6">
+                <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 mb-1.5  flex items-center">
+                  <MdPayments className="mr-2 h-6 w-6 text-green-700" />
+                  Recent Payments
+                </h3>
+                <PaymentHistory />
+              </div>
+
+              {/* Documents Section */}
+              <DocumentsSection
+                documents={documents}
+                isLoadingDocs={isLoadingDocs}
+                handleDeleteDocument={handleDeleteDocument}
+                isSubmitting={isSubmitting}
+              />
             </div>
           </div>
         )}
@@ -1621,230 +1622,6 @@ const DashboardPage = () => {
                     Schedule Consultation
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Documents Tab Content */}
-        {activeTab === "documents" && (
-          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-6">
-              <div className="p-6">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-                  <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
-                    <PiFilesDuotone className="mr-2 h-6 w-6 text-primary-600" />
-                    Your Documents
-                  </h2>
-                  <button
-                    onClick={() => navigate("/profile")}
-                    className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg font-medium shadow-md hover:bg-primary-700 transition-all"
-                  >
-                    <FiUpload className="mr-2 h-5 w-5" />
-                    Upload New Document
-                  </button>
-                </div>
-
-                {uploadProgress > 0 && (
-                  <div className="mb-6">
-                    <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
-                      <span>Uploading document...</span>
-                      <span>{uploadProgress}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div
-                        className="bg-primary-600 h-2 rounded-full transition-all duration-300 ease-in-out"
-                        style={{ width: `${uploadProgress}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-
-                {isLoadingDocs ? (
-                  <div className="py-8 flex justify-center">
-                    <svg
-                      className="animate-spin h-8 w-8 text-primary-600"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                  </div>
-                ) : documents.length === 0 ? (
-                  <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-900/50 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-                    <div className="text-center">
-                      <PiFilesDuotone className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="mt-2 text-sm sm:text-base text-gray-500 dark:text-gray-400">
-                        Upload your documents to keep them organized and
-                        accessible.
-                      </p>
-                      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        ID card, SACCO membership, vehicle logbook, etc.
-                      </p>
-                      <button
-                        onClick={() => navigate("/profile")}
-                        className="mt-4 px-4 py-2 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700 transition-colors duration-200"
-                      >
-                        Upload Your First Document
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="flex flex-col items-center justify-center bg-purple-100 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
-                        <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-1">
-                          {documents.length}
-                        </div>
-                        <div className="text-sm text-purple-700 dark:text-purple-300">
-                          Total Documents
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-center justify-center bg-green-100 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
-                        <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-1">
-                          {documents.filter((doc) => doc.isVerified).length}
-                        </div>
-                        <div className="text-sm text-green-700 dark:text-green-300">
-                          Verified Documents
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-center justify-center bg-blue-100 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-                        <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-1">
-                          {documents.filter((doc) => !doc.isVerified).length}
-                        </div>
-                        <div className="text-sm text-blue-700 dark:text-blue-300">
-                          Pending Verification
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {documents.map((doc) => (
-                        <div
-                          key={doc.id}
-                          className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all overflow-hidden"
-                        >
-                          <div
-                            className={`p-4 ${
-                              doc.isVerified
-                                ? "bg-green-50 dark:bg-green-900/10 border-b border-green-100 dark:border-green-800"
-                                : "bg-yellow-50 dark:bg-yellow-900/10 border-b border-yellow-100 dark:border-yellow-800"
-                            }`}
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex items-start space-x-3">
-                                <div className="flex-shrink-0">
-                                  {doc.mimeType?.startsWith("image/") ? (
-                                    <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                      <PiImageDuotone className="h-7 w-7 text-blue-500" />
-                                    </div>
-                                  ) : doc.mimeType === "application/pdf" ? (
-                                    <div className="h-12 w-12 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                                      <PiFilePdfDuotone className="h-7 w-7 text-red-500" />
-                                    </div>
-                                  ) : (
-                                    <div className="h-12 w-12 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                                      <svg
-                                        className="h-7 w-7 text-gray-500"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth={2}
-                                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                        />
-                                      </svg>
-                                    </div>
-                                  )}
-                                </div>
-                                <div>
-                                  <h4 className="text-base font-medium text-gray-900 dark:text-white truncate max-w-[170px]">
-                                    {doc.name}
-                                  </h4>
-                                  <div className="flex items-center mt-1">
-                                    <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                                      {doc.type}
-                                    </span>
-                                    <span className="mx-1.5 text-gray-300 dark:text-gray-600">
-                                      •
-                                    </span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                                      {(doc.fileSize / 1024).toFixed(1)} KB
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                              {doc.isVerified && (
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-                                  <svg
-                                    className="h-3 w-3 mr-1"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M5 13l4 4L19 7"
-                                    />
-                                  </svg>
-                                  Verified
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="p-4">
-                            <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
-                              <span>
-                                Uploaded on{" "}
-                                {new Date(
-                                  doc.createdAt || Date.now()
-                                ).toLocaleDateString()}
-                              </span>
-                            </div>
-                            <div className="flex space-x-3">
-                              <a
-                                href={doc.fileUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-1 flex items-center justify-center px-3 py-2 bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 rounded-md font-medium text-sm hover:bg-primary-200 dark:hover:bg-primary-900/30 transition-colors"
-                              >
-                                <TbDownload className="h-4 w-4 mr-1" />
-                                Download
-                              </a>
-                              <button
-                                onClick={() => handleDeleteDocument(doc.id)}
-                                disabled={isSubmitting}
-                                className="flex items-center justify-center px-3 py-2 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-md font-medium text-sm hover:bg-red-200 dark:hover:bg-red-900/30 transition-colors"
-                              >
-                                <TbTrash className="h-4 w-4 mr-1" />
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
