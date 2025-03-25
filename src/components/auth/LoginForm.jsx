@@ -117,7 +117,7 @@ const LoginForm = () => {
                 type="text"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
                 placeholder="Enter your phone or ID number"
                 required
                 disabled={isSubmitting}
@@ -143,7 +143,7 @@ const LoginForm = () => {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="text-sm text-gray-600/90 sm:text-base  block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                className="text-sm text-gray-600/90 sm:text-base  block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
                 placeholder="••••••••••"
                 required
                 disabled={isSubmitting}
@@ -171,7 +171,7 @@ const LoginForm = () => {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="h-3 w-3 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                className="h-3 w-3 text-secondary-600 focus:ring-secondary-500 border-gray-300 rounded"
               />
               <label
                 htmlFor="remember-me"
@@ -182,7 +182,7 @@ const LoginForm = () => {
             </div>
             <Link
               to="/forgot-password"
-              className="text-[0.8rem] sm:text-sm font-bold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
+              className="text-[0.8rem] sm:text-sm font-bold text-secondary-700 hover:text-secondary-600 dark:text-secondary-500 dark:hover:text-secondary-400 transition-colors duration-200"
             >
               Forgot password?
             </Link>
@@ -191,7 +191,7 @@ const LoginForm = () => {
           <div>
             <button
               type="submit"
-              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600  focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 ${
+              className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-secondary-600 to-secondary-700 dark:from-secondary-600 dark:to-secondary-700 hover:from-secondary-600 hover:to-secondary-700 dark:hover:from-secondary-500 dark:hover:to-secondary-600  focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-secondary-600 dark:focus:ring-offset-gray-800 transition-all duration-200 ${
                 isSubmitting ? "opacity-70 cursor-not-allowed" : ""
               }`}
               disabled={isSubmitting}
@@ -235,21 +235,12 @@ const LoginForm = () => {
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
+              className="font-medium text-secondary-700 hover:text-secondary-600 dark:text-secondary-500 dark:hover:text-secondary-400 transition-colors duration-200"
             >
               Sign up
             </Link>
           </p>
         </div>
-
-        {/* <div className="mt-4 text-center">
-          <Link
-            to="/admin-login"
-            className="text-[0.83rem] sm:text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors duration-200"
-          >
-            Admin Login
-          </Link>
-        </div> */}
       </form>
     </div>
   );

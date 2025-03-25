@@ -58,7 +58,7 @@ const LoginPage = () => {
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
-            className="text-blue-500 dark:text-blue-400"
+            className="text-secondary-500 dark:text-secondary-400"
           />
         </svg>
       </div>
@@ -79,7 +79,7 @@ const LoginPage = () => {
             <span className="text-sm font-medium">{message}</span>
           </motion.div>
         )}
-        
+
         <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
           <motion.div
             initial={{ opacity: 0 }}
@@ -89,16 +89,16 @@ const LoginPage = () => {
           >
             <div className="w-full ">
               <img
-                src="/logo.png"
+                src="/mwulogo.png"
                 alt="crewafya-logo"
-                className="w-16 h-16 md:w-20 md:h-20 mx-auto"
+                className="w-24 h-24 md:w-32 md:h-32 mx-auto "
               />
             </div>
             <div className="text-center mb-3 md:mb-4">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-secondary-600 dark:text-secondary-500 mb-1 sm:mb-2 md:mb-3">
                 Matatu Workers Union
               </h1>
-              <p className="text-gray-400 text-sm lg:text-base">
+              <p className="text-gray-500 font-medium text-sm lg:text-base">
                 Enter your login credentials to continue
               </p>
             </div>
@@ -108,7 +108,7 @@ const LoginPage = () => {
               initial={{ width: 0 }}
               animate={{ width: "8rem" }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="h-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-full mx-auto"
+              className="h-1 bg-gradient-to-r from-secondary-700 to-secondary-500 rounded-full mx-auto"
             ></motion.div>
           </motion.div>
 

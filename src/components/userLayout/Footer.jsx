@@ -8,7 +8,7 @@ const Footer = () => {
 
   return (
     <footer
-      className="bg-primary-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 relative"
+      className="bg-gradient-to-br from-secondary-100/50 to-secondary-200/50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 relative"
       style={{ zIndex: "10" }}
     >
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -16,11 +16,11 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-1">
             <Link to="/" className="flex items-center">
               <img
-                className="h-10 w-auto mr-2"
-                src="/logo.png"
+                className="h-12 w-auto mr-2"
+                src="/mwulogo.png"
                 alt="CrewAfya"
               />
-              <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
+              <span className="text-lg font-bold text-secondary-600 dark:text-secondary-400">
                 Matatu Workers Union
               </span>
             </Link>
@@ -92,7 +92,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/ussd"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
                   >
                     USSD Services
                   </Link>
@@ -100,7 +100,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/admin-login"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
                   >
                     Admin Login
                   </Link>
@@ -108,7 +108,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/ussd"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
                   >
                     Help Center
                   </Link>
@@ -116,7 +116,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/feedback"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
                   >
                     Feedback
                   </Link>
@@ -131,7 +131,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/about"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
                   >
                     About Us
                   </Link>
@@ -139,7 +139,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/faqs"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
                   >
                     FAQs
                   </Link>
@@ -147,7 +147,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/privacy"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
                   >
                     Privacy Policy
                   </Link>
@@ -155,7 +155,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/terms"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
                   >
                     Terms of Service
                   </Link>
@@ -169,7 +169,7 @@ const Footer = () => {
               Contact
             </h3>
             <ul className="mt-4 space-y-2">
-              <li className="flex items-center text-sm text-gray-600 hover:text-primary-600 hover:underline underline-offset-4 dark:text-gray-400 dark:hover:text-primary-600">
+              <li className="flex items-center text-sm text-gray-600 hover:text-secondary-600 hover:underline underline-offset-4 dark:text-gray-400 dark:hover:text-secondary-600">
                 <Link
                   to="https://maps.app.goo.gl/1234567890"
                   className="flex items-center"
@@ -182,13 +182,13 @@ const Footer = () => {
                 <TbAddressBook className="mr-2 h-5 w-5 text-gray-400" />
                 <span>P.O. Box 12345, Nairobi, Kenya</span>
               </li>
-              <li className="text-sm text-gray-600 hover:text-primary-600 hover:underline underline-offset-4 dark:text-gray-400 dark:hover:text-primary-600">
+              <li className="text-sm text-gray-600 hover:text-secondary-600 hover:underline underline-offset-4 dark:text-gray-400 dark:hover:text-secondary-600">
                 <Link to="tel:+254700000000" className="flex items-center">
                   <PiPhoneDuotone className="mr-2 h-5 w-5 text-gray-400" />
                   <span>+254 700 000 000</span>
                 </Link>
               </li>
-              <li className="text-sm text-gray-600 hover:text-primary-600 hover:underline underline-offset-4 dark:text-gray-400 dark:hover:text-primary-600">
+              <li className="text-sm text-gray-600 hover:text-secondary-600 hover:underline underline-offset-4 dark:text-gray-400 dark:hover:text-secondary-600">
                 <Link
                   to="mailto:info@crewafya.com"
                   className="flex items-center"
@@ -202,7 +202,7 @@ const Footer = () => {
         </div>
         <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center mb-4 md:mb-0">
-            <img className="h-7 w-auto mr-2" src="/logo.png" alt="CrewAfya" />
+            <img className="h-8 w-auto mr-2" src="/mwulogo.png" alt="CrewAfya" />
             <span className="text-sm text-gray-500 dark:text-gray-400">
               &copy; {currentYear} Matatu Wokers Union. All rights reserved.
             </span>
@@ -210,19 +210,19 @@ const Footer = () => {
           <div className="mt-3 md:mt-0 flex space-x-6">
             <Link
               to="/privacy"
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+              className="text-sm text-gray-500 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
             >
               Privacy Policy
             </Link>
             <Link
               to="/terms"
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+              className="text-sm text-gray-500 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
             >
               Terms & Conditions
             </Link>
             <Link
               to="/cookies"
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-600"
+              className="text-sm text-gray-500 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-600"
             >
               Cookies
             </Link>

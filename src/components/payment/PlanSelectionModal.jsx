@@ -25,7 +25,7 @@ const PlanSelectionModal = ({
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [selectedFrequency, setSelectedFrequency] = useState("daily");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, processing, success, error
+  const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, processing, waiting, success, error, timeout
   const [errorMessage, setErrorMessage] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -196,7 +196,7 @@ const PlanSelectionModal = ({
 
         setPaymentStatus("waiting");
 
-        // Set timeout to change status to "timeout" after 30 seconds if no update (for testing)
+        // Set timeout to change status to "timeout" after 30 seconds if no update
         setTimeout(() => {
           setPaymentStatus((currentStatus) => {
             if (currentStatus === "waiting") {
@@ -224,6 +224,16 @@ const PlanSelectionModal = ({
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleTryAgain = () => {
+    setPaymentStatus("idle");
+    setErrorMessage("");
+    setStep(2); // Go back to the payment details step
+    if (statusCheckInterval) {
+      clearInterval(statusCheckInterval);
+      setStatusCheckInterval(null);
     }
   };
 
@@ -659,6 +669,9 @@ const PlanSelectionModal = ({
                     <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
                       <FiLoader className="h-8 w-8 text-primary-600 dark:text-primary-400 animate-spin" />
                     </div>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                      Processing Payment Request
+                    </h3>
                     <p className="text-gray-600 dark:text-gray-400 mb-4">
                       Please wait while we process your payment of KES{" "}
                       {selectedPlan.premiums[
@@ -666,6 +679,68 @@ const PlanSelectionModal = ({
                       ].toLocaleString()}{" "}
                       via M-Pesa...
                     </p>
+                  </div>
+                )}
+
+                {paymentStatus === "waiting" && (
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30">
+                      <FiLoader className="h-8 w-8 text-yellow-600 dark:text-yellow-400 animate-spin" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                      Payment In Progress
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-2">
+                      An M-Pesa prompt has been sent to your phone (
+                      {phoneNumber}).
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      Please enter your M-Pesa PIN when prompted to complete the
+                      payment of KES{" "}
+                      {selectedPlan.premiums[
+                        selectedFrequency
+                      ].toLocaleString()}
+                      .
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Waiting for confirmation... This may take a few moments.
+                    </p>
+                  </div>
+                )}
+
+                {paymentStatus === "timeout" && (
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
+                      <PiWarningDuotone className="h-8 w-8 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-orange-600 dark:text-orange-400 mb-2">
+                      Payment Status Unknown
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-2">
+                      We didn't receive confirmation for your payment request.
+                      If you completed the payment on your phone, it may still
+                      be processing.
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
+                      You can check your payment history later to confirm if it
+                      was successful.
+                    </p>
+                    <div className="flex space-x-4">
+                      <button
+                        type="button"
+                        onClick={handleTryAgain}
+                        className="inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                      >
+                        Try Again
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleClose}
+                        className="inline-flex items-center px-7 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 )}
 
@@ -677,17 +752,22 @@ const PlanSelectionModal = ({
                     <p className="text-gray-600 dark:text-gray-400 text-lg sm:text-xl font-semibold mb-2">
                       Payment Successful!
                     </p>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    <p className="text-gray-600 dark:text-gray-400 mb-1">
                       Your health insurance plan has been activated
                       successfully.
                     </p>
+                    {mpesaReceiptNumber && (
+                      <p className="mt-1 text-sm font-medium text-green-600 dark:text-green-400 text-center mb-4">
+                        M-Pesa Receipt: {mpesaReceiptNumber}
+                      </p>
+                    )}
                     <button
                       type="button"
-                      onClick={handleClose}
+                      onClick={() => (window.location.href = "/payments")}
                       className="inline-flex items-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-sm sm:text-base font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                     >
                       <MdSpaceDashboard className="mr-2 h-5 w-5" />
-                      Go to Dashboard
+                      View Payment History
                     </button>
                   </div>
                 )}
@@ -706,7 +786,7 @@ const PlanSelectionModal = ({
                     <div className="flex space-x-4">
                       <button
                         type="button"
-                        onClick={handlePrevStep}
+                        onClick={handleTryAgain}
                         className="inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                       >
                         Try Again
