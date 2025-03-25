@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { getStatusBadge } from "../../utils/statusBadge";
-import { formatDate } from "../../utils/formatDate";
 // Import all tab components
 import UserDetailsProfile from "./adminUserSidebarTabs/UserDetailsProfile";
 import UserDetailsPayments from "./adminUserSidebarTabs/UserDetailsPayments";
@@ -11,10 +10,8 @@ import UserDetailsSettings from "./adminUserSidebarTabs/UserDetailsSettings";
 import {
   TbActivity,
   TbCalendarDot,
-  TbClockCheck,
   TbMailFilled,
   TbPhone,
-  TbShieldHalfFilled,
 } from "react-icons/tb";
 import {
   PiClockUserDuotone,
@@ -26,6 +23,7 @@ import { HiCreditCard } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { getUserById } from "../../services/userService";
+import { formatDateWithTime } from "../../utils/formatDate";
 
 const UserDetailsSidebar = ({
   user,
@@ -249,7 +247,7 @@ const UserDetailsSidebar = ({
                             </p>
                             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center">
                               <PiClockUserDuotone className="mr-1 h-4 w-4 " />
-                              Member since {formatDate(userCreatedAt)}
+                              Member since {formatDateWithTime(userCreatedAt)}
                             </p>
                           </motion.div>
 
@@ -295,7 +293,7 @@ const UserDetailsSidebar = ({
                                   <div className="font-medium">Last seen</div>
                                   <div className="font-medium text-secondary-700">
                                     {userLastLogin
-                                      ? formatDate(userLastLogin, true)
+                                      ? formatDateWithTime(userLastLogin, true)
                                       : "Never"}
                                   </div>
                                 </div>
