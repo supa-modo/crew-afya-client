@@ -90,7 +90,7 @@ const HomePage = () => {
   return (
     <div className="bg-gray-50 dark:bg-gray-900">
       {/* Hero Section with Animated Background */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-primary-600 via-primary-700 to-secondary-700">
+      <div className="relative overflow-hidden bg-gradient-to-r from-primary-600/95 via-primary-700 to-secondary-800">
         {/* Background image */}
         <div className="absolute inset-0 z-0">
           <img
@@ -102,9 +102,9 @@ const HomePage = () => {
 
         {/* Animated background elements */}
         <div className="absolute inset-0 z-10">
-          <div className="absolute -top-24 -right-24 rounded-full w-64 h-64 bg-primary-500 opacity-20 blur-3xl"></div>
+          <div className="absolute -top-24 -right-24 rounded-full w-64 h-64 bg-secondary-500 opacity-20 blur-3xl"></div>
           <div className="absolute top-1/2 left-1/4 rounded-full w-96 h-96 bg-secondary-500 opacity-10 blur-3xl"></div>
-          <div className="absolute -bottom-32 -left-32 rounded-full w-80 h-80 bg-primary-400 opacity-10 blur-3xl"></div>
+          <div className="absolute -bottom-32 -left-32 rounded-full w-80 h-80 bg-secondary-400 opacity-10 blur-3xl"></div>
         </div>
 
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-32 md:pb-48 md:pt-56 relative z-20">
@@ -113,7 +113,7 @@ const HomePage = () => {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight animate-fadeIn pt-10">
                 Empowering
                 <br />
-                <span className="text-secondary-300 mr-1 sm:mr-2">Matatu Workers</span>
+                <span className="text-secondary-400 mr-1 sm:mr-2">Matatu Workers</span>
                 Through Unity & Benefits
               </h1>
               <p className="mt-6 text-base sm:text-lg text-white text-opacity-90 max-w-2xl">
@@ -126,7 +126,7 @@ const HomePage = () => {
                 {isAuthenticated ? (
                   <button
                     onClick={() => navigate("/dashboard")}
-                    className="text-sm sm:text-base btn bg-white text-primary-700 hover:bg-gray-100 hover:text-primary-800 px-10 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
+                    className="text-sm sm:text-base btn bg-white text-secondary-700 hover:bg-gray-100 hover:text-secondary-800 px-10 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
                   >
                     Go to Your Dashboard <FiArrowRight className="ml-2" />
                   </button>
@@ -134,13 +134,13 @@ const HomePage = () => {
                   <>
                     <button
                       onClick={(e) => handleAuthAwareNavigation(e, "/register")}
-                      className="text-[0.8rem] sm:text-sm md:text-base btn bg-white text-primary-700 hover:bg-gray-100 hover:text-primary-800 px-5 md:px-8 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
+                      className="text-[0.8rem] sm:text-sm md:text-base btn bg-white text-secondary-700 hover:bg-gray-100 hover:text-secondary-800 px-5 md:px-8 py-3 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center"
                     >
                       Join the Union <FiArrowRight className="ml-2" />
                     </button>
                     <button
                       onClick={(e) => handleAuthAwareNavigation(e, "/login")}
-                      className="text-[0.8rem] sm:text-sm md:text-base btn bg-transparent border-2 border-white text-white hover:bg-white/10 px-5 md:px-9 py-3 font-medium rounded-lg flex items-center"
+                      className="text-[0.8rem] sm:text-sm md:text-base btn bg-transparent border-2 border-white text-white hover:bg-white/30 px-5 md:px-9 py-3 font-medium rounded-lg flex items-center"
                     >
                       Member Login
                     </button>
@@ -155,7 +155,7 @@ const HomePage = () => {
                       {[1, 2, 3, 4].map((i) => (
                         <div
                           key={i}
-                          className="w-8 h-8 rounded-full border-2 border-white bg-primary-500 overflow-hidden flex items-center justify-center text-xs text-white"
+                          className="w-8 h-8 rounded-full border-2 border-white bg-secondary-500 overflow-hidden flex items-center justify-center text-xs text-white"
                         >
                           {i}
                         </div>
@@ -187,7 +187,7 @@ const HomePage = () => {
                 </div>
 
                 {/* Floating card elements */}
-                <div className="absolute -bottom-6 -left-6 bg-primary-100 dark:bg-gray-800 rounded-lg shadow-lg p-4 transform hover:scale-105 transition-transform">
+                <div className="absolute -bottom-6 -left-6 bg-secondary-100 dark:bg-gray-800 rounded-lg shadow-lg p-4 transform hover:scale-105 transition-transform">
                   <div className="flex items-center">
                     <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
                       <FiCheckCircle className="w-5 h-5" />
@@ -203,7 +203,7 @@ const HomePage = () => {
                   </div>
                 </div>
 
-                <div className="absolute -top-6 -right-6 bg-primary-100 dark:bg-gray-800 rounded-lg shadow-lg p-4 transform hover:scale-105 transition-transform">
+                <div className="absolute -top-6 -right-6 bg-secondary-100 dark:bg-gray-800 rounded-lg shadow-lg p-4 transform hover:scale-105 transition-transform">
                   <div className="flex items-center">
                     <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
                       <FiActivity className="w-5 h-5" />
@@ -320,10 +320,10 @@ const HomePage = () => {
       <div id="features" className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-10 md:mb-14">
-            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+            <h2 className="text-sm sm:text-base font-semibold text-secondary-600 dark:text-secondary-400 uppercase tracking-wide">
               Union Benefits
             </h2>
-            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-gray-600 dark:text-white">
+            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-white">
               Comprehensive Support for Matatu Operators
             </h2>
             <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -340,7 +340,7 @@ const HomePage = () => {
                 title: "Medical Coverage",
                 description:
                   "Access to affordable health insurance plans for you and your family with comprehensive benefits.",
-                color: "primary",
+                color: "secondary",
               },
               {
                 icon: <TbCreditCardFilled className="h-6 w-6" />,
@@ -418,10 +418,10 @@ const HomePage = () => {
       <div id="how-it-works" className="py-24 ">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+            <h2 className="text-sm sm:text-base font-semibold text-secondary-700 dark:text-secondary-400 uppercase tracking-wide">
               Membership Process
             </h2>
-            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-green-700 dark:text-white">
+            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-primary-600 dark:text-white">
               How to Join & Benefit
             </h2>
             <p className="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -432,7 +432,7 @@ const HomePage = () => {
 
           <div className="relative">
             {/* Connecting line */}
-            <div className="absolute top-24 left-0 right-0 h-1 bg-primary-200 dark:bg-primary-900 hidden md:block"></div>
+            <div className="absolute top-24 left-0 right-0 h-1 bg-secondary-500 dark:bg-secondary-900 hidden md:block"></div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-7 md:gap-8">
               {[
@@ -466,11 +466,11 @@ const HomePage = () => {
                 },
               ].map((step, index) => (
                 <div key={index} className="relative">
-                  <div className="bg-primary-100 dark:bg-gray-700 rounded-xl shadow-lg p-6 z-10 relative h-full flex flex-col items-center text-center">
-                    <div className="mb-2 w-16 h-16 rounded-full bg-primary-200 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-400">
+                  <div className="bg-secondary-50 dark:bg-gray-700 border border-secondary-200/70 rounded-xl shadow-lg p-6 z-10 relative h-full flex flex-col items-center text-center">
+                    <div className="mb-2 w-16 h-16 rounded-full bg-secondary-200 dark:bg-secondary-900 flex items-center justify-center text-secondary-600 dark:text-secondary-400">
                       {step.icon}
                     </div>
-                    <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-primary-500 text-white text-lg md:text-xl font-bold rounded-full w-10 h-10 flex items-center justify-center">
+                    <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-secondary-500 text-white text-lg md:text-xl font-bold rounded-full w-10 h-10 flex items-center justify-center">
                       {step.step}
                     </div>
                     <h3 className="text-base sm:text-lg md:text-xl font-semibold text-green-700 dark:text-white mt-1 sm:mt-2 md:mt-4">
@@ -491,10 +491,10 @@ const HomePage = () => {
       <div id="insurance-plans" className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-10 md:mb-14">
-            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+            <h2 className="text-sm sm:text-base font-semibold text-secondary-600 dark:text-secondary-400 uppercase tracking-wide">
               Medical Insurance
             </h2>
-            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-gray-600 dark:text-white">
+            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-white">
               Affordable Health Coverage Plans
             </h2>
             <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -504,17 +504,17 @@ const HomePage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 transform transition-transform hover:scale-105">
-              <div className="bg-primary-500 p-6 text-white">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+              <div className="bg-primary-600 p-6 text-white">
                 <h3 className="text-xl sm:text-2xl font-bold">
                   Crew Afya Lite
                 </h3>
-                <p className="mt-1 text-primary-100">For Driver/Conductor</p>
+                <p className="mt-1 text-secondary-100">For Driver/Conductor</p>
                 <div className="mt-4 flex items-baseline">
                   <span className="text-2xl sm:text-3xl font-bold">KSh 24</span>
                   <span className="ml-1 text-sm">/day</span>
                 </div>
-                <p className="mt-1 text-sm text-primary-100">
+                <p className="mt-1 text-sm text-secondary-100">
                   or KSh 713/month (KSh 8,565/year)
                 </p>
               </div>
@@ -604,7 +604,7 @@ const HomePage = () => {
                 <div className="mt-6">
                   <Link
                     to={isAuthenticated ? "/dashboard" : "/register"}
-                    className="block w-full text-center bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-lg font-medium"
+                    className="block w-full text-center bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-lg font-medium"
                   >
                     {isAuthenticated ? "Select Plan" : "Join & Select"}
                   </Link>
@@ -612,8 +612,8 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 transform transition-transform hover:scale-105">
-              <div className="bg-secondary-500 p-6 text-white">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+              <div className="bg-secondary-600 p-6 text-white">
                 <h3 className="text-xl sm:text-2xl font-bold">
                   Crew Afya - (Up to M+3)
                 </h3>
@@ -714,7 +714,7 @@ const HomePage = () => {
                 <div className="mt-6">
                   <Link
                     to={isAuthenticated ? "/dashboard" : "/register"}
-                    className="block w-full text-center bg-secondary-500 hover:bg-secondary-600 text-white py-2 px-4 rounded-lg font-medium"
+                    className="block w-full text-center bg-secondary-600 hover:bg-secondary-700 text-white py-2 px-4 rounded-lg font-medium"
                   >
                     {isAuthenticated ? "Select Plan" : "Join & Select"}
                   </Link>
@@ -729,7 +729,7 @@ const HomePage = () => {
       {/* <div id="loan-services" className="py-24">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-10 md:mb-14">
-            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+            <h2 className="text-sm sm:text-base font-semibold text-secondary-600 dark:text-secondary-400 uppercase tracking-wide">
               Financial Support
             </h2>
             <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-gray-600 dark:text-white">
@@ -863,10 +863,10 @@ const HomePage = () => {
       <div id="testimonials" className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-10 md:mb-14">
-            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+            <h2 className="text-sm sm:text-base font-semibold text-secondary-600 dark:text-secondary-400 uppercase tracking-wide">
               Union Member Stories
             </h2>
-            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-gray-600 dark:text-white">
+            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-white">
               What Our Members Say
             </h2>
             <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -930,12 +930,12 @@ const HomePage = () => {
       </div>
 
       {/* Call to Action Section */}
-      <div className="py-16 bg-primary-600">
+      <div className="py-16 bg-secondary-700">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
             Join the Matatu Workers Union Today
           </h2>
-          <p className="mt-4 text-lg sm:text-xl text-primary-100 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg sm:text-xl text-secondary-100 max-w-2xl mx-auto">
             Get access to affordable medical coverage, low-interest loans, and
             the security of being part of Kenya's largest matatu operators
             union.
@@ -943,7 +943,7 @@ const HomePage = () => {
           <div className="mt-8 flex justify-center">
             <Link
               to="/register"
-              className="text-base sm:text-lg px-8 py-3 bg-white text-primary-600 font-medium rounded-lg shadow-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1"
+              className="text-base sm:text-lg px-8 py-3 bg-white text-secondary-600 font-medium rounded-lg shadow-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1"
             >
               Register Now
             </Link>
@@ -961,10 +961,10 @@ const HomePage = () => {
       <div id="faq" className="py-24 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+            <h2 className="text-sm sm:text-base font-semibold text-secondary-600 dark:text-secondary-400 uppercase tracking-wide">
               Frequently Asked Questions
             </h2>
-            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-700 dark:text-white">
+            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-primary-600 dark:text-white">
               Common Questions About Our Union
             </h2>
           </div>

@@ -8,7 +8,7 @@ const Footer = () => {
 
   return (
     <footer
-      className="bg-gradient-to-br from-secondary-100/50 to-secondary-200/50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 relative"
+      className="bg-gradient-to-br from-secondary-100/50 to-secondary-200/50 dark:bg-white border-t border-gray-200 dark:border-gray-700 relative"
       style={{ zIndex: "10" }}
     >
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -20,18 +20,18 @@ const Footer = () => {
                 src="/mwulogo.png"
                 alt="CrewAfya"
               />
-              <span className="text-lg font-bold text-secondary-600 dark:text-secondary-400">
+              <span className="text-lg font-bold text-secondary-600">
                 Matatu Workers Union
               </span>
             </Link>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
               Streamlining Union membership management, medical coverage, and
               loan applications all in one place.
             </p>
             <div className="mt-4 flex space-x-4">
               <a
                 href="#"
-                className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-500 dark:hover:text-secondary-600"
               >
                 <span className="sr-only">Facebook</span>
                 <svg
@@ -49,7 +49,7 @@ const Footer = () => {
               </a>
               <a
                 href="#"
-                className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-500 dark:hover:text-secondary-600"
               >
                 <span className="sr-only">Twitter</span>
                 <svg
@@ -63,7 +63,7 @@ const Footer = () => {
               </a>
               <a
                 href="#"
-                className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-500 dark:hover:text-secondary-600"
               >
                 <span className="sr-only">LinkedIn</span>
                 <svg
@@ -85,7 +85,7 @@ const Footer = () => {
           {/* Services and Company sections - side by side on mobile */}
           <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-8 md:gap-8">
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-600 uppercase tracking-wider">
                 Services
               </h3>
               <ul className="mt-4 space-y-2">
@@ -124,7 +124,7 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-600 uppercase tracking-wider">
                 Company
               </h3>
               <ul className="mt-4 space-y-2">
@@ -165,7 +165,7 @@ const Footer = () => {
           </div>
 
           <div className="col-span-1">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wider">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-600 uppercase tracking-wider">
               Contact
             </h3>
             <ul className="mt-4 space-y-2">
