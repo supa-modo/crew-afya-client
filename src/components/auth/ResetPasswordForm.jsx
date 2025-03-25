@@ -119,7 +119,7 @@ const ResetPasswordForm = () => {
             className={`w-full px-4 py-2.5 text-sm rounded-lg border ${
               error && !formData.password
                 ? "border-red-300 dark:border-red-700 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 dark:border-gray-600 focus:ring-primary-500 focus:border-primary-500"
+                : "border-gray-300 dark:border-gray-600 focus:ring-secondary-600 focus:border-secondary-600"
             } bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 transition-colors pr-10`}
             placeholder="••••••••"
           />
@@ -158,7 +158,7 @@ const ResetPasswordForm = () => {
             className={`w-full px-4 py-2.5 text-sm rounded-lg border ${
               error && formData.password && !formData.confirmPassword
                 ? "border-red-300 dark:border-red-700 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 dark:border-gray-600 focus:ring-primary-500 focus:border-primary-500"
+                : "border-gray-300 dark:border-gray-600 focus:ring-secondary-600 focus:border-secondary-600"
             } bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 transition-colors pr-10`}
             placeholder="••••••••"
           />
@@ -179,7 +179,7 @@ const ResetPasswordForm = () => {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm  text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+        className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm  text-white bg-gradient-to-r from-secondary-600 to-secondary-700 dark:from-secondary-700 dark:to-secondary-800 hover:from-secondary-700 hover:to-secondary-800 dark:hover:from-secondary-600 dark:hover:to-secondary-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-secondary-600 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <div className="flex items-center">

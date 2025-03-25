@@ -295,7 +295,7 @@ const UserDetailsSidebar = ({
                                   <div className="font-medium">Last seen</div>
                                   <div className="font-medium text-secondary-700">
                                     {userLastLogin
-                                      ? formatDate(userLastLogin)
+                                      ? formatDate(userLastLogin, true)
                                       : "Never"}
                                   </div>
                                 </div>

@@ -256,11 +256,11 @@ const MakePayment = ({
 
         setPaymentStatus("waiting");
 
-        // Set timeout to change status to "timeout" after 30 seconds if no update
+        // Set timeout to change status to "timeout" after 60 seconds if no update
         setTimeout(() => {
           setPaymentStatus((currentStatus) => {
             if (currentStatus === "waiting") {
-              // If still waiting after 30 seconds, show timeout message
+              // If still waiting after 60 seconds, show timeout message
               if (statusCheckInterval) {
                 clearInterval(statusCheckInterval);
                 setStatusCheckInterval(null);
@@ -269,7 +269,7 @@ const MakePayment = ({
             }
             return currentStatus;
           });
-        }, 30000); // 30 seconds timeout instead of 120000 (2 minutes)
+        }, 60000); // 60 seconds timeout instead of 30 seconds
       } else {
         setPaymentStatus("error");
         setErrorMessage(
@@ -696,15 +696,20 @@ const MakePayment = ({
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               Payment Successful!
             </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center">
-              Your payment of KES {getCurrentAmount().toLocaleString()} for{" "}
-              {getPaymentTypeTitle()} has been processed successfully.
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center mb-2">
+              Your payment for {getPaymentTypeTitle()} has been processed
+              successfully.
             </p>
-            {mpesaReceiptNumber && (
-              <p className="mt-2 text-xs sm:text-sm font-medium text-green-600 dark:text-green-400 text-center">
-                M-Pesa Receipt: {mpesaReceiptNumber}
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 my-2 w-full max-w-xs">
+              <p className="text-sm font-medium text-green-800 dark:text-green-300">
+                Amount: {formatCurrency(getCurrentAmount())}
               </p>
-            )}
+              {mpesaReceiptNumber && (
+                <p className="text-sm font-medium text-green-800 dark:text-green-300">
+                  M-Pesa Receipt: {mpesaReceiptNumber}
+                </p>
+              )}
+            </div>
             <p className="mt-4 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400 text-center">
               A confirmation message will be sent to your phone shortly.
             </p>

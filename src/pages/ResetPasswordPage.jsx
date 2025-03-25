@@ -60,16 +60,16 @@ const ResetPasswordPage = () => {
           >
             <div className="w-full">
               <img
-                src="/logo.png"
+                src="/mwulogo.png"
                 alt="crewafya-logo"
                 className="w-16 h-16 md:w-20 md:h-20 mx-auto"
               />
             </div>
             <div className="text-center pt-4 mb-3 md:mb-4">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-nunito tracking-tight font-extrabold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-secondary-700 dark:text-secondary-600 mb-1 sm:mb-2 md:mb-3">
                 Reset Your Password
               </h1>
-              <p className="text-gray-400 text-sm lg:text-base">
+              <p className="text-gray-500/85 text-sm lg:text-base">
                 Set a new password for your CrewAfya account
               </p>
             </div>
@@ -79,7 +79,7 @@ const ResetPasswordPage = () => {
               initial={{ width: 0 }}
               animate={{ width: "8rem" }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="h-1 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full mx-auto"
+              className="h-1 bg-gradient-to-r from-secondary-600 to-secondary-700 rounded-full mx-auto"
             ></motion.div>
           </motion.div>
 
@@ -91,7 +91,7 @@ const ResetPasswordPage = () => {
             <div className="mt-6 text-center">
               <Link
                 to="/login"
-                className="text-[0.83rem] sm:text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
+                className="text-[0.83rem] sm:text-sm font-medium text-secondary-700 hover:text-secondary-600 dark:text-secondary-600 dark:hover:text-secondary-500 transition-colors duration-200"
               >
                 Back to login
               </Link>

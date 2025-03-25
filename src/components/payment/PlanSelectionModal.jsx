@@ -196,11 +196,11 @@ const PlanSelectionModal = ({
 
         setPaymentStatus("waiting");
 
-        // Set timeout to change status to "timeout" after 30 seconds if no update
+        // Set timeout to change status to "timeout" after 60 seconds if no update
         setTimeout(() => {
           setPaymentStatus((currentStatus) => {
             if (currentStatus === "waiting") {
-              // If still waiting after 30 seconds, show timeout message
+              // If still waiting after 60 seconds, show timeout message
               if (statusCheckInterval) {
                 clearInterval(statusCheckInterval);
                 setStatusCheckInterval(null);
@@ -209,7 +209,7 @@ const PlanSelectionModal = ({
             }
             return currentStatus;
           });
-        }, 30000); // 30 seconds timeout for testing
+        }, 60000); // 60 seconds timeout instead of 30 seconds
       } else {
         setPaymentStatus("error");
         setErrorMessage(
@@ -756,11 +756,19 @@ const PlanSelectionModal = ({
                       Your health insurance plan has been activated
                       successfully.
                     </p>
-                    {mpesaReceiptNumber && (
-                      <p className="mt-1 text-sm font-medium text-green-600 dark:text-green-400 text-center mb-4">
-                        M-Pesa Receipt: {mpesaReceiptNumber}
+                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 my-3">
+                      <p className="text-sm font-medium text-green-800 dark:text-green-300">
+                        Amount: KES{" "}
+                        {selectedPlan.premiums[
+                          selectedFrequency
+                        ].toLocaleString()}
                       </p>
-                    )}
+                      {mpesaReceiptNumber && (
+                        <p className="text-sm font-medium text-green-800 dark:text-green-300">
+                          M-Pesa Receipt: {mpesaReceiptNumber}
+                        </p>
+                      )}
+                    </div>
                     <button
                       type="button"
                       onClick={() => (window.location.href = "/payments")}

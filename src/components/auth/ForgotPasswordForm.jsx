@@ -86,10 +86,10 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
   if (isSuccess && !onSubmitSuccess) {
     return (
       <div className="text-center">
-        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/20 mb-4">
-          <FiCheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-secondary-100 dark:bg-secondary-900/20 mb-4">
+          <FiCheckCircle className="h-8 w-8 text-secondary-600 dark:text-secondary-400" />
         </div>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+        <h3 className="text-lg font-medium text-secondary-700 dark:text-white">
           {identifierType === "email" ? "Check your email" : "Check your phone"}
         </h3>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -100,7 +100,7 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
         <div className="mt-6">
           <Link
             to="/login"
-            className="inline-flex items-center justify-center w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
+            className="inline-flex items-center justify-center w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-secondary-600 transition-all duration-300"
           >
             Back to Login
           </Link>
@@ -134,7 +134,7 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
             <button
               type="button"
               onClick={toggleIdentifierType}
-              className="text-[0.82rem] text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
+              className="text-[0.82rem] text-secondary-700 hover:text-secondary-600 dark:text-secondary-600 dark:hover:text-secondary-500"
             >
               Use {identifierType === "email" ? "phone number" : "email"}{" "}
               instead
@@ -153,7 +153,7 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
               type={identifierType === "email" ? "email" : "tel"}
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              className="text-sm text-gray-600/90 sm:text-base  block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+              className="text-sm text-gray-600/90 sm:text-base  block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
               placeholder={
                 identifierType === "email" ? "you@example.com" : "+254700000000"
               }
@@ -170,7 +170,7 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
 
         <button
           type="submit"
-          className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+          className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-secondary-600 to-secondary-700 dark:from-secondary-700 dark:to-secondary-800 hover:from-secondary-700 hover:to-secondary-800 dark:hover:from-secondary-600 dark:hover:to-secondary-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-secondary-600 dark:focus:ring-offset-gray-800 transition-all duration-200"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
