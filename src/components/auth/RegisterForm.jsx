@@ -1,37 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  FiUser,
-  FiMail,
-  FiLock,
-  FiPhone,
-  FiEye,
-  FiEyeOff,
-  FiAlertCircle,
-  FiCheckCircle,
-  FiShield,
-  FiArrowRight,
-  FiArrowLeft,
-  FiLoader,
-} from "react-icons/fi";
-import {
   TbAlertTriangle,
-  TbLockFilled,
   TbPhoneDone,
-  TbShieldCheckFilled,
-  TbBuildingStore,
-  TbRoute,
 } from "react-icons/tb";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
-import {
-  PiIdentificationBadgeDuotone,
-  PiPhoneListDuotone,
-  PiUserDuotone,
-  PiMapPinDuotone,
-} from "react-icons/pi";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { FiSearch } from "react-icons/fi";
 
 // Import the new components
 import Step1PersonalInfo from "./register-steps/Step1PersonalInfo";
@@ -450,7 +424,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="md:mx-4 overflow-hidden transition-all duration-300">
+    <div className="md:mx-1 overflow-hidden transition-all duration-300">
       {formError && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -470,7 +444,7 @@ const RegisterForm = () => {
           exit={{ opacity: 0 }}
           className="text-center mb-4"
         >
-          <h1 className="text-lg sm:text-2xl font-bold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
+          <h1 className="text-lg sm:text-2xl font-bold text-secondary-600 dark:text-secondary-700 mb-1 sm:mb-2 md:mb-3">
             Create Your Account
           </h1>
 
@@ -479,7 +453,7 @@ const RegisterForm = () => {
             initial={{ width: 0 }}
             animate={{ width: "8rem" }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="h-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-full mx-auto"
+            className="h-1 bg-gradient-to-r from-secondary-700 to-secondary-500 rounded-full mx-auto"
           ></motion.div>
         </motion.div>
       )}
@@ -489,7 +463,7 @@ const RegisterForm = () => {
         animate={{ opacity: 1 }}
         className="text-center mb-4"
       >
-        <h2 className="text-base sm:text-lg font-semibold text-primary-600 dark:text-primary-400">
+        <h2 className="text-base sm:text-lg font-semibold text-secondary-700 dark:text-secondary-500">
           {step === 1 ? (
             "Welcome to Matatu Workers Union"
           ) : step === 2 ? (
@@ -497,8 +471,8 @@ const RegisterForm = () => {
           ) : (
             <div className="text-center mb-2">
               <div className="flex items-center gap-2 justify-center">
-                <TbPhoneDone className="h-6 w-6 text-green-600 " />
-                <h3 className="text-lg font-semibold text-green-600 ">
+                <TbPhoneDone className="h-6 w-6 text-secondary-600 " />
+                <h3 className="text-lg font-semibold text-secondary-600 ">
                   Phone Number Verified
                 </h3>
               </div>
@@ -508,7 +482,7 @@ const RegisterForm = () => {
             </div>
           )}
         </h2>
-        <p className="text-gray-400 text-sm lg:text-base">
+        <p className="text-gray-500/70 text-sm lg:text-base">
           {step === 1
             ? "Fill in your details below to register as a member"
             : ""}
@@ -516,17 +490,17 @@ const RegisterForm = () => {
         <div className="flex justify-center items-center mt-3 space-x-1">
           <div
             className={`h-2 w-12 rounded-full ${
-              step >= 1 ? "bg-primary-500" : "bg-gray-300"
+              step >= 1 ? "bg-secondary-600" : "bg-gray-300"
             }`}
           ></div>
           <div
             className={`h-2 w-12 rounded-full ${
-              step >= 2 ? "bg-primary-500" : "bg-gray-300"
+              step >= 2 ? "bg-secondary-600" : "bg-gray-300"
             }`}
           ></div>
           <div
             className={`h-2 w-12 rounded-full ${
-              step >= 3 ? "bg-primary-500" : "bg-gray-300"
+              step >= 3 ? "bg-secondary-600" : "bg-gray-300"
             }`}
           ></div>
         </div>
@@ -541,7 +515,7 @@ const RegisterForm = () => {
             handleNextStep();
           }
         }}
-        className="px-1 sm:px-3"
+        className="px-1"
       >
         {step === 1 && (
           <Step1PersonalInfo
@@ -599,7 +573,7 @@ const RegisterForm = () => {
           Already have an account?{" "}
           <Link
             to="/login"
-            className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
+            className="font-medium text-secondary-700 hover:text-secondary-600 dark:text-secondary-500 dark:hover:text-secondary-400 transition-colors duration-200"
           >
             Sign in
           </Link>

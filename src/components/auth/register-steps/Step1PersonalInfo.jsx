@@ -24,7 +24,7 @@ const Step1PersonalInfo = ({
             onClick={() => handleGenderSelect("Male")}
             className={`flex items-center justify-center py-1.5 sm:py-2 px-4 border ${
               formData.gender === "Male"
-                ? "border-primary-500 bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
+                ? "border-secondary-600 bg-secondary-100 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400"
                 : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800"
             } rounded-lg shadow-sm text-sm font-medium transition-colors duration-200 `}
             disabled={isSubmitting}
@@ -32,7 +32,7 @@ const Step1PersonalInfo = ({
             <TbGenderMale
               className={`mr-2 h-5 w-5 ${
                 formData.gender === "Male"
-                  ? "text-primary-500"
+                  ? "text-secondary-500"
                   : "text-gray-400"
               }`}
             />
@@ -43,7 +43,7 @@ const Step1PersonalInfo = ({
             onClick={() => handleGenderSelect("Female")}
             className={`flex items-center justify-center py-1.5 sm:py-2 px-4 border ${
               formData.gender === "Female"
-                ? "border-primary-500 bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
+                ? "border-secondary-600 bg-secondary-100 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400"
                 : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800"
             } rounded-lg shadow-sm text-sm font-medium transition-colors duration-200 `}
             disabled={isSubmitting}
@@ -51,7 +51,7 @@ const Step1PersonalInfo = ({
             <TbGenderFemale
               className={`mr-2 h-5 w-5 ${
                 formData.gender === "Female"
-                  ? "text-primary-500"
+                  ? "text-secondary-500"
                   : "text-gray-400"
               }`}
             />
@@ -77,7 +77,7 @@ const Step1PersonalInfo = ({
             type="text"
             value={formData.fullName}
             onChange={handleChange}
-            className="text-sm text-gray-600/90 font-medium sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+            className="text-sm text-gray-600/90 font-medium sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
             placeholder="John Doe"
             required
             disabled={isSubmitting}
@@ -85,7 +85,8 @@ const Step1PersonalInfo = ({
         </div>
       </div>
 
-      <div>
+      <div className="flex items-center flex-col sm:flex-row gap-2">
+      <div className="w-full">
         <label
           htmlFor="idNumber"
           className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
@@ -102,14 +103,14 @@ const Step1PersonalInfo = ({
             type="text"
             value={formData.idNumber}
             onChange={handleChange}
-            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
             placeholder="Enter your ID number"
             required
             disabled={isSubmitting}
           />
         </div>
       </div>
-      <div>
+      <div className="w-full">
         <label
           htmlFor="email"
           className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
@@ -126,12 +127,15 @@ const Step1PersonalInfo = ({
             type="email"
             value={formData.email}
             onChange={handleChange}
-            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
             placeholder="example@email.com"
             disabled={isSubmitting}
           />
         </div>
       </div>
+      </div>
+
+      
 
       <div>
         <label
@@ -150,7 +154,7 @@ const Step1PersonalInfo = ({
             type="tel"
             value={formData.phoneNumber}
             onChange={handleChange}
-            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
             placeholder="+254700000000"
             required
             disabled={isSubmitting}
@@ -163,7 +167,7 @@ const Step1PersonalInfo = ({
 
       <button
         type="submit"
-        className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:border-p focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+        className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-secondary-600 to-secondary-700 dark:from-secondary-700 dark:to-secondary-800 hover:from-secondary-700 hover:to-secondary-800 dark:hover:from-secondary-600 dark:hover:to-secondary-700 focus:outline-none focus:border-secondary-600 focus:ring-1 focus:ring-offset-1 focus:ring-secondary-600 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
         disabled={isSubmitting}
       >
         <span>Continue</span>

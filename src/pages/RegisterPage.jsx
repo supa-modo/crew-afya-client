@@ -21,7 +21,7 @@ const RegisterPage = () => {
         <div className="absolute -bottom-12 -left-12 sm:-bottom-24 sm:-left-24 w-64 h-64 sm:w-96 sm:h-96 bg-gradient-to-tr from-teal-100/30 to-blue-100/20 dark:from-teal-800/20 dark:to-blue-800/10 rounded-full blur-3xl opacity-70"></div>
 
         {/* Abstract medical-themed decorative elements  */}
-        <div className="absolute top-1/3 right-1/4 w-32 h-32 sm:w-64 sm:h-64 border-4 border-blue-200/30 dark:border-blue-700/20 rounded-full"></div>
+        <div className="absolute top-1/3 right-1/4 w-32 h-32 sm:w-64 sm:h-64 border-4 border-secondary-200/30 dark:border-blue-700/20 rounded-full"></div>
         <div className="absolute bottom-1/3 left-1/4 w-20 h-20 sm:w-32 sm:h-32 border-2 border-teal-300/40 dark:border-teal-600/30 rounded-full"></div>
 
         {/* Medical pattern background */}
@@ -36,7 +36,7 @@ const RegisterPage = () => {
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
-            className="text-blue-500 dark:text-blue-400"
+            className="text-secondary-500 dark:text-secondary-400"
           />
         </svg>
       </div>
@@ -45,20 +45,20 @@ const RegisterPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-full max-w-2xl z-20 mt-8 md:mt-16"
+        className="w-full max-w-xl z-20 mt-8 md:mt-16"
       >
         <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm  rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, delay: 0.2 }}
-            className="px-8 pt-8 sm:pt-10 pb-4 text-center relative"
+            className="px-8 pt-8 sm:pt-10 pb-2 text-center relative"
           >
             <div className="w-full">
               <img
-                src="/logo.png"
+                src="/mwulogo.png"
                 alt="matatu-union-logo"
-                className="w-16 h-16 md:w-20 md:h-20 mx-auto"
+                className="w-20 h-20 md:w-28 md:h-28 mx-auto"
               />
             </div>
           </motion.div>

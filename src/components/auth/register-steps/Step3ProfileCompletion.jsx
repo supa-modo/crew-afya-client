@@ -5,9 +5,12 @@ import {
   TbPhoneDone,
   TbBuildingStore,
   TbRoute,
+  TbArrowRight,
+  TbSearch,
 } from "react-icons/tb";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { PiMapPinDuotone } from "react-icons/pi";
+import { PiMapPinAreaDuotone, PiMapPinDuotone } from "react-icons/pi";
+import { RiUserCommunityLine } from "react-icons/ri";
 
 const Step3ProfileCompletion = ({
   formData,
@@ -35,7 +38,6 @@ const Step3ProfileCompletion = ({
 }) => {
   return (
     <div className="space-y-3">
-
       {/* County Selection */}
       <div>
         <label
@@ -46,16 +48,16 @@ const Step3ProfileCompletion = ({
         </label>
         <div className="relative" ref={countyDropdownRef}>
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <PiMapPinDuotone className="h-5 w-5 text-gray-400" />
+            <PiMapPinAreaDuotone className="h-5 w-5 text-gray-400 dark:text-gray-400" />
           </div>
           <div
-            className="relative text-sm text-gray-600/90 sm:text-base w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus-within:ring-1 focus-within:outline-none focus-within:border-primary-500 focus-within:ring-primary-500 dark:bg-gray-700 dark:text-white dark:focus-within:ring-primary-500 dark:focus-within:border-primary-500 transition-colors duration-200 cursor-pointer"
+            className="relative text-sm text-secondary-700/90 font-medium sm:text-base w-full pl-12 pr-10 py-2.5 border border-gray-400/60 dark:border-gray-600 rounded-lg shadow-sm focus-within:ring-1 focus-within:outline-none focus-within:border-secondary-600 focus-within:ring-secondary-600 dark:bg-gray-700 dark:text-white dark:focus-within:ring-secondary-600 dark:focus-within:border-secondary-600 transition-colors duration-200 cursor-pointer"
             onClick={() => setCountyDropdownOpen(!countyDropdownOpen)}
           >
             {formData.county || "Select county"}
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <FiArrowRight
-                className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${
+              <TbArrowRight
+                className={`h-5 w-5 text-secondary-600 transition-transform duration-200 ${
                   countyDropdownOpen ? "rotate-90" : ""
                 }`}
               />
@@ -67,7 +69,7 @@ const Step3ProfileCompletion = ({
               <div className="sticky top-0 p-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiSearch className="h-4 w-4 text-gray-400" />
+                    <TbSearch className="h-4 w-4 text-gray-400" />
                   </div>
                   <input
                     type="text"
@@ -84,7 +86,7 @@ const Step3ProfileCompletion = ({
                   <li key={county}>
                     <button
                       type="button"
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
                       onClick={() => handleCountySelect(county)}
                     >
                       {county}
@@ -112,7 +114,7 @@ const Step3ProfileCompletion = ({
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <TbBuildingStore className="h-5 w-5 text-gray-400" />
+            <RiUserCommunityLine size={22} className="  text-gray-400" />
           </div>
           <input
             id="sacco"
@@ -139,16 +141,16 @@ const Step3ProfileCompletion = ({
           </label>
           <div className="relative" ref={routeDropdownRef}>
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <TbRoute className="h-5 w-5 text-gray-400" />
+              <TbRoute className="h-5 w-5 text-gray-400 dark:text-gray-400" />
             </div>
             <div
-              className="relative text-sm text-gray-600/90 sm:text-base w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus-within:ring-1 focus-within:outline-none focus-within:border-primary-500 focus-within:ring-primary-500 dark:bg-gray-700 dark:text-white dark:focus-within:ring-primary-500 dark:focus-within:border-primary-500 transition-colors duration-200 cursor-pointer"
+              className="relative text-sm text-gray-400 sm:text-base w-full pl-12 pr-10 py-2.5 border border-gray-400/60 dark:border-gray-600 rounded-lg shadow-sm focus-within:ring-1 focus-within:outline-none focus-within:border-secondary-600 focus-within:ring-secondary-600 dark:bg-gray-700 dark:text-white dark:focus-within:ring-secondary-600 dark:focus-within:border-secondary-600 transition-colors duration-200 cursor-pointer"
               onClick={() => setRouteDropdownOpen(!routeDropdownOpen)}
             >
-              {formData.route || "Select route"}
+              {formData.route || "Select your route"}
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <FiArrowRight
-                  className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${
+                <TbArrowRight
+                  className={`h-5 w-5 text-secondary-600 transition-transform duration-200 ${
                     routeDropdownOpen ? "rotate-90" : ""
                   }`}
                 />
@@ -160,7 +162,7 @@ const Step3ProfileCompletion = ({
                 <div className="sticky top-0 p-2 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiSearch className="h-4 w-4 text-gray-400" />
+                      <TbSearch className="h-4 w-4 text-gray-400" />
                     </div>
                     <input
                       type="text"
@@ -177,7 +179,7 @@ const Step3ProfileCompletion = ({
                     <li key={route}>
                       <button
                         type="button"
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
                         onClick={() => handleRouteSelect(route)}
                       >
                         {route}
@@ -217,7 +219,7 @@ const Step3ProfileCompletion = ({
             type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={handleChange}
-            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
             placeholder="••••••••"
             required
             disabled={isSubmitting}
@@ -258,7 +260,7 @@ const Step3ProfileCompletion = ({
             type={showConfirmPassword ? "text" : "password"}
             value={formData.confirmPassword}
             onChange={handleChange}
-            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
             placeholder="••••••••"
             required
             disabled={isSubmitting}
@@ -282,7 +284,7 @@ const Step3ProfileCompletion = ({
         <button
           type="button"
           onClick={handlePrevStep}
-          className="flex-1 flex justify-center items-center py-2.5 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+          className="flex-1 flex justify-center items-center py-2.5 px-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-secondary-600 dark:focus:ring-offset-gray-800 transition-all duration-200"
           disabled={isSubmitting}
         >
           <FiArrowLeft className="mr-2 h-4 w-4" />
@@ -291,7 +293,7 @@ const Step3ProfileCompletion = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex-1 flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+          className="flex-1 flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-secondary-600 to-secondary-700 dark:from-secondary-700 dark:to-secondary-800 hover:from-secondary-700 hover:to-secondary-800 dark:hover:from-secondary-600 dark:hover:to-secondary-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-secondary-600 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <div className="flex items-center">

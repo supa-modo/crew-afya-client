@@ -55,7 +55,7 @@ const ForgotPasswordPage = () => {
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
-            className="text-blue-500 dark:text-blue-400"
+            className="text-secondary-600 dark:text-secondary-400"
           />
         </svg>
       </div>
@@ -75,16 +75,16 @@ const ForgotPasswordPage = () => {
           >
             <div className="w-full ">
               <img
-                src="/logo.png"
+                src="/mwulogo.png"
                 alt="crewafya-logo"
-                className="w-16 h-16 md:w-20 md:h-20 mx-auto"
+                className="w-20 h-20 md:w-28 md:h-28 mx-auto"
               />
             </div>
             <div className="text-center pt-4 mb-3 md:mb-4">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-nunito tracking-tight font-extrabold text-primary-500 dark:text-primary-400 mb-1 sm:mb-2 md:mb-3">
+              <h1 className="text-xl sm:text-2xl font-bold text-secondary-700 dark:text-secondary-600 mb-1 sm:mb-2 md:mb-3">
                 Reset Your Password
               </h1>
-              <p className="text-gray-400 text-sm lg:text-base">
+              <p className="text-gray-500 text-sm lg:text-base">
                 {resetSent
                   ? `We've sent the password reset instructions to your ${resetMethod}`
                   : "Enter your phone number or email address to reset your password"}
@@ -96,7 +96,7 @@ const ForgotPasswordPage = () => {
               initial={{ width: 0 }}
               animate={{ width: "8rem" }}
               transition={{ duration: 0.8, delay: 0.8 }}
-              className="h-1 bg-gradient-to-r from-primary-600 to-primary-400 rounded-full mx-auto"
+              className="h-1 bg-gradient-to-r from-secondary-700 to-secondary-500 rounded-full mx-auto"
             ></motion.div>
           </motion.div>
 
@@ -107,25 +107,25 @@ const ForgotPasswordPage = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="text-center px-4 py-6 bg-primary-100/60 dark:bg-blue-900/20 rounded-xl mb-6"
+                  className="text-center px-4 py-6 bg-gray-100/90 dark:bg-secondary-900/30 rounded-xl mb-6"
                 >
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="mx-auto flex items-center justify-center h-14 w-20 rounded-xl bg-blue-100 dark:bg-blue-800/30 mb-3"
+                    className="mx-auto flex items-center justify-center h-14 w-20 rounded-xl bg-gray-300/80 dark:bg-gray-800/60 mb-3"
                   >
                     {resetMethod === "email" ? (
-                      <TbMailFilled className="h-8 w-8 text-primary-600 dark:text-blue-400" />
+                      <TbMailFilled className="h-8 w-8 text-secondary-700 dark:text-secondary-600" />
                     ) : (
-                      <TbPhone className="h-10 w-10 text-blue-600 dark:text-blue-400" />
+                      <TbPhone className="h-10 w-10 text-secondary-700 dark:text-secondary-600" />
                     )}
                   </motion.div>
                   <motion.h3
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
-                    className="text-lg font-bold font-geist text-gray-600 dark:text-white"
+                    className="text-lg font-bold text-secondary-700 dark:text-white"
                   >
                     {resetMethod === "email"
                       ? "Check your email"
@@ -138,7 +138,9 @@ const ForgotPasswordPage = () => {
                     className="mt-2 text-sm text-gray-600 dark:text-gray-300"
                   >
                     Your password reset instructions have been sent to{" "}
-                    <span className="font-medium">{resetIdentifier}</span>
+                    <span className="font-medium text-primary-600 dark:text-primary-500">
+                      {resetIdentifier}
+                    </span>
                   </motion.p>
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
@@ -154,7 +156,7 @@ const ForgotPasswordPage = () => {
                 {resetSent ? (
                   <Link
                     to="/login"
-                    className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-500 dark:hover:to-primary-600 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                    className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-secondary-600 to-secondary-700 dark:from-secondary-700 dark:to-secondary-800 hover:from-secondary-700 hover:to-secondary-800 dark:hover:from-secondary-600 dark:hover:to-secondary-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-secondary-600 dark:focus:ring-offset-gray-800 transition-all duration-200"
                   >
                     Return to Login
                   </Link>
@@ -173,7 +175,7 @@ const ForgotPasswordPage = () => {
                 <div className="mt-6 text-center">
                   <Link
                     to="/login"
-                    className="text-[0.83rem] sm:text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200 inline-flex items-center"
+                    className="text-[0.83rem] sm:text-sm font-medium text-secondary-700 hover:text-secondary-600 dark:text-secondary-600 dark:hover:text-secondary-500 transition-colors duration-200 inline-flex items-center"
                   >
                     <FiArrowLeft className="mr-2 h-4 w-4" />
                     Back to login
