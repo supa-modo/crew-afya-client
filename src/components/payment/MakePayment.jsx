@@ -21,7 +21,7 @@ const MakePayment = ({
   activeTab,
   setActiveTab,
   onPaymentComplete,
-  fixedPaymentType = false, // New prop to indicate if payment type should be fixed
+  fixedPaymentType = false, // prop to indicate if payment type should be fixed
 }) => {
   let [phoneNumber, setPhoneNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -161,6 +161,7 @@ const MakePayment = ({
     const interval = setInterval(async () => {
       try {
         const response = await checkPaymentStatus(paymentId);
+        console.log("Payment status check response:", response); // Debug log
 
         if (response && response.success) {
           const status = response.data.status;
@@ -203,7 +204,10 @@ const MakePayment = ({
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // Always prevent the default form submission to avoid page reload
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
 
     if (!phoneNumber) {
       setErrorMessage("Please enter your M-Pesa phone number");
@@ -222,7 +226,7 @@ const MakePayment = ({
         amount = selectedPlan?.premiums?.[frequency];
         description = `Payment for ${selectedPlan.name} (${frequency}) medical cover`;
       } else if (paymentType === "membership") {
-        amount = 500; // Fixed one-time fee
+        amount = unionDuesAmount; // Fixed one-time fee
         description = `Payment for union membership`;
       } else if (paymentType === "loan") {
         // Future implementation for loan repayments
@@ -236,15 +240,19 @@ const MakePayment = ({
         );
       }
 
+      console.log(`Initiating payment for ${paymentType}: ${amount} KES`); // Debug log
+
       // Use the enhanced payment service to initiate M-Pesa payment
       const response = await initiateM_PesaPayment({
         //TODO: uncomment in production to use the actual amount
         // amount: Number(amount),
-        amount: 1,
+        amount: 1, // Using 1 KES for testing
         phoneNumber,
         description: description,
         paymentType: paymentType, // Add payment type to track in backend
       });
+
+      console.log("Payment response:", response); // Debugging
 
       if (response && response.success) {
         // Store checkout request ID and payment ID for status checking
@@ -275,7 +283,7 @@ const MakePayment = ({
             }
             return currentStatus;
           });
-        }, 60000); // 60 seconds timeout instead of 30 seconds
+        }, 60000); // 60 seconds timeout
       } else {
         setPaymentStatus("error");
         setErrorMessage(
@@ -315,7 +323,7 @@ const MakePayment = ({
     if (paymentType === "medical") {
       return selectedPlan?.premiums?.[frequency] || 0;
     } else if (paymentType === "membership") {
-      return 500; // Fixed one-time fee
+      return unionDuesAmount; // Fixed one-time fee
     } else {
       return 0; // For future loan implementation
     }
@@ -360,12 +368,11 @@ const MakePayment = ({
 
       <AnimatePresence mode="wait">
         {paymentStatus === "idle" && (
-          <motion.form
+          <motion.div
             key="payment-form"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onSubmit={handleSubmit}
             className="space-y-4"
           >
             {/* Payment Type Selector */}
@@ -390,7 +397,7 @@ const MakePayment = ({
               handleSubmit={handleSubmit}
               disabled={paymentType === "loan"}
             />
-          </motion.form>
+          </motion.div>
         )}
 
         {/* Payment Status */}

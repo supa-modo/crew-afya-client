@@ -25,15 +25,9 @@ import {
   TbCurrency,
   TbReportMoney,
   TbAlertCircle,
-  TbBell,
 } from "react-icons/tb";
 import {
   PiChatCircleTextBold,
-  PiClockCountdownDuotone,
-  PiFilePdfDuotone,
-  PiFilesDuotone,
-  PiImageDuotone,
-  PiMoneyWavy,
   PiUserCircle,
   PiUserDuotone,
   PiHandshake,
@@ -50,7 +44,6 @@ import PaymentSchedule from "../components/dashboard/PaymentSchedule";
 import LoanStatus from "../components/dashboard/LoanStatus";
 import PaymentHistory from "../components/payment/PaymentHistory";
 import DocumentsSection from "../components/dashboard/DocumentsSection";
-import UnionDuesSummary from "../components/dashboard/UnionDuesSummary";
 import UnionMembershipModal from "../components/UnionMembershipModal";
 
 const DashboardPage = () => {
@@ -68,7 +61,6 @@ const DashboardPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState(null);
   const [notifications, setNotifications] = useState([]);
-  const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [activeLoans, setActiveLoans] = useState([]);
 
   // New states

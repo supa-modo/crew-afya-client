@@ -13,13 +13,19 @@ const PaymentForm = ({
   handleSubmit,
   disabled = false,
 }) => {
+  // Handle form submission
+  const onSubmit = (e) => {
+    e.preventDefault();
+    handleSubmit(e);
+  };
+
   return (
     <motion.form
       key="payment-form"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
       className="space-y-4"
     >
       {/* Amount Field */}

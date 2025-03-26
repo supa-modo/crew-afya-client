@@ -119,6 +119,7 @@ export const initiateMpesaPayment = async (paymentData) => {
  * @param {number} paymentData.amount - Amount to be paid
  * @param {string} paymentData.phoneNumber - Phone number in format 254XXXXXXXXX
  * @param {string} paymentData.description - Payment description
+ * @param {string} paymentData.paymentType - Type of payment (e.g., "medical", "membership")
  * @returns {Promise<Object>} - Response data
  */
 export const initiateM_PesaPayment = async (paymentData) => {
@@ -168,6 +169,7 @@ export const initiateM_PesaPayment = async (paymentData) => {
       amount: Math.max(1, Math.round(amount)), // Ensure amount is at least 1 KES and rounded
       phoneNumber: formattedPhone,
       description: paymentData.description || "M-Pesa Payment",
+      paymentType: paymentData.paymentType || "other", // Include payment type
     };
 
     console.log("Sending M-Pesa payment request:", payload);
@@ -248,7 +250,6 @@ export const getPaymentHistory = async (params = {}) => {
     throw new Error("Failed to fetch payment history");
   }
 };
-
 
 // Get payment methods
 export const getPaymentMethods = async () => {
