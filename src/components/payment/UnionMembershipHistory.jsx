@@ -1,37 +1,60 @@
 // src/components/payment/UnionMembershipHistory.jsx
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
+import { FiLoader } from "react-icons/fi";
+import { apiGet } from "../../services/api";
 
 const UnionMembershipHistory = () => {
-  const [membershipPayment, setMembershipPayment] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [membershipPayments, setMembershipPayments] = useState([]);
 
   useEffect(() => {
-    // Check if user has paid membership
-    const hasPaid = localStorage.getItem("unionMembershipPaid") === "true";
+    const fetchMembershipPayments = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-    if (hasPaid) {
-      // In a real app, you'd fetch this from the backend
-      // For now, we'll create a mock payment record
-      const mockPayment = {
-        id: "mem-" + Math.random().toString(36).substr(2, 9),
-        amount: 1000,
-        date:
-          localStorage.getItem("membershipPaymentDate") ||
-          new Date().toISOString(),
-        status: "Completed",
-        receiptNumber: "MUPM-" + Math.floor(Math.random() * 1000000),
-      };
+        const response = await apiGet("/api/v1/union-membership/payments");
 
-      setMembershipPayment(mockPayment);
-
-      // Store the date if not already stored
-      if (!localStorage.getItem("membershipPaymentDate")) {
-        localStorage.setItem("membershipPaymentDate", mockPayment.date);
+        if (response.data.success) {
+          setMembershipPayments(response.data.data);
+        } else {
+          throw new Error(
+            response.data.message || "Failed to fetch payment history"
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching membership payments:", error);
+        setError(error.message || "Failed to fetch payment history");
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    fetchMembershipPayments();
   }, []);
 
-  if (!membershipPayment) {
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-8">
+        <FiLoader className="w-8 h-8 text-primary-500 animate-spin" />
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          Loading payment history...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-500 dark:text-red-400">{error}</p>
+      </div>
+    );
+  }
+
+  if (!membershipPayments || membershipPayments.length === 0) {
     return (
       <div>
         <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-4">
@@ -70,22 +93,33 @@ const UnionMembershipHistory = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-            <tr>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                {format(new Date(membershipPayment.date), "MMM dd, yyyy")}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                {membershipPayment.receiptNumber}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                KES {membershipPayment.amount.toLocaleString()}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-                  {membershipPayment.status}
-                </span>
-              </td>
-            </tr>
+            {membershipPayments.map((payment) => (
+              <tr key={payment.id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  {format(new Date(payment.paymentDate), "MMM dd, yyyy")}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  {payment.mpesaReceiptNumber || "-"}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  KES {Number(payment.amount).toLocaleString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      payment.status === "completed"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                        : payment.status === "pending"
+                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
+                        : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                    }`}
+                  >
+                    {payment.status.charAt(0).toUpperCase() +
+                      payment.status.slice(1)}
+                  </span>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
