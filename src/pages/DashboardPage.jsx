@@ -51,6 +51,7 @@ import LoanStatus from "../components/dashboard/LoanStatus";
 import PaymentHistory from "../components/payment/PaymentHistory";
 import DocumentsSection from "../components/dashboard/DocumentsSection";
 import UnionDuesSummary from "../components/dashboard/UnionDuesSummary";
+import UnionMembershipModal from "../components/UnionMembershipModal";
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -70,6 +71,10 @@ const DashboardPage = () => {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [activeLoans, setActiveLoans] = useState([]);
 
+  // New states
+  const [showMembershipModal, setShowMembershipModal] = useState(false);
+  const [hasPaidMembership, setHasPaidMembership] = useState(false);
+
   // Load user subscription data
   useEffect(() => {
     const subscription = localStorage.getItem("userSubscription");
@@ -80,7 +85,24 @@ const DashboardPage = () => {
     // Fetch documents on component mount
     fetchDocuments();
     fetchMockData();
-  }, []);
+
+    // Check if user has paid membership on component mount
+    const membershipStatus = localStorage.getItem("unionMembershipPaid");
+
+    if (membershipStatus === "true") {
+      setHasPaidMembership(true);
+      return;
+    }
+
+    // If not in local storage, check if this is a first-time login and hasn't paid
+    const isFirstTimeLogin = user && !membershipStatus;
+
+    if (isFirstTimeLogin) {
+      // You could also make an API call here to verify payment status from the server
+      // For now, we'll use the absence of the localStorage flag to determine status
+      setShowMembershipModal(true);
+    }
+  }, [user]);
 
   const fetchMockData = () => {
     // Mock notifications
@@ -216,6 +238,15 @@ const DashboardPage = () => {
     if (document) {
       handleDeleteClick(document);
     }
+  };
+
+  // Handler for membership payment
+  const handleMembershipPayment = (success) => {
+    if (success) {
+      setHasPaidMembership(true);
+      localStorage.setItem("unionMembershipPaid", "true");
+    }
+    setShowMembershipModal(false);
   };
 
   return (
@@ -1649,6 +1680,15 @@ const DashboardPage = () => {
         confirmText="Delete"
         isLoading={isSubmitting}
       />
+
+      {/* Union Membership Modal */}
+      {showMembershipModal && (
+        <UnionMembershipModal
+          isOpen={showMembershipModal}
+          onClose={() => setShowMembershipModal(false)}
+          onPaymentComplete={handleMembershipPayment}
+        />
+      )}
     </div>
   );
 };

@@ -6,15 +6,15 @@ import {
   FiLoader,
   FiPhone,
 } from "react-icons/fi";
-import { TbShieldCheckFilled, TbShieldHalfFilled } from "react-icons/tb";
-import { MdOutlineHealthAndSafety, MdSpaceDashboard } from "react-icons/md";
+import { TbCoins, TbShieldCheckFilled } from "react-icons/tb";
+import { MdOutlineHealthAndSafety } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
 import { PiWarningDuotone } from "react-icons/pi";
 import {
   initiateM_PesaPayment,
   checkPaymentStatus,
 } from "../../services/paymentService";
-
+import { useNavigate } from "react-router-dom";
 const PlanSelectionModal = ({
   isOpen,
   onClose,
@@ -35,6 +35,8 @@ const PlanSelectionModal = ({
   const [paymentId, setPaymentId] = useState(null);
   const [statusCheckInterval, setStatusCheckInterval] = useState(null);
   const [mpesaReceiptNumber, setMpesaReceiptNumber] = useState(null);
+
+  const navigate = useNavigate();
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
@@ -291,7 +293,7 @@ const PlanSelectionModal = ({
 
           {/* Step title */}
           <div className="flex justify-between items-center mb-6 sm:mb-8">
-            <h3 className="text-xl font-semibold text-primary-600 dark:text-primary-500">
+            <h3 className="text-xl font-semibold text-secondary-700 dark:text-secondary-600">
               {step === 1 && "Select Your Health Cover Plan"}
               {step === 2 && "Payment Details"}
               {step === 3 && (
@@ -315,7 +317,7 @@ const PlanSelectionModal = ({
                   <div
                     className={`flex items-center justify-center w-8 h-8 rounded-full ${
                       step >= i
-                        ? "bg-primary-500 text-white"
+                        ? "bg-secondary-600 text-white"
                         : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
                     }`}
                   >
@@ -325,7 +327,7 @@ const PlanSelectionModal = ({
                     <div
                       className={`flex-1 h-1 mx-2 ${
                         step > i
-                          ? "bg-primary-500"
+                          ? "bg-secondary-600"
                           : "bg-gray-200 dark:bg-gray-700"
                       }`}
                     ></div>
@@ -365,7 +367,7 @@ const PlanSelectionModal = ({
                       className={`p-2 rounded-full ${
                         activeTab === 0
                           ? "text-gray-400 cursor-not-allowed"
-                          : "text-primary-600 hover:bg-primary-50"
+                          : "text-secondary-700 hover:bg-secondary-100"
                       }`}
                     >
                       <FiArrowLeft className="h-5 w-5" />
@@ -379,7 +381,7 @@ const PlanSelectionModal = ({
                       className={`p-2 rounded-full ${
                         activeTab === insurancePlans.length - 1
                           ? "text-gray-400 cursor-not-allowed"
-                          : "text-primary-600 hover:bg-primary-50"
+                          : "text-secondary-700 hover:bg-secondary-100"
                       }`}
                     >
                       <FiArrowRight className="h-5 w-5" />
@@ -411,7 +413,7 @@ const PlanSelectionModal = ({
                                 <TbShieldCheckFilled className="h-7 w-7 text-primary-500" />
                               </div>
                             )}
-                            <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
+                            <h3 className="text-xl font-bold text-secondary-700 dark:text-white mb-2">
                               {plan.name}
                             </h3>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4">
@@ -531,9 +533,9 @@ const PlanSelectionModal = ({
                     type="button"
                     onClick={handleNextStep}
                     disabled={!selectedPlan}
-                    className={`inline-flex items-center px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm md:text-base font-medium text-white ${
+                    className={`inline-flex items-center px-7 py-2 border border-transparent rounded-lg shadow-sm text-sm md:text-base font-medium text-white ${
                       selectedPlan
-                        ? "bg-primary-600 hover:bg-primary-700"
+                        ? "bg-secondary-700 hover:bg-secondary-800"
                         : "bg-gray-300 cursor-not-allowed"
                     } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500`}
                   >
@@ -553,7 +555,7 @@ const PlanSelectionModal = ({
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="bg-primary-50 dark:bg-primary-900/10 px-4 py-4 rounded-lg border border-primary-200 dark:border-primary-800 mb-6">
+                <div className="bg-primary-50 dark:bg-primary-900/10 px-4 py-4 rounded-xl border border-primary-300 dark:border-primary-800 mb-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <MdOutlineHealthAndSafety className="h-6 w-6 text-primary-600 mr-3" />
@@ -589,7 +591,7 @@ const PlanSelectionModal = ({
                         selectedFrequency
                       ].toLocaleString()}
                       disabled
-                      className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                     />
                   </div>
 
@@ -610,7 +612,7 @@ const PlanSelectionModal = ({
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         placeholder="+254700000000"
-                        className="block w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                        className="block w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-secondary-600 focus:border-secondary-600 dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -623,7 +625,7 @@ const PlanSelectionModal = ({
                   <button
                     type="button"
                     onClick={handlePrevStep}
-                    className="inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    className="inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-secondary-500"
                   >
                     <FiArrowLeft className="mr-2 -ml-1 h-5 w-5" />
                     Back
@@ -634,7 +636,7 @@ const PlanSelectionModal = ({
                     disabled={!phoneNumber || isSubmitting}
                     className={`inline-flex items-center px-6 py-2 sm:py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                       phoneNumber && !isSubmitting
-                        ? "bg-primary-600 hover:bg-primary-700"
+                        ? "bg-secondary-600 hover:bg-secondary-700"
                         : "bg-gray-300 cursor-not-allowed"
                     } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500`}
                   >
@@ -669,10 +671,10 @@ const PlanSelectionModal = ({
                     <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
                       <FiLoader className="h-8 w-8 text-primary-600 dark:text-primary-400 animate-spin" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
                       Processing Payment Request
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4">
                       Please wait while we process your payment of KES{" "}
                       {selectedPlan.premiums[
                         selectedFrequency
@@ -687,14 +689,14 @@ const PlanSelectionModal = ({
                     <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30">
                       <FiLoader className="h-8 w-8 text-yellow-600 dark:text-yellow-400 animate-spin" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
                       Payment In Progress
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-2">
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-2">
                       An M-Pesa prompt has been sent to your phone (
                       {phoneNumber}).
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4">
                       Please enter your M-Pesa PIN when prompted to complete the
                       payment of KES{" "}
                       {selectedPlan.premiums[
@@ -702,7 +704,7 @@ const PlanSelectionModal = ({
                       ].toLocaleString()}
                       .
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
                       Waiting for confirmation... This may take a few moments.
                     </p>
                   </div>
@@ -713,15 +715,15 @@ const PlanSelectionModal = ({
                     <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
                       <PiWarningDuotone className="h-8 w-8 text-orange-600 dark:text-orange-400" />
                     </div>
-                    <h3 className="text-lg font-medium text-orange-600 dark:text-orange-400 mb-2">
+                    <h3 className="text-base sm:text-lg font-medium text-orange-600 dark:text-orange-400 mb-2">
                       Payment Status Unknown
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-2">
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center mb-2">
                       We didn't receive confirmation for your payment request.
                       If you completed the payment on your phone, it may still
                       be processing.
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
+                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
                       You can check your payment history later to confirm if it
                       was successful.
                     </p>
@@ -729,7 +731,7 @@ const PlanSelectionModal = ({
                       <button
                         type="button"
                         onClick={handleTryAgain}
-                        className="inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        className="inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-600"
                       >
                         Try Again
                       </button>
@@ -752,29 +754,29 @@ const PlanSelectionModal = ({
                     <p className="text-gray-600 dark:text-gray-400 text-lg sm:text-xl font-semibold mb-2">
                       Payment Successful!
                     </p>
-                    <p className="text-gray-600 dark:text-gray-400 mb-1">
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">
                       Your health insurance plan has been activated
                       successfully.
                     </p>
                     <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 my-3">
-                      <p className="text-sm font-medium text-green-800 dark:text-green-300">
+                      <p className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-300">
                         Amount: KES{" "}
                         {selectedPlan.premiums[
                           selectedFrequency
                         ].toLocaleString()}
                       </p>
                       {mpesaReceiptNumber && (
-                        <p className="text-sm font-medium text-green-800 dark:text-green-300">
+                        <p className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-300">
                           M-Pesa Receipt: {mpesaReceiptNumber}
                         </p>
                       )}
                     </div>
                     <button
                       type="button"
-                      onClick={() => (window.location.href = "/payments")}
-                      className="inline-flex items-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-sm sm:text-base font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                      onClick={() => (navigate("/payments"))}
+                      className="inline-flex items-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-sm sm:text-base font-medium text-white bg-secondary-600 hover:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-600"
                     >
-                      <MdSpaceDashboard className="mr-2 h-5 w-5" />
+                      <TbCoins className="mr-2 h-5 w-5" />
                       View Payment History
                     </button>
                   </div>

@@ -21,6 +21,8 @@ import { BiSolidShieldX } from "react-icons/bi";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
 import { PiUserDuotone } from "react-icons/pi";
 import { useAuth } from "../context/AuthContext";
+import UnionMembershipHistory from "../components/payment/UnionMembershipHistory";
+import { RiUserCommunityLine } from "react-icons/ri";
 
 const PaymentsPage = () => {
   const { user } = useAuth();
@@ -48,6 +50,7 @@ const PaymentsPage = () => {
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
   const [isChangingPlan, setIsChangingPlan] = useState(false);
   const [activeTab, setActiveTab] = useState("medical"); // "medical" or "union"
+  const [hasPaidMembership, setHasPaidMembership] = useState(false);
 
   const insurancePlans = [
     {
@@ -122,17 +125,6 @@ const PaymentsPage = () => {
     }
   }, [selectedPlan, selectedFrequency]);
 
-  // Mock union dues data
-  const unionDuesData = {
-    status: "Active",
-    paidUntil: "2025-04-30",
-    nextPaymentDate: "2025-04-15",
-    nextPaymentAmount: 500,
-    lastPayment: {
-      date: "2025-03-15",
-      amount: 500,
-    },
-  };
 
   const tileClassName = ({ date }) => {
     const dateStr = date.toISOString().split("T")[0];
@@ -197,6 +189,21 @@ const PaymentsPage = () => {
     }).format(amount);
   };
 
+  // TODO: Remove this once the union membership payment history is implemented
+  // Check membership status
+  useEffect(() => {
+    const membershipStatus = localStorage.getItem("unionMembershipPaid");
+    setHasPaidMembership(membershipStatus === "true");
+  }, []);
+
+  // Handler for membership payment
+  const handleMembershipPayment = (success) => {
+    if (success) {
+      setHasPaidMembership(true);
+      localStorage.setItem("unionMembershipPaid", "true");
+    }
+  };
+
   return (
     <div className="py-6 mt-14 sm:mt-16 min-h-screen">
       {/* Overlay div for better text visibility */}
@@ -243,7 +250,7 @@ const PaymentsPage = () => {
               Payments & Subscriptions
             </h1>
             <p className="mt-1 text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400">
-              Make payments for medical cover and union dues. Keep track of your
+              Make payments for medical cover and union membership. Keep track of your
               payment history.
             </p>
           </div>
@@ -287,7 +294,7 @@ const PaymentsPage = () => {
             >
               <div className="flex items-center justify-center">
                 <PiUserDuotone className="h-5 w-5 mr-2" />
-                Union Dues
+                Membership Subscription
               </div>
             </button>
           </div>
@@ -404,54 +411,53 @@ const PaymentsPage = () => {
           /* Union Dues Content */
           <div className="bg-white dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
             <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8 px-4 md:px-8 py-6">
-              {/* Union Dues Info */}
+              {/* Union Membership Info */}
               <div className="bg-white md:w-[40%] dark:bg-gray-800">
                 <h3 className="text-base sm:text-lg font-semibold text-secondary-600 mb-1">
                   Union Membership Status
                 </h3>
                 <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400 sm:mb-4">
-                  Your current membership status and payment details.
+                  Your current membership status information.
                 </p>
 
                 <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 shadow-sm">
                   {/* Status Badge */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                      <span
+                        className={`inline-flex items-center px-4 py-1 rounded-lg text-xs font-medium ${
+                          hasPaidMembership
+                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                            : "bg-amber-200 text-amber-800 dark:bg-amber-800/60 dark:text-amber-400"
+                        }`}
+                      >
                         <FiCheck className="mr-1" />
-                        {unionDuesData.status}
+                        {hasPaidMembership
+                          ? "Active Member"
+                          : "Pending Incomplete Registration"}
                       </span>
                     </div>
                   </div>
 
-                  {/* Payment Info */}
+                  {/* Membership Info */}
                   <div className="space-y-3 mt-2">
-                    <div className="flex justify-between items-center pb-2 border-b border-gray-200 dark:border-gray-600">
-                      <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                        Membership Valid Until:
-                      </span>
-                      <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-white">
-                        {formatDate(unionDuesData.paidUntil)}
-                      </span>
-                    </div>
-
-                    <div className="flex justify-between items-center pb-2 border-b border-gray-200 dark:border-gray-600">
-                      <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                        Last Payment:
-                      </span>
-                      <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-white">
-                        {formatCurrency(unionDuesData.lastPayment.amount)} on{" "}
-                        {formatDate(unionDuesData.lastPayment.date)}
-                      </span>
-                    </div>
-
                     <div className="flex justify-between items-center">
                       <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                        Next Payment Due:
+                        Membership Status:
                       </span>
                       <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-white">
-                        {formatCurrency(unionDuesData.nextPaymentAmount)} on{" "}
-                        {formatDate(unionDuesData.nextPaymentDate)}
+                        {hasPaidMembership
+                          ? "Lifetime Member"
+                          : "Registration Incomplete"}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-600">
+                      <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                        Registration Fee:
+                      </span>
+                      <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-white">
+                        KES 500 (One-time payment)
                       </span>
                     </div>
                   </div>
@@ -459,62 +465,86 @@ const PaymentsPage = () => {
 
                 <div className="mt-6">
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    About Union Dues
+                    About Union Membership
                   </h4>
                   <p className="text-[0.8rem] text-gray-600 dark:text-gray-400">
-                    Union dues are monthly fees that support union operations,
-                    representation, and benefits. Your membership needs to be
-                    active to access union benefits, loans, and medical
-                    insurance services.
+                    Union membership requires a one-time registration fee that
+                    grants you lifetime access to all union benefits, including
+                    legal representation, medical insurance access, and more.
                   </p>
                   <ul className="mt-3 space-y-1 text-[0.8rem] text-gray-600 dark:text-gray-400 pl-5 list-disc">
-                    <li>Monthly dues: KES 500</li>
-                    <li>Can pay for multiple months in advance</li>
-                    <li>Required for maintaining membership benefits</li>
+                    <li>One-time fee: KES 500</li>
+                    <li>No recurring charges</li>
+                    <li>Required for accessing all union benefits</li>
                   </ul>
                 </div>
               </div>
 
-              {/* Union Dues Payment Section */}
+              {/* Union Membership Payment Section */}
               <div className="bg-white md:w-[60%] md:border-l md:border-gray-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden">
                 <div className="md:pl-8">
-                  <div className="bg-green-50 dark:bg-green-900/10 px-4 py-4 rounded-lg border border-green-200 dark:border-green-800 mb-6">
-                    <div className="flex items-center">
-                      <PiUserDuotone className="h-6 w-6 text-green-600 dark:text-green-400 mr-3" />
-                      <div>
-                        <h3 className="font-medium text-base text-gray-900 dark:text-white">
-                          Union Membership Dues
-                        </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Monthly payment of KES 500
-                        </p>
+                  {hasPaidMembership ? (
+                    <div className="bg-green-50 dark:bg-green-900/10 px-6 py-8 rounded-lg border border-green-200 dark:border-green-800 text-center">
+                      <div className="mx-auto w-16 h-16 flex items-center justify-center bg-green-100 dark:bg-green-800/20 rounded-full mb-4">
+                        <FiCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
                       </div>
+                      <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
+                        You're a Registered Member!
+                      </h3>
+                      <p className="text-sm sm:text-sm text-gray-600 dark:text-gray-400 mb-6">
+                        You have successfully paid your one-time union
+                        registration fee and are now a lifetime member with
+                        access to all benefits.
+                      </p>
+                      <button
+                        onClick={() => navigate("/profile")}
+                        className="text-sm  px-5 py-2 border border-transparent rounded-md shadow-sm font-medium text-white bg-green-600 hover:bg-green-700"
+                      >
+                        View Membership Details
+                      </button>
                     </div>
-                  </div>
+                  ) : (
+                    <>
+                      <div className="bg-green-50 dark:bg-green-900/10 px-4 py-4 rounded-lg border border-green-200 dark:border-green-800 mb-6">
+                        <div className="flex items-center">
+                          <RiUserCommunityLine className="h-8 w-8 text-green-600 dark:text-green-400 mr-3" />
+                          <div>
+                            <h3 className="font-medium text-sm sm:text-base text-gray-900 dark:text-white">
+                              Union Membership Registration
+                            </h3>
+                            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
+                              One-time payment of KES 500
+                            </p>
+                          </div>
+                        </div>
+                      </div>
 
-                  {/* Use the same MakePayment component with a custom unionDues object and initialPaymentType */}
-                  <MakePayment
-                    selectedPlan={{
-                      name: "Union Membership Dues",
-                      premiums: {
-                        daily: 0,
-                        monthly: 500,
-                        annual: 6000,
-                      },
-                    }}
-                    frequency="monthly"
-                    initialPaymentType="dues"
-                    activeTab={activeTab}
-                    setActiveTab={setActiveTab}
-                  />
+                      {/* Use the MakePayment component with membership config */}
+                      <MakePayment
+                        selectedPlan={{
+                          name: "Union Membership Registration",
+                          premiums: {
+                            daily: 0,
+                            monthly: 0,
+                            annual: 500,
+                          },
+                        }}
+                        frequency="annual"
+                        initialPaymentType="membership"
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
+                        onPaymentComplete={handleMembershipPayment}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Union Dues Payment History */}
+            {/* Union Membership Payment History */}
             <div className="bg-white dark:bg-gray-800 overflow-hidden border-t border-gray-200 dark:border-gray-700">
               <div className="py-6 sm:px-6 px-2">
-                <UnionDuesHistory />
+                <UnionMembershipHistory />
               </div>
             </div>
           </div>

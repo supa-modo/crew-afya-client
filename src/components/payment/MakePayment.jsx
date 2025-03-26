@@ -1,22 +1,18 @@
 import { useState, useEffect } from "react";
-import {
-  FiCreditCard,
-  FiPhone,
-  FiLoader,
-  FiCheck,
-  FiAlertTriangle,
-  FiUsers,
-  FiShield,
-  FiArrowLeft,
-  FiArrowRight,
-} from "react-icons/fi";
 import { TbCreditCardFilled, TbShieldHalfFilled } from "react-icons/tb";
 import { PiUserDuotone } from "react-icons/pi";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   initiateM_PesaPayment,
   checkPaymentStatus,
 } from "../../services/paymentService";
+
+// Import our refactored components
+import PaymentForm from "./PaymentForm";
+import PaymentStatus from "./PaymentStatus";
+import PaymentTypeSelector from "./PaymentTypeSelector";
+import { RiCommunityLine, RiUserCommunityLine } from "react-icons/ri";
 
 const MakePayment = ({
   selectedPlan,
@@ -24,32 +20,40 @@ const MakePayment = ({
   initialPaymentType = "medical",
   activeTab,
   setActiveTab,
+  onPaymentComplete,
+  fixedPaymentType = false, // New prop to indicate if payment type should be fixed
 }) => {
   let [phoneNumber, setPhoneNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, processing, success, error
+  const [paymentStatus, setPaymentStatus] = useState("idle"); // idle, processing, waiting, timeout, success, error
   const [errorMessage, setErrorMessage] = useState("");
   const [checkoutRequestId, setCheckoutRequestId] = useState(null);
   const [paymentId, setPaymentId] = useState(null);
   const [statusCheckInterval, setStatusCheckInterval] = useState(null);
   const [mpesaReceiptNumber, setMpesaReceiptNumber] = useState(null);
-  const [paymentType, setPaymentType] = useState(initialPaymentType); // medical, dues, loan
+  const [paymentType, setPaymentType] = useState(initialPaymentType); // medical, membership, loan
   const [unionDuesAmount, setUnionDuesAmount] = useState(500); // Default amount for union dues
   const [activeTabIndex, setActiveTabIndex] = useState(
-    initialPaymentType === "medical" ? 0 : initialPaymentType === "dues" ? 1 : 2
+    initialPaymentType === "medical"
+      ? 0
+      : initialPaymentType === "membership"
+      ? 1
+      : 2
   );
 
   // Set initial payment type based on parent component's active tab
   useEffect(() => {
-    setPaymentType(initialPaymentType);
-    setActiveTabIndex(
-      initialPaymentType === "medical"
-        ? 0
-        : initialPaymentType === "dues"
-        ? 1
-        : 2
-    );
-  }, [initialPaymentType]);
+    if (!fixedPaymentType) {
+      setPaymentType(initialPaymentType);
+      setActiveTabIndex(
+        initialPaymentType === "medical"
+          ? 0
+          : initialPaymentType === "membership"
+          ? 1
+          : 2
+      );
+    }
+  }, [initialPaymentType, fixedPaymentType]);
 
   // Array of payment types for navigation
   const paymentTypes = [
@@ -62,9 +66,9 @@ const MakePayment = ({
       parentTab: "medical",
     },
     {
-      id: "dues",
-      label: "Union Dues",
-      icon: PiUserDuotone,
+      id: "membership",
+      label: "Union Membership",
+      icon: RiUserCommunityLine,
       color: "green",
       disabled: false,
       parentTab: "union",
@@ -82,6 +86,8 @@ const MakePayment = ({
 
   // Function to navigate tabs on mobile
   const navigateTab = (direction) => {
+    if (fixedPaymentType) return; // Don't allow navigation if payment type is fixed
+
     let newIndex = activeTabIndex;
 
     if (direction === "next" && activeTabIndex < paymentTypes.length - 1) {
@@ -118,7 +124,7 @@ const MakePayment = ({
 
   // Enhanced function to handle payment type change (for desktop)
   const handlePaymentTypeChange = (typeId) => {
-    if (!typeId) return;
+    if (fixedPaymentType || !typeId) return; // Don't allow changes if payment type is fixed
 
     setPaymentType(typeId);
 
@@ -215,9 +221,9 @@ const MakePayment = ({
       if (paymentType === "medical") {
         amount = selectedPlan?.premiums?.[frequency];
         description = `Payment for ${selectedPlan.name} (${frequency}) medical cover`;
-      } else if (paymentType === "dues") {
-        amount = unionDuesAmount;
-        description = `Payment for monthly union dues`;
+      } else if (paymentType === "membership") {
+        amount = 500; // Fixed one-time fee
+        description = `Payment for union membership`;
       } else if (paymentType === "loan") {
         // Future implementation for loan repayments
         amount = 0; // This would be replaced with actual loan repayment amount
@@ -308,8 +314,8 @@ const MakePayment = ({
   const getCurrentAmount = () => {
     if (paymentType === "medical") {
       return selectedPlan?.premiums?.[frequency] || 0;
-    } else if (paymentType === "dues") {
-      return unionDuesAmount;
+    } else if (paymentType === "membership") {
+      return 500; // Fixed one-time fee
     } else {
       return 0; // For future loan implementation
     }
@@ -319,21 +325,37 @@ const MakePayment = ({
   const getPaymentTypeTitle = () => {
     if (paymentType === "medical") {
       return `${selectedPlan?.name || "Medical"} Cover`;
-    } else if (paymentType === "dues") {
-      return "Union Dues";
+    } else if (paymentType === "membership") {
+      return "Union Membership";
     } else {
       return "Loan Repayment";
     }
   };
 
+  // Update success handlers
+  useEffect(() => {
+    // If payment was successful and we have a completion callback
+    if (
+      paymentStatus === "success" &&
+      typeof onPaymentComplete === "function"
+    ) {
+      // Wait a moment to show the success message before calling the callback
+      const timer = setTimeout(() => {
+        onPaymentComplete(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [paymentStatus, onPaymentComplete]);
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg px-2 sm:px-12 pb-2">
-      <h3 className="text-lg font-semibold text-secondary-700 dark:text-white mb-2">
+      <h3 className="text-base sm:text-lg font-semibold text-secondary-700 dark:text-white mb-2">
         Make a Payment
       </h3>
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-        Select a payment type and enter your M-Pesa phone number to complete
-        your payment.
+      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4">
+        {fixedPaymentType
+          ? `Please enter your M-Pesa number to complete your payment for ${getPaymentTypeTitle()}.`
+          : "Select a payment type and enter your M-Pesa phone number to complete your payment."}
       </p>
 
       <AnimatePresence mode="wait">
@@ -346,400 +368,43 @@ const MakePayment = ({
             onSubmit={handleSubmit}
             className="space-y-4"
           >
-            {/* Mobile Payment Type Navigation with Arrows */}
-            <div className="md:hidden mb-5">
-              <div className="flex items-center justify-between mb-3">
-                <button
-                  type="button"
-                  onClick={() => navigateTab("prev")}
-                  disabled={activeTabIndex === 0}
-                  className={`p-2 rounded-full ${
-                    activeTabIndex === 0
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20"
-                  }`}
-                >
-                  <FiArrowLeft className="h-5 w-5" />
-                </button>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {activeTabIndex + 1} of {paymentTypes.length}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => navigateTab("next")}
-                  disabled={activeTabIndex === paymentTypes.length - 1}
-                  className={`p-2 rounded-full ${
-                    activeTabIndex === paymentTypes.length - 1
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20"
-                  }`}
-                >
-                  <FiArrowRight className="h-5 w-5" />
-                </button>
-              </div>
+            {/* Payment Type Selector */}
+            <PaymentTypeSelector
+              paymentTypes={paymentTypes}
+              paymentType={paymentType}
+              activeTabIndex={activeTabIndex}
+              navigateTab={navigateTab}
+              handlePaymentTypeChange={handlePaymentTypeChange}
+              disabled={fixedPaymentType}
+            />
 
-              {/* Mobile Swipeable Tab Panel */}
-              <div className="overflow-hidden relative">
-                <div
-                  className="flex transition-transform duration-300 ease-in-out"
-                  style={{ transform: `translateX(-${activeTabIndex * 100}%)` }}
-                >
-                  {paymentTypes.map((type, index) => (
-                    <div key={type.id} className="w-full flex-shrink-0">
-                      <div
-                        className={`relative flex flex-col items-center justify-center px-6 py-3 rounded-lg border-2 
-                          ${
-                            type.disabled
-                              ? "opacity-60 cursor-not-allowed border-gray-200 dark:border-gray-700"
-                              : paymentType === type.id
-                              ? `border-${type.color}-500 bg-${type.color}-100 dark:bg-${type.color}-900/30`
-                              : "border-gray-200 dark:border-gray-700"
-                          } transition-all`}
-                      >
-                        <div
-                          className={`w-10 h-10 mb-2 rounded-full flex items-center justify-center 
-                          ${
-                            type.disabled
-                              ? "bg-gray-100 dark:bg-gray-700"
-                              : paymentType === type.id
-                              ? `bg-${type.color}-200 dark:bg-${type.color}-800`
-                              : "bg-gray-100 dark:bg-gray-700"
-                          }`}
-                        >
-                          <type.icon
-                            className={`h-7 w-7 
-                              ${
-                                type.disabled
-                                  ? "text-gray-500 dark:text-gray-400"
-                                  : paymentType === type.id
-                                  ? `text-${type.color}-600 dark:text-${type.color}-400`
-                                  : "text-gray-500 dark:text-gray-400"
-                              }`}
-                          />
-                        </div>
-                        <span
-                          className={`text-sm sm:text-base font-medium 
-                          ${
-                            type.disabled
-                              ? "text-gray-500 dark:text-gray-400"
-                              : paymentType === type.id
-                              ? `text-${type.color}-700 dark:text-${type.color}-300`
-                              : "text-gray-700 dark:text-gray-300"
-                          }`}
-                        >
-                          {type.label}
-                        </span>
-                        {type.soon && (
-                          <span className="absolute bottom-0 text-[0.65rem] text-gray-500">
-                            Coming soon
-                          </span>
-                        )}
-                        {paymentType === type.id && !type.disabled && (
-                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center">
-                            <FiCheck className="h-4 w-4 text-white" />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Desktop Payment Type Selection */}
-            <div className="hidden md:block mb-4">
-              <label className="block text-[0.8rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Select Payment Type
-              </label>
-              <div className="grid grid-cols-3 gap-3">
-                {paymentTypes.map((type) => (
-                  <button
-                    key={type.id}
-                    type="button"
-                    onClick={() =>
-                      !type.disabled && handlePaymentTypeChange(type.id)
-                    }
-                    disabled={type.disabled}
-                    className={`relative flex flex-col items-center justify-center px-4 py-3 rounded-lg border-2 ${
-                      type.disabled
-                        ? "border-gray-200 dark:border-gray-700 opacity-60 cursor-not-allowed"
-                        : paymentType === type.id
-                        ? `border-${type.color}-500 bg-${type.color}-100 dark:bg-${type.color}-900/30`
-                        : "border-gray-200 dark:border-gray-700"
-                    } transition-all hover:shadow-md`}
-                  >
-                    <div
-                      className={`w-10 h-10 mb-1 rounded-full flex items-center justify-center ${
-                        type.disabled
-                          ? "bg-gray-200 dark:bg-gray-700"
-                          : paymentType === type.id
-                          ? `bg-${type.color}-200 dark:bg-${type.color}-800`
-                          : "bg-gray-100 dark:bg-gray-700"
-                      }`}
-                    >
-                      <type.icon
-                        className={`h-5 w-5 ${
-                          type.disabled
-                            ? "text-gray-500 dark:text-gray-400"
-                            : paymentType === type.id
-                            ? `text-${type.color}-600 dark:text-${type.color}-400`
-                            : "text-gray-500 dark:text-gray-400"
-                        }`}
-                      />
-                    </div>
-                    <span
-                      className={`text-sm font-medium ${
-                        type.disabled
-                          ? "text-gray-700 dark:text-gray-300"
-                          : paymentType === type.id
-                          ? `text-${type.color}-700 dark:text-${type.color}-300`
-                          : "text-gray-700 dark:text-gray-300"
-                      }`}
-                    >
-                      {type.label}
-                    </span>
-                    {type.soon && (
-                      <span className="absolute bottom-0 text-[0.65rem] text-gray-500">
-                        Coming soon
-                      </span>
-                    )}
-                    {paymentType === type.id && !type.disabled && (
-                      <div className="absolute -top-2 -right-2 w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center">
-                        <FiCheck className="h-3 w-3 text-white" />
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Amount Field */}
-            <div>
-              <label
-                htmlFor="amount"
-                className="block text-[0.8rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Amount (KES)
-              </label>
-              {paymentType === "dues" ? (
-                <input
-                  type="number"
-                  id="amount"
-                  value={unionDuesAmount}
-                  onChange={(e) => setUnionDuesAmount(Number(e.target.value))}
-                  min="1"
-                  className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-sm sm:text-base rounded-md shadow-sm dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500"
-                />
-              ) : (
-                <input
-                  type="text"
-                  id="amount"
-                  value={getCurrentAmount().toLocaleString()}
-                  disabled
-                  className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-sm sm:text-base rounded-md shadow-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                />
-              )}
-              {paymentType === "dues" && (
-                <p className="mt-1 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
-                  Monthly union membership fee is KES 500, you can pay for
-                  multiple months.
-                </p>
-              )}
-            </div>
-
-            {/* Phone Number Field */}
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-[0.8rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                M-Pesa Phone Number
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <FiPhone className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="tel"
-                  id="phoneNumber"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value.trim())}
-                  placeholder="07XXXXXXXX"
-                  className="block w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 text-sm sm:text-base rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
-                  autoComplete="tel"
-                />
-              </div>
-              {errorMessage && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                  {errorMessage}
-                </p>
-              )}
-              <p className="mt-1 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
-                Enter your phone number in the format 07XXXXXXXX or
-                +2547XXXXXXXX
-              </p>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={
-                isSubmitting ||
-                !phoneNumber ||
-                !getCurrentAmount() ||
-                paymentType === "loan"
-              }
-              className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm sm:text-base font-medium text-white ${
-                paymentType === "dues"
-                  ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
-                  : "bg-primary-600 hover:bg-primary-700 focus:ring-primary-500"
-              } focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-200`}
-            >
-              Pay {getPaymentTypeTitle()}
-              <FiCreditCard className="ml-2 h-5 w-5" />
-            </button>
+            {/* Payment Form */}
+            <PaymentForm
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              paymentType={paymentType}
+              errorMessage={errorMessage}
+              getCurrentAmount={getCurrentAmount}
+              getPaymentTypeTitle={getPaymentTypeTitle}
+              isSubmitting={isSubmitting}
+              handleSubmit={handleSubmit}
+              disabled={paymentType === "loan"}
+            />
           </motion.form>
         )}
 
-        {paymentStatus === "processing" && (
-          <motion.div
-            key="processing"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col items-center py-8"
-          >
-            <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
-              <FiLoader className="h-8 w-8 text-primary-600 dark:text-primary-400 animate-spin" />
-            </div>
-            <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Processing Payment Request
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center">
-              Please wait while we initiate your payment of KES{" "}
-              {getCurrentAmount().toLocaleString()} for {getPaymentTypeTitle()}{" "}
-              via M-Pesa.
-            </p>
-          </motion.div>
-        )}
-
-        {paymentStatus === "waiting" && (
-          <motion.div
-            key="waiting"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col items-center py-8"
-          >
-            <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30">
-              <FiLoader className="h-8 w-8 text-yellow-600 dark:text-yellow-400 animate-spin" />
-            </div>
-            <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Payment In Progress
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center">
-              An M-Pesa prompt has been sent to your phone ({phoneNumber}).
-            </p>
-            <p className="mt-2 text-[0.7rem] sm:text-sm text-gray-500 dark:text-gray-400 text-center">
-              Please enter your M-Pesa PIN when prompted to complete the payment
-              of KES {getCurrentAmount().toLocaleString()} for{" "}
-              {getPaymentTypeTitle()}.
-            </p>
-            <p className="mt-4 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400 text-center">
-              Waiting for confirmation... This may take a few moments.
-            </p>
-          </motion.div>
-        )}
-
-        {paymentStatus === "timeout" && (
-          <motion.div
-            key="timeout"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col items-center py-8"
-          >
-            <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
-              <FiAlertTriangle className="h-8 w-8 text-orange-600 dark:text-orange-400" />
-            </div>
-            <h3 className="text-base sm:text-lg font-medium text-red-500/80 dark:text-white mb-2">
-              Payment Status Unknown
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center mb-2">
-              We didn't receive confirmation for your payment request. If you
-              completed the payment on your phone, it may still be processing.
-            </p>
-            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
-              You can check your payment history later to confirm if it was
-              successful.
-            </p>
-            <button
-              onClick={handleTryAgain}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-            >
-              Try Again
-            </button>
-          </motion.div>
-        )}
-
-        {paymentStatus === "success" && (
-          <motion.div
-            key="success"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col items-center py-8"
-          >
-            <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-              <FiCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Payment Successful!
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center mb-2">
-              Your payment for {getPaymentTypeTitle()} has been processed
-              successfully.
-            </p>
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 my-2 w-full max-w-xs">
-              <p className="text-sm font-medium text-green-800 dark:text-green-300">
-                Amount: {formatCurrency(getCurrentAmount())}
-              </p>
-              {mpesaReceiptNumber && (
-                <p className="text-sm font-medium text-green-800 dark:text-green-300">
-                  M-Pesa Receipt: {mpesaReceiptNumber}
-                </p>
-              )}
-            </div>
-            <p className="mt-4 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400 text-center">
-              A confirmation message will be sent to your phone shortly.
-            </p>
-          </motion.div>
-        )}
-
-        {paymentStatus === "error" && (
-          <motion.div
-            key="error"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col items-center py-8"
-          >
-            <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-              <FiAlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
-            </div>
-            <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
-              Payment Failed
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-center mb-4">
-              {errorMessage}
-            </p>
-            <button
-              onClick={handleTryAgain}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-            >
-              Try Again
-            </button>
-          </motion.div>
+        {/* Payment Status */}
+        {paymentStatus !== "idle" && (
+          <PaymentStatus
+            status={paymentStatus}
+            phoneNumber={phoneNumber}
+            getCurrentAmount={getCurrentAmount}
+            getPaymentTypeTitle={getPaymentTypeTitle}
+            formatCurrency={formatCurrency}
+            errorMessage={errorMessage}
+            mpesaReceiptNumber={mpesaReceiptNumber}
+            handleTryAgain={handleTryAgain}
+          />
         )}
       </AnimatePresence>
     </div>

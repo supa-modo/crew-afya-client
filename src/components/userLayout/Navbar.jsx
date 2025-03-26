@@ -190,8 +190,8 @@ const Navbar = () => {
                   to="/"
                   className={`${
                     isActive("/")
-                      ? "text-secondary-600 dark:text-secondary-400 "
-                      : "text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-400"
+                      ? "text-secondary-700 dark:text-secondary-400 "
+                      : "text-gray-600 dark:text-gray-400 hover:text-secondary-700 dark:hover:text-secondary-400"
                   } px-3 py-2 rounded-lg font-medium transition-colors duration-200 `}
                   onClick={closeMenus}
                 >
@@ -204,8 +204,8 @@ const Navbar = () => {
                       to="/dashboard"
                       className={`${
                         isActive("/dashboard")
-                          ? "text-secondary-600 dark:text-secondary-400 "
-                          : "text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-400"
+                          ? "text-secondary-700 dark:text-secondary-400 "
+                          : "text-gray-600 dark:text-gray-400 hover:text-secondary-700 dark:hover:text-secondary-400"
                       } px-3 py-2 rounded-lg font-medium transition-colors duration-200`}
                       onClick={closeMenus}
                     >
@@ -215,8 +215,8 @@ const Navbar = () => {
                       to="/payments"
                       className={`${
                         isActive("/payments")
-                          ? "text-secondary-600 dark:text-secondary-400 "
-                          : "text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-400 "
+                          ? "text-secondary-700 dark:text-secondary-400 "
+                          : "text-gray-600 dark:text-gray-400 hover:text-secondary-700 dark:hover:text-secondary-400 "
                       } px-3 py-2 rounded-lg font-medium transition-colors duration-200 `}
                       onClick={closeMenus}
                     >
@@ -240,8 +240,8 @@ const Navbar = () => {
                       to="/about"
                       className={`${
                         isActive("/about")
-                          ? "text-secondary-600 dark:text-secondary-400"
-                          : "text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-400 "
+                          ? "text-secondary-700 dark:text-secondary-400"
+                          : "text-gray-600 dark:text-gray-400 hover:text-secondary-700 dark:hover:text-secondary-400 "
                       } px-3 py-2 rounded-lg font-medium transition-colors duration-200 `}
                       onClick={closeMenus}
                     >
@@ -251,8 +251,8 @@ const Navbar = () => {
                       to="/contact"
                       className={`${
                         isActive("/contact")
-                          ? "text-secondary-600 dark:text-secondary-400 "
-                          : "text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-400 "
+                          ? "text-secondary-700 dark:text-secondary-400 "
+                          : "text-gray-600 dark:text-gray-400 hover:text-secondary-700 dark:hover:text-secondary-400 "
                       } px-3 py-2 rounded-lg font-medium transition-colors duration-200 `}
                       onClick={closeMenus}
                     >
@@ -451,7 +451,7 @@ const Navbar = () => {
                 to="/"
                 className={`${
                   isActive("/")
-                    ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400"
+                    ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
                     : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                 } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                 onClick={closeMenus}
@@ -468,7 +468,7 @@ const Navbar = () => {
                     to="/dashboard"
                     className={`${
                       isActive("/dashboard")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400"
+                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
@@ -482,7 +482,7 @@ const Navbar = () => {
                     to="/payments"
                     className={`${
                       isActive("/payments")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400"
+                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
@@ -524,7 +524,7 @@ const Navbar = () => {
                     to="/settings"
                     className={`${
                       isActive("/settings")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400"
+                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
@@ -541,7 +541,7 @@ const Navbar = () => {
                     to="/about"
                     className={`${
                       isActive("/about")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400"
+                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
@@ -555,7 +555,7 @@ const Navbar = () => {
                     to="/contact"
                     className={`${
                       isActive("/contact")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400"
+                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
