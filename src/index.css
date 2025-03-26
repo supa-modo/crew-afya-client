@@ -25,91 +25,33 @@
   --scrollbar-thumb-active-admin: rgba(122, 127, 249, 0.9);
 }
 
-/* Custom scrollbar styles */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-}
-
-/* Chrome, Edge, and Safari */
+/* Custom scrollbar for webkit browsers */
 ::-webkit-scrollbar {
-  width: var(--scrollbar-width);
-  height: var(--scrollbar-width);
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-  border-radius: 10px;
+  @apply bg-gray-100/10;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 10px;
-  border: 2px solid var(--scrollbar-track);
+  @apply bg-secondary-700 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
-}
-
-::-webkit-scrollbar-thumb:active {
-  background: var(--scrollbar-thumb-active);
-}
-
-::-webkit-scrollbar-corner {
-  background: var(--scrollbar-track);
+  @apply bg-secondary-800;
 }
 
 /* Dark mode scrollbar */
 .dark * {
-  scrollbar-color: var(--scrollbar-thumb-dark) var(--scrollbar-track-dark);
-}
+  ::-webkit-scrollbar-track-dark {
+    @apply bg-gray-700/40;
+  }
 
-.dark ::-webkit-scrollbar-track {
-  background: var(--scrollbar-track-dark);
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb-dark);
-  border: 2px solid var(--scrollbar-track-dark);
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover-dark);
-}
-
-.dark ::-webkit-scrollbar-thumb:active {
-  background: var(--scrollbar-thumb-active-dark);
-}
-
-.dark ::-webkit-scrollbar-corner {
-  background: var(--scrollbar-track-dark);
-}
-
-/* Admin area scrollbar */
-[class*="admin-"] * {
-  scrollbar-color: var(--scrollbar-thumb-admin) var(--scrollbar-track);
-}
-
-[class*="admin-"] ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb-admin);
-}
-
-[class*="admin-"] ::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover-admin);
-}
-
-[class*="admin-"] ::-webkit-scrollbar-thumb:active {
-  background: var(--scrollbar-thumb-active-admin);
-}
-
-.dark [class*="admin-"] * {
-  scrollbar-color: var(--scrollbar-thumb-admin) var(--scrollbar-track-dark);
-}
-
-.dark [class*="admin-"] ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb-admin);
-  border: 2px solid var(--scrollbar-track-dark);
+  ::-webkit-scrollbar-thumb-dark {
+    @apply bg-secondary-600 rounded-full;
+  }
 }
 
 @layer base {

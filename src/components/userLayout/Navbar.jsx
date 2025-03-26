@@ -155,8 +155,8 @@ const Navbar = () => {
       <nav
         className={`${
           scrolled
-            ? "shadow-md backdrop-blur-lg bg-white/95 dark:bg-gray-900/90"
-            : "bg-white/85 dark:bg-gray-900/60 backdrop-blur-md shadow-sm"
+            ? "shadow-md backdrop-blur-md bg-white/95 dark:bg-gray-900/90"
+            : "bg-white/85 dark:bg-gray-900/60 backdrop-blur-sm shadow-sm"
         } fixed w-full top-0 z-50 transition-all duration-300 ease-in-out border-b border-gray-200/30 dark:border-gray-800/30`}
       >
         <div className="max-w-screen md:mx-6 lg:mx-24 px-4 sm:px-6 lg:px-8">
