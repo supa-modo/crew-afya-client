@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import {
   FiCheck,
-  FiChevronDown,
-  FiChevronUp,
   FiArrowRight,
 } from "react-icons/fi";
 import MakePayment from "../components/payment/MakePayment";
 import PaymentHistory from "../components/payment/PaymentHistory";
-import UnionDuesHistory from "../components/payment/UnionDuesHistory";
 import PlanSelectionModal from "../components/payment/PlanSelectionModal";
 import { Link, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
@@ -30,13 +27,7 @@ const PaymentsPage = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [selectedFrequency, setSelectedFrequency] = useState("daily");
   const [calendarDate, setCalendarDate] = useState(new Date());
-  const [expandedSections, setExpandedSections] = useState({
-    plans: true,
-    makePayment: false,
-    paymentSchedule: false,
-    paymentHistory: false,
-    unionDues: false,
-  });
+
   const [paymentDates, setPaymentDates] = useState({
     paid: [
       "2025-03-11",
@@ -137,23 +128,6 @@ const PaymentsPage = () => {
     return "";
   };
 
-  const toggleSection = (section) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [section]: !prev[section],
-    }));
-  };
-
-  // Auto-expand make payment section when a plan is selected
-  useEffect(() => {
-    if (selectedPlan) {
-      setExpandedSections((prev) => ({
-        ...prev,
-        makePayment: true,
-      }));
-    }
-  }, [selectedPlan]);
-
   const handleOpenPlanModal = (isChanging = false) => {
     setIsChangingPlan(isChanging);
     setIsPlanModalOpen(true);
@@ -178,15 +152,6 @@ const PaymentsPage = () => {
     if (!dateString) return "";
     const options = { year: "numeric", month: "short", day: "numeric" };
     return new Date(dateString).toLocaleDateString("en-US", options);
-  };
-
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-      minimumFractionDigits: 0,
-    }).format(amount);
   };
 
   // TODO: Remove this once the union membership payment history is implemented

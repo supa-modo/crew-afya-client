@@ -356,7 +356,7 @@ const MakePayment = ({
   }, [paymentStatus, onPaymentComplete]);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg px-2 sm:px-12 pb-2">
+    <div className="bg-white dark:bg-gray-800 rounded-lg px-2 sm:px-8 pb-2">
       <h3 className="text-base sm:text-lg font-semibold text-secondary-700 dark:text-white mb-2">
         Make a Payment
       </h3>

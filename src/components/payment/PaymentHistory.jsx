@@ -196,22 +196,22 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
 
     switch (status) {
       case "completed":
-        bgColor = "bg-green-100 dark:bg-green-900/20";
+        bgColor = "bg-green-200 dark:bg-green-900/50";
         textColor = "text-green-700 dark:text-green-400";
         icon = <FiCheck className="mr-1 h-4 w-4" />;
         break;
       case "failed":
-        bgColor = "bg-red-100 dark:bg-red-900/20";
+        bgColor = "bg-red-200 dark:bg-red-900/50";
         textColor = "text-red-700 dark:text-red-400";
         icon = <FiX className="mr-1 h-4 w-4" />;
         break;
       case "pending":
-        bgColor = "bg-yellow-100 dark:bg-yellow-900/20";
+        bgColor = "bg-yellow-200 dark:bg-yellow-900/50";
         textColor = "text-yellow-700 dark:text-yellow-400";
         icon = <FiClock className="mr-1 h-4 w-4" />;
         break;
       default:
-        bgColor = "bg-gray-100 dark:bg-gray-700";
+        bgColor = "bg-gray-200 dark:bg-gray-700";
         textColor = "text-gray-700 dark:text-gray-400";
     }
 
