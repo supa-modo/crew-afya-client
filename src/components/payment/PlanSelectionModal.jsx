@@ -196,11 +196,11 @@ const PlanSelectionModal = ({
 
         setPaymentStatus("waiting");
 
-        // Set timeout to change status to "timeout" after 60 seconds if no update
+        // Set timeout to change status to "timeout" after 90 seconds if no update
         setTimeout(() => {
           setPaymentStatus((currentStatus) => {
             if (currentStatus === "waiting") {
-              // If still waiting after 60 seconds, show timeout message
+              // If still waiting after 120 seconds - 2 minutes, show timeout message
               if (statusCheckInterval) {
                 clearInterval(statusCheckInterval);
                 setStatusCheckInterval(null);
@@ -209,7 +209,7 @@ const PlanSelectionModal = ({
             }
             return currentStatus;
           });
-        }, 60000); // 60 seconds timeout instead of 30 seconds
+        }, 120000);
       } else {
         setPaymentStatus("error");
         setErrorMessage(

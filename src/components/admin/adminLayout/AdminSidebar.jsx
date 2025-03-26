@@ -218,7 +218,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
 
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
             <div className="flex-shrink-0 flex items-center px-4">
-              <img className="h-8 w-auto" src="/logo.png" alt="CrewAfya" />
+              <img className="h-12 w-auto" src="/mwulogo.png" alt="CrewAfya" />
               <span className="ml-2 text-xl font-bold text-admin-600 dark:text-admin-400">
                 CrewAfya Admin
               </span>
@@ -242,9 +242,9 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
               darkMode ? "bg-gray-800" : "bg-white"
             } border-r border-gray-200 dark:border-gray-700`}
           >
-            <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-              <div className="flex items-center flex-shrink-0 px-4">
-                <img className="h-8 w-auto" src="/logo.png" alt="CrewAfya" />
+            <div className="flex-1 flex flex-col pt-2 pb-4 overflow-y-auto">
+              <div className="flex items-center flex-shrink-0 px-2">
+                <img className="h-12 w-auto" src="/mwulogo.png" alt="CrewAfya" />
                 <span className="ml-2 text-xl font-bold text-admin-600 dark:text-admin-400">
                   CrewAfya Admin
                 </span>
@@ -253,13 +253,13 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
                 {navigationGroups.map((group) => renderNavGroup(group))}
               </nav>
             </div>
-            <div className="flex-shrink-0 flex border-t border-gray-200 dark:border-gray-700 px-4 py-[0.6rem]">
+            <div className="flex-shrink-0 flex border-t border-gray-200 dark:border-gray-700 px-4 py-[0.35rem]">
               <div className="flex-shrink-0 w-full group block">
                 <div className="flex items-center">
                   <div>
                     <img
-                      className="inline-block h-9 w-9 rounded-full"
-                      src="/logo.png"
+                      className="inline-block h-12 w-12 rounded-full"
+                      src="/mwulogo.png"
                       alt="CrewAfya"
                     />
                   </div>

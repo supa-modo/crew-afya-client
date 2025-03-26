@@ -416,7 +416,7 @@ const UserManagement = ({
               </svg>
             </div>
             <p className="mt-2 text-gray-600 dark:text-gray-400">
-              Loading users...
+              Loading members...
             </p>
           </div>
         ) : error ? (
@@ -448,7 +448,7 @@ const UserManagement = ({
         ) : users.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-600 dark:text-gray-400">
-              No users found. Try adjusting your filters.
+              No members found. Try adjusting your filters.
             </p>
           </div>
         ) : (

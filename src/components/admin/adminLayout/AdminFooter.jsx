@@ -14,7 +14,7 @@ const AdminFooter = () => {
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center mb-4 md:mb-0">
-            <img className="h-7 w-auto mr-2" src="/logo.png" alt="CrewAfya" />
+            <img className="h-8 w-auto mr-2" src="/mwulogo.png" alt="CrewAfya" />
             <span className="text-sm text-gray-500 dark:text-gray-400">
               &copy; {currentYear} CrewAfya. All rights reserved.
             </span>
