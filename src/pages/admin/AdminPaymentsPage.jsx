@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTheme } from "../../context/ThemeContext";
-import { generateMockPayments } from "../../utils/paymentsGenerator";
 import { formatDate2 } from "../../utils/formatDate";
+import { formatCurrency } from "../../utils/formatCurrency";
+import * as adminPaymentService from "../../services/adminPaymentService";
 
 // Import components
 import PaymentHeader from "../../components/admin/adminPaymentsPageComponents/PaymentHeader";
@@ -41,6 +42,8 @@ const AdminPaymentsPage = () => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
+  const [error, setError] = useState(null);
 
   // Ref for export button
   const exportButtonRef = useRef(null);
@@ -53,57 +56,49 @@ const AdminPaymentsPage = () => {
     const fetchPayments = async () => {
       setLoading(true);
       try {
-        // Simulate API call delay
-        await new Promise((resolve) => setTimeout(resolve, 800));
+        // Build query parameters
+        const params = {
+          page: currentPage,
+          limit: itemsPerPage,
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+        };
 
-        // Generate mock payment data
-        const mockPayments = generateMockPayments(125);
-        setPayments(mockPayments);
+        // Add filters if set
+        if (searchTerm) params.search = searchTerm;
+        if (statusFilter !== "all") params.status = statusFilter;
+        if (methodFilter !== "all") params.method = methodFilter;
+        if (planFilter !== "all") params.plan = planFilter;
+        if (dateRange.start && dateRange.end) {
+          params.startDate = dateRange.start;
+          params.endDate = dateRange.end;
+        }
 
-        // Calculate statistics
-        calculatePaymentStats(mockPayments);
+        // Fetch payments from API
+        const response = await adminPaymentService.fetchAllPayments(params);
+
+        if (response.success) {
+          setPayments(response.data.payments);
+          setTotalItems(response.data.total);
+        } else {
+          setError("Failed to fetch payments");
+        }
+
+        // Fetch payment statistics
+        const statsResponse = await adminPaymentService.getPaymentStats();
+        if (statsResponse.success) {
+          setPaymentStats(statsResponse.data);
+        }
       } catch (error) {
         console.error("Error fetching payments:", error);
+        setError("An error occurred while fetching payment data");
       } finally {
         setLoading(false);
       }
     };
 
     fetchPayments();
-  }, [refreshTrigger]);
-
-  // Calculate payment statistics
-  const calculatePaymentStats = (paymentsData) => {
-    const stats = paymentsData.reduce(
-      (acc, payment) => {
-        // Total amount from completed payments
-        if (payment.status === "completed") {
-          acc.totalAmount += payment.amount;
-          acc.completedCount += 1;
-        }
-
-        // Count by status
-        if (payment.status === "pending") {
-          acc.pendingCount += 1;
-        } else if (payment.status === "failed") {
-          acc.failedCount += 1;
-        } else if (payment.status === "refunded") {
-          acc.refundedAmount += payment.amount;
-        }
-
-        return acc;
-      },
-      {
-        totalAmount: 0,
-        completedCount: 0,
-        pendingCount: 0,
-        failedCount: 0,
-        refundedAmount: 0,
-      }
-    );
-
-    setPaymentStats(stats);
-  };
+  }, [refreshTrigger, currentPage, itemsPerPage, sortBy, sortOrder]);
 
   // Reset all filters
   const handleResetFilters = () => {
@@ -113,24 +108,65 @@ const AdminPaymentsPage = () => {
     setMethodFilter("all");
     setPlanFilter("all");
     setCurrentPage(1);
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   // View payment details
-  const handleViewPayment = (payment) => {
-    setSelectedPayment(payment);
-    setIsPaymentDetailsModalOpen(true);
+  const handleViewPayment = async (payment) => {
+    try {
+      // Fetch detailed payment info
+      const response = await adminPaymentService.getPaymentById(payment.id);
+      if (response.success) {
+        setSelectedPayment(response.data);
+        setIsPaymentDetailsModalOpen(true);
+      } else {
+        alert("Could not fetch payment details");
+      }
+    } catch (error) {
+      console.error("Error fetching payment details:", error);
+      alert("Error fetching payment details");
+    }
   };
 
   // View payment receipt
-  const handleViewReceipt = (payment) => {
-    setSelectedPayment(payment);
-    setIsReceiptModalOpen(true);
+  const handleViewReceipt = async (payment) => {
+    try {
+      // Fetch receipt data
+      const response = await adminPaymentService.generatePaymentReceipt(
+        payment.id
+      );
+      if (response.success) {
+        setSelectedPayment({ ...payment, paymentDetails: response.data });
+        setIsReceiptModalOpen(true);
+      } else {
+        alert("Could not generate receipt");
+      }
+    } catch (error) {
+      console.error("Error generating receipt:", error);
+      alert("Error generating receipt");
+    }
   };
 
   // View audit trail
-  const handleViewAuditTrail = (payment) => {
-    setSelectedPayment(payment);
-    setIsAuditModalOpen(true);
+  const handleViewAuditTrail = async (payment) => {
+    try {
+      // Fetch audit trail
+      const response = await adminPaymentService.getPaymentAuditTrail(
+        payment.id
+      );
+      if (response.success) {
+        setSelectedPayment({
+          ...payment,
+          auditTrail: response.data.events,
+        });
+        setIsAuditModalOpen(true);
+      } else {
+        alert("Could not fetch audit trail");
+      }
+    } catch (error) {
+      console.error("Error fetching audit trail:", error);
+      alert("Error fetching audit trail");
+    }
   };
 
   // Handle sort change
@@ -143,15 +179,8 @@ const AdminPaymentsPage = () => {
       setSortBy(column);
       setSortOrder("desc");
     }
-  };
-
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-      minimumFractionDigits: 0,
-    }).format(amount);
+    // Reset to first page when sorting changes
+    setCurrentPage(1);
   };
 
   // Handle export data
@@ -164,29 +193,56 @@ const AdminPaymentsPage = () => {
   };
 
   // Export data in specific format
-  const exportDataInFormat = (format) => {
-    // In a real application, implement the export logic based on the format
-    console.log(`Exporting data in ${format} format`);
+  const exportDataInFormat = async (format) => {
+    try {
+      // Collect current filters to pass to the export endpoint
+      const filters = {
+        status: statusFilter !== "all" ? statusFilter : undefined,
+        method: methodFilter !== "all" ? methodFilter : undefined,
+        plan: planFilter !== "all" ? planFilter : undefined,
+        startDate: dateRange.start || undefined,
+        endDate: dateRange.end || undefined,
+        searchTerm: searchTerm || undefined,
+      };
 
-    // Simulate export process
-    const exportButtonEl = exportButtonRef.current;
-    if (exportButtonEl) {
-      exportButtonEl.innerHTML = "Exporting...";
-      exportButtonEl.disabled = true;
+      const exportButtonEl = exportButtonRef.current;
+      if (exportButtonEl) {
+        exportButtonEl.innerHTML = "Exporting...";
+        exportButtonEl.disabled = true;
+      }
 
-      setTimeout(() => {
-        exportButtonEl.innerHTML = "Export <FiChevronDown />";
-        exportButtonEl.disabled = false;
+      // Call export API
+      const response = await adminPaymentService.exportPaymentsData(
+        format,
+        filters
+      );
+
+      if (response.success) {
         alert(
           `Payment data exported in ${format.toUpperCase()} format successfully!`
         );
-      }, 1500);
-    }
 
-    // Hide the dropdown
-    const menu = document.getElementById("export-menu");
-    if (menu) {
-      menu.classList.add("hidden");
+        // In a real-world scenario, you might trigger a download here
+        // window.location.href = response.data.downloadUrl;
+      } else {
+        alert(`Failed to export data: ${response.message}`);
+      }
+    } catch (error) {
+      console.error(`Error exporting data as ${format}:`, error);
+      alert(`Error exporting data as ${format}`);
+    } finally {
+      // Reset button state
+      const exportButtonEl = exportButtonRef.current;
+      if (exportButtonEl) {
+        exportButtonEl.innerHTML = "Export <FiChevronDown />";
+        exportButtonEl.disabled = false;
+      }
+
+      // Hide the dropdown
+      const menu = document.getElementById("export-menu");
+      if (menu) {
+        menu.classList.add("hidden");
+      }
     }
   };
 
@@ -197,94 +253,131 @@ const AdminPaymentsPage = () => {
     planFilter !== "all" ||
     (dateRange.start && dateRange.end);
 
-  // Get unique values for filters
-  const uniqueStatuses = ["all", ...new Set(payments.map((p) => p.status))];
-  const uniqueMethods = ["all", ...new Set(payments.map((p) => p.method))];
-  const uniquePlans = ["all", ...new Set(payments.map((p) => p.plan))];
+  // Get unique values for filters from the loaded data
+  const getUniqueValues = (field) => {
+    if (!payments || payments.length === 0) return ["all"];
+    return ["all", ...new Set(payments.map((p) => p[field]).filter(Boolean))];
+  };
+
+  const uniqueStatuses = getUniqueValues("status");
+  const uniqueMethods = getUniqueValues("paymentMethod");
+  const uniquePlans =
+    payments.length > 0 && payments[0].metadata?.plan
+      ? [
+          "all",
+          ...new Set(payments.map((p) => p.metadata?.plan).filter(Boolean)),
+        ]
+      : ["all"];
+
+  // Toggle filters visibility
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
+
+  // Handle search change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Handle search submission
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setCurrentPage(1);
+    setRefreshTrigger((prev) => prev + 1);
+  };
 
   return (
-    <div className="pb-6">
-      <div className="max-w-screen-2xl mx-auto">
-        {/* Header with search and action buttons */}
-        <PaymentHeader
-          searchTerm={searchTerm}
-          onSearchChange={(e) => setSearchTerm(e.target.value)}
-          onRefresh={() => setRefreshTrigger((prev) => prev + 1)}
-          onExport={handleExportData}
-          onToggleFilters={() => setShowFilters(!showFilters)}
-          activeFilters={hasActiveFilters}
-        />
+    <div className="flex flex-col space-y-6 p-6">
+      <PaymentHeader pageTitle="Payment Management" />
 
-        {/* Export options dropdown */}
-        <div
-          id="export-menu"
-          className="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-lg z-10 border border-gray-200 dark:border-gray-700 py-1"
+      <PaymentStats
+        stats={paymentStats}
+        loading={loading}
+        darkMode={darkMode}
+      />
+
+      <PaymentTable
+        loading={loading}
+        payments={payments}
+        searchTerm={searchTerm}
+        statusFilter={statusFilter}
+        methodFilter={methodFilter}
+        planFilter={planFilter}
+        dateRange={dateRange}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        currentPage={currentPage}
+        itemsPerPage={itemsPerPage}
+        totalItems={totalItems}
+        handleSortChange={handleSortChange}
+        handleViewPayment={handleViewPayment}
+        handleViewReceipt={handleViewReceipt}
+        handleViewAuditTrail={handleViewAuditTrail}
+        setCurrentPage={setCurrentPage}
+        setItemsPerPage={setItemsPerPage}
+        handleResetFilters={handleResetFilters}
+        formatCurrency={formatCurrency}
+        formatDate={formatDate2}
+        handleExportData={handleExportData}
+        handleSearchChange={handleSearchChange}
+        handleSearch={handleSearch}
+        toggleFilters={toggleFilters}
+        showFilters={showFilters}
+      />
+
+      {/* Export options dropdown */}
+      <div
+        id="export-menu"
+        className="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-lg z-10 border border-gray-200 dark:border-gray-700 py-1"
+      >
+        <button
+          className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          onClick={() => exportDataInFormat("csv")}
         >
-          <button
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            onClick={() => exportDataInFormat("csv")}
-          >
-            Export as CSV
-          </button>
-          <button
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            onClick={() => exportDataInFormat("excel")}
-          >
-            Export as Excel
-          </button>
-          <button
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            onClick={() => exportDataInFormat("pdf")}
-          >
-            Export as PDF
-          </button>
-        </div>
-
-        {/* Stats Cards */}
-        <PaymentStats stats={paymentStats} formatCurrency={formatCurrency} />
-
-        {/* Filters Panel */}
-        {showFilters && (
-          <PaymentFilters
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-            methodFilter={methodFilter}
-            setMethodFilter={setMethodFilter}
-            planFilter={planFilter}
-            setPlanFilter={setPlanFilter}
-            dateRange={dateRange}
-            setDateRange={setDateRange}
-            uniqueStatuses={uniqueStatuses}
-            uniqueMethods={uniqueMethods}
-            uniquePlans={uniquePlans}
-            handleResetFilters={handleResetFilters}
-          />
-        )}
-
-        {/* Payments Table */}
-        <PaymentTable
-          loading={loading}
-          payments={payments}
-          searchTerm={searchTerm}
-          statusFilter={statusFilter}
-          methodFilter={methodFilter}
-          planFilter={planFilter}
-          dateRange={dateRange}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          handleSortChange={handleSortChange}
-          handleViewPayment={handleViewPayment}
-          handleViewReceipt={handleViewReceipt}
-          handleViewAuditTrail={handleViewAuditTrail}
-          setCurrentPage={setCurrentPage}
-          setItemsPerPage={setItemsPerPage}
-          handleResetFilters={handleResetFilters}
-          formatCurrency={formatCurrency}
-          formatDate={formatDate2}
-        />
+          Export as CSV
+        </button>
+        <button
+          className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          onClick={() => exportDataInFormat("excel")}
+        >
+          Export as Excel
+        </button>
+        <button
+          className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          onClick={() => exportDataInFormat("pdf")}
+        >
+          Export as PDF
+        </button>
       </div>
+
+      {/* Filters Panel */}
+      {showFilters && (
+        <PaymentFilters
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          methodFilter={methodFilter}
+          setMethodFilter={setMethodFilter}
+          planFilter={planFilter}
+          setPlanFilter={setPlanFilter}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
+          uniqueStatuses={uniqueStatuses}
+          uniqueMethods={uniqueMethods}
+          uniquePlans={uniquePlans}
+          handleResetFilters={handleResetFilters}
+        />
+      )}
+
+      {/* Error message */}
+      {error && (
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+          role="alert"
+        >
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
 
       {/* Modals */}
       {isPaymentDetailsModalOpen && selectedPayment && (
@@ -293,7 +386,7 @@ const AdminPaymentsPage = () => {
           onClose={() => setIsPaymentDetailsModalOpen(false)}
           onViewReceipt={() => {
             setIsPaymentDetailsModalOpen(false);
-            setIsReceiptModalOpen(true);
+            handleViewReceipt(selectedPayment);
           }}
           formatCurrency={formatCurrency}
           formatDate={formatDate2}

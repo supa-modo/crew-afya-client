@@ -7,11 +7,11 @@ import { useAuth } from "../../context/AuthContext";
  * Redirects unauthenticated users to the login page
  */
 const ProtectedRoute = ({ children, adminOnly = false }) => {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isAdmin, loading, user } = useAuth();
   const location = useLocation();
 
-  if (isLoading) {
-    // Show loading state while checking authentication
+  // Show loading state while checking authentication
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
@@ -19,13 +19,14 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
     );
   }
 
+  // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    // Redirect to login if not authenticated
+    // Store the current location to redirect after successful login
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (adminOnly && user?.role !== "admin") {
-    // Redirect to dashboard if not an admin but trying to access admin routes
+  // Redirect to dashboard if not an admin but trying to access admin routes
+  if (adminOnly && user?.role !== "admin" && user?.role !== "superadmin") {
     return <Navigate to="/dashboard" replace />;
   }
 

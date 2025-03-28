@@ -1,37 +1,42 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import PageLoader from "../common/PageLoader";
 
 /**
  * AdminRoute component
- * Protects routes that should only be accessible to admin users
- * Redirects non-admin users to the regular dashboard
+ *
+ * Ensures that only authenticated admin users can access admin routes
+ * If authCheckComplete is false, shows a loading spinner
+ * If user is not authenticated, redirects to admin login
+ * If user is authenticated but not an admin, redirects to user dashboard
  */
 const AdminRoute = ({ children }) => {
-  const { isAuthenticated, isAdmin, loading } = useAuth();
+  const { isAuthenticated, isAdmin, loading, authCheckComplete } = useAuth();
   const location = useLocation();
 
-  // Show loading state while checking authentication
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
+  // If auth check is still in progress, show a loading spinner
+  if (loading || !authCheckComplete) {
+    return <PageLoader fullScreen />;
   }
 
-  // If not authenticated, redirect to login with return path
+  // If user is not authenticated, redirect to admin login
   if (!isAuthenticated) {
+    // Store the current location to redirect after successful login
     return (
-      <Navigate to="/admin-login" state={{ from: location.pathname }} replace />
+      <Navigate
+        to="/admin-login"
+        state={{ returnUrl: location.pathname }}
+        replace
+      />
     );
   }
 
-  // If authenticated but not admin, redirect to regular dashboard
+  // If user is authenticated but not an admin, redirect to normal dashboard
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  // If authenticated and admin, render the protected component
+  // If all checks pass, render the admin content
   return children;
 };
 

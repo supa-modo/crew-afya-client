@@ -1,10 +1,12 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+// Get API base URL from environment variable or default to local development
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
-// Create axios instance with default config
+// Create axios instance with defaults
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -13,18 +15,21 @@ const api = axios.create({
 // Add request interceptor to add auth token to requests
 api.interceptors.request.use(
   (config) => {
-    // Try to get token from localStorage first, then sessionStorage
+    // Check both localStorage and sessionStorage for token
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
-// Add response interceptor to handle token refresh
+// Add response interceptor to handle common errors
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -34,7 +39,8 @@ api.interceptors.response.use(
     const isAuthEndpoint =
       originalRequest.url.includes("/auth/login") ||
       originalRequest.url.includes("/auth/register") ||
-      originalRequest.url.includes("/auth/admin-login");
+      originalRequest.url.includes("/auth/admin-login") ||
+      originalRequest.url.includes("/auth/refresh-token");
 
     // If error is 401 and we haven't tried to refresh token yet and it's not an auth endpoint
     if (
@@ -53,18 +59,31 @@ api.interceptors.response.use(
           throw new Error("No refresh token available");
         }
 
-        const response = await axios.post(`${API_URL}/auth/refresh-token`, {
-          refreshToken,
-        });
+        // Use the API_BASE_URL variable for consistency
+        const response = await axios.post(
+          `${API_BASE_URL}/auth/refresh-token`,
+          {
+            refreshToken,
+          }
+        );
 
         // Store the new token in the same storage that had the refresh token
         if (response.data && response.data.data && response.data.data.token) {
           const newToken = response.data.data.token;
+          const newRefreshToken =
+            response.data.data.refreshToken || refreshToken;
 
+          // Update tokens in the appropriate storage
           if (localStorage.getItem("refreshToken")) {
             localStorage.setItem("token", newToken);
+            if (newRefreshToken !== refreshToken) {
+              localStorage.setItem("refreshToken", newRefreshToken);
+            }
           } else if (sessionStorage.getItem("refreshToken")) {
             sessionStorage.setItem("token", newToken);
+            if (newRefreshToken !== refreshToken) {
+              sessionStorage.setItem("refreshToken", newRefreshToken);
+            }
           }
 
           // Update the Authorization header for the retry
@@ -74,14 +93,31 @@ api.interceptors.response.use(
           throw new Error("Invalid token response format");
         }
       } catch (refreshError) {
-        // If refresh fails, clear tokens from both storages
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("refreshToken");
+        console.error("Token refresh failed:", refreshError);
 
-        // Redirect to login page if refresh fails
-        window.location.href = "/login";
+        // Don't immediately clear tokens and redirect - check if it's a network error
+        if (refreshError.isNetworkError) {
+          // For network errors, we might want to retry later rather than logging out
+          console.warn(
+            "Network error during token refresh - will try again later"
+          );
+          return Promise.reject(refreshError);
+        }
+
+        // Only clear tokens and redirect for authentication failures
+        if (
+          refreshError.response?.status === 401 ||
+          refreshError.response?.status === 403
+        ) {
+          // If refresh fails due to auth issues, clear tokens from both storages
+          localStorage.removeItem("token");
+          localStorage.removeItem("refreshToken");
+          sessionStorage.removeItem("token");
+          sessionStorage.removeItem("refreshToken");
+
+          // Redirect to login page if refresh fails with auth error
+          window.location.href = "/login";
+        }
 
         return Promise.reject(refreshError);
       }

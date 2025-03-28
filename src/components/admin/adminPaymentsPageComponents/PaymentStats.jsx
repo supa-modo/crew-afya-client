@@ -5,8 +5,9 @@ import {
   TbAlertCircle,
   TbArrowsExchange,
 } from "react-icons/tb";
+import { formatCurrency }  from "../../../utils/formatCurrency";
 
-const PaymentStats = ({ stats, formatCurrency }) => {
+const PaymentStats = ({ stats }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">

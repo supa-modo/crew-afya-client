@@ -44,6 +44,10 @@ export const AuthProvider = ({ children }) => {
               );
             }
           } catch (err) {
+            console.warn(
+              "Error fetching user profile - trying to refresh token:",
+              err
+            );
             // Token might be expired, try to refresh
             try {
               const refreshResponse = await refreshUserToken();
@@ -64,15 +68,19 @@ export const AuthProvider = ({ children }) => {
                 }
               }
             } catch (refreshErr) {
-              // If refresh fails, clear storage
-              localStorage.removeItem("token");
-              localStorage.removeItem("refreshToken");
-              sessionStorage.removeItem("token");
-              sessionStorage.removeItem("refreshToken");
-              setToken(null);
-              setUser(null);
-              setIsAuthenticated(false);
-              setIsAdmin(false);
+              console.error("Failed to refresh token:", refreshErr);
+              // Don't clear tokens for network errors
+              if (!refreshErr.isNetworkError) {
+                // If refresh fails, clear storage
+                localStorage.removeItem("token");
+                localStorage.removeItem("refreshToken");
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("refreshToken");
+                setToken(null);
+                setUser(null);
+                setIsAuthenticated(false);
+                setIsAdmin(false);
+              }
             }
           }
         } else {
@@ -82,6 +90,7 @@ export const AuthProvider = ({ children }) => {
           setIsAdmin(false);
         }
       } catch (err) {
+        console.error("Error checking auth status:", err);
         setError(err.message);
         setIsAuthenticated(false);
         setIsAdmin(false);
@@ -91,7 +100,59 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkAuthStatus();
-  }, []);
+
+    // Setup token refresh timer
+    let refreshTimer;
+    if (token) {
+      try {
+        // Try to decode the JWT token to get its expiration
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const payload = JSON.parse(window.atob(base64));
+
+        if (payload.exp) {
+          // Get expiration time in milliseconds
+          const expTime = payload.exp * 1000;
+          const currentTime = Date.now();
+
+          // If token is not expired, set up refresh
+          if (expTime > currentTime) {
+            // Refresh 5 minutes before expiration
+            const timeUntilRefresh = Math.max(
+              0,
+              expTime - currentTime - 5 * 60 * 1000
+            );
+            refreshTimer = setTimeout(async () => {
+              try {
+                const response = await refreshUserToken();
+                if (response && response.data && response.data.token) {
+                  setToken(response.data.token);
+                }
+              } catch (error) {
+                console.error("Failed to refresh token:", error);
+              }
+            }, timeUntilRefresh);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not parse JWT token for refresh timing:", err);
+      }
+    }
+
+    // Check auth when page becomes visible again
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        checkAuthStatus();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      if (refreshTimer) clearTimeout(refreshTimer);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [token]);
 
   const login = async (identifier, password, rememberMe = false) => {
     try {
@@ -288,6 +349,64 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const checkAuthStatus = async () => {
+    try {
+      setLoading(true);
+      const currentToken =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
+
+      if (currentToken) {
+        setToken(currentToken);
+        try {
+          const userData = await getUserProfile();
+          if (userData && userData.data) {
+            setUser(userData.data);
+            setIsAuthenticated(true);
+            setIsAdmin(
+              userData.data.role === "admin" ||
+                userData.data.role === "superadmin"
+            );
+          }
+        } catch (err) {
+          console.warn(
+            "Error fetching profile, attempting token refresh:",
+            err
+          );
+          try {
+            const refreshResponse = await refreshUserToken();
+            if (refreshResponse?.data?.token) {
+              setToken(refreshResponse.data.token);
+              const userData = await getUserProfile();
+              if (userData?.data) {
+                setUser(userData.data);
+                setIsAuthenticated(true);
+                setIsAdmin(
+                  userData.data.role === "admin" ||
+                    userData.data.role === "superadmin"
+                );
+              }
+            }
+          } catch (refreshErr) {
+            if (!refreshErr.isNetworkError) {
+              localStorage.removeItem("token");
+              localStorage.removeItem("refreshToken");
+              sessionStorage.removeItem("token");
+              sessionStorage.removeItem("refreshToken");
+              setToken(null);
+              setUser(null);
+              setIsAuthenticated(false);
+              setIsAdmin(false);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Auth check error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -305,6 +424,7 @@ export const AuthProvider = ({ children }) => {
         updateUser,
         sendOtp,
         verifyOtp,
+        checkAuthStatus,
       }}
     >
       {children}

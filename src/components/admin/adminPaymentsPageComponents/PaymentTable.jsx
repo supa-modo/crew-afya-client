@@ -1,23 +1,26 @@
-import React, { useMemo } from "react";
-import { FiChevronDown, FiFilter } from "react-icons/fi";
+import React from "react";
 import {
-  TbCash,
+  FiEye,
+  FiClock,
+  FiChevronUp,
+  FiChevronDown,
+  FiFilter,
+  FiRefreshCw,
+  FiSearch,
+  FiDownload,
+} from "react-icons/fi";
+import {
+  TbReceipt,
+  TbCalendarDot,
   TbCreditCard,
-  TbDeviceMobile,
-  TbFileAnalytics,
+  TbShieldHalfFilled,
+  TbCash,
   TbHistory,
   TbMoneybag,
-  TbReceipt,
-  TbShield,
-  TbUser,
-  TbCheck,
-  TbInfoCircle,
-  TbAlertCircle,
-  TbArrowsExchange,
 } from "react-icons/tb";
-import { parseISO } from "date-fns";
-import Pagination from "../../common/Pagination";
+import { HiCash } from "react-icons/hi";
 import { MpesaIcon } from "../../common/icons";
+import Pagination from "../../common/Pagination";
 
 const PaymentTable = ({
   loading,
@@ -31,6 +34,7 @@ const PaymentTable = ({
   sortOrder,
   currentPage,
   itemsPerPage,
+  totalItems,
   handleSortChange,
   handleViewPayment,
   handleViewReceipt,
@@ -40,401 +44,431 @@ const PaymentTable = ({
   handleResetFilters,
   formatCurrency,
   formatDate,
+  handleExportData,
+  handleSearchChange,
+  handleSearch,
+  toggleFilters,
+  showFilters,
 }) => {
-  // Loading skeleton count
-  const skeletonCount = 10;
+  // Function to render table header with sort indicators
+  const renderTableHeader = (label, field, icon = null) => {
+    return (
+      <th
+        scope="col"
+        className="px-6 py-3 text-left text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider cursor-pointer"
+        onClick={() => handleSortChange(field)}
+      >
+        <div className="flex items-center">
+          {icon}
+          <span className="ml-2">{label}</span>
+          <span className="inline-flex flex-col ml-1">
+            {sortBy === field ? (
+              sortOrder === "asc" ? (
+                <FiChevronUp className="h-4 w-4 text-primary-600" />
+              ) : (
+                <FiChevronDown className="h-4 w-4 text-primary-600" />
+              )
+            ) : (
+              <span className="inline-flex flex-col">
+                <FiChevronUp className="h-3 w-3 text-gray-400 -mb-1" />
+                <FiChevronDown className="h-3 w-3 text-gray-400" />
+              </span>
+            )}
+          </span>
+        </div>
+      </th>
+    );
+  };
 
-  // Get payment status info
+  // Get payment status info for badge
   const getPaymentStatusInfo = (status) => {
     switch (status) {
       case "completed":
         return {
-          color: "text-green-600 dark:text-green-500",
-          bgColor: "bg-green-100 dark:bg-green-900/20",
-          icon: <TbCheck className="h-4 w-4" />,
+          color: "text-green-800 dark:text-green-400",
+          bgColor: "bg-green-100 dark:bg-green-900/30",
           label: "Completed",
         };
       case "pending":
         return {
-          color: "text-yellow-600 dark:text-yellow-500",
-          bgColor: "bg-yellow-100 dark:bg-yellow-900/20",
-          icon: <TbInfoCircle className="h-4 w-4" />,
+          color: "text-yellow-800 dark:text-yellow-400",
+          bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
           label: "Pending",
         };
       case "processing":
         return {
-          color: "text-blue-600 dark:text-blue-500",
-          bgColor: "bg-blue-100 dark:bg-blue-900/20",
-          icon: <TbArrowsExchange className="h-4 w-4" />,
+          color: "text-blue-800 dark:text-blue-400",
+          bgColor: "bg-blue-100 dark:bg-blue-900/30",
           label: "Processing",
         };
       case "failed":
         return {
-          color: "text-red-600 dark:text-red-500",
-          bgColor: "bg-red-100 dark:bg-red-900/20",
-          icon: <TbAlertCircle className="h-4 w-4" />,
+          color: "text-red-800 dark:text-red-400",
+          bgColor: "bg-red-100 dark:bg-red-900/30",
           label: "Failed",
         };
       case "refunded":
         return {
-          color: "text-purple-600 dark:text-purple-500",
-          bgColor: "bg-purple-100 dark:bg-purple-900/20",
-          icon: <TbArrowsExchange className="h-4 w-4" />,
+          color: "text-purple-800 dark:text-purple-400",
+          bgColor: "bg-purple-100 dark:bg-purple-900/30",
           label: "Refunded",
+        };
+      case "cancelled":
+        return {
+          color: "text-gray-800 dark:text-gray-400",
+          bgColor: "bg-gray-100 dark:bg-gray-700",
+          label: "Cancelled",
         };
       default:
         return {
-          color: "text-gray-600 dark:text-gray-500",
-          bgColor: "bg-gray-100 dark:bg-gray-900/20",
-          icon: <TbInfoCircle className="h-4 w-4" />,
-          label: status.charAt(0).toUpperCase() + status.slice(1),
+          color: "text-gray-800 dark:text-gray-400",
+          bgColor: "bg-gray-100 dark:bg-gray-700",
+          label:
+            status?.charAt(0).toUpperCase() + status?.slice(1) || "Unknown",
         };
     }
   };
 
-  // Filter and sort payments
-  const filteredPayments = useMemo(() => {
-    return payments
-      .filter((payment) => {
-        // Search term filter
-        const searchMatches =
-          payment.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          payment.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          payment.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (payment.mpesaCode &&
-            payment.mpesaCode.toLowerCase().includes(searchTerm.toLowerCase()));
-
-        // Status filter
-        const statusMatches =
-          statusFilter === "all" || payment.status === statusFilter;
-
-        // Payment method filter
-        const methodMatches =
-          methodFilter === "all" || payment.method === methodFilter;
-
-        // Plan filter
-        const planMatches = planFilter === "all" || payment.plan === planFilter;
-
-        // Date range filter
-        let dateMatches = true;
-        if (dateRange.start && dateRange.end) {
-          const paymentDate = parseISO(payment.date);
-          const startDate = new Date(`${dateRange.start}T00:00:00`);
-          const endDate = new Date(`${dateRange.end}T23:59:59`);
-          dateMatches = paymentDate >= startDate && paymentDate <= endDate;
-        }
-
-        return (
-          searchMatches &&
-          statusMatches &&
-          methodMatches &&
-          planMatches &&
-          dateMatches
-        );
-      })
-      .sort((a, b) => {
-        // Sort logic
-        if (sortBy === "date") {
-          return sortOrder === "asc"
-            ? new Date(a.date) - new Date(b.date)
-            : new Date(b.date) - new Date(a.date);
-        } else if (sortBy === "amount") {
-          return sortOrder === "asc"
-            ? a.amount - b.amount
-            : b.amount - a.amount;
-        } else if (sortBy === "id") {
-          return sortOrder === "asc"
-            ? a.id.localeCompare(b.id)
-            : b.id.localeCompare(a.id);
-        }
-
-        // Default sort
-        return 0;
-      });
-  }, [
-    payments,
-    searchTerm,
-    statusFilter,
-    methodFilter,
-    planFilter,
-    dateRange,
-    sortBy,
-    sortOrder,
-  ]);
-
-  // Pagination
-  const totalPages = Math.ceil(filteredPayments.length / itemsPerPage);
-  const paginatedPayments = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredPayments.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredPayments, currentPage, itemsPerPage]);
-
-  // Handle row click
+  // Click handler for table row
   const handleRowClick = (payment) => {
     handleViewPayment(payment);
   };
 
+  // Loading skeleton
+  const renderSkeletonRows = () => {
+    return Array(Math.min(itemsPerPage, 5))
+      .fill(0)
+      .map((_, index) => (
+        <tr key={`skeleton-${index}`} className="animate-pulse">
+          <td className="px-4 py-3 whitespace-nowrap">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-16 mt-1"></div>
+          </td>
+          <td className="px-4 py-3 whitespace-nowrap">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+          </td>
+          <td className="px-4 py-3 whitespace-nowrap">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+          </td>
+          <td className="px-4 py-3 whitespace-nowrap">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+          </td>
+          <td className="px-4 py-3 whitespace-nowrap">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+          </td>
+          <td className="px-4 py-3 whitespace-nowrap">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+          </td>
+          <td className="px-4 py-3 whitespace-nowrap">
+            <div className="flex justify-end space-x-2">
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-8"></div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-8"></div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-8"></div>
+            </div>
+          </td>
+        </tr>
+      ));
+  };
+
+  // Check if there are any payments after filtering
+  const hasPayments = payments && payments.length > 0;
+
+  // Get plan information from payment data
+  const getPlanInfo = (payment) => {
+    // Check if plan exists in metadata or directly in the payment object
+    if (payment.metadata && payment.metadata.plan) {
+      return payment.metadata.plan;
+    } else if (payment.plan) {
+      return payment.plan;
+    }
+    return "N/A";
+  };
+
+  // Get customer name from payment
+  const getCustomerName = (payment) => {
+    if (payment.user) {
+      return `${payment.user.firstName} ${payment.user.lastName}`;
+    }
+    return "N/A";
+  };
+
+  // Status badge component
+  const StatusBadge = ({ status }) => {
+    let bgColor = "";
+    let textColor = "";
+    let icon = null;
+
+    switch (status) {
+      case "completed":
+        bgColor = "bg-green-200 dark:bg-green-900/50";
+        textColor = "text-green-700 dark:text-green-400";
+        icon = <FiChevronUp className="mr-1 h-4 w-4" />;
+        break;
+      case "failed":
+        bgColor = "bg-red-200 dark:bg-red-900/50";
+        textColor = "text-red-700 dark:text-red-400";
+        icon = <FiChevronDown className="mr-1 h-4 w-4" />;
+        break;
+      case "pending":
+        bgColor = "bg-yellow-200 dark:bg-yellow-900/50";
+        textColor = "text-yellow-700 dark:text-yellow-400";
+        icon = <FiClock className="mr-1 h-4 w-4" />;
+        break;
+      default:
+        bgColor = "bg-gray-200 dark:bg-gray-700";
+        textColor = "text-gray-700 dark:text-gray-400";
+    }
+
+    return (
+      <span
+        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor}`}
+      >
+        {icon}
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
+    );
+  };
+
+  // Get reference number from payment
+  const getPaymentReference = (payment) => {
+    return (
+      payment.mpesaReceiptNumber ||
+      payment.transactionId ||
+      payment.reference ||
+      payment.id?.substring(0, 8) ||
+      "N/A"
+    );
+  };
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800/60">
-            <tr>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-                onClick={() => handleSortChange("id")}
-              >
-                <div className="flex items-center">
-                  <span>Transaction ID</span>
-                  {sortBy === "id" && (
-                    <span className="ml-1">
-                      {sortOrder === "asc" ? (
-                        <FiChevronDown className="h-4 w-4" />
-                      ) : (
-                        <FiChevronDown className="h-4 w-4 transform rotate-180" />
-                      )}
-                    </span>
-                  )}
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="p-3 pt-5 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          {/* Title */}
+          <div className="flex items-center gap-2 md:w-[50%]">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-600 dark:text-white">
+              Payment Transactions
+            </h2>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              ({totalItems} transactions)
+            </span>
+          </div>
+
+          {/* Search and Filters - Full width on mobile */}
+          <div className="w-full md:w-[50%] flex flex-row items-end sm:items-center gap-3">
+            <div className="relative w-full">
+              <form onSubmit={handleSearch} className="w-full">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiSearch className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    className="text-sm block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                    placeholder="Search payments..."
+                    value={searchTerm}
+                    onChange={handleSearchChange || ((e) => {})}
+                  />
                 </div>
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-                onClick={() => handleSortChange("date")}
-              >
-                <div className="flex items-center">
-                  <span>Date</span>
-                  {sortBy === "date" && (
-                    <span className="ml-1">
-                      {sortOrder === "asc" ? (
-                        <FiChevronDown className="h-4 w-4" />
-                      ) : (
-                        <FiChevronDown className="h-4 w-4 transform rotate-180" />
-                      )}
-                    </span>
-                  )}
-                </div>
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-              >
-                User
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-              >
-                Method
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-              >
-                Plan
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-                onClick={() => handleSortChange("amount")}
-              >
-                <div className="flex items-center">
-                  <span>Amount</span>
-                  {sortBy === "amount" && (
-                    <span className="ml-1">
-                      {sortOrder === "asc" ? (
-                        <FiChevronDown className="h-4 w-4" />
-                      ) : (
-                        <FiChevronDown className="h-4 w-4 transform rotate-180" />
-                      )}
-                    </span>
-                  )}
-                </div>
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+              </form>
+            </div>
+
+            <button
+              onClick={toggleFilters}
+              className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap ${
+                showFilters
+                  ? "bg-primary-50 text-primary-700 border-primary-300 dark:bg-primary-900/20 dark:text-primary-400 dark:border-primary-700"
+                  : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              } transition-colors duration-200`}
+            >
+              <FiFilter className="mr-2 h-4 w-4" />
+              Filters
+            </button>
+
+            <button
+              onClick={handleExportData}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200"
+            >
+              <FiDownload className="mr-2 h-4 w-4" />
+              Export
+            </button>
+          </div>
+        </div>
+
+        {showFilters && (
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
+            <div>
+              <label
+                htmlFor="status"
+                className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
               >
                 Status
-              </th>
+              </label>
+              <select
+                id="status"
+                name="status"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="text-sm md:text-base font-medium block w-full pl-3 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 text-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+              >
+                <option value="all">All Statuses</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+            {/* More filters can be added here similar to PaymentHistory */}
+          </div>
+        )}
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-800">
+            <tr>
+              {renderTableHeader(
+                "Date",
+                "paymentDate",
+                <TbCalendarDot className="mr-2 h-5 w-5" />
+              )}
+              {renderTableHeader("ID/Reference", "id")}
+              {renderTableHeader("Customer", "user")}
+              {renderTableHeader(
+                "Plan",
+                "plan",
+                <TbShieldHalfFilled className="mr-2 h-5 w-5" />
+              )}
+              {renderTableHeader(
+                "Amount",
+                "amount",
+                <HiCash className="mr-2 h-5 w-5" />
+              )}
+              {renderTableHeader("Status", "status")}
               <th
                 scope="col"
-                className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                className="px-6 py-3 text-right text-xs sm:text-[0.8rem] font-medium text-primary-600 uppercase tracking-wider"
               >
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
             {loading ? (
-              // Loading skeleton
-              Array.from({ length: skeletonCount }).map((_, index) => (
-                <tr key={index} className="animate-pulse">
+              renderSkeletonRows()
+            ) : hasPayments ? (
+              payments.map((payment) => (
+                <tr
+                  key={payment.id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150 cursor-pointer"
+                  onClick={() => handleRowClick(payment)}
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+                    <div className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400">
+                      {formatDate(payment.paymentDate || payment.date)}
+                    </div>
+                    <div className="text-[0.7rem] sm:text-xs font-medium text-gray-500 dark:text-gray-500">
+                      {new Date(
+                        payment.paymentDate || payment.date
+                      ).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-mono">
+                    <div className="truncate max-w-[120px]">
+                      {getPaymentReference(payment)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-700 dark:text-gray-400">
+                    {getCustomerName(payment)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                    {getPlanInfo(payment)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400">
+                    {formatCurrency(payment.amount)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+                    <StatusBadge status={payment.status} />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12 ml-auto"></div>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
+                    <div
+                      className="flex justify-end"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button
+                        className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 p-1 rounded-full transition-colors duration-150"
+                        title="View Payment Details"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewPayment(payment);
+                        }}
+                      >
+                        <FiEye className="h-5 w-5" />
+                      </button>
+                      <button
+                        className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 p-1 rounded-full transition-colors duration-150"
+                        title="View Payment Receipt"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewReceipt(payment);
+                        }}
+                      >
+                        <TbReceipt className="h-5 w-5" />
+                      </button>
+                      <button
+                        className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 p-1 rounded-full transition-colors duration-150"
+                        title="View Audit Trail"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewAuditTrail(payment);
+                        }}
+                      >
+                        <FiClock className="h-5 w-5" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
-            ) : paginatedPayments.length === 0 ? (
-              // No results found
+            ) : (
               <tr>
                 <td
-                  colSpan="8"
-                  className="px-6 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
+                  colSpan="7"
+                  className="px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400"
                 >
-                  <div className="flex flex-col items-center justify-center">
-                    <TbFileAnalytics className="h-12 w-12 text-gray-400 mb-3" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white mb-1">
-                      No payments found
-                    </p>
-                    <p className="text-gray-500 dark:text-gray-400 max-w-md">
-                      {searchTerm ||
-                      statusFilter !== "all" ||
-                      methodFilter !== "all" ||
-                      planFilter !== "all" ||
-                      (dateRange.start && dateRange.end)
-                        ? "Try adjusting your filters or search term"
-                        : "No payment transactions are available at this time"}
-                    </p>
-                    {(searchTerm ||
-                      statusFilter !== "all" ||
-                      methodFilter !== "all" ||
-                      planFilter !== "all" ||
-                      (dateRange.start && dateRange.end)) && (
+                  {statusFilter !== "all" ||
+                  methodFilter !== "all" ||
+                  planFilter !== "all" ||
+                  dateRange.start ||
+                  dateRange.end ||
+                  searchTerm ? (
+                    <div>
+                      <p className="mb-2">No payments match your filters</p>
                       <button
+                        className="inline-flex items-center text-admin-600 hover:text-admin-700 dark:text-admin-500 dark:hover:text-admin-400"
                         onClick={handleResetFilters}
-                        className="mt-3 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
                       >
-                        <FiFilter className="mr-2 h-4 w-4" />
-                        Reset filters
+                        <FiRefreshCw className="h-4 w-4 mr-1" />
+                        Reset Filters
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    "No payments found"
+                  )}
                 </td>
               </tr>
-            ) : (
-              // Payments data
-              paginatedPayments.map((payment) => {
-                const statusInfo = getPaymentStatusInfo(payment.status);
-                return (
-                  <tr
-                    key={payment.id}
-                    onClick={() => handleRowClick(payment)}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors cursor-pointer"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                      {payment.id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {formatDate(payment.date)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center">
-                        <TbUser className="mr-2 h-5 w-5 text-gray-400" />
-                        <span>{payment.userName}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center">
-                        {payment.method === "M-Pesa" ? (
-                          <MpesaIcon width={60} height={20} />
-                        ) : payment.method === "Card" ? (
-                          <TbCreditCard className="mr-2 h-5 w-5 text-blue-500" />
-                        ) : payment.method === "Cash" ? (
-                          <TbCash className="mr-2 h-5 w-5 text-yellow-500" />
-                        ) : payment.method === "Bank Transfer" ? (
-                          <TbMoneybag className="mr-2 h-5 w-5 text-purple-500" />
-                        ) : (
-                          <TbHistory className="mr-2 h-5 w-5 text-gray-500" />
-                        )}
-                        {/* <span>{payment.method}</span> */}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center">
-                        <TbShield className="mr-2 h-5 w-5 text-admin-500" />
-                        <span>
-                          {payment.plan}
-                          <span className="ml-1 text-xs text-gray-400 dark:text-gray-500 capitalize">
-                            ({payment.coveragePeriod})
-                          </span>
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                      {formatCurrency(payment.amount)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusInfo.color} ${statusInfo.bgColor}`}
-                      >
-                        {statusInfo.icon}
-                        <span className="ml-1">{statusInfo.label}</span>
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div
-                        className="flex justify-end space-x-2"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleViewReceipt(payment);
-                          }}
-                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                          title="View receipt"
-                        >
-                          <TbReceipt className="h-5 w-5" />
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleViewAuditTrail(payment);
-                          }}
-                          className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
-                          title="View audit trail"
-                        >
-                          <TbHistory className="h-5 w-5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
             )}
           </tbody>
         </table>
       </div>
 
-      {/* Using common Pagination component */}
-      {!loading && filteredPayments.length > 0 && (
+      {/* Pagination */}
+      {hasPayments && totalItems > 0 && (
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={filteredPayments.length}
+          totalPages={Math.ceil(totalItems / itemsPerPage)}
+          totalItems={totalItems}
           pageSize={itemsPerPage}
           onPageChange={setCurrentPage}
           onPageSizeChange={setItemsPerPage}

@@ -8,7 +8,8 @@ import { useAuth } from "../../context/AuthContext";
  * to the dashboard, but allows viewing the homepage
  */
 const AuthRedirect = ({ children }) => {
-  const { user, loading, isAuthenticated, isAdmin } = useAuth();
+  const { user, loading, isAuthenticated, isAdmin, authCheckComplete } =
+    useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,8 +26,8 @@ const AuthRedirect = ({ children }) => {
   const adminPaths = ["/admin-login"];
 
   useEffect(() => {
-    // Only redirect after auth state is loaded and if user is authenticated
-    if (!loading && isAuthenticated) {
+    // Only redirect after auth state is loaded fully and if user is authenticated
+    if (!loading && authCheckComplete && isAuthenticated) {
       // Check if current path is in the list of auth paths
       const isAuthPath = authPaths.some((path) => {
         // Handle exact matches and paths with parameters
@@ -51,7 +52,14 @@ const AuthRedirect = ({ children }) => {
         navigate("/dashboard", { replace: true });
       }
     }
-  }, [isAuthenticated, isAdmin, loading, navigate, location.pathname]);
+  }, [
+    isAuthenticated,
+    isAdmin,
+    loading,
+    authCheckComplete,
+    navigate,
+    location.pathname,
+  ]);
 
   // Return children while the check is happening or if no redirect is needed
   return children;

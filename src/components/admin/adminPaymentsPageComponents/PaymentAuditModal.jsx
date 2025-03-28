@@ -6,11 +6,14 @@ import {
   TbArrowsExchange,
   TbAlertCircle,
   TbHistory,
+  TbClock,
+  TbUser,
+  TbCreditCard,
 } from "react-icons/tb";
 
 const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
   // Get payment status info
-  const getPaymentStatusInfo = (status) => {
+  const getStatusInfo = (status) => {
     switch (status) {
       case "completed":
         return {
@@ -40,12 +43,19 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
           icon: <TbAlertCircle className="h-4 w-4" />,
           label: "Failed",
         };
-      case "refunded":
+      // case "refunded":
+      //   return {
+      //     color: "text-purple-600 dark:text-purple-500",
+      //     bgColor: "bg-purple-100 dark:bg-purple-900/20",
+      //     icon: <TbArrowsExchange className="h-4 w-4" />,
+      //     label: "Refunded",
+      //   };
+      case "created":
         return {
-          color: "text-purple-600 dark:text-purple-500",
-          bgColor: "bg-purple-100 dark:bg-purple-900/20",
-          icon: <TbArrowsExchange className="h-4 w-4" />,
-          label: "Refunded",
+          color: "text-blue-600 dark:text-blue-500",
+          bgColor: "bg-blue-100 dark:bg-blue-900/20",
+          icon: <TbCreditCard className="h-4 w-4" />,
+          label: "Created",
         };
       default:
         return {
@@ -57,20 +67,24 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
     }
   };
 
-  // Generate audit events based on payment status
+  // Use the audit trail from the payment object, or generate a fallback
   const getAuditEvents = () => {
-    // Base event - payment creation
+    // If the API has returned actual audit trail events, use those
+    if (payment.auditTrail && payment.auditTrail.length > 0) {
+      return payment.auditTrail;
+    }
+
+    // Fallback: Generate mock events based on payment status
     const events = [
       {
         id: 1,
         status: "created",
         description: "Payment created",
-        details: `Transaction initiated via ${payment.method}`,
+        details: `Transaction initiated via ${
+          payment.method || payment.paymentMethod
+        }`,
         date: new Date(payment.date),
-        icon: (
-          <TbCheck className="h-5 w-5 text-green-600 dark:text-green-400" />
-        ),
-        iconBg: "bg-green-100 dark:bg-green-900/20",
+        type: "payment",
       },
     ];
 
@@ -82,10 +96,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
         description: "Payment processing",
         details: "Waiting for payment gateway confirmation",
         date: new Date(new Date(payment.date).getTime() + 5 * 60000), // 5 mins after
-        icon: (
-          <TbArrowsExchange className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-        ),
-        iconBg: "bg-blue-100 dark:bg-blue-900/20",
+        type: "payment",
       });
     } else if (payment.status === "completed") {
       events.push({
@@ -94,10 +105,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
         description: "Payment processing",
         details: "Waiting for payment gateway confirmation",
         date: new Date(new Date(payment.date).getTime() + 5 * 60000), // 5 mins after
-        icon: (
-          <TbArrowsExchange className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-        ),
-        iconBg: "bg-blue-100 dark:bg-blue-900/20",
+        type: "payment",
       });
       events.push({
         id: 3,
@@ -105,10 +113,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
         description: "Payment completed",
         details: "Transaction successfully processed",
         date: new Date(new Date(payment.date).getTime() + 10 * 60000), // 10 mins after
-        icon: (
-          <TbCheck className="h-5 w-5 text-green-600 dark:text-green-400" />
-        ),
-        iconBg: "bg-green-100 dark:bg-green-900/20",
+        type: "payment",
       });
     } else if (payment.status === "failed") {
       events.push({
@@ -117,10 +122,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
         description: "Payment processing",
         details: "Waiting for payment gateway confirmation",
         date: new Date(new Date(payment.date).getTime() + 2 * 60000), // 2 mins after
-        icon: (
-          <TbArrowsExchange className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-        ),
-        iconBg: "bg-blue-100 dark:bg-blue-900/20",
+        type: "payment",
       });
       events.push({
         id: 3,
@@ -128,10 +130,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
         description: "Payment failed",
         details: "Transaction declined by payment provider",
         date: new Date(new Date(payment.date).getTime() + 3 * 60000), // 3 mins after
-        icon: (
-          <TbAlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
-        ),
-        iconBg: "bg-red-100 dark:bg-red-900/20",
+        type: "payment",
       });
     } else if (payment.status === "refunded") {
       events.push({
@@ -140,10 +139,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
         description: "Payment processing",
         details: "Waiting for payment gateway confirmation",
         date: new Date(new Date(payment.date).getTime() + 5 * 60000), // 5 mins after
-        icon: (
-          <TbArrowsExchange className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-        ),
-        iconBg: "bg-blue-100 dark:bg-blue-900/20",
+        type: "payment",
       });
       events.push({
         id: 3,
@@ -151,10 +147,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
         description: "Payment completed",
         details: "Transaction successfully processed",
         date: new Date(new Date(payment.date).getTime() + 10 * 60000), // 10 mins after
-        icon: (
-          <TbCheck className="h-5 w-5 text-green-600 dark:text-green-400" />
-        ),
-        iconBg: "bg-green-100 dark:bg-green-900/20",
+        type: "payment",
       });
       events.push({
         id: 4,
@@ -162,10 +155,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
         description: "Payment refunded",
         details: "Full amount refunded to user",
         date: new Date(new Date(payment.date).getTime() + 2 * 24 * 60 * 60000), // 2 days after
-        icon: (
-          <TbArrowsExchange className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-        ),
-        iconBg: "bg-purple-100 dark:bg-purple-900/20",
+        type: "payment",
       });
     }
 
@@ -208,7 +198,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                     Transaction ID
                   </p>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  <p className="text-sm font-mono text-gray-900 dark:text-white truncate">
                     {payment.id}
                   </p>
                 </div>
@@ -217,7 +207,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
                     Payment Method
                   </p>
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {payment.method}
+                    {payment.method || payment.paymentMethod}
                   </p>
                 </div>
                 <div>
@@ -227,12 +217,12 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
                   <p className="text-sm">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        getPaymentStatusInfo(payment.status).color
-                      } ${getPaymentStatusInfo(payment.status).bgColor}`}
+                        getStatusInfo(payment.status).color
+                      } ${getStatusInfo(payment.status).bgColor}`}
                     >
-                      {getPaymentStatusInfo(payment.status).icon}
+                      {getStatusInfo(payment.status).icon}
                       <span className="ml-1">
-                        {getPaymentStatusInfo(payment.status).label}
+                        {getStatusInfo(payment.status).label}
                       </span>
                     </span>
                   </p>
@@ -240,7 +230,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
               </div>
 
               {/* Audit Events Title */}
-              <div className="relative">
+              <div className="relative mb-4">
                 <div
                   className="absolute inset-0 flex items-center"
                   aria-hidden="true"
@@ -248,92 +238,69 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
                   <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="px-2 bg-white dark:bg-gray-800 text-sm text-gray-500 dark:text-gray-400">
-                    Audit Events
+                  <span className="px-3 bg-white dark:bg-gray-800 text-sm text-gray-500 dark:text-gray-400 font-medium">
+                    Transaction Timeline
                   </span>
                 </div>
               </div>
 
               {/* Audit Events Timeline */}
-              <div className="mt-4 flow-root">
+              <div className="mt-4 flow-root px-2">
                 <ul className="-mb-8">
-                  {auditEvents.map((event, eventIdx) => (
-                    <li key={event.id}>
-                      <div className="relative pb-8">
-                        {eventIdx !== auditEvents.length - 1 ? (
-                          <span
-                            className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-gray-700"
-                            aria-hidden="true"
-                          ></span>
-                        ) : null}
-                        <div className="relative flex space-x-3">
-                          <div>
+                  {auditEvents.map((event, eventIdx) => {
+                    const statusInfo = getStatusInfo(event.status);
+
+                    return (
+                      <li key={event.id}>
+                        <div className="relative pb-8">
+                          {eventIdx !== auditEvents.length - 1 ? (
                             <span
-                              className={`h-8 w-8 rounded-full ${event.iconBg} flex items-center justify-center ring-4 ring-white dark:ring-gray-800`}
-                            >
-                              {event.icon}
-                            </span>
-                          </div>
-                          <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                              className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-gray-700"
+                              aria-hidden="true"
+                            ></span>
+                          ) : null}
+                          <div className="relative flex space-x-3">
                             <div>
-                              <p className="text-sm text-gray-900 dark:text-white">
-                                {event.description}
-                              </p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {event.details}
-                              </p>
+                              <span
+                                className={`h-8 w-8 rounded-full ${statusInfo.bgColor} flex items-center justify-center ring-4 ring-white dark:ring-gray-800`}
+                              >
+                                {statusInfo.icon}
+                              </span>
                             </div>
-                            <div className="text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-                              {formatDate(event.date, true)}
+                            <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                              <div>
+                                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                  {event.description}
+                                </p>
+                                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                  {event.details}
+                                </p>
+                              </div>
+                              <div className="text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400 flex flex-col items-end">
+                                <div className="mb-1">
+                                  <TbClock className="inline h-3 w-3 mr-1" />
+                                  {formatDate(event.date, true)}
+                                </div>
+                                {event.user && (
+                                  <div className="text-xs text-gray-400 dark:text-gray-500">
+                                    <TbUser className="inline h-3 w-3 mr-1" />
+                                    {event.user}
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 </ul>
-              </div>
 
-              {/* System Information */}
-              <div className="mt-6 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
-                  System Information
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                      IP Address
-                    </p>
-                    <p className="text-xs text-gray-900 dark:text-white">
-                      {payment.paymentDetails?.ipAddress || "192.168.1.1"}
-                    </p>
+                {auditEvents.length === 0 && (
+                  <div className="text-center py-6 text-gray-500 dark:text-gray-400">
+                    No audit events found for this transaction.
                   </div>
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                      Device
-                    </p>
-                    <p className="text-xs text-gray-900 dark:text-white">
-                      {payment.paymentDetails?.device || "Mobile / Android"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                      Browser
-                    </p>
-                    <p className="text-xs text-gray-900 dark:text-white">
-                      {payment.paymentDetails?.browser ||
-                        "Chrome 98.0.4758.102"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                      Location
-                    </p>
-                    <p className="text-xs text-gray-900 dark:text-white">
-                      {payment.paymentDetails?.location || "Nairobi, Kenya"}
-                    </p>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

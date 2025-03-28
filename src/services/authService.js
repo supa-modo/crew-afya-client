@@ -34,7 +34,8 @@ apiInstance.interceptors.response.use(
     const isAuthEndpoint =
       originalRequest.url.includes("/auth/login") ||
       originalRequest.url.includes("/auth/register") ||
-      originalRequest.url.includes("/auth/admin-login");
+      originalRequest.url.includes("/auth/admin-login") ||
+      originalRequest.url.includes("/auth/refresh-token");
 
     // If error is 401 and we haven't tried to refresh token yet and it's not an auth endpoint
     if (
@@ -60,11 +61,19 @@ apiInstance.interceptors.response.use(
         // Store the new token in the same storage that had the refresh token
         if (response.data && response.data.data && response.data.data.token) {
           const newToken = response.data.data.token;
+          const newRefreshToken =
+            response.data.data.refreshToken || refreshToken;
 
           if (localStorage.getItem("refreshToken")) {
             localStorage.setItem("token", newToken);
+            if (newRefreshToken !== refreshToken) {
+              localStorage.setItem("refreshToken", newRefreshToken);
+            }
           } else if (sessionStorage.getItem("refreshToken")) {
             sessionStorage.setItem("token", newToken);
+            if (newRefreshToken !== refreshToken) {
+              sessionStorage.setItem("refreshToken", newRefreshToken);
+            }
           }
 
           // Update the Authorization header for the retry
@@ -74,11 +83,28 @@ apiInstance.interceptors.response.use(
           throw new Error("Invalid token response format");
         }
       } catch (refreshError) {
-        // If refresh fails, clear tokens from both storages
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("refreshToken");
+        console.error("Token refresh failed:", refreshError);
+
+        // Don't clear tokens immediately on network errors
+        if (refreshError.isNetworkError) {
+          console.warn(
+            "Network error during token refresh - will try again later"
+          );
+          return Promise.reject(refreshError);
+        }
+
+        // Clear tokens on auth errors (401/403)
+        if (
+          refreshError.response?.status === 401 ||
+          refreshError.response?.status === 403
+        ) {
+          // If refresh fails, clear tokens from both storages
+          localStorage.removeItem("token");
+          localStorage.removeItem("refreshToken");
+          sessionStorage.removeItem("token");
+          sessionStorage.removeItem("refreshToken");
+        }
+
         return Promise.reject(refreshError);
       }
     }
