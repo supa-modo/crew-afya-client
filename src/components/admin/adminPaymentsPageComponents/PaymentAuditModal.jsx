@@ -10,8 +10,14 @@ import {
   TbUser,
   TbCreditCard,
 } from "react-icons/tb";
+import { MpesaIcon } from "../../common/icons";
 
 const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
+  const getPaymentMethod = (paymentMethod) => {
+    if (payment.paymentMethod == 'mpesa') {
+      return <MpesaIcon width={64} height={24}/>;
+    } return paymentMethod;
+  }
   // Get payment status info
   const getStatusInfo = (status) => {
     switch (status) {
@@ -174,7 +180,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
         ></div>
 
         {/* Modal panel */}
-        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full">
           <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="flex justify-between items-start">
               <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white flex items-center">
@@ -207,7 +213,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
                     Payment Method
                   </p>
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {payment.method || payment.paymentMethod}
+                    {getPaymentMethod(payment.method || payment.paymentMethod)}
                   </p>
                 </div>
                 <div>
@@ -272,7 +278,7 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
                                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                                   {event.description}
                                 </p>
-                                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 max-w-2xl">
                                   {event.details}
                                 </p>
                               </div>

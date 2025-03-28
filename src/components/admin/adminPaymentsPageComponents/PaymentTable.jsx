@@ -17,10 +17,12 @@ import {
   TbCash,
   TbHistory,
   TbMoneybag,
+  TbClockDollar,
 } from "react-icons/tb";
 import { HiCash } from "react-icons/hi";
 import { MpesaIcon } from "../../common/icons";
 import Pagination from "../../common/Pagination";
+import { PiUserDuotone } from "react-icons/pi";
 
 const PaymentTable = ({
   loading,
@@ -161,9 +163,8 @@ const PaymentTable = ({
           </td>
           <td className="px-4 py-3 whitespace-nowrap">
             <div className="flex justify-end space-x-2">
-              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-8"></div>
-              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-8"></div>
-              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-full w-8"></div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-lg w-20"></div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-lg w-20"></div>
             </div>
           </td>
         </tr>
@@ -184,12 +185,18 @@ const PaymentTable = ({
     return "N/A";
   };
 
-  // Get customer name from payment
-  const getCustomerName = (payment) => {
-    if (payment.user) {
-      return `${payment.user.firstName} ${payment.user.lastName}`;
+  // Get payment service name from payment
+  const getPaymentService = (payment) => {
+    
+    if (payment.metadata.paymentType == 'membership') {
+        return 'Membership Fee';
+    } else if (payment.metadata.paymentType == 'medical') {
+        return 'Medical Insurance';
+    } else if (payment.metadata.paymentType == 'loan-repayment') {
+        return 'Loan Repayment';
     }
-    return "N/A";
+        return 'Other Services';
+    
   };
 
   // Status badge component
@@ -234,8 +241,8 @@ const PaymentTable = ({
     return (
       payment.mpesaReceiptNumber ||
       payment.transactionId ||
-      payment.reference ||
-      payment.id?.substring(0, 8) ||
+      // payment.reference ||
+      // payment.id?.substring(0, 8) ||
       "N/A"
     );
   };
@@ -332,10 +339,10 @@ const PaymentTable = ({
                 <TbCalendarDot className="mr-2 h-5 w-5" />
               )}
               {renderTableHeader("ID/Reference", "id")}
-              {renderTableHeader("Customer", "user")}
+              {renderTableHeader("Member", "member", <PiUserDuotone className="mr-2 h-5 w-5"/>)}
               {renderTableHeader(
-                "Plan",
-                "plan",
+                "Service",
+                "service",
                 <TbShieldHalfFilled className="mr-2 h-5 w-5" />
               )}
               {renderTableHeader(
@@ -381,10 +388,18 @@ const PaymentTable = ({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-700 dark:text-gray-400">
-                    {getCustomerName(payment)}
+                    
+                    <div className="">
+                        <div className="text-sm font-medium text-gray-700 dark:text-white">
+                          {payment.user.firstName} {payment.user.lastName}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {payment.user.membershipNumber || "No Membership Number"}
+                        </div>
+                      </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                    {getPlanInfo(payment)}
+                   {getPaymentService(payment)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400">
                     {formatCurrency(payment.amount)}
@@ -397,18 +412,9 @@ const PaymentTable = ({
                       className="flex justify-end"
                       onClick={(e) => e.stopPropagation()}
                     >
+                      
                       <button
-                        className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 p-1 rounded-full transition-colors duration-150"
-                        title="View Payment Details"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleViewPayment(payment);
-                        }}
-                      >
-                        <FiEye className="h-5 w-5" />
-                      </button>
-                      <button
-                        className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 p-1 rounded-full transition-colors duration-150"
+                        className="flex items-center gap-2 text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 p-1 pr-2 rounded-full transition-colors duration-150"
                         title="View Payment Receipt"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -416,16 +422,18 @@ const PaymentTable = ({
                         }}
                       >
                         <TbReceipt className="h-5 w-5" />
+                        <span>Receipt</span>
                       </button>
                       <button
-                        className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 p-1 rounded-full transition-colors duration-150"
+                        className="flex items-center gap-2 text-secondary-600 hover:text-secondary-900 dark:text-secondary-400 dark:hover:text-secondary-300 p-1 rounded-full transition-colors duration-150"
                         title="View Audit Trail"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleViewAuditTrail(payment);
                         }}
                       >
-                        <FiClock className="h-5 w-5" />
+                        <TbClockDollar className="h-5 w-5" />
+                        <span>Trail</span>
                       </button>
                     </div>
                   </td>

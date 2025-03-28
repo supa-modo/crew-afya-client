@@ -80,6 +80,7 @@ const AdminPaymentsPage = () => {
         if (response.success) {
           setPayments(response.data.payments);
           setTotalItems(response.data.total);
+          console.log(response.data.payments);
         } else {
           setError("Failed to fetch payments");
         }
