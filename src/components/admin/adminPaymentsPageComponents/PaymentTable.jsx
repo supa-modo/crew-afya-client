@@ -12,11 +12,7 @@ import {
 import {
   TbReceipt,
   TbCalendarDot,
-  TbCreditCard,
   TbShieldHalfFilled,
-  TbCash,
-  TbHistory,
-  TbMoneybag,
   TbClockDollar,
 } from "react-icons/tb";
 import { HiCash } from "react-icons/hi";
@@ -414,7 +410,7 @@ const PaymentTable = ({
                     >
                       
                       <button
-                        className="flex items-center gap-2 text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 p-1 pr-2 rounded-full transition-colors duration-150"
+                        className="flex items-center gap-1 text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 p-1 pr-2 rounded-full transition-colors duration-150"
                         title="View Payment Receipt"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -425,7 +421,7 @@ const PaymentTable = ({
                         <span>Receipt</span>
                       </button>
                       <button
-                        className="flex items-center gap-2 text-secondary-600 hover:text-secondary-900 dark:text-secondary-400 dark:hover:text-secondary-300 p-1 rounded-full transition-colors duration-150"
+                        className="flex items-center gap-1 text-secondary-600 hover:text-secondary-900 dark:text-secondary-400 dark:hover:text-secondary-300 p-1 rounded-full transition-colors duration-150"
                         title="View Audit Trail"
                         onClick={(e) => {
                           e.stopPropagation();

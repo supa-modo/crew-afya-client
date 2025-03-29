@@ -8,14 +8,11 @@ import {
   TbAlertCircle,
   TbArrowsExchange,
 } from "react-icons/tb";
+import { formatCurrency } from "../../../utils/formatCurrency";
+import { formatDate2 } from "../../../utils/formatDate";
+import { MpesaIcon } from "../../common/icons";
 
-const PaymentDetailModal = ({
-  payment,
-  onClose,
-  onViewReceipt,
-  formatCurrency,
-  formatDate,
-}) => {
+const PaymentDetailModal = ({ payment, onClose, onViewReceipt }) => {
   // Get payment status info
   const getPaymentStatusInfo = (status) => {
     switch (status) {
@@ -64,6 +61,23 @@ const PaymentDetailModal = ({
     }
   };
 
+  const getPaymentMethod = (payment) => {
+    if (payment.paymentMethod === "mpesa") {
+      return <MpesaIcon width={60} height={24} />;
+    }
+    return payment.paymentMethod || "Unknown";
+  };
+
+  const getPaymentType = (payment) => {
+    if (payment.metadata.paymentType === "membership") {
+      return "Union Membership Fee";
+    } else if (payment.metadata.paymentType === "medical") {
+      return "Medical Insurance Cover";
+    } else if (payment.metadata.paymentType === "loan-repayment") {
+      return "Loan Repayment";
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -74,7 +88,7 @@ const PaymentDetailModal = ({
         ></div>
 
         {/* Modal panel */}
-        <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div className="inline-block  align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full">
           <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
@@ -84,48 +98,51 @@ const PaymentDetailModal = ({
                 </h3>
                 <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
                   <dl className="divide-y divide-gray-200 dark:divide-gray-700">
-                    <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <div className="py-2 flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         Transaction ID
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                      </span>
+                      <span className="text-sm text-gray-900 dark:text-white">
                         {payment.id}
-                      </dd>
+                      </span>
                     </div>
-                    <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <div className="py-2 flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         Date & Time
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                        {formatDate(payment.date, true)}
-                      </dd>
+                      </span>
+                      <span className="text-sm text-gray-900 dark:text-white">
+                        {formatDate2(payment.paymentDate, true)}
+                      </span>
                     </div>
-                    <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <div className="py-2 flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         User
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                        <div className="flex items-center">
-                          {payment.userName}{" "}
+                      </span>
+                      <span className="text-sm text-gray-900 dark:text-white">
+                        <div className="flex  items-center">
+                          <span className="text-sm font-medium">
+                            {payment.user.firstName} {payment.user.lastName} -{" "}
+                          </span>
                           <span className="text-xs text-gray-500 ml-2">
-                            (ID: {payment.userId})
+                            {payment.user.membershipNumber ||
+                              "No Membership Number"}
                           </span>
                         </div>
-                      </dd>
+                      </span>
                     </div>
-                    <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <div className="py-2 flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         Amount
-                      </dt>
-                      <dd className="mt-1 text-sm font-medium text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                      </span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">
                         {formatCurrency(payment.amount)}
-                      </dd>
+                      </span>
                     </div>
-                    <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <div className="py-2 flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         Status
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                      </span>
+                      <span className="text-sm text-gray-900 dark:text-white">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             getPaymentStatusInfo(payment.status).color
@@ -136,58 +153,50 @@ const PaymentDetailModal = ({
                             {getPaymentStatusInfo(payment.status).label}
                           </span>
                         </span>
-                      </dd>
+                      </span>
                     </div>
-                    <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <div className="py-2 flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         Payment Method
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                        {payment.method}
-                        {payment.mpesaCode && (
-                          <span className="text-xs text-gray-500 ml-2">
-                            (M-Pesa Code: {payment.mpesaCode})
-                          </span>
-                        )}
-                      </dd>
+                      </span>
+                      <span className="text-sm text-gray-900 dark:text-white">
+                        {getPaymentMethod(payment)}
+                      </span>
                     </div>
-                    <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        Insurance Plan
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                        {payment.plan}{" "}
-                        <span className="text-xs text-gray-500 capitalize">
-                          ({payment.coveragePeriod} payment)
-                        </span>
-                      </dd>
+                    <div className="py-2 flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        Payment Type
+                      </span>
+                      <span className="text-sm text-gray-900 dark:text-white">
+                        {getPaymentType(payment)}
+                      </span>
                     </div>
-                    <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        Reference
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                        {payment.reference}
-                      </dd>
+                    <div className="py-2 flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        Transaction Reference Code
+                      </span>
+                      <span className="text-sm text-gray-900 dark:text-white">
+                        {payment.mpesaReceiptNumber}
+                      </span>
                     </div>
                     {payment.processingTime && (
-                      <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      <div className="py-2 flex items-center justify-between">
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                           Processing Time
-                        </dt>
-                        <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                        </span>
+                        <span className="text-sm text-gray-900 dark:text-white">
                           {payment.processingTime}
-                        </dd>
+                        </span>
                       </div>
                     )}
                     {payment.notes && (
-                      <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4">
-                        <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      <div className="py-2 flex items-center justify-between">
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                           Notes
-                        </dt>
-                        <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                        </span>
+                        <span className="text-sm text-gray-900 dark:text-white">
                           {payment.notes}
-                        </dd>
+                        </span>
                       </div>
                     )}
                   </dl>
