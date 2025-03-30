@@ -139,18 +139,8 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    // Check auth when page becomes visible again
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        checkAuthStatus();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
     return () => {
       if (refreshTimer) clearTimeout(refreshTimer);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [token]);
 
@@ -167,10 +157,12 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.user);
         setToken(response.data.token);
         setIsAuthenticated(true);
-        setIsAdmin(
-          response.data.user.role === "admin" ||
-            response.data.user.role === "superadmin"
-        );
+
+        // Check if user has admin role and set isAdmin status
+        const userRole = response.data.user.role;
+        const adminStatus = userRole === "admin" || userRole === "superadmin";
+        setIsAdmin(adminStatus);
+
         return response.data.user;
       } else {
         // If we have a token but no user data in the response,
@@ -180,10 +172,13 @@ export const AuthProvider = ({ children }) => {
           if (userData && userData.data) {
             setUser(userData.data);
             setIsAuthenticated(true);
-            setIsAdmin(
-              userData.data.role === "admin" ||
-                userData.data.role === "superadmin"
-            );
+
+            // Check if user has admin role and set isAdmin status
+            const userRole = userData.data.role;
+            const adminStatus =
+              userRole === "admin" || userRole === "superadmin";
+            setIsAdmin(adminStatus);
+
             return userData.data;
           }
         } catch (profileErr) {
@@ -218,7 +213,10 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.user);
         setToken(response.data.token);
         setIsAuthenticated(true);
+
+        // Admin login should always set isAdmin to true if successful
         setIsAdmin(true);
+
         return response.data.user;
       } else {
         // If we have a token but no user data in the response,
@@ -228,10 +226,13 @@ export const AuthProvider = ({ children }) => {
           if (userData && userData.data) {
             setUser(userData.data);
             setIsAuthenticated(true);
-            setIsAdmin(
-              userData.data.role === "admin" ||
-                userData.data.role === "superadmin"
-            );
+
+            // For admin login, verify the role is actually admin
+            const userRole = userData.data.role;
+            const adminStatus =
+              userRole === "admin" || userRole === "superadmin";
+            setIsAdmin(adminStatus);
+
             return userData.data;
           }
         } catch (profileErr) {

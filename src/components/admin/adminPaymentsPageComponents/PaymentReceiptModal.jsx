@@ -4,265 +4,389 @@ import { TbReceipt, TbCheck } from "react-icons/tb";
 import { formatDate2 } from "../../../utils/formatDate";
 import { formatCurrency } from "../../../utils/formatCurrency";
 
-const PaymentReceiptModal = ({
-  payment,
-  onClose,
-}) => {
+const PaymentReceiptModal = ({ payment, onClose }) => {
   const receiptRef = useRef(null);
 
   // Enhanced print receipt function
   const handlePrintReceipt = () => {
-    const receiptContent = receiptRef.current;
-    if (!receiptContent) return;
+    const printWindow = window.open("", "_blank");
 
-    const printWindow = window.open("", "", "height=600,width=800");
-    printWindow.document.write("<html><head><title>Payment Receipt</title>");
+    if (!printWindow) {
+      alert("Please allow popups to print the receipt");
+      return;
+    }
 
-    // Comprehensive print styles matching modal design
-    printWindow.document.write(`
-      <style>
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
-        body { 
-          font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-          color: #333; 
-          line-height: 1.6; 
-          background: #f4f4f4;
-          padding: 20px;
-        }
-        .receipt-container { 
-          max-width: 800px; 
-          margin: 0 auto; 
-          background: white; 
-          padding: 30px; 
-          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-          border-radius: 8px;
-        }
-        .receipt-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 25px;
-          padding-bottom: 20px;
-          border-bottom: 1px solid #e5e7eb;
-        }
-        .company-info {
-          display: flex;
-          align-items: center;
-        }
-        .company-logo {
-          background-color: #2563eb;
-          color: white;
-          padding: 12px;
-          border-radius: 8px;
-          margin-right: 15px;
-        }
-        .company-details h2 {
-          font-size: 20px;
-          font-weight: bold;
-          color: #1f2937;
-          margin-bottom: 5px;
-        }
-        .company-details p {
-          font-size: 14px;
-          color: #6b7280;
-        }
-        .receipt-number {
-          text-align: right;
-        }
-        .receipt-number .label {
-          font-size: 12px;
-          color: #6b7280;
-          margin-bottom: 5px;
-        }
-        .receipt-number .number {
-          font-size: 18px;
-          font-weight: bold;
-          color: #111827;
-        }
-        .status-badge {
-          display: inline-block;
-          padding: 4px 10px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 600;
-          margin-top: 8px;
-        }
-        .status-completed {
-          background-color: rgba(16, 185, 129, 0.1);
-          color: rgb(16, 185, 129);
-        }
-        .receipt-details {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 25px;
-          margin-bottom: 25px;
-          padding-bottom: 25px;
-          border-bottom: 1px solid #e5e7eb;
-        }
-        .section-title {
-          font-size: 14px;
-          font-weight: 600;
-          color: #6b7280;
-          margin-bottom: 10px;
-        }
-        .detail-item {
-          margin-bottom: 8px;
-        }
-        .detail-label {
-          font-size: 13px;
-          color: #6b7280;
-        }
-        .detail-value {
-          font-size: 14px;
-          color: #111827;
-          font-weight: 500;
-        }
-        .payment-summary {
-          margin-bottom: 20px;
-        }
-        .payment-table {
-          width: 100%;
-          border-collapse: separate;
-          border-spacing: 0;
-        }
-        .payment-table th {
-          text-align: left;
-          padding: 10px;
-          border-bottom: 2px solid #e5e7eb;
-          font-size: 12px;
-          color: #6b7280;
-          text-transform: uppercase;
-        }
-        .payment-table td {
-          padding: 12px 10px;
-          border-bottom: 1px solid #e5e7eb;
-          font-size: 14px;
-        }
-        .payment-table .total-row {
-          font-weight: bold;
-        }
-        .receipt-footer {
-          text-align: center;
-          padding-top: 25px;
-          border-top: 1px solid #e5e7eb;
-        }
-        .receipt-footer p {
-          font-size: 14px;
-          color: #6b7280;
-          margin-bottom: 5px;
-        }
-        .receipt-footer .small-print {
-          font-size: 12px;
-          color: #9ca3af;
-        }
-      </style>
-    `);
+    // Get status class and badge text for the receipt
+    const getStatusClass = () => {
+      switch (payment.status) {
+        case "completed":
+          return "status-completed";
+        case "pending":
+          return "status-pending";
+        case "failed":
+          return "status-failed";
+        default:
+          return "";
+      }
+    };
 
-    printWindow.document.write("</head><body>");
-    
-    // Recreate the receipt content with the new print styles
-    printWindow.document.write(`
-      <div class="receipt-container">
-        <div class="receipt-header">
-          <div class="company-info">
-            <div class="company-logo">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
+    const getStatusIcon = () => {
+      return payment.status === "completed" ? "✓ " : "";
+    };
+
+    const statusText =
+      payment.status?.charAt(0).toUpperCase() + payment.status?.slice(1);
+    const receiptData = payment.paymentDetails || {
+      receiptNumber: `RCPT-${
+        payment.id?.substring(0, 8).toUpperCase() || "12345678"
+      }`,
+      transactionFee: 0,
+    };
+
+    const subtitle = getSubtitle();
+
+    // Construct the receipt HTML
+    const receiptHTML = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Payment Receipt - Matatu Workers Union</title>
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          }
+          
+          body {
+            background-color: white;
+            color: #1a202c;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          
+          .receipt-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+          }
+          
+          .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+          }
+          
+          .logo-container {
+            display: flex;
+            align-items: center;
+          }
+          
+          .logo {
+            width: 4.5rem;
+            height: auto;
+            margin-right: 0.75rem;
+            border-radius: 9999px;
+            background: white;
+          }
+          
+          .company-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #4a5568;
+          }
+          
+          .receipt-info {
+            text-align: right;
+          }
+          
+          .receipt-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #718096;
+          }
+          
+          .receipt-number {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #2d3748;
+          }
+          
+          .status-badge {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 0.25rem;
+            padding: 0.125rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+          }
+          
+          .status-completed {
+            background-color: #c6f6d5;
+            color: #2f855a;
+          }
+          
+          .status-pending {
+            background-color: #fefcbf;
+            color: #b7791f;
+          }
+          
+          .status-failed {
+            background-color: #fed7d7;
+            color: #c53030;
+          }
+          
+          .section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+          }
+          
+          .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+          }
+          
+          .section-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #718096;
+            margin-bottom: 0.75rem;
+          }
+          
+          .customer-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+          }
+          
+          .detail-text {
+            font-size: 0.875rem;
+            color: #4a5568;
+            margin-bottom: 0.25rem;
+          }
+          
+          table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+          }
+          
+          th {
+            padding: 0.75rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+          }
+          
+          th:last-child {
+            text-align: right;
+          }
+          
+          td {
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            color: #2d3748;
+            border-top: 1px solid #e2e8f0;
+          }
+          
+          td:last-child {
+            text-align: right;
+          }
+          
+          .total-row {
+            font-weight: 700;
+          }
+          
+          .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+          }
+          
+          .footer p {
+            font-size: 0.875rem;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+          }
+          
+          .footer .disclaimer {
+            font-size: 0.75rem;
+            color: #718096;
+          }
+          
+          @media print {
+            body {
+              padding: 0;
+              background: white;
+            }
+            
+            .receipt-container {
+              box-shadow: none;
+              padding: 1rem;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="receipt-container">
+          <!-- Receipt Header -->
+          <div class="receipt-header">
+            <div class="logo-container">
+              <img src="/mwulogo.png" alt="Matatu Workers Union Logo" class="logo">
+              <div>
+                <h2 class="company-name">Matatu Workers Union</h2>
+                <p class="detail-text">${subtitle}</p>
+              </div>
             </div>
-            <div class="company-details">
-              <h2>Matatu Workers Union</h2>
-              <p>CrewAfya Medical Insurance Cover</p>
+            <div class="receipt-info">
+              <p class="receipt-label">RECEIPT</p>
+              <p class="receipt-number">#${receiptData.receiptNumber}</p>
+              <span class="status-badge ${getStatusClass()}">
+                ${getStatusIcon()}${statusText}
+              </span>
             </div>
           </div>
-          <div class="receipt-number">
-            <p class="label">RECEIPT</p>
-            <p class="number">#${receiptData.receiptNumber}</p>
-            <div class="status-badge status-completed">
-              ${payment.status?.charAt(0).toUpperCase() + payment.status?.slice(1)}
+
+          <!-- Date and Transaction Info -->
+          <div class="grid-2 section">
+            <div>
+              <p class="receipt-label">Issue Date</p>
+              <p class="detail-text">${formatDate2(
+                payment.paymentDate,
+                true
+              )}</p>
             </div>
+            <div>
+              <p class="receipt-label">Transaction ID</p>
+              <p class="detail-text" style="font-family: monospace;">${
+                payment.id || receiptData.transactionId
+              }</p>
+            </div>
+          </div>
+
+          <!-- Customer and Payment Details -->
+          <div class="grid-2 section">
+            <!-- Customer Details -->
+            <div>
+              <h3 class="section-title">Customer Information</h3>
+              <p class="customer-name">${
+                receiptData.customer?.name || "Customer Name"
+              }</p>
+              <p class="detail-text">Member No: ${
+                receiptData.customer?.membershipNumber || "N/A"
+              }</p>
+              <p class="detail-text">Phone: ${
+                receiptData.customer?.phoneNumber ||
+                payment.phoneNumber ||
+                "N/A"
+              }</p>
+              ${
+                receiptData.customer?.email
+                  ? `<p class="detail-text">Email: ${receiptData.customer.email}</p>`
+                  : ""
+              }
+            </div>
+
+            <!-- Payment Method -->
+            <div>
+              <h3 class="section-title">Payment Details</h3>
+              <p class="detail-text"><span style="font-weight: 500;">Method:</span> ${
+                payment.method || payment.paymentMethod
+              }</p>
+              ${
+                payment.reference
+                  ? `<p class="detail-text"><span style="font-weight: 500;">Reference:</span> ${payment.reference}</p>`
+                  : ""
+              }
+              ${
+                payment.mpesaCode
+                  ? `<p class="detail-text"><span style="font-weight: 500;">M-Pesa Code:</span> ${payment.mpesaCode}</p>`
+                  : ""
+              }
+              ${
+                receiptData.mpesaReceiptNumber
+                  ? `<p class="detail-text"><span style="font-weight: 500;">M-Pesa Receipt:</span> ${receiptData.mpesaReceiptNumber}</p>`
+                  : ""
+              }
+            </div>
+          </div>
+
+          <!-- Payment Items -->
+          <div class="section">
+            <h3 class="section-title">Payment Summary</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${
+                    payment.description ||
+                    receiptData.description ||
+                    payment.plan ||
+                    "Insurance Premium"
+                  }</td>
+                  <td>${formatCurrency(payment.amount)}</td>
+                </tr>
+                ${
+                  Number(receiptData.transactionFee) > 0
+                    ? `
+                <tr>
+                  <td>Transaction Fee</td>
+                  <td>${formatCurrency(Number(receiptData.transactionFee))}</td>
+                </tr>`
+                    : ""
+                }
+                <tr class="total-row">
+                  <td>Total</td>
+                  <td>${formatCurrency(
+                    payment.amount + Number(receiptData.transactionFee || 0)
+                  )}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Footer -->
+          <div class="footer">
+            <p>Thank you for your payment.</p>
+            <p class="disclaimer">This is an official receipt for your payment transaction. For any inquiries, please contact our support team.</p>
+            <p class="disclaimer">This is a computer generated receipt and does not require a physical signature.</p>
           </div>
         </div>
+        <script>
+          // Auto print when the page loads
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 500);
+          };
+        </script>
+      </body>
+      </html>
+    `;
 
-        <div class="receipt-details">
-          <div>
-            <h3 class="section-title">Issue Date</h3>
-            <p class="detail-value">${formatDate2(payment.date, true)}</p>
-          </div>
-          <div>
-            <h3 class="section-title">Transaction ID</h3>
-            <p class="detail-value">${payment.id || receiptData.transactionId}</p>
-          </div>
-        </div>
-
-        <div class="receipt-details">
-          <div>
-            <h3 class="section-title">Customer Information</h3>
-            <div class="detail-item">
-              <p class="detail-value">${receiptData.customer?.name || "Customer Name"}</p>
-              <p class="detail-label">Member No: ${receiptData.customer?.membershipNumber || "N/A"}</p>
-              <p class="detail-label">Phone: ${receiptData.customer?.phoneNumber || payment.phoneNumber || "N/A"}</p>
-            </div>
-          </div>
-          <div>
-            <h3 class="section-title">Payment Details</h3>
-            <div class="detail-item">
-              <p class="detail-value">Method: ${payment.method || payment.paymentMethod}</p>
-              ${payment.reference ? `<p class="detail-label">Reference: ${payment.reference}</p>` : ''}
-              ${payment.mpesaCode ? `<p class="detail-label">M-Pesa Code: ${payment.mpesaCode}</p>` : ''}
-            </div>
-          </div>
-        </div>
-
-        <div class="payment-summary">
-          <h3 class="section-title">Payment Summary</h3>
-          <table class="payment-table">
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th style="text-align: right;">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>${payment.description || receiptData.description || `${payment.plan || "Insurance"} ${payment.coveragePeriod ? `(${payment.coveragePeriod} plan)` : "Premium"}`}</td>
-                <td style="text-align: right;">${formatCurrency(payment.amount)}</td>
-              </tr>
-              ${Number(receiptData.transactionFee) > 0 ? `
-              <tr>
-                <td>Transaction Fee</td>
-                <td style="text-align: right;">${formatCurrency(Number(receiptData.transactionFee))}</td>
-              </tr>` : ''}
-              <tr class="total-row">
-                <td>Total</td>
-                <td style="text-align: right;">${formatCurrency(payment.amount + Number(receiptData.transactionFee || 0))}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="receipt-footer">
-          <p>Thank you for your payment.</p>
-          <p class="small-print">This is an official receipt for your payment transaction. For any inquiries, please contact our support team.</p>
-          <p class="small-print">This is a computer generated receipt and does not require a physical signature.</p>
-        </div>
-      </div>
-    `);
-
-    printWindow.document.write("</body></html>");
+    // Write the HTML to the new window and print
+    printWindow.document.write(receiptHTML);
     printWindow.document.close();
-    printWindow.focus();
-
-    // Add slight delay to ensure content is loaded
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 250);
   };
 
   // Handle download receipt
@@ -275,7 +399,9 @@ const PaymentReceiptModal = ({
   };
 
   const receiptData = payment.paymentDetails || {
-    receiptNumber: `RCPT-${payment.id?.substring(0, 8) || "12345678"}`,
+    receiptNumber: `RCPT-${
+      payment.id?.substring(0, 8).toUpperCase() || "12345678"
+    }`,
     transactionFee: 0,
   };
 
@@ -302,11 +428,17 @@ const PaymentReceiptModal = ({
   };
 
   const getSubtitle = () => {
-    if(payment.metadata?.paymentType === "membership") {
+    if (payment.metadata?.paymentType === "membership") {
       return "Union Membership Fee";
     }
-    return payment.plan || "Insurance" + (payment.coveragePeriod ? `(${payment.coveragePeriod} plan)` : "Premium");
-  }
+    return (
+      payment.plan ||
+      "Insurance" +
+        (payment.coveragePeriod
+          ? `(${payment.coveragePeriod} plan)`
+          : "Premium")
+    );
+  };
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -346,7 +478,11 @@ const PaymentReceiptModal = ({
                   <div className="flex items-center">
                     {/* Replace with your actual logo */}
                     <div className="bg-white mr-3 w-[4.5rem] rounded-full">
-                      <img src="/mwulogo.png" alt="logo" className="object-contain" />
+                      <img
+                        src="/mwulogo.png"
+                        alt="logo"
+                        className="object-contain"
+                      />
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-secondary-700 dark:text-white">

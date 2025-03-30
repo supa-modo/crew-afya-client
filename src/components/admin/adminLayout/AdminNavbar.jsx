@@ -210,7 +210,7 @@ const AdminNavbar = ({ toggleSidebar, title }) => {
           </div>
 
           {/* Profile dropdown */}
-          <div className="ml-3 relative" ref={profileRef}>
+          <div className="mx-3 relative" ref={profileRef}>
             <div>
               <button
                 type="button"
@@ -305,8 +305,10 @@ const AdminNavbar = ({ toggleSidebar, title }) => {
                       </>
                     ) : (
                       <>
-                        <LogoutIcon className="mr-2 h-4 w-4" />
-                        Sign out
+                        <div className="flex items-center">
+                          <LogoutIcon className="mr-2 h-4 w-4" />
+                          Sign out
+                        </div>
                       </>
                     )}
                   </button>

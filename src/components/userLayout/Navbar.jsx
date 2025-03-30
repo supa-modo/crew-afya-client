@@ -289,19 +289,23 @@ const Navbar = () => {
                     <div className="relative" ref={profileRef}>
                       <button
                         onClick={toggleProfile}
-                        className="flex items-center space-x-2 bg-white/20 dark:bg-gray-800/10 p-1.5 pr-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-1 focus:border-secondary-600 focus:ring-secondary-600 dark:focus:ring-offset-gray-900"
+                        className="flex items-center space-x-3 bg-white/20 dark:bg-gray-800/10 px-2 py-1 pr-3 rounded-md border-l-2 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:border-l-2 focus:border-secondary-600 dark:focus:border-l-2 dark:focus:border-secondary-600"
                         aria-expanded={isProfileOpen}
                         aria-haspopup="true"
                       >
-                        <div className="h-7 w-7 rounded-md  bg-gradient-to-br from-secondary-600 to-secondary-500 flex items-center justify-center text-white shadow-md shadow-secondary-500/20">
-                          {user?.firstName?.charAt(0) || (
-                            <FiUser className="h-4 w-4" />
-                          )}
+                        
+                        <div className="h-9 w-9 rounded-full bg-secondary-700/40 dark:bg-secondary-900 flex items-center justify-center">
+                          <PiUserDuotone className="h-5 w-5 text-secondary-700 dark:text-secondary-400" />
                         </div>
-                        <span className="text-sm font-semibold text-zinc-500 dark:text-gray-200 hidden sm:block">
-                          {`${user?.firstName + " " + user?.lastName}` ||
-                            "Account"}
-                        </span>
+                        <div className="flex flex-col text-start">
+                          <span className="text-sm font-semibold leading-tight text-secondary-700 dark:text-gray-200 hidden sm:block">
+                            {`${user?.firstName + " " + user?.lastName}` ||
+                              "Account User"}
+                          </span>
+                          <div className="text-[0.73rem] leading-tight text-gray-500 dark:text-gray-400">
+                            Member
+                          </div>
+                        </div>
                       </button>
 
                       {isProfileOpen && (

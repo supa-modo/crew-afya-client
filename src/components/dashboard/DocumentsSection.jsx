@@ -16,11 +16,11 @@ const DocumentsSection = ({
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white mt-10 dark:bg-gray-800 rounded-md">
+    <div className="bg-white pt-3  my-8 md:my-10 dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
         <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 flex items-center">
           <PiFilesDuotone className="mr-2 h-7 w-7 text-green-700" />
-          Uploaded Documents
+          Your Uploaded Documents
         </h3>
       </div>
 

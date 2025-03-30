@@ -20,9 +20,9 @@ const CoverageUtilization = () => {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-lg  md:text-xl font-bold mb-4">Coverage Utilization</h2>
-      <div className="space-y-4 mb-6">
+    <div className="">
+      <h2 className="text-lg  md:text-xl text-primary-600 font-bold mb-4">Medical Coverage Utilization</h2>
+      <div className="space-y-2 sm:space-y-3 md:space-y-4 mb-6">
         {[
           { name: "Inpatient", used: 50000, total: 200000 },
           { name: "Outpatient", used: 13500, total: 20000 },

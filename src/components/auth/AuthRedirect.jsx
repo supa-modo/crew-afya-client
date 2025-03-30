@@ -8,8 +8,7 @@ import { useAuth } from "../../context/AuthContext";
  * to the dashboard, but allows viewing the homepage
  */
 const AuthRedirect = ({ children }) => {
-  const { user, loading, isAuthenticated, isAdmin, authCheckComplete } =
-    useAuth();
+  const { user, loading, isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,7 +26,10 @@ const AuthRedirect = ({ children }) => {
 
   useEffect(() => {
     // Only redirect after auth state is loaded fully and if user is authenticated
-    if (!loading && authCheckComplete && isAuthenticated) {
+    if (!loading && isAuthenticated) {
+      // Determine which dashboard to redirect to based on user role
+      const dashboardPath = isAdmin ? "/admin/dashboard" : "/dashboard";
+
       // Check if current path is in the list of auth paths
       const isAuthPath = authPaths.some((path) => {
         // Handle exact matches and paths with parameters
@@ -40,26 +42,16 @@ const AuthRedirect = ({ children }) => {
       });
 
       // If user is on an auth path, redirect to appropriate dashboard
-      if (isAuthPath) {
-        navigate(isAdmin ? "/admin/dashboard" : "/dashboard", {
-          replace: true,
-        });
-      } else if (isAdminPath && isAdmin) {
-        // If admin is on admin login path, redirect to admin dashboard
+      if (isAuthPath || isAdminPath) {
+        navigate(dashboardPath, { replace: true });
+      }
+
+      // If user is on the regular dashboard but should be on admin dashboard
+      if (isAdmin && location.pathname === "/dashboard") {
         navigate("/admin/dashboard", { replace: true });
-      } else if (isAdminPath && !isAdmin) {
-        // If regular user is on admin login path, redirect to user dashboard
-        navigate("/dashboard", { replace: true });
       }
     }
-  }, [
-    isAuthenticated,
-    isAdmin,
-    loading,
-    authCheckComplete,
-    navigate,
-    location.pathname,
-  ]);
+  }, [isAuthenticated, isAdmin, loading, navigate, location.pathname]);
 
   // Return children while the check is happening or if no redirect is needed
   return children;
