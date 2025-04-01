@@ -102,7 +102,7 @@ const MedicalCoverTab = ({ user, handleOpenFrequencyModal }) => {
               </div>
 
               <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                Coverage Details
+                Quick Actions
               </h3>
 
               <div className="overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg mb-6">
@@ -225,11 +225,10 @@ const MedicalCoverTab = ({ user, handleOpenFrequencyModal }) => {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 shadow-md overflow-hidden mb-6">
+          <div className="bg-white dark:bg-gray-800 shadow-md overflow-hidden mb-6 rounded-lg">
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
-                <TbActivity className="mr-2 h-5 w-5 text-blue-600" />
-                Recent Medical Claims
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                Insurance Documents
               </h3>
 
               <div className="overflow-hidden border border-gray-200 dark:border-gray-700 rounded-lg">

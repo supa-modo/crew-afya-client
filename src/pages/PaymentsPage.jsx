@@ -233,8 +233,8 @@ const PaymentsPage = () => {
       </div>
 
       {/* Payment Type Tabs */}
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-3 sm:mb-4 md:mb-5">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-1">
+        <div className="bg-white dark:bg-gray-800 rounded-t-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
           <div className="flex border-b border-gray-200 dark:border-gray-700">
             <button
               onClick={() => setActiveTab("medical")}
@@ -269,7 +269,7 @@ const PaymentsPage = () => {
       {/* Content based on active tab */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         {activeTab === "medical" ? (
-          <div className="bg-white dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 shadow-sm rounded-b-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
             <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8 px-4 md:px-8 py-8">
               {/* Calendar Component */}
               <div className="bg-white md:w-[40%] dark:bg-gray-800">

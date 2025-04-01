@@ -214,7 +214,7 @@ const AdminNavbar = ({ toggleSidebar, title }) => {
             <div>
               <button
                 type="button"
-                className="max-w-xs flex items-center text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 bg-white/20 dark:bg-gray-800/10 p-1 pr-3 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                className="max-w-xs flex items-center text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 bg-white/20 dark:bg-gray-800/10 p-1 pr-3 border-l-2 pl-3 border-admin-400 dark:border-admin-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                 onClick={() => {
                   setUserMenuOpen(!userMenuOpen);
                   setNotificationsOpen(false);

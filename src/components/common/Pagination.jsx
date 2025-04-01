@@ -89,7 +89,7 @@ const Pagination = ({
               disabled={currentPage === 1}
               className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${
                 currentPage === 1
-                  ? "text-gray-300 dark:text-gray-600"
+                  ? "text-gray-300 dark:text-gray-600 bg-gray-100 dark:bg-gray-800 hover:cursor-not-allowed"
                   : "text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:border-gray-600"
               }`}
             >
@@ -101,7 +101,7 @@ const Pagination = ({
               disabled={currentPage === 1}
               className={`relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium ${
                 currentPage === 1
-                  ? "text-gray-300 dark:text-gray-600"
+                  ? "text-gray-300 dark:text-gray-600 bg-gray-100 dark:bg-gray-800 hover:cursor-not-allowed"
                   : "text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:border-gray-600"
               }`}
             >
@@ -151,7 +151,7 @@ const Pagination = ({
               disabled={currentPage === totalPages}
               className={`relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium ${
                 currentPage === totalPages
-                  ? "text-gray-300 dark:text-gray-600"
+                  ? "text-gray-300 dark:text-gray-600 bg-gray-100 dark:bg-gray-800 hover:cursor-not-allowed"
                   : "text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:border-gray-600"
               }`}
             >
@@ -163,7 +163,7 @@ const Pagination = ({
               disabled={currentPage === totalPages}
               className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
                 currentPage === totalPages
-                  ? "text-gray-300 dark:text-gray-600"
+                  ? "text-gray-300 dark:text-gray-600 bg-gray-100 dark:bg-gray-800 hover:cursor-not-allowed"
                   : "text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:border-gray-600"
               }`}
             >

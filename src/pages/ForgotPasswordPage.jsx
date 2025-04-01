@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiMail, FiArrowLeft, FiPhone } from "react-icons/fi";
+import {  FiArrowLeft } from "react-icons/fi";
 import {
   TbLockFilled,
   TbMailFilled,

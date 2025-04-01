@@ -246,7 +246,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
               <div className="flex items-center flex-shrink-0 px-2">
                 <img className="h-12 w-auto" src="/mwulogo.png" alt="CrewAfya" />
                 <span className="ml-2 text-xl font-bold text-admin-600 dark:text-admin-400">
-                  CrewAfya Admin
+                  MWU KENYA
                 </span>
               </div>
               <nav className="mt-8 flex-1 px-2">

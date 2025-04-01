@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import {
-  FiPlus,
-  FiSearch,
-  FiCheck,
-} from "react-icons/fi";
+import { FiPlus, FiSearch, FiCheck } from "react-icons/fi";
 import {
   TbHome2,
   TbShieldHalfFilled,
@@ -17,14 +13,8 @@ import { MdHealthAndSafety } from "react-icons/md";
 import { useTheme } from "../../context/ThemeContext";
 import PlanDetailsModal from "../../components/admin/adminInsurancePage/PlanDetailsModal";
 import PlanSubscribersList from "../../components/admin/adminInsurancePage/PlanSubscribersList";
-import { mockUsers } from "../../data/mockUsers";
 import PlanCard from "../../components/admin/adminInsurancePage/PlanCard";
-import {
-  getAllPlans,
-  updatePlan,
-  deletePlan,
-} from "../../services/planService";
-import { initializeDefaultPlans } from "../../services/userService";
+import insuranceService from "../../services/insuranceService";
 
 const InsurancePlansPage = () => {
   const { darkMode } = useTheme();
@@ -45,120 +35,16 @@ const InsurancePlansPage = () => {
       setLoading(true);
       setError(null);
       try {
-        // Replace mock API call with actual API call
-        const response = await getAllPlans();
-
-        // Map backend data structure to frontend structure
-        const plansData = response.data.map((plan) => ({
-          id: plan.id,
-          name: plan.name,
-          description: plan.description,
-          forWho: plan.forDependents
-            ? "For Driver/Conductor + Dependents"
-            : "For Driver/Conductor",
-          status: plan.isActive ? "active" : "inactive",
-          subscriberCount: 0, // This would need to be populated separately if needed
-          createdAt: plan.createdAt,
-          updatedAt: plan.updatedAt,
-          coverageDetails: {
-            inpatient: plan.inpatientLimit.toLocaleString(),
-            outpatient: `Up to ${plan.outpatientLimit.toLocaleString()}`,
-            maternity: plan.maternityLimit.toLocaleString(),
-            optical: plan.opticalLimit.toLocaleString(),
-            dental: plan.forDependents ? "10,000" : "Not covered", // Assuming this based on plan type
-          },
-          premiums: {
-            daily: plan.dailyPremium,
-            monthly: plan.monthlyPremium,
-            annual: plan.annualPremium,
-          },
-          benefits: [
-            { name: "Inpatient", limit: plan.inpatientLimit.toLocaleString() },
-            {
-              name: "Maternity (Within Inpatient)",
-              limit: plan.maternityLimit.toLocaleString(),
-            },
-            {
-              name: "Outpatient - Capitation",
-              limit: `Up to ${plan.outpatientLimit.toLocaleString()}`,
-            },
-            {
-              name: "Optical + Free Eye Test",
-              limit: plan.opticalLimit.toLocaleString(),
-            },
-            { name: "Accidents", limit: plan.accidentLimit.toLocaleString() },
-            { name: "Last Expense", limit: plan.lastExpense.toLocaleString() },
-            {
-              name: "Emergency Evacuation",
-              limit: plan.emergencyEvacuation.toLocaleString(),
-            },
-            {
-              name: "Daily cash compensation",
-              limit: `Kes ${plan.dailyCashCompensation}`,
-            },
-            {
-              name: "Permanent disability compensation",
-              limit: plan.disabilityCompensation.toLocaleString(),
-            },
-            { name: "Wellness Support", limit: plan.wellnessSupport },
-          ],
-          // Keep original plan data for edit operations
-          originalData: plan,
-        }));
-
+        const plansData = await insuranceService.getInsurancePlans();
         setPlans(plansData);
 
         // Set default plan for subscribers list
         if (plansData.length > 0 && !selectedPlanForSubscribers) {
           setSelectedPlanForSubscribers(plansData[0]);
         }
-      } catch (err) {
-        console.error("Error fetching plans:", err);
-        setError(err.message || "Failed to fetch plans");
-
-        // Fallback to mock data if API fails
-        const mockPlansData = [
-          {
-            id: "plan1",
-            name: "Crew Afya Lite",
-            description: "Basic medical coverage for individuals",
-            forWho: "For Driver/Conductor",
-            status: "active",
-            subscriberCount: 146,
-            createdAt: "2023-08-15T10:00:00Z",
-            updatedAt: "2023-12-02T14:30:00Z",
-            coverageDetails: {
-              inpatient: "200,000",
-              outpatient: "Up to 20,000",
-              maternity: "20,000",
-              optical: "5,000",
-              dental: "Not covered",
-            },
-            premiums: {
-              daily: 24,
-              monthly: 713,
-              annual: 8565,
-            },
-            benefits: [
-              { name: "Inpatient", limit: "200,000" },
-              { name: "Maternity (Within Inpatient)", limit: "20,000" },
-              { name: "Outpatient - Capitation", limit: "Up to 20,000" },
-              { name: "Optical + Free Eye Test", limit: "5,000" },
-              { name: "Accidents", limit: "50,000" },
-              { name: "Last Expense", limit: "50,000" },
-              { name: "Emergency Evacuation", limit: "10,000" },
-              { name: "Daily cash compensation", limit: "Kes 800" },
-              { name: "Permanent disability compensation", limit: "50,000" },
-              { name: "Wellness Support", limit: "Group Sessions" },
-            ],
-          },
-          // ... (keep your existing mock data as fallback)
-        ];
-
-        setPlans(mockPlansData);
-        if (mockPlansData.length > 0 && !selectedPlanForSubscribers) {
-          setSelectedPlanForSubscribers(mockPlansData[0]);
-        }
+      } catch (error) {
+        console.error("Error fetching plans:", error);
+        setError(error.message || "Failed to fetch plans");
       } finally {
         setLoading(false);
       }
@@ -167,7 +53,7 @@ const InsurancePlansPage = () => {
     fetchPlans();
   }, [refreshTrigger]);
 
-  // Check for success message from location state (after adding new plan)
+  // Check for success message from location state
   useEffect(() => {
     if (location.state?.success) {
       // You could implement a toast notification here
@@ -199,57 +85,10 @@ const InsurancePlansPage = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleInitializeDefaultPlans = async () => {
-    try {
-      const response = await initializeDefaultPlans();
-      console.log(response);
-    } catch (error) {
-      console.error("Error initializing default plans:", error);
-    }
-  };
   // Handle plan update
   const handlePlanUpdate = async (updatedPlan) => {
     try {
-      // Convert frontend model back to backend model
-      const backendPlanData = {
-        name: updatedPlan.name,
-        description: updatedPlan.description,
-        type: updatedPlan.name.includes("M+3")
-          ? "Crew Afya - (Up to M+3)"
-          : "Crew Afya Lite",
-        dailyPremium: updatedPlan.premiums.daily,
-        monthlyPremium: updatedPlan.premiums.monthly,
-        annualPremium: updatedPlan.premiums.annual,
-        inpatientLimit: parseInt(
-          updatedPlan.coverageDetails.inpatient.replace(/,/g, "")
-        ),
-        outpatientLimit: parseInt(
-          updatedPlan.coverageDetails.outpatient.replace(/[^0-9]/g, "")
-        ),
-        maternityLimit: parseInt(
-          updatedPlan.coverageDetails.maternity.replace(/,/g, "")
-        ),
-        opticalLimit: parseInt(
-          updatedPlan.coverageDetails.optical.replace(/,/g, "")
-        ),
-        accidentLimit: 50000, // Keep default if not changed
-        disabilityCompensation: 50000, // Keep default if not changed
-        lastExpense: 50000, // Keep default if not changed
-        emergencyEvacuation: 10000, // Keep default if not changed
-        dailyCashCompensation: 800, // Keep default if not changed
-        wellnessSupport: updatedPlan.name.includes("M+3")
-          ? "Group Sessions + Individual"
-          : "Group Sessions",
-        forDependents: updatedPlan.name.includes("M+3"),
-        isActive: updatedPlan.status === "active",
-      };
-
-      // If we have the original data, we can update it directly
-      if (updatedPlan.originalData) {
-        await updatePlan(updatedPlan.originalData.id, backendPlanData);
-      } else {
-        await updatePlan(updatedPlan.id, backendPlanData);
-      }
+      await insuranceService.updatePlan(updatedPlan.id, updatedPlan);
 
       // Update local state
       setPlans(
@@ -284,15 +123,13 @@ const InsurancePlansPage = () => {
 
   // Handle plan deletion
   const handlePlanDelete = async (planId) => {
-    // Confirm before deletion
     if (
       window.confirm(
         "Are you sure you want to delete this plan? This action cannot be undone."
       )
     ) {
       try {
-        // Call the API to delete the plan
-        await deletePlan(planId);
+        await insuranceService.deletePlan(planId);
 
         // Update local state
         const updatedPlans = plans.filter((plan) => plan.id !== planId);
@@ -326,7 +163,7 @@ const InsurancePlansPage = () => {
     <div className="pb-6">
       <div className="max-w-screen-2xl mx-auto">
         {/* Breadcrumb */}
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4">
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
               <li>
@@ -358,26 +195,7 @@ const InsurancePlansPage = () => {
               </li>
             </ol>
           </nav>
-
-          <button
-            onClick={handleInitializeDefaultPlans}
-            className="bg-admin-600 text-white px-4 py-2 text-sm rounded-lg"
-          >
-            Initialize Default Plans
-          </button>
         </div>
-
-        {/* Success message if redirected from new plan creation */}
-        {location.state?.success && (
-          <div className="mb-6 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-400 dark:border-green-600 p-4">
-            <div className="flex">
-              <FiCheck className="h-5 w-5 text-green-400 dark:text-green-500" />
-              <p className="ml-3 text-sm text-green-700 dark:text-green-400">
-                {location.state.message}
-              </p>
-            </div>
-          </div>
-        )}
 
         {/* Header section */}
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
@@ -391,7 +209,7 @@ const InsurancePlansPage = () => {
             </p>
           </div>
           <div className="flex gap-2 w-full sm:w-[50%]">
-            <div className="relative w-full ">
+            <div className="relative w-full">
               <input
                 type="text"
                 placeholder="Search plans..."
@@ -405,7 +223,7 @@ const InsurancePlansPage = () => {
             </div>
             <button
               onClick={() => setRefreshTrigger((prev) => prev + 1)}
-              className="p-2  text-admin-600 hover:bg-admin-50 rounded-lg dark:text-admin-400 dark:hover:bg-gray-700"
+              className="p-2 text-admin-600 hover:bg-admin-50 rounded-lg dark:text-admin-400 dark:hover:bg-gray-700"
               title="Refresh"
             >
               <TbRefresh className="h-5 w-5" />

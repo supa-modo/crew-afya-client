@@ -18,6 +18,7 @@ import {
   TbShieldCheck,
 } from "react-icons/tb";
 import { MdHealthAndSafety } from "react-icons/md";
+import insuranceService from "../../services/insuranceService";
 import { createPlan } from "../../services/planService";
 import { PlanType } from "../../constants/enums";
 
@@ -30,8 +31,11 @@ const NewMedicalCoverPage = () => {
     description: "",
     forWho: "",
     status: "active",
+    type: "CrewAfya Lite (M)",
+    category: "individual",
     premiums: {
       daily: "",
+      weekly: "",
       monthly: "",
       annual: "",
     },
@@ -43,9 +47,20 @@ const NewMedicalCoverPage = () => {
       dental: "",
     },
     benefits: [
-      { name: "", limit: "" },
-      { name: "", limit: "" },
+      { name: "Inpatient", limit: "" },
+      { name: "Outpatient", limit: "" },
+      { name: "Maternity", limit: "" },
+      { name: "Optical", limit: "" },
+      { name: "Dental", limit: "" },
     ],
+    maxDependents: 0,
+    waitingPeriod: 30,
+    minAge: 18,
+    maxAge: 65,
+    preExistingConditions: false,
+    preExistingConditionsWaitingPeriod: 180,
+    coveragePeriod: 365,
+    gracePeriod: 15,
   });
 
   // Handle input change
@@ -88,6 +103,11 @@ const NewMedicalCoverPage = () => {
         [key]: value,
       },
     }));
+
+    // Clear error for the field
+    if (errors[`coverageDetails.${key}`]) {
+      setErrors((prev) => ({ ...prev, [`coverageDetails.${key}`]: "" }));
+    }
   };
 
   // Handle benefit change
@@ -101,6 +121,11 @@ const NewMedicalCoverPage = () => {
       ...prev,
       benefits: updatedBenefits,
     }));
+
+    // Clear error for the field
+    if (errors[`benefits[${index}].${field}`]) {
+      setErrors((prev) => ({ ...prev, [`benefits[${index}].${field}`]: "" }));
+    }
   };
 
   // Add new benefit
@@ -139,7 +164,7 @@ const NewMedicalCoverPage = () => {
     }
 
     // Validate premiums
-    ["daily", "monthly", "annual"].forEach((frequency) => {
+    ["daily", "weekly", "monthly", "annual"].forEach((frequency) => {
       const premium = formData.premiums[frequency];
       if (premium === "" || isNaN(premium) || premium <= 0) {
         newErrors[
@@ -167,6 +192,31 @@ const NewMedicalCoverPage = () => {
       }
     });
 
+    // Validate numeric fields
+    if (formData.maxDependents < 0) {
+      newErrors.maxDependents = "Maximum dependents must be 0 or greater";
+    }
+
+    if (formData.waitingPeriod < 0) {
+      newErrors.waitingPeriod = "Waiting period must be 0 or greater";
+    }
+
+    if (formData.minAge < 0 || formData.maxAge < formData.minAge) {
+      newErrors.ageRange = "Invalid age range";
+    }
+
+    if (formData.preExistingConditionsWaitingPeriod < 0) {
+      newErrors.preExistingConditionsWaitingPeriod = "Invalid waiting period";
+    }
+
+    if (formData.coveragePeriod < 1) {
+      newErrors.coveragePeriod = "Coverage period must be at least 1 day";
+    }
+
+    if (formData.gracePeriod < 0) {
+      newErrors.gracePeriod = "Grace period must be 0 or greater";
+    }
+
     return newErrors;
   };
 
@@ -185,23 +235,21 @@ const NewMedicalCoverPage = () => {
     setIsSubmitting(true);
 
     try {
-      // Transform frontend form data to backend model format
-      const planTypeValue = formData.forWho.toLowerCase().includes("depend")
-        ? PlanType.FAMILY
-        : PlanType.LITE;
-
+      // Transform form data to match backend model
       const planData = {
         name: formData.name,
         description: formData.description,
-        type: planTypeValue,
+        type: formData.type,
+        category: formData.category,
         dailyPremium: parseFloat(formData.premiums.daily),
+        weeklyPremium: parseFloat(formData.premiums.weekly),
         monthlyPremium: parseFloat(formData.premiums.monthly),
         annualPremium: parseFloat(formData.premiums.annual),
         inpatientLimit: parseFloat(
           formData.coverageDetails.inpatient.replace(/,/g, "")
         ),
         outpatientLimit: parseFloat(
-          formData.coverageDetails.outpatient.replace(/[^0-9]/g, "")
+          formData.coverageDetails.outpatient.replace(/,/g, "")
         ),
         maternityLimit: parseFloat(
           formData.coverageDetails.maternity.replace(/,/g, "")
@@ -209,20 +257,26 @@ const NewMedicalCoverPage = () => {
         opticalLimit: parseFloat(
           formData.coverageDetails.optical.replace(/,/g, "")
         ),
-        accidentLimit: 50000, // Default value
-        disabilityCompensation: 50000, // Default value
-        lastExpense: 50000, // Default value
-        emergencyEvacuation: 10000, // Default value
-        dailyCashCompensation: 800, // Default value
-        wellnessSupport: formData.forWho.toLowerCase().includes("depend")
-          ? "Group Sessions + Individual"
-          : "Group Sessions",
+        maxDependents: parseInt(formData.maxDependents),
+        waitingPeriod: parseInt(formData.waitingPeriod),
+        minAge: parseInt(formData.minAge),
+        maxAge: parseInt(formData.maxAge),
+        preExistingConditions: formData.preExistingConditions,
+        preExistingConditionsWaitingPeriod: parseInt(
+          formData.preExistingConditionsWaitingPeriod
+        ),
+        coveragePeriod: parseInt(formData.coveragePeriod),
+        gracePeriod: parseInt(formData.gracePeriod),
         forDependents: formData.forWho.toLowerCase().includes("depend"),
         isActive: formData.status === "active",
+        benefits: formData.benefits.map((benefit) => ({
+          name: benefit.name,
+          limit: parseFloat(benefit.limit.replace(/,/g, "")),
+        })),
       };
 
-      // Call API to create plan
-      const response = await createPlan(planData);
+      // Create plan
+      await insuranceService.createPlan(planData);
 
       // Navigate to plans page after successful creation
       navigate("/admin/plans", {
@@ -375,6 +429,61 @@ const NewMedicalCoverPage = () => {
 
                   <div>
                     <label
+                      htmlFor="type"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+                    >
+                      Plan Type*
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <TbShieldCheck className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <select
+                        id="type"
+                        name="type"
+                        value={formData.type}
+                        onChange={handleChange}
+                        className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200"
+                      >
+                        <option value="CrewAfya Lite (M)">
+                          Crew Afya Lite
+                        </option>
+                        <option value="CrewAfya M+1">Crew Afya M+1</option>
+                        <option value="CrewAfya M+2">Crew Afya M+2</option>
+                        <option value="CrewAfya M+3">Crew Afya M+3</option>
+                        <option value="CrewAfya M+4">Crew Afya M+4</option>
+                        <option value="CrewAfya M+5">Crew Afya M+5</option>
+                        <option value="CrewAfya M+6">Crew Afya M+6</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="category"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+                    >
+                      Category*
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <FiUser className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <select
+                        id="category"
+                        name="category"
+                        value={formData.category}
+                        onChange={handleChange}
+                        className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200"
+                      >
+                        <option value="individual">Individual</option>
+                        <option value="family">Family</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
                       htmlFor="forWho"
                       className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
                     >
@@ -436,30 +545,6 @@ const NewMedicalCoverPage = () => {
                       </p>
                     )}
                   </div>
-
-                  <div>
-                    <label
-                      htmlFor="status"
-                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-                    >
-                      Status
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <FiCheckCircle className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <select
-                        id="status"
-                        name="status"
-                        value={formData.status}
-                        onChange={handleChange}
-                        className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200"
-                      >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                      </select>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -470,7 +555,7 @@ const NewMedicalCoverPage = () => {
                   Premium Options
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   <div>
                     <label
                       htmlFor="dailyPremium"
@@ -507,22 +592,65 @@ const NewMedicalCoverPage = () => {
 
                   <div>
                     <label
+                      htmlFor="weeklyPremium"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+                    >
+                      Weekly Premium (KES)*
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <FiDollarSign className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <input
+                        type="number"
+                        id="weeklyPremium"
+                        value={formData.premiums.weekly}
+                        onChange={(e) =>
+                          handlePremiumChange("weekly", e.target.value)
+                        }
+                        className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+                          errors["premiums.weekly"]
+                            ? "border-red-300 dark:border-red-500"
+                            : ""
+                        }`}
+                        placeholder="e.g. 168"
+                        min="1"
+                      />
+                    </div>
+                    {errors["premiums.weekly"] && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {errors["premiums.weekly"]}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
                       htmlFor="monthlyPremium"
-                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
                     >
                       Monthly Premium (KES)*
                     </label>
-                    <input
-                      type="number"
-                      id="monthlyPremium"
-                      value={formData.premiums.monthly}
-                      onChange={(e) =>
-                        handlePremiumChange("monthly", e.target.value)
-                      }
-                      className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                      placeholder="e.g. 713"
-                      min="1"
-                    />
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <FiDollarSign className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <input
+                        type="number"
+                        id="monthlyPremium"
+                        value={formData.premiums.monthly}
+                        onChange={(e) =>
+                          handlePremiumChange("monthly", e.target.value)
+                        }
+                        className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+                          errors["premiums.monthly"]
+                            ? "border-red-300 dark:border-red-500"
+                            : ""
+                        }`}
+                        placeholder="e.g. 713"
+                        min="1"
+                      />
+                    </div>
                     {errors["premiums.monthly"] && (
                       <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                         {errors["premiums.monthly"]}
@@ -533,21 +661,30 @@ const NewMedicalCoverPage = () => {
                   <div>
                     <label
                       htmlFor="annualPremium"
-                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
                     >
                       Annual Premium (KES)*
                     </label>
-                    <input
-                      type="number"
-                      id="annualPremium"
-                      value={formData.premiums.annual}
-                      onChange={(e) =>
-                        handlePremiumChange("annual", e.target.value)
-                      }
-                      className="shadow-sm focus:ring-admin-500 focus:border-admin-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                      placeholder="e.g. 8565"
-                      min="1"
-                    />
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <FiDollarSign className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <input
+                        type="number"
+                        id="annualPremium"
+                        value={formData.premiums.annual}
+                        onChange={(e) =>
+                          handlePremiumChange("annual", e.target.value)
+                        }
+                        className={`text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-admin-500 dark:focus:border-admin-500 transition-colors duration-200 ${
+                          errors["premiums.annual"]
+                            ? "border-red-300 dark:border-red-500"
+                            : ""
+                        }`}
+                        placeholder="e.g. 8565"
+                        min="1"
+                      />
+                    </div>
                     {errors["premiums.annual"] && (
                       <p className="mt-1 text-sm text-red-600 dark:text-red-400">
                         {errors["premiums.annual"]}
@@ -572,7 +709,7 @@ const NewMedicalCoverPage = () => {
                           htmlFor={`coverage-${key}`}
                           className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1 capitalize"
                         >
-                          {key} Coverage*
+                          {key} Coverage (KES)*
                         </label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -603,6 +740,169 @@ const NewMedicalCoverPage = () => {
                       </div>
                     )
                   )}
+                </div>
+              </div>
+
+              {/* Additional Settings */}
+              <div className="mb-8">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-6 flex items-center border-t border-gray-200 dark:border-gray-700 pt-6">
+                  <TbShieldHalfFilled className="mr-2 h-6 w-6 text-admin-500" />
+                  Additional Settings
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div>
+                    <label
+                      htmlFor="maxDependents"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+                    >
+                      Maximum Dependents
+                    </label>
+                    <input
+                      type="number"
+                      id="maxDependents"
+                      name="maxDependents"
+                      value={formData.maxDependents}
+                      onChange={handleChange}
+                      className="text-sm text-gray-600/90 sm:text-base block w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white"
+                      min="0"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="waitingPeriod"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+                    >
+                      Waiting Period (Days)
+                    </label>
+                    <input
+                      type="number"
+                      id="waitingPeriod"
+                      name="waitingPeriod"
+                      value={formData.waitingPeriod}
+                      onChange={handleChange}
+                      className="text-sm text-gray-600/90 sm:text-base block w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white"
+                      min="0"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="gracePeriod"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+                    >
+                      Grace Period (Days)
+                    </label>
+                    <input
+                      type="number"
+                      id="gracePeriod"
+                      name="gracePeriod"
+                      value={formData.gracePeriod}
+                      onChange={handleChange}
+                      className="text-sm text-gray-600/90 sm:text-base block w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white"
+                      min="0"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="minAge"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+                    >
+                      Minimum Age
+                    </label>
+                    <input
+                      type="number"
+                      id="minAge"
+                      name="minAge"
+                      value={formData.minAge}
+                      onChange={handleChange}
+                      className="text-sm text-gray-600/90 sm:text-base block w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white"
+                      min="0"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="maxAge"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+                    >
+                      Maximum Age
+                    </label>
+                    <input
+                      type="number"
+                      id="maxAge"
+                      name="maxAge"
+                      value={formData.maxAge}
+                      onChange={handleChange}
+                      className="text-sm text-gray-600/90 sm:text-base block w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white"
+                      min="0"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="coveragePeriod"
+                      className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+                    >
+                      Coverage Period (Days)
+                    </label>
+                    <input
+                      type="number"
+                      id="coveragePeriod"
+                      name="coveragePeriod"
+                      value={formData.coveragePeriod}
+                      onChange={handleChange}
+                      className="text-sm text-gray-600/90 sm:text-base block w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white"
+                      min="1"
+                    />
+                  </div>
+
+                  <div className="lg:col-span-2">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="preExistingConditions"
+                        name="preExistingConditions"
+                        checked={formData.preExistingConditions}
+                        onChange={(e) =>
+                          handleChange({
+                            target: {
+                              name: "preExistingConditions",
+                              value: e.target.checked,
+                            },
+                          })
+                        }
+                        className="h-4 w-4 text-admin-600 focus:ring-admin-500 border-gray-300 rounded"
+                      />
+                      <label
+                        htmlFor="preExistingConditions"
+                        className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        Cover Pre-existing Conditions
+                      </label>
+                    </div>
+                    {formData.preExistingConditions && (
+                      <div className="mt-3">
+                        <label
+                          htmlFor="preExistingConditionsWaitingPeriod"
+                          className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+                        >
+                          Pre-existing Conditions Waiting Period (Days)
+                        </label>
+                        <input
+                          type="number"
+                          id="preExistingConditionsWaitingPeriod"
+                          name="preExistingConditionsWaitingPeriod"
+                          value={formData.preExistingConditionsWaitingPeriod}
+                          onChange={handleChange}
+                          className="text-sm text-gray-600/90 sm:text-base block w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-admin-500 focus:ring-admin-500 dark:bg-gray-700 dark:text-white"
+                          min="0"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -665,7 +965,7 @@ const NewMedicalCoverPage = () => {
                           htmlFor={`benefit-limit-${index}`}
                           className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
                         >
-                          Limit*
+                          Limit (KES)*
                         </label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

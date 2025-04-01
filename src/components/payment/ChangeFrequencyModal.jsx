@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { FiX, FiCheck, FiLoader } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { TbShieldCheckFilled } from "react-icons/tb";
+import insuranceService from "../../services/insuranceService";
 
 const ChangeFrequencyModal = ({
   isOpen,
@@ -13,6 +14,16 @@ const ChangeFrequencyModal = ({
   const [selectedFrequency, setSelectedFrequency] = useState(currentFrequency);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Reset state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedFrequency(currentFrequency);
+      setIsSuccess(false);
+      setError(null);
+    }
+  }, [isOpen, currentFrequency]);
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
@@ -47,25 +58,61 @@ const ChangeFrequencyModal = ({
     }
 
     setIsSubmitting(true);
+    setError(null);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Get current coverage details
+      const coverageDetails = await insuranceService.getCoverageDetails();
 
-      // Update the frequency in the parent component
-      onFrequencyChanged(selectedFrequency);
+      if (!coverageDetails?.coverage?.id) {
+        throw new Error("No active coverage found");
+      }
+
+      // Update payment frequency
+      await insuranceService.updatePaymentFrequency(
+        coverageDetails.coverage.id,
+        selectedFrequency
+      );
+
       setIsSuccess(true);
 
-      //   Close the modal after a short delay
+      // Update the parent component
+      onFrequencyChanged(selectedFrequency);
+
+      // Close the modal after a short delay
       setTimeout(() => {
         onClose();
       }, 2000);
     } catch (error) {
-      console.error("Error changing frequency:", error);
+      setError(error.message || "Failed to update payment frequency");
+      console.error("Error updating frequency:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const frequencies = [
+    {
+      id: "daily",
+      label: "Daily",
+      description: `KES ${currentPlan.premiums.daily.toLocaleString()} per day`,
+    },
+    {
+      id: "weekly",
+      label: "Weekly",
+      description: `KES ${currentPlan.premiums.weekly.toLocaleString()} per week`,
+    },
+    {
+      id: "monthly",
+      label: "Monthly",
+      description: `KES ${currentPlan.premiums.monthly.toLocaleString()} per month`,
+    },
+    {
+      id: "annual",
+      label: "Annual",
+      description: `KES ${currentPlan.premiums.annual.toLocaleString()} per year`,
+    },
+  ];
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -109,6 +156,12 @@ const ChangeFrequencyModal = ({
             </div>
           </div>
 
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            </div>
+          )}
+
           {isSuccess ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -124,7 +177,7 @@ const ChangeFrequencyModal = ({
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Your payment frequency has been changed to{" "}
                 <span className="text-secondary-700 font-semibold">
-                  {selectedFrequency}
+                  {frequencies.find((f) => f.id === selectedFrequency)?.label}
                 </span>{" "}
                 payments.
               </p>
@@ -133,33 +186,26 @@ const ChangeFrequencyModal = ({
             <>
               <div className="mt-4 md:mt-6 space-y-4 px-4 sm:px-0">
                 <div className="grid grid-cols-1 gap-3 sm:gap-4">
-                  {["daily", "monthly", "annual"].map((frequency) => (
+                  {frequencies.map((frequency) => (
                     <div
-                      key={frequency}
+                      key={frequency.id}
                       className={`relative rounded-lg border-2 px-5 py-2 sm:p-4 cursor-pointer transition-all duration-200 ${
-                        selectedFrequency === frequency
+                        selectedFrequency === frequency.id
                           ? "border-primary-500 bg-primary-50 dark:bg-primary-900/10"
                           : "border-gray-200 dark:border-gray-700 hover:border-primary-300"
                       }`}
-                      onClick={() => setSelectedFrequency(frequency)}
+                      onClick={() => setSelectedFrequency(frequency.id)}
                     >
                       <div className="flex justify-between items-center">
                         <div>
-                          <h4 className="text-base font-medium text-gray-900 dark:text-white capitalize">
-                            {frequency}
+                          <h4 className="text-base font-medium text-gray-900 dark:text-white">
+                            {frequency.label}
                           </h4>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            KES{" "}
-                            {currentPlan.premiums[frequency].toLocaleString()}{" "}
-                            per{" "}
-                            {frequency === "daily"
-                              ? "day"
-                              : frequency === "monthly"
-                              ? "month"
-                              : "year"}
+                            {frequency.description}
                           </p>
                         </div>
-                        {selectedFrequency === frequency && (
+                        {selectedFrequency === frequency.id && (
                           <div className="h-6 w-6 bg-primary-500 rounded-full flex items-center justify-center">
                             <FiCheck className="h-4 w-4 text-white" />
                           </div>

@@ -25,10 +25,14 @@ import {
   TbCreditCard,
   TbHistory,
   TbMoneybag,
+  TbReceipt,
   TbShieldHalfFilled,
 } from "react-icons/tb";
 import { formatDate } from "../../utils/formatDate";
 import { MpesaIcon } from "../common/icons";
+import { formatCurrency } from "../../utils/formatCurrency";
+import Pagination from "../common/Pagination";
+import PaymentReceiptModal from "../admin/adminPaymentsPageComponents/PaymentReceiptModal";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
@@ -45,6 +49,8 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
   });
   const [showFilters, setShowFilters] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
 
   const pageSize = 10;
 
@@ -76,6 +82,15 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
             reference:
               payment.mpesaReceiptNumber || payment.transactionId || "-",
             plan: payment.metadata?.planType || "Crew Afya Lite",
+            // Keep any other fields that might be needed for receipt generation
+            phoneNumber: payment.phoneNumber,
+            metadata: payment.metadata,
+            paymentDate: payment.paymentDate,
+            paymentMethod: payment.paymentMethod,
+            mpesaCode: payment.mpesaCode,
+            mpesaReceiptNumber: payment.mpesaReceiptNumber,
+            coveragePeriod: payment.coveragePeriod,
+            description: payment.description,
           }));
 
           // Sort payments by date (newest first)
@@ -130,14 +145,6 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
     }
   };
 
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-    }).format(amount);
-  };
-
   const handleSearch = (e) => {
     e.preventDefault();
     setCurrentPage(1); // Reset to first page when searching
@@ -158,34 +165,6 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
-  };
-
-  // Get status icon
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "completed":
-        return <FiCheckCircle className="h-5 w-5 text-green-500" />;
-      case "pending":
-        return <FiClock className="h-5 w-5 text-yellow-500" />;
-      case "failed":
-        return <FiAlertCircle className="h-5 w-5 text-red-500" />;
-      default:
-        return null;
-    }
-  };
-
-  // Get status text class
-  const getStatusTextClass = (status) => {
-    switch (status) {
-      case "completed":
-        return "text-green-700 dark:text-green-400";
-      case "pending":
-        return "text-yellow-700 dark:text-yellow-400";
-      case "failed":
-        return "text-red-700 dark:text-red-400";
-      default:
-        return "text-gray-700 dark:text-gray-400";
-    }
   };
 
   // Status badge component
@@ -225,17 +204,10 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
     );
   };
 
-  // Handle download receipt
-  const handleDownloadReceipt = async (payment) => {
-    try {
-      await apiDownload(
-        `/payments/${payment.id}/receipt`,
-        `receipt-${payment.reference}.pdf`
-      );
-    } catch (error) {
-      console.error("Error downloading receipt:", error);
-      alert("Failed to download receipt. Please try again later.");
-    }
+  // Handle view or download receipt
+  const handleDownloadReceipt = (payment) => {
+    setSelectedPayment(payment);
+    setShowReceiptModal(true);
   };
 
   if (loading) {
@@ -486,17 +458,17 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="inline-flex items-center px-3 py-0.5 rounded-md text-xs sm:text-sm font-medium dark:text-blue-400">
-                  {payment.method === "M-Pesa" ? (
-                          <MpesaIcon width={60} height={20} />
-                        ) : payment.method === "Card" ? (
-                          <TbCreditCard className="mr-2 h-5 w-5 text-blue-500" />
-                        ) : payment.method === "Cash" ? (
-                          <TbCash className="mr-2 h-5 w-5 text-yellow-500" />
-                        ) : payment.method === "Bank Transfer" ? (
-                          <TbMoneybag className="mr-2 h-5 w-5 text-purple-500" />
-                        ) : (
-                          <TbHistory className="mr-2 h-5 w-5 text-gray-500" />
-                        )}
+                    {payment.method === "M-Pesa" ? (
+                      <MpesaIcon width={60} height={20} />
+                    ) : payment.method === "Card" ? (
+                      <TbCreditCard className="mr-2 h-5 w-5 text-blue-500" />
+                    ) : payment.method === "Cash" ? (
+                      <TbCash className="mr-2 h-5 w-5 text-yellow-500" />
+                    ) : payment.method === "Bank Transfer" ? (
+                      <TbMoneybag className="mr-2 h-5 w-5 text-purple-500" />
+                    ) : (
+                      <TbHistory className="mr-2 h-5 w-5 text-gray-500" />
+                    )}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
@@ -513,10 +485,10 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                     <button
                       onClick={() => handleDownloadReceipt(payment)}
                       className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 items-center gap-2 transition-colors duration-200"
-                      title="Download Receipt"
+                      title="View Receipt"
                     >
                       <div className="flex items-center gap-2">
-                        <FiDownload className="h-5 w-5" />
+                        <TbReceipt className="h-5 w-5" />
                         <span>Receipt</span>
                       </div>
                     </button>
@@ -528,94 +500,23 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
         </table>
       </div>
 
-      {totalPages > 1 && (
-        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
-          <div className="flex-1 flex justify-between sm:hidden">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-xs sm:text-sm font-medium rounded-md ${
-                currentPage === 1
-                  ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
-                  : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-              }`}
-            >
-              Previous
-            </button>
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-xs sm:text-sm font-medium rounded-md ${
-                currentPage === totalPages
-                  ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
-                  : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-              }`}
-            >
-              Next
-            </button>
-          </div>
-          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-            <div>
-              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
-                Showing{" "}
-                <span className="font-medium">
-                  {(currentPage - 1) * pageSize + 1}
-                </span>{" "}
-                to{" "}
-                <span className="font-medium">
-                  {Math.min(currentPage * pageSize, filteredPayments.length)}
-                </span>{" "}
-                of{" "}
-                <span className="font-medium">{filteredPayments.length}</span>{" "}
-                results
-              </p>
-            </div>
-            <div>
-              <nav
-                className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-                aria-label="Pagination"
-              >
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 text-xs sm:text-sm font-medium ${
-                    currentPage === 1
-                      ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
-                      : "text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  <span className="sr-only">Previous</span>
-                  <FiChevronLeft className="h-5 w-5" />
-                </button>
-                {[...Array(totalPages)].map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handlePageChange(index + 1)}
-                    className={`relative inline-flex items-center px-4 py-2 border text-xs sm:text-sm font-medium ${
-                      currentPage === index + 1
-                        ? "z-10 bg-primary-50 dark:bg-primary-900/30 border-primary-500 text-primary-600 dark:text-primary-400"
-                        : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    }`}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 text-xs sm:text-sm font-medium ${
-                    currentPage === totalPages
-                      ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
-                      : "text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  }`}
-                >
-                  <span className="sr-only">Next</span>
-                  <FiChevronRight className="h-5 w-5" />
-                </button>
-              </nav>
-            </div>
-          </div>
-        </div>
+      {/* Replace custom pagination with Pagination component */}
+      {totalPages > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredPayments.length}
+          pageSize={pageSize}
+          onPageChange={handlePageChange}
+        />
+      )}
+
+      {/* Receipt Modal */}
+      {showReceiptModal && selectedPayment && (
+        <PaymentReceiptModal
+          payment={selectedPayment}
+          onClose={() => setShowReceiptModal(false)}
+        />
       )}
     </div>
   );
