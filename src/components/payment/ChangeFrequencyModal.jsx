@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FiX, FiCheck, FiLoader } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { TbShieldCheckFilled } from "react-icons/tb";
-import insuranceService from "../../services/insuranceService";
+import { updateSubscription } from "../../services/subscriptionService";
 
 const ChangeFrequencyModal = ({
   isOpen,
@@ -11,7 +11,7 @@ const ChangeFrequencyModal = ({
   currentFrequency,
   onFrequencyChanged,
 }) => {
-  const [selectedFrequency, setSelectedFrequency] = useState(currentFrequency);
+  const [selectedFrequency, setSelectedFrequency] = useState(currentFrequency || "daily");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState(null);
@@ -19,7 +19,7 @@ const ChangeFrequencyModal = ({
   // Reset state when modal opens
   useEffect(() => {
     if (isOpen) {
-      setSelectedFrequency(currentFrequency);
+      setSelectedFrequency(currentFrequency || "daily");
       setIsSuccess(false);
       setError(null);
     }
@@ -49,7 +49,25 @@ const ChangeFrequencyModal = ({
     }
   }, [isOpen]);
 
-  if (!isOpen || !currentPlan) return null;
+  if (!isOpen) return null;
+
+  // Helper function to get premium amount based on frequency
+  const getPremiumAmount = (plan, frequency) => {
+    if (!plan) return 0;
+    
+    // Handle plans with premiums object
+    if (plan.premiums && plan.premiums[frequency] !== undefined) {
+      return plan.premiums[frequency];
+    }
+    
+    // Handle plans with individual premium fields (e.g., dailyPremium, monthlyPremium)
+    const premiumField = `${frequency}Premium`;
+    if (plan[premiumField] !== undefined) {
+      return plan[premiumField];
+    }
+    
+    return 0;
+  };
 
   const handleSubmit = async () => {
     if (selectedFrequency === currentFrequency) {
@@ -61,20 +79,12 @@ const ChangeFrequencyModal = ({
     setError(null);
 
     try {
-      // Get current coverage details
-      const coverageDetails = await insuranceService.getCoverageDetails();
+      // Update payment frequency using the subscription service
+      const response = await updateSubscription(currentPlan?.id, {
+        frequency: selectedFrequency
+      });
 
-      if (!coverageDetails?.coverage?.id) {
-        throw new Error("No active coverage found");
-      }
-
-      // Update payment frequency
-      const response = await insuranceService.updatePaymentFrequency(
-        coverageDetails.coverage.id,
-        selectedFrequency
-      );
-
-      if (response.success) {
+      if (response && response.success) {
         setIsSuccess(true);
 
         // Update the parent component
@@ -101,27 +111,30 @@ const ChangeFrequencyModal = ({
     {
       id: "daily",
       label: "Daily",
-      description: `KES ${currentPlan.dailyPremium.toLocaleString()} per day`,
+      description: `KES ${getPremiumAmount(currentPlan, "daily").toLocaleString()} per day`,
     },
     {
       id: "weekly",
       label: "Weekly",
-      description: `KES ${currentPlan.weeklyPremium.toLocaleString()} per week`,
+      description: `KES ${getPremiumAmount(currentPlan, "weekly").toLocaleString()} per week`,
     },
     {
       id: "monthly",
       label: "Monthly",
-      description: `KES ${currentPlan.monthlyPremium.toLocaleString()} per month`,
+      description: `KES ${getPremiumAmount(currentPlan, "monthly").toLocaleString()} per month`,
     },
     {
       id: "annual",
       label: "Annual",
-      description: `KES ${currentPlan.annualPremium.toLocaleString()} per year`,
+      description: `KES ${getPremiumAmount(currentPlan, "annual").toLocaleString()} per year`,
     },
   ];
 
+  // Get the plan name safely
+  const planName = currentPlan?.name || "selected";
+
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-[9999] overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div
           className="fixed inset-0 transition-opacity bg-gray-500/80 backdrop-blur-s"
@@ -156,7 +169,7 @@ const ChangeFrequencyModal = ({
               <div className="mt-2">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Select how often you would like to make payments for your{" "}
-                  {currentPlan.name} plan.
+                  {planName} plan.
                 </p>
               </div>
             </div>
@@ -204,7 +217,7 @@ const ChangeFrequencyModal = ({
                     >
                       <div className="flex justify-between items-center">
                         <div>
-                          <h4 className="text-base font-medium text-gray-900 dark:text-white">
+                          <h4 className="font-medium text-gray-900 dark:text-white">
                             {frequency.label}
                           </h4>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -212,8 +225,8 @@ const ChangeFrequencyModal = ({
                           </p>
                         </div>
                         {selectedFrequency === frequency.id && (
-                          <div className="h-6 w-6 bg-primary-500 rounded-full flex items-center justify-center">
-                            <FiCheck className="h-4 w-4 text-white" />
+                          <div className="flex-shrink-0 text-primary-600">
+                            <FiCheck className="h-5 w-5" />
                           </div>
                         )}
                       </div>
@@ -222,28 +235,32 @@ const ChangeFrequencyModal = ({
                 </div>
               </div>
 
-              <div className="mt-6 sm:flex sm:flex-row-reverse">
+              <div className="mt-8 sm:mt-10 flex justify-end">
                 <button
                   type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary-500 sm:ml-3 sm:w-auto md:text-[0.9rem]"
+                  className="mr-3 inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  onClick={onClose}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className={`inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 ${
+                    isSubmitting
+                      ? "bg-primary-400 cursor-not-allowed"
+                      : "bg-primary-600 hover:bg-primary-700"
+                  }`}
                   onClick={handleSubmit}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
                     <>
-                      <FiLoader className="animate-spin -ml-1 mr-2 h-4 w-4" />
+                      <FiLoader className="w-4 h-4 mr-2 animate-spin" />
                       Updating...
                     </>
                   ) : (
-                    "Save Changes"
+                    "Update Frequency"
                   )}
-                </button>
-                <button
-                  type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary-500 sm:mt-0 sm:w-auto sm:text-[0.9rem]"
-                  onClick={onClose}
-                >
-                  Cancel
                 </button>
               </div>
             </>

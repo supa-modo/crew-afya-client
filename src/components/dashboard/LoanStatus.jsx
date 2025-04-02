@@ -13,7 +13,7 @@ const LoanStatus = ({ loans }) => {
       <div className="">
         <div className="text-center py-8 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl">
           <TbWallet className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-          <h3 className="text-lg font-medium text-gray-800 dark:text-white mb-2">
+          <h3 className="text-lg font-medium text-amber-800 dark:text-white mb-2">
             No Active Loans
           </h3>
           <p className="text-gray-500 dark:text-gray-400 mb-4 max-w-md mx-auto">
@@ -34,7 +34,7 @@ const LoanStatus = ({ loans }) => {
   return (
     <div className="">
       <div className="mt-4 px-4 py-4 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl">
-        <h3 className="text-sm sm:text-base font-semibold text-gray-800 dark:text-white">
+        <h3 className="text-sm sm:text-base font-bold text-amber-800 dark:text-white">
           No Active Loans
         </h3>
 

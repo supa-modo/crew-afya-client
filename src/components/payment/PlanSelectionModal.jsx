@@ -16,6 +16,7 @@ import {
 } from "../../services/paymentService";
 import insuranceService from "../../services/insuranceService";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
   const [step, setStep] = useState(1);
@@ -36,22 +37,23 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
   const [mpesaReceiptNumber, setMpesaReceiptNumber] = useState(null);
 
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Function to get premium amount based on frequency
   const getFrequencyAmount = (plan, frequency) => {
     if (!plan) return 0;
-    
+
     // Handle plans with premiums object
     if (plan.premiums && plan.premiums[frequency] !== undefined) {
       return plan.premiums[frequency];
     }
-    
+
     // Handle plans with individual premium fields (e.g., dailyPremium, monthlyPremium)
     const premiumField = `${frequency}Premium`;
     if (plan[premiumField] !== undefined) {
       return plan[premiumField];
     }
-    
+
     return 0;
   };
 
@@ -179,25 +181,85 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
 
             // Subscribe to the plan
             try {
-              const subscriptionResponse =
-                await insuranceService.subscribeToPlan({
-                  planId: selectedPlan.id,
-                  paymentFrequency: selectedFrequency,
-                  startDate: new Date(),
-                });
+              // Ensure we have all required data
+              if (!user?.id && !localStorage.getItem("userId")) {
+                console.error("No user ID available for subscription");
+                throw new Error("User authentication required for subscription");
+              }
 
-              if (subscriptionResponse.success) {
+              if (!selectedPlan?.id) {
+                console.error("No plan ID available for subscription");
+                throw new Error("Plan selection required for subscription");
+              }
+
+              // Prepare subscription data with consistent structure
+              const subscriptionData = {
+                userId: user?.id || localStorage.getItem("userId"),
+                planId: selectedPlan.id,
+                paymentFrequency: selectedFrequency,
+                startDate: new Date().toISOString(),
+                // Add payment reference for tracking
+                paymentReference: response.data.mpesaReceiptNumber || paymentId
+              };
+
+              // Save to localStorage first as a fallback
+              const localStorageData = {
+                plan: selectedPlan,
+                frequency: selectedFrequency,
+                startDate: new Date().toISOString(),
+                paymentReference: response.data.mpesaReceiptNumber || paymentId
+              };
+              
+              localStorage.setItem(
+                "userSubscription",
+                JSON.stringify(localStorageData)
+              );
+
+              // Now try to save to the server
+              const subscriptionResponse = await insuranceService.subscribeToPlan(subscriptionData);
+
+              if (subscriptionResponse && subscriptionResponse.success) {
+                console.log("Subscription successfully saved to server");
+                
+                // If the server returns updated subscription data, update localStorage
+                if (subscriptionResponse.data) {
+                  const updatedLocalData = {
+                    ...localStorageData,
+                    id: subscriptionResponse.data.id,
+                    // Add any other server-provided data
+                    nextPaymentDate: subscriptionResponse.data.nextPaymentDate
+                  };
+                  
+                  localStorage.setItem(
+                    "userSubscription",
+                    JSON.stringify(updatedLocalData)
+                  );
+                }
+                
                 // Update the user's plan in the parent component
                 onPlanSelected(selectedPlan, selectedFrequency);
               } else {
-                throw new Error(subscriptionResponse.message);
+                console.error("Subscription response error:", subscriptionResponse);
+                
+                // Log the error but don't show it to the user since payment was successful
+                // and we've already saved to localStorage
+                console.warn("Payment successful but subscription may not have been saved on server:", 
+                  subscriptionResponse?.message || "Unknown error");
+                
+                // Still update the parent component since we have localStorage data
+                onPlanSelected(selectedPlan, selectedFrequency);
               }
             } catch (error) {
               console.error("Error subscribing to plan:", error);
+              
+              // Even if there's an error, we still have the localStorage data
+              // so the user can see their plan in the UI
+              onPlanSelected(selectedPlan, selectedFrequency);
+              
+              // Show a warning to the user that they may need to contact support
               setErrorMessage(
-                "Payment successful but failed to activate plan. Please contact support."
+                "Payment successful but there may be an issue with your subscription. If you don't see your plan, please contact support."
               );
-              setPaymentStatus("error");
             }
           } else if (status === "failed") {
             setPaymentStatus("error");
@@ -237,7 +299,10 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
 
       // Use real payment service
       const response = await initiateM_PesaPayment({
-        amount: process.env.NODE_ENV === "production" ? getFrequencyAmount(selectedPlan, selectedFrequency) : 1, // Use 1 KES for testing
+        amount:
+          process.env.NODE_ENV === "production"
+            ? getFrequencyAmount(selectedPlan, selectedFrequency)
+            : 1, // Use 1 KES for testing
         phoneNumber: formattedPhone,
         description: `Payment for ${selectedPlan.name} (${selectedFrequency}) medical cover`,
         paymentType: "medical",
@@ -519,7 +584,10 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                                 </select>
                                 <span className="text-xl font-bold text-secondary-700 dark:text-secondary-500">
                                   KES{" "}
-                                  {getFrequencyAmount(plan, selectedFrequency)?.toLocaleString() || "N/A"}
+                                  {getFrequencyAmount(
+                                    plan,
+                                    selectedFrequency
+                                  )?.toLocaleString() || "N/A"}
                                 </span>
                               </div>
                             </div>
@@ -531,65 +599,109 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                 </div>
 
                 {/* Desktop View */}
-                <div className="hidden md:grid md:grid-cols-2 gap-6">
-                  {plans.map((plan) => (
-                    <div
-                      key={plan.id}
-                      className={`relative p-5 rounded-xl border-2 transition-all duration-200 ${
-                        selectedPlan?.id === plan.id
-                          ? "border-primary-500 bg-primary-50 dark:bg-primary-900/10"
-                          : "border-gray-200 dark:border-gray-700 hover:border-primary-300"
+                <div className="hidden md:block">
+                  <div className="flex justify-between items-center mb-4">
+                    <button
+                      onClick={prevTab}
+                      disabled={activeTab === 0}
+                      className={`p-2 rounded-full ${
+                        activeTab === 0
+                          ? "text-gray-400 cursor-not-allowed"
+                          : "text-secondary-700 hover:bg-secondary-100"
                       }`}
-                      onClick={() => handleSelectPlan(plan)}
                     >
-                      {selectedPlan?.id === plan.id && (
-                        <div className="absolute top-4 right-4">
-                          <TbShieldCheckFilled className="h-8 w-8 text-primary-500" />
-                        </div>
-                      )}
-                      <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
-                        {plan.name}
-                      </h3>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4">
-                        {plan.description}
-                      </p>
-                      <div className="space-y-3 mb-6">
-                        {plan.metadata?.benefits?.map((benefit, index) => (
+                      <FiArrowLeft className="h-5 w-5" />
+                    </button>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {Math.floor(activeTab / 2) + 1} of{" "}
+                      {Math.ceil(plans.length / 2)}
+                    </span>
+                    <button
+                      onClick={nextTab}
+                      disabled={activeTab >= plans.length - 2}
+                      className={`p-2 rounded-full ${
+                        activeTab >= plans.length - 2
+                          ? "text-gray-400 cursor-not-allowed"
+                          : "text-secondary-700 hover:bg-secondary-100"
+                      }`}
+                    >
+                      <FiArrowRight className="h-5 w-5" />
+                    </button>
+                  </div>
+
+                  <div className="overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-300 ease-in-out"
+                      style={{
+                        transform: `translateX(-${activeTab * 50}%)`,
+                      }}
+                    >
+                      {plans.map((plan) => (
+                        <div key={plan.id} className="w-1/2 flex-shrink-0 px-2">
                           <div
-                            key={index}
-                            className="flex justify-between text-sm"
+                            className={`relative p-5 rounded-xl border-2 transition-all duration-200 ${
+                              selectedPlan?.id === plan.id
+                                ? "border-primary-500 bg-primary-50 dark:bg-primary-900/10"
+                                : "border-gray-200 dark:border-gray-700 hover:border-primary-300"
+                            }`}
+                            onClick={() => handleSelectPlan(plan)}
                           >
-                            <span className="text-gray-600 dark:text-gray-400">
-                              {benefit.name}
-                            </span>
-                            <span className="font-semibold text-primary-600 dark:text-primary-500">
-                              {benefit.limit}
-                            </span>
+                            {selectedPlan?.id === plan.id && (
+                              <div className="absolute top-4 right-4">
+                                <TbShieldCheckFilled className="h-8 w-8 text-primary-500" />
+                              </div>
+                            )}
+                            <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
+                              {plan.name}
+                            </h3>
+                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4">
+                              {plan.description}
+                            </p>
+                            <div className="space-y-3 mb-6">
+                              {plan.metadata?.benefits?.map(
+                                (benefit, index) => (
+                                  <div
+                                    key={index}
+                                    className="flex justify-between text-sm"
+                                  >
+                                    <span className="text-gray-600 dark:text-gray-400">
+                                      {benefit.name}
+                                    </span>
+                                    <span className="font-semibold text-primary-600 dark:text-primary-500">
+                                      {benefit.limit}
+                                    </span>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                            <div className="pt-5 border-t border-gray-200 dark:border-gray-700">
+                              <div className="flex justify-between items-center mb-4">
+                                <select
+                                  className="block w-1/2 pl-3 pr-10 py-2 font-semibold text-gray-600 dark:text-gray-300 border border-gray-400 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm dark:bg-gray-700"
+                                  value={selectedFrequency}
+                                  onChange={(e) =>
+                                    setSelectedFrequency(e.target.value)
+                                  }
+                                >
+                                  <option value="daily">Daily</option>
+                                  <option value="weekly">Weekly</option>
+                                  <option value="monthly">Monthly</option>
+                                  <option value="annual">Annual</option>
+                                </select>
+                                <span className="text-2xl font-bold text-secondary-700 dark:text-secondary-500">
+                                  KES{" "}
+                                  {getFrequencyAmount(
+                                    plan,
+                                    selectedFrequency
+                                  )?.toLocaleString() || "N/A"}
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                        ))}
-                      </div>
-                      <div className="pt-5 border-t border-gray-200 dark:border-gray-700">
-                        <div className="flex justify-between items-center mb-4">
-                          <select
-                            className="block w-1/2 pl-3 pr-10 py-2 font-semibold text-gray-600 dark:text-gray-300 border border-gray-400 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm dark:bg-gray-700"
-                            value={selectedFrequency}
-                            onChange={(e) =>
-                              setSelectedFrequency(e.target.value)
-                            }
-                          >
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="annual">Annual</option>
-                          </select>
-                          <span className="text-2xl font-bold text-secondary-700 dark:text-secondary-500">
-                            KES{" "}
-                            {getFrequencyAmount(plan, selectedFrequency)?.toLocaleString() || "N/A"}
-                          </span>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
 
                 <div className="mt-4 flex justify-end">
@@ -653,7 +765,12 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                     <input
                       type="text"
                       id="amount"
-                      value={getFrequencyAmount(selectedPlan, selectedFrequency)?.toLocaleString() || "N/A"}
+                      value={
+                        getFrequencyAmount(
+                          selectedPlan,
+                          selectedFrequency
+                        )?.toLocaleString() || "N/A"
+                      }
                       disabled
                       className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                     />
@@ -741,7 +858,10 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                     <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4">
                       Please wait while we process your payment of KES{" "}
                       <span className="font-semibold">
-                        {getFrequencyAmount(selectedPlan, selectedFrequency)?.toLocaleString() || "N/A"}
+                        {getFrequencyAmount(
+                          selectedPlan,
+                          selectedFrequency
+                        )?.toLocaleString() || "N/A"}
                       </span>{" "}
                       via M-Pesa...
                     </p>
@@ -764,7 +884,10 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                       Please enter your M-Pesa PIN when prompted to complete the
                       payment of KES{" "}
                       <span className="font-semibold">
-                        {getFrequencyAmount(selectedPlan, selectedFrequency)?.toLocaleString() || "N/A"}
+                        {getFrequencyAmount(
+                          selectedPlan,
+                          selectedFrequency
+                        )?.toLocaleString() || "N/A"}
                       </span>
                       .
                     </p>
@@ -826,7 +949,10 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                       <p className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-300">
                         Amount: KES{" "}
                         <span className="font-semibold">
-                          {getFrequencyAmount(selectedPlan, selectedFrequency)?.toLocaleString() || "N/A"}
+                          {getFrequencyAmount(
+                            selectedPlan,
+                            selectedFrequency
+                          )?.toLocaleString() || "N/A"}
                         </span>
                       </p>
                       {mpesaReceiptNumber && (

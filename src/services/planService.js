@@ -28,6 +28,25 @@ export const getPlanById = async (id) => {
 };
 
 /**
+ * Get subscribers for a specific plan
+ * @param {string} planId - Plan ID
+ * @returns {Promise} Promise with plan subscribers data
+ */
+export const getPlanSubscribers = async (planId) => {
+  try {
+    const response = await api.get(`/subscriptions/plan/${planId}/subscribers`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching plan subscribers:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to fetch plan subscribers",
+      data: []
+    };
+  }
+};
+
+/**
  * Create new plan
  * @param {Object} planData - Plan data
  * @returns {Promise} Promise with created plan data

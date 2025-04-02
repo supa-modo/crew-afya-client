@@ -22,6 +22,7 @@ import {
   TbShieldCheckFilled,
   TbShieldHalfFilled,
   TbShieldPlus,
+  TbFileInvoice,
 } from "react-icons/tb";
 import { BiSupport } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
@@ -84,6 +85,12 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
           href: "/admin/new-cover",
           icon: TbShieldPlus,
           current: location.pathname === "/admin/new-cover",
+        },
+        {
+          name: "Claims Management",
+          href: "/admin/claims",
+          icon: TbFileInvoice,
+          current: location.pathname.includes("/admin/claims"),
         },
       ],
     },

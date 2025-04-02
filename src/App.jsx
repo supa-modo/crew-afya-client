@@ -27,6 +27,9 @@ import InsurancePlansPage from "./pages/admin/InsurancePlansPage";
 import NewMedicalCoverPage from "./pages/admin/NewMedicalCoverPage";
 import AdminReportsPage from "./pages/admin/AdminReportsPage";
 import UsersManagement from "./pages/admin/UsersManagement";
+import ClaimsManagementPage from "./pages/admin/ClaimsManagementPage";
+import ClaimDetailPage from "./pages/admin/ClaimDetailPage";
+import ClaimFormPage from "./pages/admin/ClaimFormPage";
 
 function App() {
   return (
@@ -100,6 +103,10 @@ function App() {
                 <Route path="payments" element={<AdminPaymentsPage />} />
                 <Route path="reports" element={<AdminAnalyticsPage />} />
                 <Route path="users-management" element={<UsersManagement />} />
+                <Route path="claims" element={<ClaimsManagementPage />} />
+                <Route path="claims/:id" element={<ClaimDetailPage />} />
+                <Route path="claims/new" element={<ClaimFormPage />} />
+                <Route path="claims/:id/edit" element={<ClaimFormPage />} />
                 <Route
                   path="system-health"
                   element={<AdminSystemHealthPage />}

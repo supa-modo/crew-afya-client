@@ -60,10 +60,30 @@ export const getPlanDetails = async (planId) => {
  */
 export const subscribeToPlan = async (subscriptionData) => {
   try {
-    const response = await api.post("/plans/subscribe", subscriptionData);
+    // Ensure userId is included in the request
+    if (!subscriptionData.userId) {
+      const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+      if (userId) {
+        subscriptionData.userId = userId;
+      } else {
+        throw new Error("User ID is required to subscribe to a plan");
+      }
+    }
+
+    // Use the subscription endpoint
+    const response = await api.post("/subscriptions", subscriptionData);
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: "Failed to subscribe to plan" };
+    console.error("Error subscribing to plan:", error);
+    
+    // Create a more detailed error object
+    const errorResponse = {
+      success: false,
+      message: error.response?.data?.message || "Failed to subscribe to plan",
+      error: error.message
+    };
+    
+    return errorResponse;
   }
 };
 

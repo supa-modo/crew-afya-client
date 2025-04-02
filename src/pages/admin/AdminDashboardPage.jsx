@@ -1,27 +1,21 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import CombinedPaymentStats from "../../components/admin/dashboard/CombinedPaymentStats";
+import CombinedPaymentStats from "../../components/admin/adminDashboard/CombinedPaymentStats";
+import QuickActions from "../../components/admin/adminDashboard/QuickActions";
+import RecentPayments from "../../components/admin/adminDashboard/RecentPayments";
+import PaymentType from "../../components/admin/adminDashboard/PaymentType";
+import PaymentTrendChart from "../../components/admin/adminDashboard/PaymentTrendChart";
+import PlanDistributionChart from "../../components/admin/adminDashboard/PlanDistributionChart";
 import {
   FiActivity,
   FiUsers,
-  FiDollarSign,
-  FiCalendar,
   FiAlertCircle,
-  FiCheckCircle,
   FiArrowUpRight,
-  FiArrowDownRight,
   FiSearch,
-  FiSliders,
   FiClock,
 } from "react-icons/fi";
 import {
-  TbShieldCheck,
-  TbBus,
-  TbUserCheck,
   TbArrowNarrowRight,
-  TbChartBar,
-  TbUserPlus,
-  TbCoins,
 } from "react-icons/tb";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
 import {
@@ -29,21 +23,6 @@ import {
   PiSlidersDuotone,
   PiUserDuotone,
 } from "react-icons/pi";
-import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-import { RiUserAddLine } from "react-icons/ri";
 
 const AdminDashboardPage = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("week");
@@ -208,41 +187,6 @@ const AdminDashboardPage = () => {
     }).format(amount);
   };
 
-  // Chart colors
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-  const PAYMENT_COLORS = {
-    medical: "#4f46e5",
-    dues: "#10b981",
-  };
-
-  // Get formatted enrollment data for charts
-  const getEnrollmentChartData = useMemo(() => {
-    if (!dashboardData) return [];
-
-    if (selectedPeriod === "week") {
-      return dashboardData.enrollmentTrend;
-    }
-
-    // For longer periods, group by week or month to reduce data points
-    const groupedData = [];
-    const data = dashboardData.enrollmentTrend;
-    const groupSize = selectedPeriod === "month" ? 3 : 7; // 3 days for month, 7 days for quarter
-
-    for (let i = 0; i < data.length; i += groupSize) {
-      const chunk = data.slice(i, i + groupSize);
-      const totalEnrollments = chunk.reduce(
-        (sum, item) => sum + item.enrollments,
-        0
-      );
-      groupedData.push({
-        date: chunk[0].date,
-        enrollments: totalEnrollments,
-      });
-    }
-
-    return groupedData;
-  }, [dashboardData, selectedPeriod]);
-
   // Get formatted payment data for charts
   const getPaymentChartData = useMemo(() => {
     if (!dashboardData) return [];
@@ -270,36 +214,6 @@ const AdminDashboardPage = () => {
     return groupedData;
   }, [dashboardData, selectedPeriod]);
 
-  // Custom tooltip for charts
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
-          <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-            {formatDate(label)}
-          </p>
-          {payload.map((entry, index) => (
-            <p
-              key={`tooltip-${index}`}
-              className="text-sm"
-              style={{ color: entry.color }}
-            >
-              {entry.name === "enrollments"
-                ? "New Members: "
-                : entry.name === "medical"
-                ? "Medical: "
-                : "Union Dues: "}
-              {entry.name === "enrollments"
-                ? entry.value
-                : formatCurrency(entry.value)}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -309,7 +223,7 @@ const AdminDashboardPage = () => {
   }
 
   return (
-    <div className=" mx-auto">
+    <div className="mx-auto">
       {/* Dashboard Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div>
@@ -321,7 +235,7 @@ const AdminDashboardPage = () => {
           </p>
         </div>
         <div className="mt-4 sm:mt-0 flex items-center space-x-3 w-[40%]">
-          <div className="relative ">
+          <div className="relative">
             <button
               onClick={() => setFilterOpen(!filterOpen)}
               className="flex items-center space-x-6 justify-between text-xs sm:text-sm px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-admin-600 focus:border-admin-600"
@@ -330,7 +244,6 @@ const AdminDashboardPage = () => {
                 <PiSlidersDuotone className="h-5 w-5 mr-2 text-gray-500 dark:text-gray-400" />
                 <span className="font-medium">Filter</span>
               </div>
-
               <PiCaretDownDuotone className="h-4 w-4 ml-2 text-gray-500 dark:text-gray-400" />
             </button>
             {filterOpen && (
@@ -535,12 +448,12 @@ const AdminDashboardPage = () => {
           </div>
         </div>
       </div>
+
       {/* Main Content Area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Charts */}
-
         <div className="lg:col-span-2 space-y-6">
-          {/* Combined Payment Stats - Takes up 3/4 of the row */}
+          {/* Combined Payment Stats */}
           <div className="lg:col-span-4">
             <CombinedPaymentStats
               summary={dashboardData.summary}
@@ -548,133 +461,13 @@ const AdminDashboardPage = () => {
               formatCurrency={formatCurrency}
             />
           </div>
-          {/* Enrollment Trend */}
-          {/* <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="p-5">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-base font-semibold text-gray-900 dark:text-white">
-                  Member Enrollment Trend
-                </h2>
-                <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Last{" "}
-                  {selectedPeriod === "week"
-                    ? "7"
-                    : selectedPeriod === "month"
-                    ? "30"
-                    : "90"}{" "}
-                  days
-                </div>
-              </div>
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart
-                    data={getEnrollmentChartData}
-                    margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
-                  >
-                    <defs>
-                      <linearGradient
-                        id="enrollmentGradient"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="5%"
-                          stopColor="#4F46E5"
-                          stopOpacity={0.8}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="#4F46E5"
-                          stopOpacity={0}
-                        />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                    <XAxis
-                      dataKey="date"
-                      tickFormatter={(tick) => {
-                        const date = new Date(tick);
-                        return `${date.getDate()}/${date.getMonth() + 1}`;
-                      }}
-                      stroke="#9CA3AF"
-                      tick={{ fontSize: 12 }}
-                    />
-                    <YAxis stroke="#9CA3AF" tick={{ fontSize: 12 }} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Area
-                      type="monotone"
-                      dataKey="enrollments"
-                      name="enrollments"
-                      stroke="#4F46E5"
-                      fillOpacity={1}
-                      fill="url(#enrollmentGradient)"
-                      strokeWidth={2}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div> */}
 
           {/* Payment Trend */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="p-5">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-base font-bold text-amber-700 dark:text-amber-600">
-                  Payment Trends
-                </h2>
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 rounded-full bg-indigo-500 mr-2"></div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400">
-                      Medical
-                    </span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 rounded-full bg-emerald-500 mr-2"></div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400">
-                      Union Dues
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={getPaymentChartData}
-                    margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                    <XAxis
-                      dataKey="date"
-                      tickFormatter={(tick) => {
-                        const date = new Date(tick);
-                        return `${date.getDate()}/${date.getMonth() + 1}`;
-                      }}
-                      stroke="#9CA3AF"
-                      tick={{ fontSize: 12 }}
-                    />
-                    <YAxis stroke="#9CA3AF" tick={{ fontSize: 12 }} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Bar
-                      dataKey="medical"
-                      fill={PAYMENT_COLORS.medical}
-                      radius={[4, 4, 0, 0]}
-                      barSize={24}
-                    />
-                    <Bar
-                      dataKey="dues"
-                      fill={PAYMENT_COLORS.dues}
-                      radius={[4, 4, 0, 0]}
-                      barSize={24}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
+          <PaymentTrendChart
+            chartData={getPaymentChartData}
+            formatCurrency={formatCurrency}
+            formatDate={formatDate}
+          />
 
           {/* Defaulters and Action Items */}
           <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
@@ -798,270 +591,27 @@ const AdminDashboardPage = () => {
 
         {/* Right Column - Member Distribution Quick Actions, and Recent Activity */}
         <div className="space-y-6">
-          {/* Quick Actions*/}
-          <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-              <div className="p-5">
-                <h2 className="text-base font-bold text-amber-700 dark:text-amber-600 mb-4">
-                  Quick Actions
-                </h2>
-                <div className="grid grid-cols-2 gap-3">
-                  <Link
-                    to="/admin/members/new"
-                    className="flex flex-col items-center justify-center p-4 bg-admin-50 dark:bg-admin-900/10 rounded-lg border border-admin-100 dark:border-admin-800 hover:bg-admin-100 dark:hover:bg-admin-800/20 transition-colors"
-                  >
-                    <RiUserAddLine className="h-7 w-7 text-admin-600 dark:text-admin-400 mb-2" />
-                    <span className="text-sm font-medium text-gray-800 dark:text-white">
-                      Add Member
-                    </span>
-                  </Link>
-                  <Link
-                    to="/admin/plans"
-                    className="flex flex-col items-center justify-center p-4 bg-indigo-50 dark:bg-indigo-900/10 rounded-lg border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-800/20 transition-colors"
-                  >
-                    <TbShieldCheck className="h-7 w-7 text-indigo-600 dark:text-indigo-400 mb-2" />
-                    <span className="text-sm font-medium text-gray-800 dark:text-white">
-                      Manage Plans
-                    </span>
-                  </Link>
-                  <Link
-                    to="/admin/payments"
-                    className="flex flex-col items-center justify-center p-4 bg-emerald-50 dark:bg-emerald-900/10 rounded-lg border border-emerald-100 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-800/20 transition-colors"
-                  >
-                    <TbCoins className="h-7 w-7 text-emerald-600 dark:text-emerald-400 mb-2" />
-                    <span className="text-sm font-medium text-gray-800 dark:text-white">
-                      View Payments
-                    </span>
-                  </Link>
-                  <Link
-                    to="/admin/reports"
-                    className="flex flex-col items-center justify-center p-4 bg-blue-50 dark:bg-blue-900/10 rounded-lg border border-blue-100 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-800/20 transition-colors"
-                  >
-                    <TbChartBar className="h-7 w-7 text-blue-600 dark:text-blue-400 mb-2" />
-                    <span className="text-sm font-medium text-gray-800 dark:text-white">
-                      Generate Reports
-                    </span>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Quick Actions */}
+          <QuickActions />
 
           {/* Payment Type Distribution */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="p-5">
-              <h2 className="text-base font-semibold text-amber-700 dark:text-amber-600 mb-4">
-                Payment Frequency Distribution
-              </h2>
-              <div className="flex flex-col md:flex-row items-center">
-                <div className="w-full md:w-1/2 h-[200px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={dashboardData.paymentTypeDistribution}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {dashboardData.paymentTypeDistribution.map(
-                          (entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={COLORS[index % COLORS.length]}
-                            />
-                          )
-                        )}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value, name) => [`${value} members`, name]}
-                        contentStyle={{
-                          borderRadius: "0.5rem",
-                          border: "1px solid #e5e7eb",
-                        }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="w-full md:w-1/2 mt-4 md:mt-0">
-                  <div className="space-y-3">
-                    {dashboardData.paymentTypeDistribution.map(
-                      (entry, index) => (
-                        <div
-                          key={`legend-${index}`}
-                          className="flex items-center justify-between"
-                        >
-                          <div className="flex items-center">
-                            <div
-                              className="h-3 w-3 rounded-full mr-2"
-                              style={{
-                                backgroundColor: COLORS[index % COLORS.length],
-                              }}
-                            ></div>
-                            <span className="text-sm text-gray-600 dark:text-gray-400">
-                              {entry.name}
-                            </span>
-                          </div>
-                          <span className="text-sm font-medium text-gray-900 dark:text-white">
-                            {entry.value.toLocaleString()} (
-                            {Math.round(
-                              (entry.value /
-                                dashboardData.summary.totalMembers) *
-                                100
-                            )}
-                            %)
-                          </span>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <PaymentType
+            paymentTypeDistribution={dashboardData.paymentTypeDistribution}
+            totalMembers={dashboardData.summary.totalMembers}
+          />
 
           {/* Plan Distribution */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="p-5">
-              <h2 className="text-base font-semibold text-amber-700 dark:text-amber-600 mb-1">
-                Insurance Plan Distribution
-              </h2>
-              <div className="flex flex-col md:flex-row items-center">
-                <div className="w-full md:w-1/2 h-[200px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={dashboardData.planDistribution}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {dashboardData.planDistribution.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value, name) => [`${value} members`, name]}
-                        contentStyle={{
-                          borderRadius: "0.5rem",
-                          border: "1px solid #e5e7eb",
-                        }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="w-full md:w-1/2 mt-4 md:mt-0">
-                  <div className="space-y-3">
-                    {dashboardData.planDistribution.map((entry, index) => (
-                      <div
-                        key={`legend-${index}`}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center">
-                          <div
-                            className="h-3 w-3 rounded-full mr-2"
-                            style={{
-                              backgroundColor: COLORS[index % COLORS.length],
-                            }}
-                          ></div>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {entry.name}
-                          </span>
-                        </div>
-                        <span className="text-sm font-medium text-gray-900 dark:text-white">
-                          {entry.value.toLocaleString()} (
-                          {Math.round(
-                            (entry.value / dashboardData.summary.totalMembers) *
-                              100
-                          )}
-                          %)
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <PlanDistributionChart
+            planDistribution={dashboardData.planDistribution}
+            totalMembers={dashboardData.summary.totalMembers}
+          />
 
           {/* Recent Payments */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="p-5">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-base font-semibold text-amber-700 dark:text-amber-600">
-                  Recent Payments
-                </h2>
-                <Link
-                  to="/admin/payments"
-                  className="text-xs font-medium text-admin-600 dark:text-admin-400 flex items-center"
-                >
-                  View all payments
-                  <TbArrowNarrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </div>
-              <div className="space-y-3">
-                {dashboardData.recentPayments.map((payment) => (
-                  <div
-                    key={payment.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg transition-all hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    <div className="flex items-center">
-                      <div
-                        className={`p-2 rounded-lg mr-3 ${
-                          payment.type === "medical"
-                            ? "bg-indigo-100 dark:bg-indigo-800/30"
-                            : "bg-emerald-100 dark:bg-emerald-800/30"
-                        }`}
-                      >
-                        {payment.type === "medical" ? (
-                          <TbShieldCheck className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                        ) : (
-                          <TbBus className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                        )}
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium text-gray-800 dark:text-white">
-                          {payment.userName}
-                        </h3>
-                        <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                          <span className="mr-2">{payment.id}</span>
-                          <span>•</span>
-                          <span className="ml-2">
-                            {formatTime(payment.date)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-medium text-gray-800 dark:text-white">
-                        {formatCurrency(payment.amount)}
-                      </div>
-                      <div
-                        className={`text-xs ${
-                          payment.status === "completed"
-                            ? "text-green-600 dark:text-green-400"
-                            : payment.status === "pending"
-                            ? "text-yellow-600 dark:text-yellow-400"
-                            : "text-red-600 dark:text-red-400"
-                        }`}
-                      >
-                        {payment.status.charAt(0).toUpperCase() +
-                          payment.status.slice(1)}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <RecentPayments
+            recentPayments={dashboardData.recentPayments}
+            formatCurrency={formatCurrency}
+            formatTime={formatTime}
+          />
         </div>
       </div>
     </div>

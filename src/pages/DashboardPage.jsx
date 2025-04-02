@@ -55,7 +55,10 @@ const DashboardPage = () => {
   // Load user subscription data from server and localStorage as fallback
   useEffect(() => {
     const loadSubscription = async () => {
-      if (!user || !user.id) return;
+      if (!user || !user.id) {
+        setIsLoading(false);
+        return;
+      }
       
       setIsLoading(true);
       setError(null);
@@ -64,9 +67,20 @@ const DashboardPage = () => {
         // Try to get subscription from server first
         const response = await getUserSubscription(user.id);
         
-        if (response && response.data && response.data.plan) {
+        if (response && response.success && response.data && response.data.plan) {
           // If server has subscription data, use it
-          setUserSubscription(response.data);
+          const normalizedSubscription = {
+            ...response.data,
+            // Ensure we have a consistent structure
+            plan: response.data.plan,
+            frequency: response.data.frequency || response.data.paymentFrequency,
+            startDate: response.data.startDate || new Date().toISOString()
+          };
+          
+          setUserSubscription(normalizedSubscription);
+          
+          // Update localStorage with the latest server data
+          localStorage.setItem("userSubscription", JSON.stringify(normalizedSubscription));
           
           // Set next payment date if available
           if (response.data.nextPaymentDate) {
@@ -74,34 +88,91 @@ const DashboardPage = () => {
           }
           
           // Also load coverage utilization data
-          try {
-            const coverageData = await getCoverageUtilization(user.id);
-            if (coverageData && coverageData.data) {
-              setCoverageUtilization(coverageData.data);
-            }
-          } catch (utilError) {
-            console.error("Error loading coverage utilization:", utilError);
-          }
-          
+          loadCoverageUtilization(user.id);
           return;
+        } else if (response && !response.success) {
+          console.warn("Server returned unsuccessful response:", response.message);
         }
         
         // Fallback to localStorage if server data is not available
         const localSubscription = localStorage.getItem("userSubscription");
         if (localSubscription) {
-          setUserSubscription(JSON.parse(localSubscription));
+          try {
+            const parsedSubscription = JSON.parse(localSubscription);
+            
+            // Ensure the parsed subscription has the expected structure
+            if (!parsedSubscription.plan) {
+              throw new Error("Invalid subscription data in localStorage");
+            }
+            
+            setUserSubscription(parsedSubscription);
+            
+            // Try to save the localStorage subscription to the server
+            // This helps sync local data with the server
+            if (parsedSubscription.plan && (parsedSubscription.frequency || parsedSubscription.paymentFrequency)) {
+              try {
+                const syncResponse = await saveSubscription({
+                  userId: user.id,
+                  planId: parsedSubscription.plan.id || "default-plan",
+                  paymentFrequency: parsedSubscription.frequency || parsedSubscription.paymentFrequency,
+                  startDate: parsedSubscription.startDate || new Date().toISOString()
+                });
+                
+                if (syncResponse && syncResponse.success) {
+                  console.log("Successfully synced local subscription to server");
+                  
+                  // If sync was successful, load coverage utilization data
+                  loadCoverageUtilization(user.id);
+                } else {
+                  console.warn("Failed to sync subscription to server:", syncResponse?.message);
+                }
+              } catch (syncError) {
+                console.error("Error syncing subscription to server:", syncError);
+              }
+            }
+          } catch (parseError) {
+            console.error("Error parsing localStorage subscription:", parseError);
+            // Clear invalid data from localStorage
+            localStorage.removeItem("userSubscription");
+            setUserSubscription(null);
+          }
+        } else {
+          // No subscription found in either server or localStorage
+          setUserSubscription(null);
         }
       } catch (error) {
         console.error("Error loading subscription:", error);
         setError("Failed to load subscription data. Please try again later.");
         
         // Fallback to localStorage if there's an error
-        const localSubscription = localStorage.getItem("userSubscription");
-        if (localSubscription) {
-          setUserSubscription(JSON.parse(localSubscription));
+        try {
+          const localSubscription = localStorage.getItem("userSubscription");
+          if (localSubscription) {
+            const parsedSubscription = JSON.parse(localSubscription);
+            setUserSubscription(parsedSubscription);
+          }
+        } catch (localError) {
+          console.error("Error loading from localStorage:", localError);
         }
       } finally {
         setIsLoading(false);
+      }
+    };
+    
+    // Separate function to load coverage utilization data
+    const loadCoverageUtilization = async (userId) => {
+      try {
+        const coverageData = await getCoverageUtilization(userId);
+        if (coverageData && coverageData.success && coverageData.data) {
+          setCoverageUtilization(coverageData.data);
+        } else if (coverageData && !coverageData.success) {
+          console.warn("Failed to load coverage utilization:", coverageData.message);
+          // The getCoverageUtilization function now returns default data structure
+          // even on error, so we can still use it
+          setCoverageUtilization(coverageData.data);
+        }
+      } catch (utilError) {
+        console.error("Error loading coverage utilization:", utilError);
       }
     };
     
@@ -449,7 +520,7 @@ const DashboardPage = () => {
                         <p className="text-[0.7rem] text-gray-500 dark:text-gray-400">
                           Union Membership
                         </p>
-                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mt-1">
+                        <h3 className="text-lg sm:text-xl font-bold text-secondary-700 dark:text-white mt-1">
                           Active
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -469,12 +540,12 @@ const DashboardPage = () => {
                         <p className="text-[0.7rem] text-gray-500 dark:text-gray-400">
                           Medical Cover
                         </p>
-                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mt-1">
-                          {userSubscription?.plan?.name || "Crew Afya Lite"}
+                        <h3 className="text-lg sm:text-xl font-bold text-primary-600 dark:text-white mt-1">
+                          {userSubscription?.plan?.name || "No Active Plan"}
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {formatDate(userSubscription?.plan?.startDate)} - {userSubscription?.plan?.endDate ? formatDate(userSubscription?.plan?.endDate) : "Ongoing"}
-            </p>
+                          Active since {formatDate(userSubscription?.startDate)}
+                          </p>
                       </div>
                       <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                         <TbShieldCheckFilled className="h-6 w-6 text-blue-600 dark:text-blue-400" />

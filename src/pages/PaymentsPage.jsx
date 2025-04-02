@@ -43,94 +43,44 @@ const PaymentsPage = () => {
   const [isChangingPlan, setIsChangingPlan] = useState(false);
   const [activeTab, setActiveTab] = useState("medical"); // "medical" or "union"
   const [hasPaidMembership, setHasPaidMembership] = useState(false);
-
-  const insurancePlans = [
-    {
-      name: "Crew Afya Lite",
-      forWho: "For Driver/Conductor",
-      benefits: [
-        { name: "Inpatient", limit: "200,000" },
-        { name: "Maternity (Within Inpatient)", limit: "20,000" },
-        { name: "Outpatient - Capitation", limit: "Up to 20,000" },
-        { name: "Optical + Free Eye Test", limit: "5,000" },
-        { name: "Accidents", limit: "50,000" },
-        { name: "Last Expense", limit: "50,000" },
-        { name: "Emergency Evacuation", limit: "10,000" },
-        { name: "Daily cash compensation", limit: "Kes 800" },
-        { name: "Permanent disability compensation", limit: "50,000" },
-        { name: "Wellness Support", limit: "Group Sessions" },
-      ],
-      premiums: {
-        daily: 24,
-        monthly: 713,
-        annual: 8565,
-      },
-    },
-    {
-      name: "Crew Afya - (Up to M+3)",
-      forWho: "For Driver/Conductor + Dependents",
-      benefits: [
-        { name: "Inpatient", limit: "200,000" },
-        { name: "Maternity (Within Inpatient)", limit: "20,000" },
-        { name: "Outpatient - Capitation", limit: "Up to 20,000" },
-        { name: "Optical + Free Eye Test", limit: "5,000" },
-        { name: "Accidents", limit: "50,000" },
-        { name: "Last Expense", limit: "50,000" },
-        { name: "Emergency Evacuation", limit: "10,000" },
-        { name: "Daily cash compensation", limit: "Kes 800" },
-        { name: "Permanent disability compensation", limit: "50,000" },
-        { name: "Wellness Support", limit: "Group Sessions + Individual" },
-      ],
-      premiums: {
-        daily: 55,
-        monthly: 1661,
-        annual: 19933,
-      },
-    },
-  ];
-
-  const getPremiumAmount = (plan, frequency) => {
-    if (!plan || !plan.premiums) return 0;
-    return plan.premiums[frequency] || 0;
-  };
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load user subscription data from server and localStorage as fallback
   useEffect(() => {
     const loadSubscription = async () => {
       if (!user || !user.id) return;
       
+      setIsLoading(true);
+      
       try {
         // Try to get subscription from server first
         const response = await getUserSubscription(user.id);
         
-        if (response && response.data && response.data.plan) {
+        if (response && response.success && response.data && response.data.plan) {
           // If server has subscription data, use it
-          const { plan, frequency } = response.data;
-          const foundPlan = insurancePlans.find((p) => p.name === plan.name);
-          if (foundPlan) {
-            setSelectedPlan(foundPlan);
-            setSelectedFrequency(frequency);
-            
-            // Update localStorage with the latest server data
-            localStorage.setItem(
-              "userSubscription",
-              JSON.stringify({
-                plan: foundPlan,
-                frequency: frequency,
-              })
-            );
-            return;
-          }
-        }
-        
-        // Fallback to localStorage if server data is not available
-        const userSubscription = localStorage.getItem("userSubscription");
-        if (userSubscription) {
-          const { plan, frequency } = JSON.parse(userSubscription);
-          const foundPlan = insurancePlans.find((p) => p.name === plan.name);
-          if (foundPlan) {
-            setSelectedPlan(foundPlan);
-            setSelectedFrequency(frequency);
+          setSelectedPlan(response.data.plan);
+          setSelectedFrequency(response.data.frequency || response.data.paymentFrequency || "daily");
+          
+          // Update localStorage with the latest server data
+          localStorage.setItem(
+            "userSubscription",
+            JSON.stringify({
+              plan: response.data.plan,
+              frequency: response.data.frequency || response.data.paymentFrequency || "daily",
+            })
+          );
+        } else {
+          // Fallback to localStorage if server data is not available
+          const userSubscription = localStorage.getItem("userSubscription");
+          if (userSubscription) {
+            try {
+              const parsedData = JSON.parse(userSubscription);
+              setSelectedPlan(parsedData.plan);
+              setSelectedFrequency(parsedData.frequency || "daily");
+            } catch (parseError) {
+              console.error("Error parsing localStorage subscription:", parseError);
+              localStorage.removeItem("userSubscription");
+            }
           }
         }
       } catch (error) {
@@ -138,18 +88,21 @@ const PaymentsPage = () => {
         // Fallback to localStorage if there's an error
         const userSubscription = localStorage.getItem("userSubscription");
         if (userSubscription) {
-          const { plan, frequency } = JSON.parse(userSubscription);
-          const foundPlan = insurancePlans.find((p) => p.name === plan.name);
-          if (foundPlan) {
-            setSelectedPlan(foundPlan);
-            setSelectedFrequency(frequency);
+          try {
+            const parsedData = JSON.parse(userSubscription);
+            setSelectedPlan(parsedData.plan);
+            setSelectedFrequency(parsedData.frequency || "daily");
+          } catch (parseError) {
+            console.error("Error parsing localStorage subscription:", parseError);
           }
         }
+      } finally {
+        setIsLoading(false);
       }
     };
     
     loadSubscription();
-  }, [user, insurancePlans]);
+  }, [user]);
 
   // Save subscription to server and localStorage when it changes
   useEffect(() => {
@@ -168,7 +121,7 @@ const PaymentsPage = () => {
       // Save to server
       try {
         await saveSubscription({
-          plan: selectedPlan,
+          planId: selectedPlan.id,
           frequency: selectedFrequency,
           userId: user.id
         });
@@ -214,7 +167,7 @@ const PaymentsPage = () => {
     // Save to server immediately after selection
     if (user && user.id) {
       saveSubscription({
-        plan: plan,
+        planId: plan.id,
         frequency: frequency,
         userId: user.id
       }).catch(error => {
@@ -246,7 +199,7 @@ const PaymentsPage = () => {
   };
 
   return (
-    <div className="py-6 mt-14 sm:mt-16 min-h-screen">
+    <div className="py-6 mt-14 sm:mt-20 min-h-screen">
       {/* Overlay div for better text visibility */}
       <div className="absolute inset-0 " style={{ zIndex: "-1" }}></div>
 
@@ -383,7 +336,12 @@ const PaymentsPage = () => {
               {/* Make Payment Section */}
               <div className="bg-white md:w-[60%] md:border-l md:border-gray-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden">
                 <div className="">
-                  {selectedPlan ? (
+                  {isLoading ? (
+                    <div className="text-center py-20">
+                      <div className="animate-spin h-8 w-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                      <p className="text-gray-600 dark:text-gray-400">Loading your subscription...</p>
+                    </div>
+                  ) : selectedPlan ? (
                     <div className="space-y-4">
                       <div className="bg-primary-50 dark:bg-primary-900/10 px-2 sm:px-4 py-4 md:mx-10 rounded-lg border border-primary-200 dark:border-primary-800 mb-2">
                         <div className="flex items-center justify-between">
@@ -397,7 +355,8 @@ const PaymentsPage = () => {
                                 {selectedFrequency.charAt(0).toUpperCase() +
                                   selectedFrequency.slice(1)}{" "}
                                 payment of KES{" "}
-                                {getPremiumAmount(selectedPlan, selectedFrequency).toLocaleString()}
+                                {(selectedPlan[`${selectedFrequency}Premium`] || 
+                                  (selectedPlan.premiums && selectedPlan.premiums[selectedFrequency]) || 0).toLocaleString()}
                               </p>
                             </div>
                           </div>
@@ -594,7 +553,7 @@ const PaymentsPage = () => {
         <PlanSelectionModal
           isOpen={isPlanModalOpen}
           onClose={handleClosePlanModal}
-          insurancePlans={insurancePlans}
+          insurancePlans={[]} // Removed hardcoded insurance plans
           onPlanSelected={handlePlanSelected}
         />
       )}

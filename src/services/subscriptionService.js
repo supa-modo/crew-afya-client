@@ -10,10 +10,44 @@ import { apiGet, apiPost, apiPut } from "./api";
  */
 export const saveSubscription = async (subscriptionData) => {
   try {
-    return await apiPost("/subscriptions", subscriptionData);
+    // Ensure all required fields are present
+    if (!subscriptionData.userId) {
+      console.error("Missing userId in subscription data");
+      return { success: false, message: "User ID is required" };
+    }
+    
+    if (!subscriptionData.planId) {
+      console.error("Missing planId in subscription data");
+      return { success: false, message: "Plan ID is required" };
+    }
+    
+    if (!subscriptionData.paymentFrequency && !subscriptionData.frequency) {
+      console.error("Missing frequency in subscription data");
+      return { success: false, message: "Payment frequency is required" };
+    }
+    
+    // Normalize the data
+    const normalizedData = {
+      userId: subscriptionData.userId,
+      planId: subscriptionData.planId,
+      frequency: subscriptionData.paymentFrequency || subscriptionData.frequency,
+    };
+    
+    // Add startDate if provided
+    if (subscriptionData.startDate) {
+      normalizedData.startDate = subscriptionData.startDate;
+    }
+    
+    const response = await apiPost("/subscriptions", normalizedData);
+    return response;
   } catch (error) {
     console.error("Error saving subscription:", error);
-    throw error;
+    // Return a structured error response instead of throwing
+    return {
+      success: false,
+      message: error.message || "Failed to save subscription",
+      error: error
+    };
   }
 };
 
@@ -24,10 +58,45 @@ export const saveSubscription = async (subscriptionData) => {
  */
 export const getUserSubscription = async (userId) => {
   try {
-    return await apiGet(`/subscriptions/user/${userId}`);
+    if (!userId) {
+      console.error("Missing userId in getUserSubscription");
+      return {
+        success: false,
+        message: "User ID is required",
+        data: null
+      };
+    }
+    
+    const response = await apiGet(`/subscriptions/user/${userId}`);
+    return response;
   } catch (error) {
     console.error("Error getting user subscription:", error);
-    return null;
+    
+    // If it's a 404 (no subscription found), return a structured response
+    if (error.status === 404) {
+      return {
+        success: false,
+        message: "No active subscription found",
+        data: null
+      };
+    }
+    
+    // For server errors (500), provide a more specific message
+    if (error.status >= 500) {
+      return {
+        success: false,
+        message: "Server error while retrieving subscription. Please try again later.",
+        data: null
+      };
+    }
+    
+    // For other errors, return a structured error response
+    return {
+      success: false,
+      message: error.message || "Failed to get user subscription",
+      error: error,
+      data: null // Ensure data is always present in the response
+    };
   }
 };
 
@@ -76,39 +145,80 @@ export const getPremiumAmount = (plan, frequency) => {
  */
 export const getCoverageUtilization = async (userId) => {
   try {
-    return await apiGet(`/subscriptions/coverage/${userId}`);
+    if (!userId) {
+      console.error("Missing userId in getCoverageUtilization");
+      return {
+        success: false,
+        message: "User ID is required",
+        data: getDefaultCoverageData()
+      };
+    }
+    
+    const response = await apiGet(`/subscriptions/coverage/${userId}`);
+    
+    // Ensure the response has the expected structure
+    if (response.data && (!response.data.coverage || !response.data.utilization)) {
+      console.warn("Coverage data has unexpected structure, applying defaults");
+      return {
+        ...response,
+        data: {
+          ...response.data,
+          coverage: response.data.coverage || getDefaultCoverageValues(),
+          utilization: response.data.utilization || getDefaultCoverageValues()
+        }
+      };
+    }
+    
+    return response;
   } catch (error) {
     console.error("Error getting coverage utilization:", error);
-    // Return mock data for now
+    
+    // Handle specific error codes
+    if (error.status === 404) {
+      return {
+        success: false,
+        message: "No coverage data found for this user",
+        data: getDefaultCoverageData()
+      };
+    }
+    
+    if (error.status >= 500) {
+      return {
+        success: false,
+        message: "Server error while retrieving coverage data. Please try again later.",
+        data: getDefaultCoverageData()
+      };
+    }
+    
+    // Return a structured error response with default data
     return {
-      inpatient: {
-        limit: 200000,
-        used: 45000,
-        remaining: 155000
-      },
-      outpatient: {
-        limit: 20000,
-        used: 8500,
-        remaining: 11500
-      },
-      maternity: {
-        limit: 20000,
-        used: 0,
-        remaining: 20000
-      },
-      optical: {
-        limit: 5000,
-        used: 2000,
-        remaining: 3000
-      },
-      dental: {
-        limit: 5000,
-        used: 0,
-        remaining: 5000
-      }
+      success: false,
+      message: error.message || "Failed to get coverage utilization",
+      data: getDefaultCoverageData()
     };
   }
 };
+
+/**
+ * Helper function to get default coverage values
+ * @returns {Object} - Default coverage values
+ */
+const getDefaultCoverageValues = () => ({
+  inpatient: 0,
+  outpatient: 0,
+  dental: 0,
+  optical: 0,
+  maternity: 0
+});
+
+/**
+ * Helper function to get default coverage data structure
+ * @returns {Object} - Default coverage data
+ */
+const getDefaultCoverageData = () => ({
+  coverage: getDefaultCoverageValues(),
+  utilization: getDefaultCoverageValues()
+});
 
 export default {
   saveSubscription,
