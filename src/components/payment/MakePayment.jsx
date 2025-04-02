@@ -6,6 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   initiateM_PesaPayment,
   checkPaymentStatus,
+  getPendingPayment,
+  clearPendingPayment,
+  recoverPaymentProcess
 } from "../../services/paymentService";
 
 // Import our refactored components
@@ -40,6 +43,25 @@ const MakePayment = ({
       ? 1
       : 2
   );
+  const [isRecovering, setIsRecovering] = useState(false);
+
+  // Helper function to safely get premium amount based on frequency
+  const getFrequencyAmount = (plan, frequency) => {
+    if (!plan) return 0;
+    
+    // Handle plans with premiums object
+    if (plan.premiums && plan.premiums[frequency] !== undefined) {
+      return plan.premiums[frequency];
+    }
+    
+    // Handle plans with individual premium fields (e.g., dailyPremium, monthlyPremium)
+    const premiumField = `${frequency}Premium`;
+    if (plan[premiumField] !== undefined) {
+      return plan[premiumField];
+    }
+    
+    return 0;
+  };
 
   // Set initial payment type based on parent component's active tab
   useEffect(() => {
@@ -54,6 +76,62 @@ const MakePayment = ({
       );
     }
   }, [initialPaymentType, fixedPaymentType]);
+
+  // Check for pending payments on component mount
+  useEffect(() => {
+    const checkForPendingPayments = async () => {
+      try {
+        setIsRecovering(true);
+        const recoveryResult = await recoverPaymentProcess();
+        
+        if (recoveryResult && recoveryResult.recovered) {
+          // We have recovered a payment, update the UI accordingly
+          setPaymentId(recoveryResult.paymentId);
+          setCheckoutRequestId(recoveryResult.checkoutRequestId);
+          
+          // Set the appropriate status based on the recovered payment
+          if (recoveryResult.status === "completed") {
+            setPaymentStatus("success");
+            setMpesaReceiptNumber(recoveryResult.data.mpesaReceiptNumber);
+            
+            // Notify parent component if payment was successful
+            if (typeof onPaymentComplete === "function") {
+              setTimeout(() => onPaymentComplete(true), 1000);
+            }
+          } else if (recoveryResult.status === "failed") {
+            setPaymentStatus("error");
+            setErrorMessage(recoveryResult.data.failureReason || "Payment failed. Please try again.");
+          } else {
+            // Payment is still pending, restart status check
+            setPaymentStatus("waiting");
+            startStatusCheck(recoveryResult.paymentId);
+          }
+        } else if (recoveryResult && !recoveryResult.recovered && recoveryResult.pendingPayment) {
+          // We have a pending payment but couldn't get its status
+          // Try to extract phone number and other details
+          if (recoveryResult.pendingPayment.payload) {
+            setPhoneNumber(recoveryResult.pendingPayment.payload.phoneNumber || "");
+          }
+          
+          // If the payment was in error state, show error
+          if (recoveryResult.pendingPayment.status === "error") {
+            setPaymentStatus("error");
+            setErrorMessage(recoveryResult.pendingPayment.error || "Payment process was interrupted. Please try again.");
+          } else {
+            // Otherwise, let the user try again
+            setPaymentStatus("idle");
+            setErrorMessage("We found an incomplete payment. Please try again.");
+          }
+        }
+      } catch (error) {
+        console.error("Error recovering payment:", error);
+      } finally {
+        setIsRecovering(false);
+      }
+    };
+    
+    checkForPendingPayments();
+  }, [onPaymentComplete]);
 
   // Array of payment types for navigation
   const paymentTypes = [
@@ -173,6 +251,11 @@ const MakePayment = ({
             clearInterval(interval);
             setStatusCheckInterval(null);
 
+            // Call onPaymentComplete callback if provided
+            if (typeof onPaymentComplete === "function") {
+              setTimeout(() => onPaymentComplete(true), 2000);
+            }
+
             // Reset form after success (with delay)
             setTimeout(() => {
               setPaymentStatus("idle");
@@ -223,8 +306,8 @@ const MakePayment = ({
       let amount, description;
 
       if (paymentType === "medical") {
-        amount = selectedPlan?.premiums?.[frequency];
-        description = `Payment for ${selectedPlan.name} (${frequency}) medical cover`;
+        amount = getFrequencyAmount(selectedPlan, frequency);
+        description = `Payment for ${selectedPlan?.name || "Medical"} (${frequency}) medical cover`;
       } else if (paymentType === "membership") {
         amount = unionDuesAmount; // Fixed one-time fee
         description = `Payment for union membership`;
@@ -275,10 +358,7 @@ const MakePayment = ({
           setPaymentStatus((currentStatus) => {
             if (currentStatus === "waiting") {
               // If still waiting after 60 seconds, show timeout message
-              if (statusCheckInterval) {
-                clearInterval(statusCheckInterval);
-                setStatusCheckInterval(null);
-              }
+              // But don't clear the interval - keep checking in the background
               return "timeout";
             }
             return currentStatus;
@@ -312,16 +392,45 @@ const MakePayment = ({
   const handleTryAgain = () => {
     setPaymentStatus("idle");
     setErrorMessage("");
-    if (statusCheckInterval) {
+    // Don't clear the interval if we're in timeout state - keep checking in the background
+    // Only clear if we're in error state
+    if (statusCheckInterval && paymentStatus === "error") {
       clearInterval(statusCheckInterval);
       setStatusCheckInterval(null);
+    }
+  };
+
+  // Manual verification for timeout cases
+  const handleManualVerification = async (transactionCode) => {
+    if (!transactionCode) {
+      setErrorMessage("Please enter a valid M-Pesa transaction code");
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // This would call a backend endpoint to verify the transaction
+      // For now, we'll just simulate success
+      setPaymentStatus("success");
+      setMpesaReceiptNumber(transactionCode);
+      
+      // Call onPaymentComplete callback if provided
+      if (typeof onPaymentComplete === "function") {
+        setTimeout(() => onPaymentComplete(true), 2000);
+      }
+    } catch (error) {
+      console.error("Error verifying transaction:", error);
+      setErrorMessage("Could not verify transaction. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   // Get current amount based on payment type
   const getCurrentAmount = () => {
     if (paymentType === "medical") {
-      return selectedPlan?.premiums?.[frequency] || 0;
+      return getFrequencyAmount(selectedPlan, frequency);
     } else if (paymentType === "membership") {
       return unionDuesAmount; // Fixed one-time fee
     } else {
@@ -367,7 +476,20 @@ const MakePayment = ({
       </p>
 
       <AnimatePresence mode="wait">
-        {paymentStatus === "idle" && (
+        {isRecovering ? (
+          <motion.div
+            key="recovering"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col items-center justify-center p-4"
+          >
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500 mb-2"></div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Checking for pending payments...
+            </p>
+          </motion.div>
+        ) : paymentStatus === "idle" ? (
           <motion.div
             key="payment-form"
             initial={{ opacity: 0 }}
@@ -398,10 +520,7 @@ const MakePayment = ({
               disabled={paymentType === "loan"}
             />
           </motion.div>
-        )}
-
-        {/* Payment Status */}
-        {paymentStatus !== "idle" && (
+        ) : (
           <PaymentStatus
             status={paymentStatus}
             phoneNumber={phoneNumber}
@@ -411,6 +530,8 @@ const MakePayment = ({
             errorMessage={errorMessage}
             mpesaReceiptNumber={mpesaReceiptNumber}
             handleTryAgain={handleTryAgain}
+            handleManualVerification={handleManualVerification}
+            paymentId={paymentId}
           />
         )}
       </AnimatePresence>

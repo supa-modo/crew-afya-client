@@ -20,6 +20,7 @@ import { PiUserDuotone } from "react-icons/pi";
 import { useAuth } from "../context/AuthContext";
 import UnionMembershipHistory from "../components/payment/UnionMembershipHistory";
 import { RiUserCommunityLine } from "react-icons/ri";
+import { saveSubscription, getUserSubscription, getPremiumAmount } from "../services/subscriptionService";
 
 const PaymentsPage = () => {
   const { user } = useAuth();
@@ -88,24 +89,74 @@ const PaymentsPage = () => {
     },
   ];
 
-  // Simulate loading user subscription data
-  useEffect(() => {
-    // Check if user has a subscription in localStorage
-    const userSubscription = localStorage.getItem("userSubscription");
+  const getPremiumAmount = (plan, frequency) => {
+    if (!plan || !plan.premiums) return 0;
+    return plan.premiums[frequency] || 0;
+  };
 
-    if (userSubscription) {
-      const { plan, frequency } = JSON.parse(userSubscription);
-      const foundPlan = insurancePlans.find((p) => p.name === plan.name);
-      if (foundPlan) {
-        setSelectedPlan(foundPlan);
-        setSelectedFrequency(frequency);
+  // Load user subscription data from server and localStorage as fallback
+  useEffect(() => {
+    const loadSubscription = async () => {
+      if (!user || !user.id) return;
+      
+      try {
+        // Try to get subscription from server first
+        const response = await getUserSubscription(user.id);
+        
+        if (response && response.data && response.data.plan) {
+          // If server has subscription data, use it
+          const { plan, frequency } = response.data;
+          const foundPlan = insurancePlans.find((p) => p.name === plan.name);
+          if (foundPlan) {
+            setSelectedPlan(foundPlan);
+            setSelectedFrequency(frequency);
+            
+            // Update localStorage with the latest server data
+            localStorage.setItem(
+              "userSubscription",
+              JSON.stringify({
+                plan: foundPlan,
+                frequency: frequency,
+              })
+            );
+            return;
+          }
+        }
+        
+        // Fallback to localStorage if server data is not available
+        const userSubscription = localStorage.getItem("userSubscription");
+        if (userSubscription) {
+          const { plan, frequency } = JSON.parse(userSubscription);
+          const foundPlan = insurancePlans.find((p) => p.name === plan.name);
+          if (foundPlan) {
+            setSelectedPlan(foundPlan);
+            setSelectedFrequency(frequency);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading subscription:", error);
+        // Fallback to localStorage if there's an error
+        const userSubscription = localStorage.getItem("userSubscription");
+        if (userSubscription) {
+          const { plan, frequency } = JSON.parse(userSubscription);
+          const foundPlan = insurancePlans.find((p) => p.name === plan.name);
+          if (foundPlan) {
+            setSelectedPlan(foundPlan);
+            setSelectedFrequency(frequency);
+          }
+        }
       }
-    }
-  }, []);
+    };
+    
+    loadSubscription();
+  }, [user, insurancePlans]);
 
-  // Save subscription to localStorage when it changes
+  // Save subscription to server and localStorage when it changes
   useEffect(() => {
-    if (selectedPlan) {
+    const saveUserSubscription = async () => {
+      if (!selectedPlan || !user || !user.id) return;
+      
+      // Save to localStorage
       localStorage.setItem(
         "userSubscription",
         JSON.stringify({
@@ -113,9 +164,22 @@ const PaymentsPage = () => {
           frequency: selectedFrequency,
         })
       );
-    }
-  }, [selectedPlan, selectedFrequency]);
-
+      
+      // Save to server
+      try {
+        await saveSubscription({
+          plan: selectedPlan,
+          frequency: selectedFrequency,
+          userId: user.id
+        });
+      } catch (error) {
+        console.error("Error saving subscription to server:", error);
+        // Continue even if server save fails, as we have localStorage backup
+      }
+    };
+    
+    saveUserSubscription();
+  }, [selectedPlan, selectedFrequency, user]);
 
   const tileClassName = ({ date }) => {
     const dateStr = date.toISOString().split("T")[0];
@@ -145,6 +209,18 @@ const PaymentsPage = () => {
   const handlePlanSelected = (plan, frequency) => {
     setSelectedPlan(plan);
     setSelectedFrequency(frequency);
+    setIsPlanModalOpen(false);
+    
+    // Save to server immediately after selection
+    if (user && user.id) {
+      saveSubscription({
+        plan: plan,
+        frequency: frequency,
+        userId: user.id
+      }).catch(error => {
+        console.error("Error saving subscription after plan selection:", error);
+      });
+    }
   };
 
   // Format date
@@ -321,9 +397,7 @@ const PaymentsPage = () => {
                                 {selectedFrequency.charAt(0).toUpperCase() +
                                   selectedFrequency.slice(1)}{" "}
                                 payment of KES{" "}
-                                {selectedPlan.premiums[
-                                  selectedFrequency
-                                ].toLocaleString()}
+                                {getPremiumAmount(selectedPlan, selectedFrequency).toLocaleString()}
                               </p>
                             </div>
                           </div>

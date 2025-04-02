@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiPlus, FiSearch, FiCheck } from "react-icons/fi";
+import { FiPlus, FiSearch } from "react-icons/fi";
 import {
   TbHome2,
   TbShieldHalfFilled,
@@ -35,12 +35,15 @@ const InsurancePlansPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const plansData = await insuranceService.getInsurancePlans();
-        setPlans(plansData);
-
-        // Set default plan for subscribers list
-        if (plansData.length > 0 && !selectedPlanForSubscribers) {
-          setSelectedPlanForSubscribers(plansData[0]);
+        const response = await insuranceService.getInsurancePlans();
+        if (response.success) {
+          setPlans(response.data || []);
+          // Set default plan for subscribers list
+          if (response.data?.length > 0 && !selectedPlanForSubscribers) {
+            setSelectedPlanForSubscribers(response.data[0]);
+          }
+        } else {
+          throw new Error(response.message || "Failed to fetch plans");
         }
       } catch (error) {
         console.error("Error fetching plans:", error);
@@ -88,23 +91,32 @@ const InsurancePlansPage = () => {
   // Handle plan update
   const handlePlanUpdate = async (updatedPlan) => {
     try {
-      await insuranceService.updatePlan(updatedPlan.id, updatedPlan);
-
-      // Update local state
-      setPlans(
-        plans.map((plan) => (plan.id === updatedPlan.id ? updatedPlan : plan))
+      const response = await insuranceService.updatePlan(
+        updatedPlan.id,
+        updatedPlan
       );
 
-      // Close modal
-      setIsEditModalOpen(false);
+      if (response.success) {
+        // Update local state
+        setPlans((prevPlans) =>
+          prevPlans.map((plan) =>
+            plan.id === updatedPlan.id ? response.data : plan
+          )
+        );
 
-      // If the updated plan is currently selected for subscribers, update it
-      if (selectedPlanForSubscribers?.id === updatedPlan.id) {
-        setSelectedPlanForSubscribers(updatedPlan);
+        // Close modal
+        setIsEditModalOpen(false);
+
+        // If the updated plan is currently selected for subscribers, update it
+        if (selectedPlanForSubscribers?.id === updatedPlan.id) {
+          setSelectedPlanForSubscribers(response.data);
+        }
+
+        // Show success message
+        alert("Plan updated successfully");
+      } else {
+        throw new Error(response.message || "Failed to update plan");
       }
-
-      // Show success message
-      alert("Plan updated successfully");
     } catch (error) {
       console.error("Error updating plan:", error);
       alert(`Failed to update plan: ${error.message || "Unknown error"}`);
@@ -116,7 +128,7 @@ const InsurancePlansPage = () => {
     setSelectedPlanForSubscribers(plan);
 
     // Scroll to subscribers section
-    document.getElementById("subscribers-section").scrollIntoView({
+    document.getElementById("subscribers-section")?.scrollIntoView({
       behavior: "smooth",
     });
   };
@@ -129,22 +141,26 @@ const InsurancePlansPage = () => {
       )
     ) {
       try {
-        await insuranceService.deletePlan(planId);
+        const response = await insuranceService.deletePlan(planId);
 
-        // Update local state
-        const updatedPlans = plans.filter((plan) => plan.id !== planId);
-        setPlans(updatedPlans);
+        if (response.success) {
+          // Update local state
+          const updatedPlans = plans.filter((plan) => plan.id !== planId);
+          setPlans(updatedPlans);
 
-        // If the deleted plan is currently selected for subscribers,
-        // change to the first available plan or set to null
-        if (selectedPlanForSubscribers?.id === planId) {
-          setSelectedPlanForSubscribers(
-            updatedPlans.length > 0 ? updatedPlans[0] : null
-          );
+          // If the deleted plan is currently selected for subscribers,
+          // change to the first available plan or set to null
+          if (selectedPlanForSubscribers?.id === planId) {
+            setSelectedPlanForSubscribers(
+              updatedPlans.length > 0 ? updatedPlans[0] : null
+            );
+          }
+
+          // Show success message
+          alert("Plan deleted successfully");
+        } else {
+          throw new Error(response.message || "Failed to delete plan");
         }
-
-        // Show success message
-        alert("Plan deleted successfully");
       } catch (error) {
         console.error("Error deleting plan:", error);
         alert(`Failed to delete plan: ${error.message || "Unknown error"}`);
@@ -153,11 +169,13 @@ const InsurancePlansPage = () => {
   };
 
   // Get filtered plans
-  const filteredPlans = plans.filter(
-    (plan) =>
-      plan.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      plan.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredPlans = Array.isArray(plans)
+    ? plans.filter(
+        (plan) =>
+          plan.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          plan.description.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   return (
     <div className="pb-6">

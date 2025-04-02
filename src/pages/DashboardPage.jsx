@@ -20,6 +20,7 @@ import {
 } from "../services/documentService";
 import ChangeFrequencyModal from "../components/payment/ChangeFrequencyModal";
 import ConfirmationModal from "../components/common/ConfirmationModal";
+import { getUserSubscription, getCoverageUtilization, saveSubscription } from "../services/subscriptionService";
 
 import LoanStatus from "../components/dashboard/LoanStatus";
 import UnionMembershipModal from "../components/UnionMembershipModal";
@@ -34,6 +35,9 @@ const DashboardPage = () => {
   const [nextPaymentDate, setNextPaymentDate] = useState("April 15, 2025");
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
+  const [coverageUtilization, setCoverageUtilization] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Document states
   const [documents, setDocuments] = useState([]);
@@ -48,14 +52,60 @@ const DashboardPage = () => {
   const [showMembershipModal, setShowMembershipModal] = useState(false);
   const [hasPaidMembership, setHasPaidMembership] = useState(false);
 
-  // Load user subscription data
+  // Load user subscription data from server and localStorage as fallback
   useEffect(() => {
-    const subscription = localStorage.getItem("userSubscription");
-    if (subscription) {
-      setUserSubscription(JSON.parse(subscription));
-    }
-
-    // Fetch documents on component mount
+    const loadSubscription = async () => {
+      if (!user || !user.id) return;
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Try to get subscription from server first
+        const response = await getUserSubscription(user.id);
+        
+        if (response && response.data && response.data.plan) {
+          // If server has subscription data, use it
+          setUserSubscription(response.data);
+          
+          // Set next payment date if available
+          if (response.data.nextPaymentDate) {
+            setNextPaymentDate(response.data.nextPaymentDate);
+          }
+          
+          // Also load coverage utilization data
+          try {
+            const coverageData = await getCoverageUtilization(user.id);
+            if (coverageData && coverageData.data) {
+              setCoverageUtilization(coverageData.data);
+            }
+          } catch (utilError) {
+            console.error("Error loading coverage utilization:", utilError);
+          }
+          
+          return;
+        }
+        
+        // Fallback to localStorage if server data is not available
+        const localSubscription = localStorage.getItem("userSubscription");
+        if (localSubscription) {
+          setUserSubscription(JSON.parse(localSubscription));
+        }
+      } catch (error) {
+        console.error("Error loading subscription:", error);
+        setError("Failed to load subscription data. Please try again later.");
+        
+        // Fallback to localStorage if there's an error
+        const localSubscription = localStorage.getItem("userSubscription");
+        if (localSubscription) {
+          setUserSubscription(JSON.parse(localSubscription));
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadSubscription();
     fetchDocuments();
     fetchMockData();
 
@@ -147,41 +197,61 @@ const DashboardPage = () => {
     setIsFrequencyModalOpen(false);
   };
 
-  const handleFrequencyChanged = (newFrequency) => {
-    if (userSubscription) {
-      const updatedSubscription = {
-        ...userSubscription,
-        frequency: newFrequency,
-      };
-
-      // Update local state
-      setUserSubscription(updatedSubscription);
-
-      // Save to localStorage
-      localStorage.setItem(
-        "userSubscription",
-        JSON.stringify(updatedSubscription)
+  const handleFrequencyChanged = async (newFrequency) => {
+    if (!userSubscription || !userSubscription.plan || !user || !user.id) return;
+    
+    try {
+      setIsSubmitting(true);
+      
+      // Call the API to update the subscription frequency
+      const response = await saveSubscription(
+        user.id, 
+        userSubscription.plan.id, 
+        newFrequency
       );
+      
+      if (response && response.data) {
+        // Update local state with the server response
+        setUserSubscription(response.data);
+        
+        // Update next payment date if available in the response
+        if (response.data.nextPaymentDate) {
+          setNextPaymentDate(response.data.nextPaymentDate);
+        } else {
+          // Calculate next payment date based on frequency if not provided by server
+          const today = new Date();
+          let nextDate;
 
-      // Update next payment date based on frequency
-      const today = new Date();
-      let nextDate;
+          if (newFrequency === "daily") {
+            nextDate = new Date(today);
+            nextDate.setDate(today.getDate() + 1);
+          } else if (newFrequency === "weekly") {
+            nextDate = new Date(today);
+            nextDate.setDate(today.getDate() + 7);
+          } else if (newFrequency === "monthly") {
+            nextDate = new Date(today);
+            nextDate.setMonth(today.getMonth() + 1);
+          } else if (newFrequency === "annual") {
+            nextDate = new Date(today);
+            nextDate.setFullYear(today.getFullYear() + 1);
+          }
 
-      if (newFrequency === "daily") {
-        nextDate = new Date(today);
-        nextDate.setDate(today.getDate() + 1);
-      } else if (newFrequency === "monthly") {
-        nextDate = new Date(today);
-        nextDate.setMonth(today.getMonth() + 1);
-      } else if (newFrequency === "annual") {
-        nextDate = new Date(today);
-        nextDate.setFullYear(today.getFullYear() + 1);
+          if (nextDate) {
+            const options = { year: "numeric", month: "long", day: "numeric" };
+            setNextPaymentDate(nextDate.toLocaleDateString("en-US", options));
+          }
+        }
+        
+        // Close the modal
+        handleCloseFrequencyModal();
+      } else {
+        throw new Error("Failed to update subscription frequency");
       }
-
-      if (nextDate) {
-        const options = { year: "numeric", month: "long", day: "numeric" };
-        setNextPaymentDate(nextDate.toLocaleDateString("en-US", options));
-      }
+    } catch (error) {
+      console.error("Error updating subscription frequency:", error);
+      // You could add error handling UI here
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -220,6 +290,22 @@ const DashboardPage = () => {
       localStorage.setItem("unionMembershipPaid", "true");
     }
     setShowMembershipModal(false);
+  };
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return "Not scheduled";
+    
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid date";
+    }
   };
 
   return (
@@ -298,7 +384,7 @@ const DashboardPage = () => {
 
             <div className="flex flex-col md:flex-row gap-3 px-3 sm:px-6 lg:px-6 mb-3 sm:mb-4 md:mb-6">
               <div className="md:w-[50%] bg-gradient-to-r from-primary-800 via-primary-700 to-primary-600 rounded-2xl p-5 sm:p-6 text-white shadow-md relative">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between">
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="opacity-80 text-xs sm:text-sm ">
@@ -384,12 +470,11 @@ const DashboardPage = () => {
                           Medical Cover
                         </p>
                         <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mt-1">
-                          Crew Afya Lite
+                          {userSubscription?.plan?.name || "Crew Afya Lite"}
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          Coverage:{" "}
-                          <span className="font-medium">KSh 200,000</span>
-                        </p>
+              {formatDate(userSubscription?.plan?.startDate)} - {userSubscription?.plan?.endDate ? formatDate(userSubscription?.plan?.endDate) : "Ongoing"}
+            </p>
                       </div>
                       <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                         <TbShieldCheckFilled className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -462,14 +547,13 @@ const DashboardPage = () => {
                 {activeTab === "overview" && (
                   <div className="animate-fadeIn">
                     <div className="mb-6 px-2">
-                      
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         View and manage your membership details, upcoming
                         payments, and documents.
                       </p>
                     </div>
                     <OverviewTab
-                      nextPaymentDate={nextPaymentDate}
+                      nextPaymentDate={formatDate(nextPaymentDate)}
                       userSubscription={userSubscription}
                       handleOpenFrequencyModal={handleOpenFrequencyModal}
                       documents={documents}
@@ -484,13 +568,12 @@ const DashboardPage = () => {
                 {activeTab === "membership" && (
                   <div className="animate-fadeIn">
                     <div className="mb-6">
-                      
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         Manage your Matatu Workers Union membership details and
                         benefits.
                       </p>
                     </div>
-                    <MembershipTab user={user} />
+                    <MembershipTab hasPaidMembership={hasPaidMembership} />
                   </div>
                 )}
 
@@ -498,14 +581,16 @@ const DashboardPage = () => {
                 {activeTab === "medical" && (
                   <div className="animate-fadeIn">
                     <div className="mb-6">
-                      
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         View and manage your medical coverage plan, dependents,
                         and claims.
                       </p>
                     </div>
                     <MedicalCoverTab
-                      user={user}
+                      userSubscription={userSubscription}
+                      coverageUtilization={coverageUtilization}
+                      isLoading={isLoading}
+                      error={error}
                       handleOpenFrequencyModal={handleOpenFrequencyModal}
                     />
                   </div>
@@ -517,35 +602,37 @@ const DashboardPage = () => {
       </div>
 
       {/* Change Frequency Modal */}
-      {userSubscription && (
-        <ChangeFrequencyModal
-          isOpen={isFrequencyModalOpen}
-          onClose={handleCloseFrequencyModal}
-          currentPlan={userSubscription.plan}
-          currentFrequency={userSubscription.frequency}
-          onFrequencyChanged={handleFrequencyChanged}
-        />
-      )}
+      <ChangeFrequencyModal
+        isOpen={isFrequencyModalOpen}
+        onClose={handleCloseFrequencyModal}
+        onFrequencyChanged={handleFrequencyChanged}
+        currentFrequency={userSubscription?.frequency || "monthly"}
+        isSubmitting={isSubmitting}
+      />
 
       {/* Confirmation Modal */}
       <ConfirmationModal
         isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={confirmDelete}
         title="Delete Document"
-        message={`Are you sure you want to delete "${documentToDelete?.name}"? This action cannot be undone.`}
+        message={`Are you sure you want to delete "${
+          documentToDelete?.name || "this document"
+        }"? This action cannot be undone.`}
         confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setShowDeleteModal(false);
+          setDocumentToDelete(null);
+        }}
         isLoading={isSubmitting}
       />
 
       {/* Union Membership Modal */}
-      {showMembershipModal && (
-        <UnionMembershipModal
-          isOpen={showMembershipModal}
-          onClose={() => setShowMembershipModal(false)}
-          onPaymentComplete={handleMembershipPayment}
-        />
-      )}
+      <UnionMembershipModal
+        isOpen={showMembershipModal}
+        onClose={() => setShowMembershipModal(false)}
+        onPaymentComplete={handleMembershipPayment}
+      />
     </div>
   );
 };

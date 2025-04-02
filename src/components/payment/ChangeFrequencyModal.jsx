@@ -69,20 +69,26 @@ const ChangeFrequencyModal = ({
       }
 
       // Update payment frequency
-      await insuranceService.updatePaymentFrequency(
+      const response = await insuranceService.updatePaymentFrequency(
         coverageDetails.coverage.id,
         selectedFrequency
       );
 
-      setIsSuccess(true);
+      if (response.success) {
+        setIsSuccess(true);
 
-      // Update the parent component
-      onFrequencyChanged(selectedFrequency);
+        // Update the parent component
+        onFrequencyChanged(selectedFrequency);
 
-      // Close the modal after a short delay
-      setTimeout(() => {
-        onClose();
-      }, 2000);
+        // Close the modal after a short delay
+        setTimeout(() => {
+          onClose();
+        }, 2000);
+      } else {
+        throw new Error(
+          response.message || "Failed to update payment frequency"
+        );
+      }
     } catch (error) {
       setError(error.message || "Failed to update payment frequency");
       console.error("Error updating frequency:", error);
@@ -95,22 +101,22 @@ const ChangeFrequencyModal = ({
     {
       id: "daily",
       label: "Daily",
-      description: `KES ${currentPlan.premiums.daily.toLocaleString()} per day`,
+      description: `KES ${currentPlan.dailyPremium.toLocaleString()} per day`,
     },
     {
       id: "weekly",
       label: "Weekly",
-      description: `KES ${currentPlan.premiums.weekly.toLocaleString()} per week`,
+      description: `KES ${currentPlan.weeklyPremium.toLocaleString()} per week`,
     },
     {
       id: "monthly",
       label: "Monthly",
-      description: `KES ${currentPlan.premiums.monthly.toLocaleString()} per month`,
+      description: `KES ${currentPlan.monthlyPremium.toLocaleString()} per month`,
     },
     {
       id: "annual",
       label: "Annual",
-      description: `KES ${currentPlan.premiums.annual.toLocaleString()} per year`,
+      description: `KES ${currentPlan.annualPremium.toLocaleString()} per year`,
     },
   ];
 

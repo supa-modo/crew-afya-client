@@ -1,14 +1,5 @@
-import React, { useState } from "react";
-import {
-  FiEdit2,
-  FiTrash2,
-  FiUsers,
-  FiChevronDown,
-  FiChevronUp,
-} from "react-icons/fi";
-import { TbEdit, TbShieldCheck, TbShieldCheckFilled, TbTrash } from "react-icons/tb";
-import { MdHealthAndSafety } from "react-icons/md";
-import { PiCheckBold, PiChecksBold, PiUsersDuotone } from "react-icons/pi";
+import React from "react";
+import { TbEdit, TbTrash, TbUsers } from "react-icons/tb";
 
 const PlanCard = ({
   plan,
@@ -19,143 +10,106 @@ const PlanCard = ({
   onDeletePlan,
   isCurrentlySelected,
 }) => {
-  // By default, show expanded details
-  const [isExpanded, setIsExpanded] = useState(true);
-
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-200">
+    <div
+      className={`bg-white dark:bg-gray-800 rounded-2xl shadow-sm border ${
+        isCurrentlySelected
+          ? "border-admin-500 dark:border-admin-400"
+          : "border-gray-200 dark:border-gray-700"
+      } overflow-hidden`}
+    >
       <div className="p-6">
-        <div className="flex justify-between items-start mb-2">
-          <h2 className="text-xl font-bold text-amber-700 dark:text-amber-600 flex items-center">
-            <MdHealthAndSafety className="mr-2 h-6 w-6 text-admin-600" />
-            {plan.name}
-          </h2>
-          <span
-            className={`px-4 py-1 text-xs rounded-lg font-medium ${
-              plan.status === "active"
-                ? "bg-green-200 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                : "bg-red-200 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              {plan.name}
+            </h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              {plan.description}
+            </p>
+          </div>
+          <div
+            className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              plan.isActive
+                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
             }`}
           >
-            {plan.status === "active" ? "Active" : "Inactive"}
-          </span>
+            {plan.isActive ? "Active" : "Inactive"}
+          </div>
         </div>
 
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          {plan.description}
-        </p>
-
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="bg-gray-100 dark:bg-gray-700/50 p-3 rounded-lg">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+        <div className="mt-4 grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Daily Premium
             </p>
-            <p className="text-lg font-semibold text-admin-600 dark:text-admin-400">
-              {formatCurrency(plan.premiums.daily)}
+            <p className="mt-1 text-base font-semibold text-gray-900 dark:text-white">
+              {formatCurrency(plan.dailyPremium)}
             </p>
           </div>
-          <div className="bg-gray-100 dark:bg-gray-700/50 p-3 rounded-lg">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Monthly Premium
             </p>
-            <p className="text-lg font-semibold text-admin-600 dark:text-admin-400">
-              {formatCurrency(plan.premiums.monthly)}
+            <p className="mt-1 text-base font-semibold text-gray-900 dark:text-white">
+              {formatCurrency(plan.monthlyPremium)}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center mb-4">
-          <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mr-4">
-            <PiUsersDuotone className="mr-2 h-5 w-5 text-admin-700" />
-            <span>{plan.subscriberCount} subscribers</span>
-          </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Updated: {formatDate(plan.updatedAt)}
+        <div className="mt-4">
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Key Benefits
+          </h4>
+          <div className="space-y-2">
+            {plan.metadata?.benefits?.slice(0, 3).map((benefit, index) => (
+              <div key={index} className="flex justify-between text-sm">
+                <span className="text-gray-600 dark:text-gray-400">
+                  {benefit.name}
+                </span>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {benefit.limit}
+                </span>
+              </div>
+            ))}
+            {plan.metadata?.benefits?.length > 3 && (
+              <p className="text-xs text-admin-600 dark:text-admin-400">
+                +{plan.metadata.benefits.length - 3} more benefits
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-4">
-          <button
-            onClick={() => onEditPlan(plan)}
-            className="inline-flex items-center px-4 py-1.5 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
-          >
-            <TbEdit className="mr-2 h-5 w-5" /> Edit
-          </button>
+        <div className="mt-6 flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex space-x-3">
+            <button
+              onClick={() => onEditPlan(plan)}
+              className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
+            >
+              <TbEdit className="mr-1.5 h-4 w-4" />
+              Edit
+            </button>
+            <button
+              onClick={() => onDeletePlan(plan.id)}
+              className="inline-flex items-center px-3 py-1.5 border border-red-300 dark:border-red-600 rounded-md text-sm font-medium text-red-700 dark:text-red-300 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              <TbTrash className="mr-1.5 h-4 w-4" />
+              Delete
+            </button>
+          </div>
           <button
             onClick={() => onViewSubscribers(plan)}
-            className={`inline-flex items-center px-3 py-1.5 border ${
+            className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
               isCurrentlySelected
-                ? "border-admin-500 text-admin-700 bg-admin-100 dark:bg-admin-900/30 dark:text-admin-300 dark:border-admin-600"
-                : "border-admin-300 text-admin-700 bg-admin-50 hover:bg-admin-100 dark:bg-admin-900/20 dark:text-admin-400 dark:border-admin-800 dark:hover:bg-admin-900/40"
-            } text-sm leading-4 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500`}
+                ? "bg-admin-700 hover:bg-admin-800"
+                : "bg-admin-600 hover:bg-admin-700"
+            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500`}
           >
-            <PiUsersDuotone className="mr-2 h-5 w-5" />
-            {isCurrentlySelected ? "Currently Viewing" : "View Subscribers"}
-          </button>
-          <button
-            onClick={() => onDeletePlan(plan.id)}
-            className="inline-flex items-center px-4 py-1.5 border border-red-300 text-sm leading-4 font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/40"
-          >
-            <TbTrash className="mr-2 h-5 w-5" /> Delete
+            <TbUsers className="mr-1.5 h-4 w-4" />
+            View Subscribers
           </button>
         </div>
-
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full flex justify-center items-center py-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 focus:outline-none"
-        >
-          {isExpanded ? (
-            <>
-              Less details <FiChevronUp className="ml-1" />
-            </>
-          ) : (
-            <>
-              More details <FiChevronDown className="ml-1" />
-            </>
-          )}
-        </button>
-
-        {isExpanded && (
-          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <h4 className="text-sm font-semibold text-amber-700 dark:text-amber-600 mb-2">
-              Coverage Details
-            </h4>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              {Object.entries(plan.coverageDetails).map(([key, value]) => (
-                <div
-                  key={key}
-                  className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700/30 rounded"
-                >
-                  <span className="text-xs text-gray-600 dark:text-gray-400 capitalize">
-                    {key}
-                  </span>
-                  <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                    {value}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Benefits
-            </h4>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {plan.benefits.map((benefit, index) => (
-                <li key={index} className="flex items-start text-sm">
-                  <TbShieldCheckFilled className="h-5 w-5 text-admin-600 mr-2 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-medium text-gray-700 dark:text-gray-300">
-                      {benefit.name}:
-                    </span>{" "}
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {benefit.limit}
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );

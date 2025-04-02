@@ -1,27 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import insuranceService from "../../services/insuranceService";
 import { FiAlertCircle, FiCalendar, FiClock } from "react-icons/fi";
 import { TbCalendarDollar, TbShieldCheck } from "react-icons/tb";
+import { getCoverageUtilization } from "../../services/subscriptionService";
+import { useAuth } from "../../context/AuthContext";
 
 const CoverageUtilization = () => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [coverageDetails, setCoverageDetails] = useState(null);
+  const [coverageData, setCoverageData] = useState(null);
 
   useEffect(() => {
-    fetchCoverageDetails();
-  }, []);
+    fetchCoverageData();
+  }, [user]);
 
-  const fetchCoverageDetails = async () => {
+  const fetchCoverageData = async () => {
+    if (!user || !user.id) return;
+    
     try {
       setLoading(true);
       setError(null);
-      const details = await insuranceService.getCoverageDetails();
-      setCoverageDetails(details);
+      
+      const response = await getCoverageUtilization(user.id);
+      
+      if (response && response.data) {
+        setCoverageData(response.data);
+      } else {
+        throw new Error("Failed to fetch coverage data");
+      }
     } catch (error) {
-      setError(error.message || "Failed to fetch coverage details");
-      console.error("Error fetching coverage details:", error);
+      console.error("Error fetching coverage data:", error);
+      setError(error.message || "Failed to fetch coverage data");
     } finally {
       setLoading(false);
     }
@@ -53,7 +63,7 @@ const CoverageUtilization = () => {
         <FiAlertCircle className="mx-auto h-8 w-8 text-red-500 mb-2" />
         <p className="text-red-600 dark:text-red-400">{error}</p>
         <button
-          onClick={fetchCoverageDetails}
+          onClick={fetchCoverageData}
           className="mt-2 text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
         >
           Try Again
@@ -62,17 +72,13 @@ const CoverageUtilization = () => {
     );
   }
 
-  if (
-    !coverageDetails ||
-    !coverageDetails.coverage ||
-    !coverageDetails.coverage.plan
-  ) {
+  if (!coverageData || !coverageData.coverage || !coverageData.coverage.plan) {
     return (
       <div className="text-center py-4">
         <p className="text-gray-600 dark:text-gray-400">
           No coverage information available.{" "}
           <Link
-            to="/plans"
+            to="/payments"
             className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
           >
             Subscribe to a plan
@@ -82,124 +88,156 @@ const CoverageUtilization = () => {
     );
   }
 
-  const { coverage, utilization, nextPayment, paymentFrequency } =
-    coverageDetails;
+  const { coverage, utilization } = coverageData;
+  const { plan } = coverage;
+  const nextPayment = coverage.nextPaymentDate;
+  const paymentFrequency = coverage.paymentFrequency;
+
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("en-KE", {
+      style: "currency",
+      currency: "KES",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
     <div className="space-y-6">
-      {/* Plan Information */}
+      
+
+      {/* Coverage Utilization */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-        <div className="flex items-start justify-between">
+        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+          Coverage Utilization
+        </h3>
+
+        <div className="space-y-4">
+          {/* Inpatient */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-              <TbShieldCheck className="h-5 w-5 text-primary-500 mr-2" />
-              {coverage.plan?.name || "Unknown Plan"}
-            </h2>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {coverage.plan?.description || "No description available"}
-            </p>
-          </div>
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-            Active
-          </span>
-        </div>
-
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="flex items-center">
-            <FiCalendar className="h-5 w-5 text-gray-400 mr-2" />
-            <div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Coverage Period
-              </p>
-              <p className="text-sm font-medium text-gray-900 dark:text-white">
-                {new Date(coverage.startDate).toLocaleDateString()} -{" "}
-                {new Date(coverage.endDate).toLocaleDateString()}
-              </p>
+            <div className="flex justify-between mb-1">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Inpatient
+              </span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {utilization.inpatient.percentage}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+              <div
+                className={`h-2.5 rounded-full ${
+                  utilization.inpatient.percentage < 50
+                    ? "bg-green-500"
+                    : utilization.inpatient.percentage < 75
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
+                }`}
+                style={{ width: `${utilization.inpatient.percentage}%` }}
+              ></div>
+            </div>
+            <div className="flex justify-between mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <span>Used: {formatCurrency(utilization.inpatient.used)}</span>
+              <span>Remaining: {formatCurrency(utilization.inpatient.remaining)}</span>
             </div>
           </div>
-          <div className="flex items-center">
-            <TbCalendarDollar className="h-5 w-5 text-gray-400 mr-2" />
-            <div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Payment Frequency
-              </p>
-              <p className="text-sm font-medium text-gray-900 dark:text-white capitalize">
-                {paymentFrequency || "N/A"}
-              </p>
+
+          {/* Outpatient */}
+          <div>
+            <div className="flex justify-between mb-1">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Outpatient
+              </span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {utilization.outpatient.percentage}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+              <div
+                className={`h-2.5 rounded-full ${
+                  utilization.outpatient.percentage < 50
+                    ? "bg-green-500"
+                    : utilization.outpatient.percentage < 75
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
+                }`}
+                style={{ width: `${utilization.outpatient.percentage}%` }}
+              ></div>
+            </div>
+            <div className="flex justify-between mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <span>Used: {formatCurrency(utilization.outpatient.used)}</span>
+              <span>Remaining: {formatCurrency(utilization.outpatient.remaining)}</span>
             </div>
           </div>
-          <div className="flex items-center">
-            <FiClock className="h-5 w-5 text-gray-400 mr-2" />
-            <div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Next Payment
-              </p>
-              <p className="text-sm font-medium text-gray-900 dark:text-white">
-                {nextPayment
-                  ? new Date(nextPayment).toLocaleDateString()
-                  : "N/A"}
-              </p>
+
+          {/* Optical */}
+          <div>
+            <div className="flex justify-between mb-1">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Optical
+              </span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {utilization.optical.percentage}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+              <div
+                className={`h-2.5 rounded-full ${
+                  utilization.optical.percentage < 50
+                    ? "bg-green-500"
+                    : utilization.optical.percentage < 75
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
+                }`}
+                style={{ width: `${utilization.optical.percentage}%` }}
+              ></div>
+            </div>
+            <div className="flex justify-between mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <span>Used: {formatCurrency(utilization.optical.used)}</span>
+              <span>Remaining: {formatCurrency(utilization.optical.remaining)}</span>
+            </div>
+          </div>
+
+          {/* Maternity */}
+          <div>
+            <div className="flex justify-between mb-1">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Maternity
+              </span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {utilization.maternity.percentage}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+              <div
+                className={`h-2.5 rounded-full ${
+                  utilization.maternity.percentage < 50
+                    ? "bg-green-500"
+                    : utilization.maternity.percentage < 75
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
+                }`}
+                style={{ width: `${utilization.maternity.percentage}%` }}
+              ></div>
+            </div>
+            <div className="flex justify-between mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <span>Used: {formatCurrency(utilization.maternity.used)}</span>
+              <span>Remaining: {formatCurrency(utilization.maternity.remaining)}</span>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Benefits Utilization */}
-      {utilization && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Benefits Utilization
-          </h3>
-          <div className="space-y-4">
-            {Object.entries(utilization).map(([benefit, data]) => {
-              const { used, total, percentage } = data;
-              return (
-                <div key={benefit}>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
-                      {benefit}
-                    </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {percentage.toFixed(1)}% Used
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
-                    <div
-                      className={`h-2.5 rounded-full transition-all duration-300 ${
-                        percentage > 75
-                          ? "bg-red-600"
-                          : percentage > 50
-                          ? "bg-yellow-600"
-                          : "bg-green-600"
-                      }`}
-                      style={{ width: `${percentage}%` }}
-                    ></div>
-                  </div>
-                  <div className="flex justify-between mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    <span>KES {used.toLocaleString()} used</span>
-                    <span>KES {total.toLocaleString()} limit</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Quick Actions */}
-      <div className="flex flex-wrap gap-3">
-        <Link
-          to="/claims"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-        >
-          View Claims History
-        </Link>
-        <Link
-          to="/plans"
-          className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-        >
-          Manage Plan
-        </Link>
+        
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiLoader, FiCheck, FiAlertTriangle } from "react-icons/fi";
 import { motion } from "framer-motion";
@@ -12,7 +12,21 @@ const PaymentStatus = ({
   errorMessage,
   mpesaReceiptNumber,
   handleTryAgain,
+  handleManualVerification,
+  paymentId
 }) => {
+  const [transactionCode, setTransactionCode] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  
+  const onManualVerification = async () => {
+    setIsVerifying(true);
+    try {
+      await handleManualVerification(transactionCode);
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
   if (status === "processing") {
     return (
       <motion.div
@@ -78,23 +92,65 @@ const PaymentStatus = ({
         <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
           <FiAlertTriangle className="h-8 w-8 text-orange-600 dark:text-orange-400" />
         </div>
-        <h3 className="text-base sm:text-lg font-medium text-red-500/80 dark:text-white mb-2">
+        <h3 className="text-base sm:text-lg font-medium text-orange-600 dark:text-orange-400 mb-2">
           Payment Status Unknown
         </h3>
         <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center mb-2">
           We didn't receive confirmation for your payment request. If you
           completed the payment on your phone, it may still be processing.
         </p>
-        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
-          You can check your payment history later to confirm if it was
-          successful.
-        </p>
-        <button
-          onClick={handleTryAgain}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-        >
-          Try Again
-        </button>
+        
+        {/* Manual verification section */}
+        <div className="w-full max-w-md mt-2 mb-4 p-3 border border-gray-200 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800/50">
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+            If you completed the payment and received an M-Pesa confirmation message, 
+            enter the transaction code below:
+          </p>
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              value={transactionCode}
+              onChange={(e) => setTransactionCode(e.target.value)}
+              placeholder="e.g. QJI12345678"
+              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+            />
+            <button
+              onClick={onManualVerification}
+              disabled={!transactionCode || isVerifying}
+              className={`px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                !transactionCode || isVerifying
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              }`}
+            >
+              {isVerifying ? (
+                <FiLoader className="h-4 w-4 animate-spin" />
+              ) : (
+                "Verify"
+              )}
+            </button>
+          </div>
+          {paymentId && (
+            <p className="text-[0.65rem] text-gray-500 dark:text-gray-400 mt-1">
+              Payment ID: {paymentId}
+            </p>
+          )}
+        </div>
+        
+        <div className="flex space-x-3">
+          <button
+            onClick={handleTryAgain}
+            className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+          >
+            Try Again
+          </button>
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+          >
+            Go to Dashboard
+          </Link>
+        </div>
       </motion.div>
     );
   }
@@ -111,67 +167,59 @@ const PaymentStatus = ({
         <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
           <FiCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
         </div>
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+        <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
           Payment Successful!
         </h3>
-        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center mb-2">
-          Your payment for {getPaymentTypeTitle()} has been processed
-          successfully.
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center">
+          Your payment of {formatCurrency(getCurrentAmount())} for{" "}
+          {getPaymentTypeTitle()} has been processed successfully.
         </p>
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 my-2 w-full max-w-lg">
-          <p className="text-sm font-medium text-green-800 dark:text-green-300">
-            Amount: {formatCurrency(getCurrentAmount())}
+        {mpesaReceiptNumber && (
+          <p className="mt-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center">
+            M-Pesa Receipt Number: <strong>{mpesaReceiptNumber}</strong>
           </p>
-          {mpesaReceiptNumber && (
-            <p className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-300">
-              M-Pesa Receipt: {mpesaReceiptNumber}
-            </p>
-          )}
-        </div>
-        <p className="mt-4 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400 text-center">
-          You can download a receipt of this payment from transactions history
-          in{" "}
+        )}
+        <div className="mt-6 flex space-x-3">
           <Link
-            to="/payments"
-            className="text-primary-600 hover:text-primary-700"
+            to="/dashboard"
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
           >
-            Payments page
+            Go to Dashboard
           </Link>
-          .
-        </p>
-      </motion.div>
-    );
-  }
-
-  if (status === "error") {
-    return (
-      <motion.div
-        key="error"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="flex flex-col items-center py-8"
-      >
-        <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-          <FiAlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
         </div>
-        <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
-          Payment Failed
-        </h3>
-        <p className="text-gray-600 dark:text-gray-400 text-center mb-4">
-          {errorMessage}
-        </p>
-        <button
-          onClick={handleTryAgain}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-        >
-          Try Again
-        </button>
       </motion.div>
     );
   }
 
-  return null;
+  // Error state
+  return (
+    <motion.div
+      key="error"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="flex flex-col items-center py-8"
+    >
+      <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+        <FiAlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
+      </div>
+      <h3 className="text-base sm:text-lg font-medium text-red-600 dark:text-red-400 mb-2">
+        Payment Failed
+      </h3>
+      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center mb-2">
+        {errorMessage || "There was a problem processing your payment."}
+      </p>
+      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
+        Please check your M-Pesa details and try again.
+      </p>
+      <button
+        onClick={handleTryAgain}
+        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+      >
+        Try Again
+      </button>
+    </motion.div>
+  );
 };
 
 export default PaymentStatus;
