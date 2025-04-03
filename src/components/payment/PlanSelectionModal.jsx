@@ -159,7 +159,11 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
   const handleSelectPlan = (plan) => {
     // Check if user has active membership status
     if (!isMembershipActive) {
-      setShowMembershipRequiredModal(true);
+      // Close the plan selection modal first, then show the membership required modal
+      onClose();
+      setTimeout(() => {
+        setShowMembershipRequiredModal(true);
+      }, 100);
       return;
     }
     setSelectedPlan(plan);
@@ -1094,25 +1098,25 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
         </div>
       </div>
       
-      {/* Membership Required Modal */}
-      <ConfirmationModal
-        isOpen={showMembershipRequiredModal}
-        onClose={() => setShowMembershipRequiredModal(false)}
-        onConfirm={() => {
-          setShowMembershipRequiredModal(false);
-          onClose();
-          // Navigate to payments page with union tab active
-          navigate('/payments?tab=union');
-        }}
-        title="Membership Required"
-        message="You need to complete your union membership registration before subscribing to a medical plan. Would you like to complete your registration now?"
-        confirmText="Complete Registration"
-        cancelText="Not Now"
-        confirmButtonClass="bg-secondary-600 hover:bg-secondary-700"
-        icon={<PiWarningDuotone className="h-8 w-8 text-secondary-600" />}
-      />
     </>
   );
 };
 
+// Separate component for the membership required modal
+// This ensures it's not nested inside the plan selection modal
+export const MembershipRequiredModal = ({ isOpen, onClose, onConfirm }) => {
+  return (
+    <ConfirmationModal
+      isOpen={isOpen}
+      onClose={onClose}
+      onConfirm={onConfirm}
+      title="Membership Required"
+      message="You need to complete your union membership registration before subscribing to a medical plan. Would you like to complete your registration now?"
+      confirmText="Complete Registration"
+      cancelText="Not Now"
+      confirmButtonClass="bg-secondary-600 hover:bg-secondary-700"
+      icon={<PiWarningDuotone className="h-8 w-8 text-secondary-600" />}
+    />
+  );
+};
 export default PlanSelectionModal;

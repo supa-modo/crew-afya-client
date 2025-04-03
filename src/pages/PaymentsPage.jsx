@@ -5,7 +5,7 @@ import {
 } from "react-icons/fi";
 import MakePayment from "../components/payment/MakePayment";
 import PaymentHistory from "../components/payment/PaymentHistory";
-import PlanSelectionModal from "../components/payment/PlanSelectionModal";
+import PlanSelectionModal, { MembershipRequiredModal } from "../components/payment/PlanSelectionModal";
 import { Link, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -44,6 +44,7 @@ const PaymentsPage = () => {
   const [activeTab, setActiveTab] = useState("medical"); // "medical" or "union"
   const [hasPaidMembership, setHasPaidMembership] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showMembershipRequiredModal, setShowMembershipRequiredModal] = useState(false);
 
   // Load user subscription data from server
   useEffect(() => {
@@ -110,6 +111,11 @@ const PaymentsPage = () => {
   };
 
   const handleOpenPlanModal = (isChanging = false) => {
+    // Check if user has active membership status before opening the plan modal
+    if (user && user.membershipStatus !== 'active') {
+      setShowMembershipRequiredModal(true);
+      return;
+    }
     setIsChangingPlan(isChanging);
     setIsPlanModalOpen(true);
   };
@@ -512,14 +518,24 @@ const PaymentsPage = () => {
         )}
       </div>
 
-      {isPlanModalOpen && (
-        <PlanSelectionModal
-          isOpen={isPlanModalOpen}
-          onClose={handleClosePlanModal}
-          insurancePlans={[]} // Removed hardcoded insurance plans
-          onPlanSelected={handlePlanSelected}
-        />
-      )}
+      {/* Plan Selection Modal */}
+      <PlanSelectionModal
+        isOpen={isPlanModalOpen}
+        onClose={() => handleClosePlanModal()}
+        onPlanSelected={handlePlanSelected}
+      />
+      
+      {/* Membership Required Modal */}
+      <MembershipRequiredModal
+        isOpen={showMembershipRequiredModal}
+        onClose={() => setShowMembershipRequiredModal(false)}
+        onConfirm={() => {
+          setShowMembershipRequiredModal(false);
+          // Navigate to union tab
+          setActiveTab('union');
+        }}
+      />
+
     </div>
   );
 };
