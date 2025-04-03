@@ -70,28 +70,43 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
 
         if (response.success) {
           // Map API response to match the expected format
-          const paymentData = response.data.map((payment) => ({
-            id: payment.id,
-            date: payment.paymentDate,
-            amount: payment.amount,
-            status: payment.status.toLowerCase(),
-            method:
-              payment.paymentMethod === "mpesa"
-                ? "M-Pesa"
-                : payment.paymentMethod,
-            reference:
-              payment.mpesaReceiptNumber || payment.transactionId || "-",
-            plan: payment.metadata?.planType || "Crew Afya Lite",
-            // Keep any other fields that might be needed for receipt generation
-            phoneNumber: payment.phoneNumber,
-            metadata: payment.metadata,
-            paymentDate: payment.paymentDate,
-            paymentMethod: payment.paymentMethod,
-            mpesaCode: payment.mpesaCode,
-            mpesaReceiptNumber: payment.mpesaReceiptNumber,
-            coveragePeriod: payment.coveragePeriod,
-            description: payment.description,
-          }));
+          const paymentData = response.data.map((payment) => {
+            // Extract plan name from description using regex
+            let planName = "Crew Afya Lite"; // Default value
+
+            if (payment.description) {
+              // This regex looks for text between "Payment for " and " medical cover"
+              const planRegex = /Payment for (.*?) medical cover/;
+              const match = payment.description.match(planRegex);
+
+              if (match && match[1]) {
+                planName = match[1]; // This will extract the plan name
+              }
+            }
+
+            return {
+              id: payment.id,
+              date: payment.paymentDate,
+              amount: payment.amount,
+              status: payment.status.toLowerCase(),
+              method:
+                payment.paymentMethod === "mpesa"
+                  ? "M-Pesa"
+                  : payment.paymentMethod,
+              reference:
+                payment.mpesaReceiptNumber || payment.transactionId || "-",
+              plan: planName, // Use the extracted plan name here
+              // Keep any other fields that might be needed for receipt generation
+              phoneNumber: payment.phoneNumber,
+              metadata: payment.metadata,
+              paymentDate: payment.paymentDate,
+              paymentMethod: payment.paymentMethod,
+              mpesaCode: payment.mpesaCode,
+              mpesaReceiptNumber: payment.mpesaReceiptNumber,
+              coveragePeriod: payment.coveragePeriod,
+              description: payment.description,
+            };
+          });
 
           // Sort payments by date (newest first)
           const sortedPayments = [...paymentData].sort(

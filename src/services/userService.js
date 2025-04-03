@@ -178,6 +178,21 @@ export const updateUser = async (id, userData) => {
 };
 
 /**
+ * Update user membership status
+ * @param {string} id - User ID
+ * @param {string} status - Membership status ('active', 'pending', 'inactive', 'suspended')
+ * @returns {Promise} Promise with updated user data
+ */
+export const updateMembershipStatus = async (id, status) => {
+  try {
+    const response = await api.patch(`/users/${id}/membership-status`, { membershipStatus: status });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to update membership status" };
+  }
+};
+
+/**
  * Toggle user status (active/inactive)
  * @param {string} id - User ID
  * @param {boolean} active - Whether to set the user as active

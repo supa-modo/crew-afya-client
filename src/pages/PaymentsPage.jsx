@@ -140,25 +140,24 @@ const PaymentsPage = () => {
     }
   };
 
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return new Date(dateString).toLocaleDateString("en-US", options);
-  };
-
-  // TODO: Remove this once the union membership payment history is implemented
-  // Check membership status
+  // Check membership status based on user object
   useEffect(() => {
-    const membershipStatus = localStorage.getItem("unionMembershipPaid");
-    setHasPaidMembership(membershipStatus === "true");
-  }, []);
+    if (user && user.membershipStatus === 'active') {
+      setHasPaidMembership(true);
+    } else {
+      setHasPaidMembership(false);
+      // Show membership modal if status is pending
+      if (user && user.membershipStatus === 'pending') {
+        // Open the membership modal
+        setActiveTab('union');
+      }
+    }
+  }, [user]);
 
   // Handler for membership payment
   const handleMembershipPayment = (success) => {
     if (success) {
       setHasPaidMembership(true);
-      localStorage.setItem("unionMembershipPaid", "true");
     }
   };
 

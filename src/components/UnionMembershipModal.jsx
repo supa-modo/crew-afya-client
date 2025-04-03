@@ -5,9 +5,12 @@ import { PiUserDuotone } from "react-icons/pi";
 import { motion } from "framer-motion";
 import MakePayment from "./payment/MakePayment";
 import { TbArrowLeft } from "react-icons/tb";
+import { updateMembershipStatus } from "../services/userService";
+import { useAuth } from "../context/AuthContext";
 
 const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
   const [step, setStep] = useState(1); // 1 for info, 2 for payment
+  const { user, updateUserData } = useAuth();
 
   useEffect(() => {
     if (isOpen) {
@@ -27,6 +30,30 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
       };
     }
   }, [isOpen]);
+
+  // Handle payment completion
+  const handlePaymentComplete = async (success) => {
+    if (success && user) {
+      try {
+        // Update user membership status to active
+        await updateMembershipStatus(user.id, 'active');
+        
+        // Update user data in context
+        if (updateUserData) {
+          updateUserData({ ...user, membershipStatus: 'active' });
+        }
+        
+        // Call the parent's onPaymentComplete if provided
+        if (onPaymentComplete) {
+          onPaymentComplete(success);
+        }
+      } catch (error) {
+        console.error('Error updating membership status:', error);
+      }
+    } else if (onPaymentComplete) {
+      onPaymentComplete(success);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -163,7 +190,7 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
                 frequency="annual"
                 initialPaymentType="membership"
                 fixedPaymentType={true}
-                onPaymentComplete={onPaymentComplete}
+                onPaymentComplete={handlePaymentComplete}
               />
 
               <div className="mt-4 text-center">

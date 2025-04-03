@@ -19,6 +19,7 @@ import insuranceService from "../../services/insuranceService";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import PlanDetailsModal from "./PlanDetailsModal";
+import ConfirmationModal from "../common/ConfirmationModal";
 
 const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
   const [step, setStep] = useState(1);
@@ -33,6 +34,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
   const [loading, setLoading] = useState(true);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedPlanForDetails, setSelectedPlanForDetails] = useState(null);
+  const [showMembershipRequiredModal, setShowMembershipRequiredModal] = useState(false);
 
   // New state for payment tracking
   const [checkoutRequestId, setCheckoutRequestId] = useState(null);
@@ -42,6 +44,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
 
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isMembershipActive = user && user.membershipStatus === 'active';
 
   // Function to get premium amount based on frequency
   const getFrequencyAmount = (plan, frequency) => {
@@ -154,6 +157,11 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
   }, [statusCheckInterval]);
 
   const handleSelectPlan = (plan) => {
+    // Check if user has active membership status
+    if (!isMembershipActive) {
+      setShowMembershipRequiredModal(true);
+      return;
+    }
     setSelectedPlan(plan);
   };
 
@@ -331,10 +339,11 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
 
       // Use real payment service
       const response = await initiateM_PesaPayment({
-        amount:
-          process.env.NODE_ENV === "production"
-            ? getFrequencyAmount(selectedPlan, selectedFrequency)
-            : 1, // Use 1 KES for testing
+        amount: 1,
+        //TODO: uncomment this when ready for production
+        // process.env.NODE_ENV === "production"
+        //   ? getFrequencyAmount(selectedPlan, selectedFrequency)
+        //   : 1, // Use 1 KES for testing
         phoneNumber: formattedPhone,
         description: `Payment for ${selectedPlan.name} (${selectedFrequency}) medical cover`,
         paymentType: "medical",
@@ -1084,6 +1093,24 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
           </div>
         </div>
       </div>
+      
+      {/* Membership Required Modal */}
+      <ConfirmationModal
+        isOpen={showMembershipRequiredModal}
+        onClose={() => setShowMembershipRequiredModal(false)}
+        onConfirm={() => {
+          setShowMembershipRequiredModal(false);
+          onClose();
+          // Navigate to payments page with union tab active
+          navigate('/payments?tab=union');
+        }}
+        title="Membership Required"
+        message="You need to complete your union membership registration before subscribing to a medical plan. Would you like to complete your registration now?"
+        confirmText="Complete Registration"
+        cancelText="Not Now"
+        confirmButtonClass="bg-secondary-600 hover:bg-secondary-700"
+        icon={<PiWarningDuotone className="h-8 w-8 text-secondary-600" />}
+      />
     </>
   );
 };

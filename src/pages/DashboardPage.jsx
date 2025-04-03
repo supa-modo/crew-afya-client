@@ -52,7 +52,7 @@ const DashboardPage = () => {
   const [notifications, setNotifications] = useState([]);
   const [activeLoans, setActiveLoans] = useState([]);
 
-  // New states
+  // Membership states
   const [showMembershipModal, setShowMembershipModal] = useState(false);
   const [hasPaidMembership, setHasPaidMembership] = useState(false);
 
@@ -132,21 +132,13 @@ const DashboardPage = () => {
     fetchDocuments();
     fetchMockData();
 
-    // Check if user has paid membership on component mount
-    const membershipStatus = localStorage.getItem("unionMembershipPaid");
-
-    if (membershipStatus === "true") {
+    // Check if user has paid membership based on the membershipStatus from user object
+    if (user && user.membershipStatus === 'active') {
       setHasPaidMembership(true);
-      return;
-    }
-
-    // If not in local storage, check if this is a first-time login and hasn't paid
-    const isFirstTimeLogin = user && !membershipStatus;
-
-    if (isFirstTimeLogin) {
-      // You could also make an API call here to verify payment status from the server
-      // For now, we'll use the absence of the localStorage flag to determine status
+    } else if (user && user.membershipStatus === 'pending') {
+      // If membership status is pending, show the membership modal
       setShowMembershipModal(true);
+      setHasPaidMembership(false);
     }
   }, [user]);
 
@@ -473,12 +465,14 @@ const DashboardPage = () => {
                         <p className="text-[0.7rem] text-gray-500 dark:text-gray-400">
                           Union Membership
                         </p>
-                        <h3 className="text-lg sm:text-xl font-bold text-secondary-700 dark:text-white mt-1">
-                          Active
+                        <h3 className="text-lg sm:text-xl capitalize font-bold text-secondary-700 dark:text-white mt-1">
+                        {user?.membershipStatus}
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          Next dues:{" "}
-                          <span className="font-medium">April 30, 2025</span>
+                          Registered:{" "}
+                          <span className="font-medium">
+                            {formatDate(user?.membershipDate) || "---------"}
+                          </span>
                         </p>
                       </div>
                       <div className="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">

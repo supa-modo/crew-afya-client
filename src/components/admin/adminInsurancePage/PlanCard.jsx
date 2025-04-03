@@ -1,4 +1,5 @@
 import React from "react";
+import { PiUsersThreeDuotone } from "react-icons/pi";
 import { TbEdit, TbTrash, TbUsers } from "react-icons/tb";
 
 const PlanCard = ({
@@ -21,45 +22,61 @@ const PlanCard = ({
       <div className="p-6">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <h3 className="text-lg font-semibold text-amber-700 dark:text-white">
               {plan.name}
             </h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
               {plan.description}
             </p>
           </div>
           <div
-            className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            className={`px-3 py-0.5 rounded-full text-xs font-medium ${
               plan.isActive
-                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                ? "bg-green-200 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                : "bg-red-200 text-red-800 dark:bg-red-900/30 dark:text-red-400"
             }`}
           >
             {plan.isActive ? "Active" : "Inactive"}
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="mt-4 grid grid-cols-4 gap-4">
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Daily Premium
             </p>
-            <p className="mt-1 text-base font-semibold text-gray-900 dark:text-white">
+            <p className="mt-1 text-base font-semibold text-admin-700 dark:text-white">
               {formatCurrency(plan.dailyPremium)}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Weekly Premium
+            </p>
+            <p className="mt-1 text-base font-semibold text-admin-700 dark:text-white">
+              {formatCurrency(plan.weeklyPremium)}
             </p>
           </div>
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Monthly Premium
             </p>
-            <p className="mt-1 text-base font-semibold text-gray-900 dark:text-white">
+            <p className="mt-1 text-base font-semibold text-admin-700 dark:text-white">
               {formatCurrency(plan.monthlyPremium)}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Annual Premium
+            </p>
+            <p className="mt-1 text-base font-semibold text-admin-700 dark:text-white">
+              {formatCurrency(plan.annualPremium)}
             </p>
           </div>
         </div>
 
         <div className="mt-4">
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
             Key Benefits
           </h4>
           <div className="space-y-2">
@@ -68,7 +85,7 @@ const PlanCard = ({
                 <span className="text-gray-600 dark:text-gray-400">
                   {benefit.name}
                 </span>
-                <span className="font-medium text-gray-900 dark:text-white">
+                <span className="font-semibold text-gray-600 dark:text-white">
                   {benefit.limit}
                 </span>
               </div>
@@ -100,13 +117,13 @@ const PlanCard = ({
           </div>
           <button
             onClick={() => onViewSubscribers(plan)}
-            className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+            className={`inline-flex items-center px-4 py-1.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
               isCurrentlySelected
                 ? "bg-admin-700 hover:bg-admin-800"
                 : "bg-admin-600 hover:bg-admin-700"
             } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500`}
           >
-            <TbUsers className="mr-1.5 h-4 w-4" />
+            <PiUsersThreeDuotone className="mr-1.5 h-6 w-6" />
             View Subscribers
           </button>
         </div>
