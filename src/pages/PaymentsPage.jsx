@@ -45,7 +45,7 @@ const PaymentsPage = () => {
   const [hasPaidMembership, setHasPaidMembership] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user subscription data from server and localStorage as fallback
+  // Load user subscription data from server
   useEffect(() => {
     const loadSubscription = async () => {
       if (!user || !user.id) return;
@@ -53,70 +53,34 @@ const PaymentsPage = () => {
       setIsLoading(true);
       
       try {
-        // Try to get subscription from server first
+        // Get subscription from server
         const response = await getUserSubscription(user.id);
         
         if (response && response.success && response.data && response.data.plan) {
           // If server has subscription data, use it
           setSelectedPlan(response.data.plan);
           setSelectedFrequency(response.data.frequency || response.data.paymentFrequency || "daily");
-          
-          // Update localStorage with the latest server data
-          localStorage.setItem(
-            "userSubscription",
-            JSON.stringify({
-              plan: response.data.plan,
-              frequency: response.data.frequency || response.data.paymentFrequency || "daily",
-            })
-          );
         } else {
-          // Fallback to localStorage if server data is not available
-          const userSubscription = localStorage.getItem("userSubscription");
-          if (userSubscription) {
-            try {
-              const parsedData = JSON.parse(userSubscription);
-              setSelectedPlan(parsedData.plan);
-              setSelectedFrequency(parsedData.frequency || "daily");
-            } catch (parseError) {
-              console.error("Error parsing localStorage subscription:", parseError);
-              localStorage.removeItem("userSubscription");
-            }
-          }
+          // No subscription found
+          setSelectedPlan(null);
+          setSelectedFrequency("daily"); // Default frequency
         }
       } catch (error) {
         console.error("Error loading subscription:", error);
-        // Fallback to localStorage if there's an error
-        const userSubscription = localStorage.getItem("userSubscription");
-        if (userSubscription) {
-          try {
-            const parsedData = JSON.parse(userSubscription);
-            setSelectedPlan(parsedData.plan);
-            setSelectedFrequency(parsedData.frequency || "daily");
-          } catch (parseError) {
-            console.error("Error parsing localStorage subscription:", parseError);
-          }
-        }
+        setSelectedPlan(null);
+        setSelectedFrequency("daily"); // Default frequency
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     loadSubscription();
   }, [user]);
 
-  // Save subscription to server and localStorage when it changes
+  // Save subscription to server when it changes
   useEffect(() => {
     const saveUserSubscription = async () => {
       if (!selectedPlan || !user || !user.id) return;
-      
-      // Save to localStorage
-      localStorage.setItem(
-        "userSubscription",
-        JSON.stringify({
-          plan: selectedPlan,
-          frequency: selectedFrequency,
-        })
-      );
       
       // Save to server
       try {
@@ -127,7 +91,7 @@ const PaymentsPage = () => {
         });
       } catch (error) {
         console.error("Error saving subscription to server:", error);
-        // Continue even if server save fails, as we have localStorage backup
+        // Continue even if server save fails, as we have no fallback
       }
     };
     
@@ -199,7 +163,7 @@ const PaymentsPage = () => {
   };
 
   return (
-    <div className="py-6 mt-14 sm:mt-20 min-h-screen">
+    <div className="bg-gray-50/40 dark:bg-gray-900/40 py-6 mt-14 sm:mt-20 min-h-screen">
       {/* Overlay div for better text visibility */}
       <div className="absolute inset-0 " style={{ zIndex: "-1" }}></div>
 
@@ -288,7 +252,7 @@ const PaymentsPage = () => {
             >
               <div className="flex items-center justify-center">
                 <PiUserDuotone className="h-5 w-5 mr-2" />
-                Membership Subscription
+                Membership
               </div>
             </button>
           </div>

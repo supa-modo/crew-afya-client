@@ -166,7 +166,7 @@ const Footer = () => {
 
           <div className="col-span-1">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-600 uppercase tracking-wider">
-              Contact
+              Contact Us
             </h3>
             <ul className="mt-4 space-y-2">
               <li className="flex items-center text-sm text-gray-600 hover:text-secondary-600 hover:underline underline-offset-4 dark:text-gray-400 dark:hover:text-secondary-600">

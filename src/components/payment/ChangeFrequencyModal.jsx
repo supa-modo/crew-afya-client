@@ -111,27 +111,27 @@ const ChangeFrequencyModal = ({
     {
       id: "daily",
       label: "Daily",
-      description: `KES ${getPremiumAmount(currentPlan, "daily").toLocaleString()} per day`,
+      description: `KES ${getPremiumAmount(currentPlan.plan, "daily").toLocaleString()} per day`,
     },
     {
       id: "weekly",
       label: "Weekly",
-      description: `KES ${getPremiumAmount(currentPlan, "weekly").toLocaleString()} per week`,
+      description: `KES ${getPremiumAmount(currentPlan.plan, "weekly").toLocaleString()} per week`,
     },
     {
       id: "monthly",
       label: "Monthly",
-      description: `KES ${getPremiumAmount(currentPlan, "monthly").toLocaleString()} per month`,
+      description: `KES ${getPremiumAmount(currentPlan.plan, "monthly").toLocaleString()} per month`,
     },
     {
       id: "annual",
       label: "Annual",
-      description: `KES ${getPremiumAmount(currentPlan, "annual").toLocaleString()} per year`,
+      description: `KES ${getPremiumAmount(currentPlan.plan, "annual").toLocaleString()} per year`,
     },
   ];
 
   // Get the plan name safely
-  const planName = currentPlan?.name || "selected";
+  const planName = currentPlan.plan?.name || "selected";
 
   return (
     <div className="fixed inset-0 z-[9999] overflow-y-auto">
@@ -163,13 +163,13 @@ const ChangeFrequencyModal = ({
 
           <div className="sm:flex sm:items-start">
             <div className="mt-3 pt-4 text-center sm:mt-0 sm:text-left w-full">
-              <h3 className="text-base md:text-lg font-medium leading-6 text-secondary-700 dark:text-white">
+              <h3 className="text-base md:text-lg font-bold leading-6 text-secondary-700 dark:text-white">
                 Change Your Payment Frequency
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Select how often you would like to make payments for your{" "}
-                  {planName} plan.
+                  <span className="text-primary-600 font-semibold">{planName}</span> plan.
                 </p>
               </div>
             </div>
@@ -203,8 +203,8 @@ const ChangeFrequencyModal = ({
             </motion.div>
           ) : (
             <>
-              <div className="mt-4 md:mt-6 space-y-4 px-4 sm:px-0">
-                <div className="grid grid-cols-1 gap-3 sm:gap-4">
+              <div className="mt-4 md:mt-6 space-y-3 px-4 sm:px-0">
+                <div className="grid grid-cols-1 gap-2">
                   {frequencies.map((frequency) => (
                     <div
                       key={frequency.id}
@@ -217,7 +217,7 @@ const ChangeFrequencyModal = ({
                     >
                       <div className="flex justify-between items-center">
                         <div>
-                          <h4 className="font-medium text-gray-900 dark:text-white">
+                          <h4 className="font-semibold text-primary-600 dark:text-white">
                             {frequency.label}
                           </h4>
                           <p className="text-sm text-gray-500 dark:text-gray-400">

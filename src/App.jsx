@@ -25,11 +25,12 @@ import AdminSystemHealthPage from "./pages/admin/AdminSystemHealthPage";
 import AddNewUserPage from "./pages/admin/AddNewUserPage";
 import InsurancePlansPage from "./pages/admin/InsurancePlansPage";
 import NewMedicalCoverPage from "./pages/admin/NewMedicalCoverPage";
-import AdminReportsPage from "./pages/admin/AdminReportsPage";
 import UsersManagement from "./pages/admin/UsersManagement";
 import ClaimsManagementPage from "./pages/admin/ClaimsManagementPage";
 import ClaimDetailPage from "./pages/admin/ClaimDetailPage";
 import ClaimFormPage from "./pages/admin/ClaimFormPage";
+import SupportPage from "./pages/SupportPage";
+import AboutUsPage from "./pages/AboutUsPage";
 
 function App() {
   return (
@@ -46,6 +47,8 @@ function App() {
                 <Route path="login" element={<LoginPage />} />
                 <Route path="admin-login" element={<AdminLoginPage />} />
                 <Route path="register" element={<RegisterPage />} />
+                <Route path="support" element={<SupportPage />} />
+                <Route path="about" element={<AboutUsPage />} />
                 <Route
                   path="forgot-password"
                   element={<ForgotPasswordPage />}

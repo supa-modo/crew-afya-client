@@ -16,11 +16,7 @@ import {
 } from "react-icons/fa";
 import {
   TbBus,
-  TbReportAnalytics,
   TbServer,
-  TbSettings,
-  TbShieldCheckFilled,
-  TbShieldHalfFilled,
   TbShieldPlus,
   TbFileInvoice,
 } from "react-icons/tb";
@@ -62,12 +58,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
           icon: RiUserAddLine,
           current: location.pathname === "/admin/members/new",
         },
-        {
-          name: "Union Dues",
-          href: "/admin/union-dues",
-          icon: TbBus,
-          current: location.pathname === "/admin/union-dues",
-        },
+        
       ],
     },
     {

@@ -222,17 +222,17 @@ const Navbar = () => {
                     >
                       Payments
                     </Link>
-                    {/* <Link
-                      to="/payment"
+                    <Link
+                      to="/support"
                       className={`${
-                        isActive("/payment")
-                          ? "text-secondary-600 dark:text-secondary-400 "
-                          : "text-gray-600 dark:text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-400 "
+                        isActive("/support")
+                          ? "text-secondary-700 dark:text-secondary-400 "
+                          : "text-gray-600 dark:text-gray-400 hover:text-secondary-700 dark:hover:text-secondary-400 "
                       } px-3 py-2 rounded-lg font-medium transition-colors duration-200 `}
                       onClick={closeMenus}
                     >
-                      Pay Now
-                    </Link> */}
+                      Support
+                    </Link>
                   </>
                 ) : (
                   <>
@@ -248,9 +248,9 @@ const Navbar = () => {
                       About Us
                     </Link>
                     <Link
-                      to="/contact"
+                      to="/support"
                       className={`${
-                        isActive("/contact")
+                        isActive("/support")
                           ? "text-secondary-700 dark:text-secondary-400 "
                           : "text-gray-600 dark:text-gray-400 hover:text-secondary-700 dark:hover:text-secondary-400 "
                       } px-3 py-2 rounded-lg font-medium transition-colors duration-200 `}
@@ -293,7 +293,6 @@ const Navbar = () => {
                         aria-expanded={isProfileOpen}
                         aria-haspopup="true"
                       >
-                        
                         <div className="h-9 w-9 rounded-full bg-secondary-700/40 dark:bg-secondary-900 flex items-center justify-center">
                           <PiUserDuotone className="h-5 w-5 text-secondary-700 dark:text-secondary-400" />
                         </div>
@@ -334,19 +333,6 @@ const Navbar = () => {
                                   <PiUserDuotone className="mr-3 h-5 w-5 text-gray-500 dark:text-gray-400 group-hover:text-secondary-600 dark:group-hover:text-secondary-400" />
                                   <span className="group-hover:text-secondary-600 dark:group-hover:text-secondary-400">
                                     Your Profile
-                                  </span>
-                                </div>
-                                <FiChevronRight className="h-4 w-4 text-gray-400 group-hover:text-secondary-600 dark:group-hover:text-secondary-400" />
-                              </Link>
-                              <Link
-                                to="/settings"
-                                className="group flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
-                                onClick={() => setIsProfileOpen(false)}
-                              >
-                                <div className="flex items-center">
-                                  <PiGearDuotone className="mr-3 h-5 w-5 text-gray-500 dark:text-gray-400 group-hover:text-secondary-600 dark:group-hover:text-secondary-400" />
-                                  <span className="group-hover:text-secondary-600 dark:group-hover:text-secondary-400">
-                                    Settings
                                   </span>
                                 </div>
                                 <FiChevronRight className="h-4 w-4 text-gray-400 group-hover:text-secondary-600 dark:group-hover:text-secondary-400" />
@@ -511,6 +497,20 @@ const Navbar = () => {
                     </div>
                   </Link> */}
                   <Link
+                    to="/support"
+                    className={`${
+                      isActive("/settings")
+                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
+                    onClick={closeMenus}
+                  >
+                    <div className="flex items-center">
+                      <BiSupport className="mr-3" size={19} />
+                      Support
+                    </div>
+                  </Link>
+                  <Link
                     to="/profile"
                     className={`${
                       isActive("/profile")
@@ -522,20 +522,6 @@ const Navbar = () => {
                     <div className="flex items-center">
                       <PiUserDuotone className="mr-3" size={19} />
                       Profile
-                    </div>
-                  </Link>
-                  <Link
-                    to="/settings"
-                    className={`${
-                      isActive("/settings")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
-                    } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
-                    onClick={closeMenus}
-                  >
-                    <div className="flex items-center">
-                      <PiGearSixDuotone className="mr-3" size={19} />
-                      Settings
                     </div>
                   </Link>
                 </>
@@ -556,9 +542,9 @@ const Navbar = () => {
                     </div>
                   </Link>
                   <Link
-                    to="/contact"
+                    to="/support"
                     className={`${
-                      isActive("/contact")
+                      isActive("/support")
                         ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}

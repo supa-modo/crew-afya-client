@@ -16,7 +16,7 @@ const OverviewTab = ({
 }) => {
   return (
     <div className="max-w-screen-2xl mx-auto md:px-4">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-2 pb-6 md:pb-3 border-b border-gray-300">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-2 pb-6 md:pb-10 border-b border-gray-300 ">
         {/* Main content area - 2 columns on large screens */}
         <div className="lg:col-span-2 space-y-6 px-2">
           <div className="">

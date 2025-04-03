@@ -118,16 +118,16 @@ const CoverageUtilization = () => {
       
 
       {/* Coverage Utilization */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
+      <div className=" rounded-md  md:border-r-2 border-gray-200 dark:border-gray-700 md:pr-12">
+        <h3 className="text-base font-bold text-amber-700 dark:text-white mb-4">
           Coverage Utilization
         </h3>
 
-        <div className="space-y-4">
+        <div className="space-y-2 sm:space-y-4">
           {/* Inpatient */}
           <div>
             <div className="flex justify-between mb-1">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-[0.83rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300">
                 Inpatient
               </span>
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -155,7 +155,7 @@ const CoverageUtilization = () => {
           {/* Outpatient */}
           <div>
             <div className="flex justify-between mb-1">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-[0.83rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300">
                 Outpatient
               </span>
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -183,7 +183,7 @@ const CoverageUtilization = () => {
           {/* Optical */}
           <div>
             <div className="flex justify-between mb-1">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-[0.83rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300">
                 Optical
               </span>
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -211,7 +211,7 @@ const CoverageUtilization = () => {
           {/* Maternity */}
           <div>
             <div className="flex justify-between mb-1">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-[0.83rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300">
                 Maternity
               </span>
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">

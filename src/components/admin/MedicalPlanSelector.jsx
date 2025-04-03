@@ -81,7 +81,7 @@ const MedicalPlanSelector = ({
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Inpatient</span>
                     <span className="font-semibold text-primary-600 dark:text-primary-500">
-                      {plan.inpatientLimit?.toLocaleString() || "N/A"}
+                      {plan.inpatientLimit || "N/A"}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">

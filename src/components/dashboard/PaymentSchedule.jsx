@@ -11,7 +11,7 @@ const PaymentSchedule = ({
   // Format date
   const formatDate = (dateString) => {
     if (!dateString) return "Not scheduled";
-    
+
     try {
       return new Date(dateString).toLocaleDateString("en-US", {
         year: "numeric",
@@ -29,9 +29,12 @@ const PaymentSchedule = ({
     if (!userSubscription || !userSubscription.plan) {
       return "KES 0.00";
     }
-    
+
     try {
-      const amount = getPremiumAmount(userSubscription.plan, userSubscription.frequency);
+      const amount = getPremiumAmount(
+        userSubscription.plan,
+        userSubscription.frequency
+      );
       return new Intl.NumberFormat("en-KE", {
         style: "currency",
         currency: "KES",
@@ -61,8 +64,8 @@ const PaymentSchedule = ({
             <p className="text-gray-600 dark:text-gray-400 text-sm">
               No active subscription found.
             </p>
-            <a 
-              href="/payments" 
+            <a
+              href="/payments"
               className="mt-2 inline-block text-primary-600 hover:text-primary-700 text-sm font-medium"
             >
               Subscribe to a plan

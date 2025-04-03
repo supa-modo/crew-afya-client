@@ -20,7 +20,11 @@ import {
 } from "../services/documentService";
 import ChangeFrequencyModal from "../components/payment/ChangeFrequencyModal";
 import ConfirmationModal from "../components/common/ConfirmationModal";
-import { getUserSubscription, getCoverageUtilization, saveSubscription } from "../services/subscriptionService";
+import {
+  getUserSubscription,
+  getCoverageUtilization,
+  saveSubscription,
+} from "../services/subscriptionService";
 
 import LoanStatus from "../components/dashboard/LoanStatus";
 import UnionMembershipModal from "../components/UnionMembershipModal";
@@ -52,121 +56,69 @@ const DashboardPage = () => {
   const [showMembershipModal, setShowMembershipModal] = useState(false);
   const [hasPaidMembership, setHasPaidMembership] = useState(false);
 
-  // Load user subscription data from server and localStorage as fallback
   useEffect(() => {
     const loadSubscription = async () => {
-      if (!user || !user.id) {
-        setIsLoading(false);
-        return;
-      }
-      
+      if (!user || !user.id) return;
+
       setIsLoading(true);
       setError(null);
-      
+
       try {
-        // Try to get subscription from server first
+        // Get subscription from server
         const response = await getUserSubscription(user.id);
-        
-        if (response && response.success && response.data && response.data.plan) {
-          // If server has subscription data, use it
+        console.log(response);
+
+        if (
+          response &&
+          response.success &&
+          response.data &&
+          response.data.plan
+        ) {
+          // Normalize the data structure
           const normalizedSubscription = {
-            ...response.data,
-            // Ensure we have a consistent structure
             plan: response.data.plan,
-            frequency: response.data.frequency || response.data.paymentFrequency,
-            startDate: response.data.startDate || new Date().toISOString()
+            frequency:
+              response.data.frequency ||
+              response.data.paymentFrequency ||
+              "daily",
+            status: response.data.status || "ACTIVE",
+            startDate: response.data.startDate,
+            endDate: response.data.endDate,
           };
-          
+
           setUserSubscription(normalizedSubscription);
-          
-          // Update localStorage with the latest server data
-          localStorage.setItem("userSubscription", JSON.stringify(normalizedSubscription));
-          
+
           // Set next payment date if available
           if (response.data.nextPaymentDate) {
-            setNextPaymentDate(response.data.nextPaymentDate);
+            setNextPaymentDate(new Date(response.data.nextPaymentDate));
           }
-          
-          // Also load coverage utilization data
+
+          // Load coverage utilization data
           loadCoverageUtilization(user.id);
-          return;
-        } else if (response && !response.success) {
-          console.warn("Server returned unsuccessful response:", response.message);
-        }
-        
-        // Fallback to localStorage if server data is not available
-        const localSubscription = localStorage.getItem("userSubscription");
-        if (localSubscription) {
-          try {
-            const parsedSubscription = JSON.parse(localSubscription);
-            
-            // Ensure the parsed subscription has the expected structure
-            if (!parsedSubscription.plan) {
-              throw new Error("Invalid subscription data in localStorage");
-            }
-            
-            setUserSubscription(parsedSubscription);
-            
-            // Try to save the localStorage subscription to the server
-            // This helps sync local data with the server
-            if (parsedSubscription.plan && (parsedSubscription.frequency || parsedSubscription.paymentFrequency)) {
-              try {
-                const syncResponse = await saveSubscription({
-                  userId: user.id,
-                  planId: parsedSubscription.plan.id || "default-plan",
-                  paymentFrequency: parsedSubscription.frequency || parsedSubscription.paymentFrequency,
-                  startDate: parsedSubscription.startDate || new Date().toISOString()
-                });
-                
-                if (syncResponse && syncResponse.success) {
-                  console.log("Successfully synced local subscription to server");
-                  
-                  // If sync was successful, load coverage utilization data
-                  loadCoverageUtilization(user.id);
-                } else {
-                  console.warn("Failed to sync subscription to server:", syncResponse?.message);
-                }
-              } catch (syncError) {
-                console.error("Error syncing subscription to server:", syncError);
-              }
-            }
-          } catch (parseError) {
-            console.error("Error parsing localStorage subscription:", parseError);
-            // Clear invalid data from localStorage
-            localStorage.removeItem("userSubscription");
-            setUserSubscription(null);
-          }
         } else {
-          // No subscription found in either server or localStorage
+          // No subscription found
           setUserSubscription(null);
+          console.warn("No active subscription found for user");
         }
       } catch (error) {
         console.error("Error loading subscription:", error);
         setError("Failed to load subscription data. Please try again later.");
-        
-        // Fallback to localStorage if there's an error
-        try {
-          const localSubscription = localStorage.getItem("userSubscription");
-          if (localSubscription) {
-            const parsedSubscription = JSON.parse(localSubscription);
-            setUserSubscription(parsedSubscription);
-          }
-        } catch (localError) {
-          console.error("Error loading from localStorage:", localError);
-        }
+        setUserSubscription(null);
       } finally {
         setIsLoading(false);
       }
     };
-    
-    // Separate function to load coverage utilization data
+
     const loadCoverageUtilization = async (userId) => {
       try {
         const coverageData = await getCoverageUtilization(userId);
         if (coverageData && coverageData.success && coverageData.data) {
           setCoverageUtilization(coverageData.data);
         } else if (coverageData && !coverageData.success) {
-          console.warn("Failed to load coverage utilization:", coverageData.message);
+          console.warn(
+            "Failed to load coverage utilization:",
+            coverageData.message
+          );
           // The getCoverageUtilization function now returns default data structure
           // even on error, so we can still use it
           setCoverageUtilization(coverageData.data);
@@ -175,7 +127,7 @@ const DashboardPage = () => {
         console.error("Error loading coverage utilization:", utilError);
       }
     };
-    
+
     loadSubscription();
     fetchDocuments();
     fetchMockData();
@@ -269,22 +221,23 @@ const DashboardPage = () => {
   };
 
   const handleFrequencyChanged = async (newFrequency) => {
-    if (!userSubscription || !userSubscription.plan || !user || !user.id) return;
-    
+    if (!userSubscription || !userSubscription.plan || !user || !user.id)
+      return;
+
     try {
       setIsSubmitting(true);
-      
+
       // Call the API to update the subscription frequency
       const response = await saveSubscription(
-        user.id, 
-        userSubscription.plan.id, 
+        user.id,
+        userSubscription.plan.id,
         newFrequency
       );
-      
+
       if (response && response.data) {
         // Update local state with the server response
         setUserSubscription(response.data);
-        
+
         // Update next payment date if available in the response
         if (response.data.nextPaymentDate) {
           setNextPaymentDate(response.data.nextPaymentDate);
@@ -312,7 +265,7 @@ const DashboardPage = () => {
             setNextPaymentDate(nextDate.toLocaleDateString("en-US", options));
           }
         }
-        
+
         // Close the modal
         handleCloseFrequencyModal();
       } else {
@@ -366,7 +319,7 @@ const DashboardPage = () => {
   // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return "Not scheduled";
-    
+
     try {
       return new Date(dateString).toLocaleDateString("en-US", {
         year: "numeric",
@@ -380,7 +333,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="pb-6 mt-4 sm:mt-10 min-h-screen">
+    <div className="bg-gray-50/40 dark:bg-gray-900/40 pb-6 mt-4 sm:mt-10 min-h-screen">
       {/* Main dashboard content */}
       <div className="pt-16">
         {/* Breadcrumb */}
@@ -545,7 +498,7 @@ const DashboardPage = () => {
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           Active since {formatDate(userSubscription?.startDate)}
-                          </p>
+                        </p>
                       </div>
                       <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                         <TbShieldCheckFilled className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -571,15 +524,16 @@ const DashboardPage = () => {
                     label: "Overview",
                     icon: <TbActivity className="h-5 w-5" />,
                   },
-                  {
-                    id: "membership",
-                    label: "Membership",
-                    icon: <PiUsersDuotone className="h-5 w-5" />,
-                  },
+                  
                   {
                     id: "medical",
                     label: "Medical Cover",
                     icon: <TbShieldCheckFilled className="h-5 w-5" />,
+                  },
+                  {
+                    id: "membership",
+                    label: "Membership",
+                    icon: <PiUsersDuotone className="h-5 w-5" />,
                   },
                 ].map((tab) => (
                   <button
@@ -617,8 +571,8 @@ const DashboardPage = () => {
                 {/* Overview Tab Content */}
                 {activeTab === "overview" && (
                   <div className="animate-fadeIn">
-                    <div className="mb-6 px-2">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    <div className="mb-6 px-3">
+                      <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
                         View and manage your membership details, upcoming
                         payments, and documents.
                       </p>
@@ -636,7 +590,7 @@ const DashboardPage = () => {
                 )}
 
                 {/* Membership Tab Content */}
-                {activeTab === "membership" && (
+                {/* {activeTab === "membership" && (
                   <div className="animate-fadeIn">
                     <div className="mb-6">
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -646,7 +600,7 @@ const DashboardPage = () => {
                     </div>
                     <MembershipTab hasPaidMembership={hasPaidMembership} />
                   </div>
-                )}
+                )} */}
 
                 {/* Medical Cover Tab Content */}
                 {activeTab === "medical" && (
@@ -677,6 +631,7 @@ const DashboardPage = () => {
         isOpen={isFrequencyModalOpen}
         onClose={handleCloseFrequencyModal}
         onFrequencyChanged={handleFrequencyChanged}
+        currentPlan={userSubscription}
         currentFrequency={userSubscription?.frequency || "monthly"}
         isSubmitting={isSubmitting}
       />

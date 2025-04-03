@@ -1,0 +1,483 @@
+import React, { useState } from "react";
+import {
+  FiSearch,
+  FiMail,
+  FiPhone,
+  FiMessageCircle,
+  FiChevronDown,
+  FiChevronUp,
+} from "react-icons/fi";
+import {
+  TbHeartHandshake,
+  TbClock,
+  TbMessage,
+  TbMessageDots,
+} from "react-icons/tb";
+import { MdOutlineHealthAndSafety, MdOutlinePayments } from "react-icons/md";
+import { RiCustomerService2Line } from "react-icons/ri";
+import { useAuth } from "../context/AuthContext";
+import {motion} from "framer-motion";
+
+const SupportPage = () => {
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("help");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedFaq, setExpandedFaq] = useState(null);
+  const [formData, setFormData] = useState({
+    name: user?.firstName ? `${user.firstName} ${user.lastName || ""}` : "",
+    email: user?.email || "",
+    phone: user?.phoneNumber || "",
+    subject: "",
+    message: "",
+    category: "payment",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically send the form data to your backend
+    console.log("Support request submitted:", formData);
+    alert(
+      "Your support request has been submitted. We'll get back to you soon!"
+    );
+
+    // Reset form (except for user details)
+    setFormData({
+      ...formData,
+      subject: "",
+      message: "",
+      category: "payment",
+    });
+  };
+
+  const toggleFaq = (index) => {
+    setExpandedFaq(expandedFaq === index ? null : index);
+  };
+
+  const faqs = [
+    {
+      category: "general",
+      question: "What is Crew Afya?",
+      answer:
+        "Crew Afya is a comprehensive healthcare platform designed specifically for matatu operators, providing affordable health insurance plans, easy claims processing, and health management tools.",
+    },
+    {
+      category: "general",
+      question: "How do I create an account?",
+      answer:
+        "You can create an account by clicking the 'Sign Up' button on the homepage. You'll need to provide your basic information, contact details, and verify your identity as a matatu operator.",
+    },
+    {
+      category: "payment",
+      question: "What payment methods are accepted?",
+      answer:
+        "We currently accept M-Pesa as our secondary payment method. You can make payments through the app or via USSD by dialing our shortcode.",
+    },
+    {
+      category: "payment",
+      question: "My payment is not reflecting in my account",
+      answer:
+        "Payments typically reflect within 5-10 minutes. If your payment hasn't appeared after 30 minutes, please contact our support team with your transaction ID and we'll resolve the issue promptly.",
+    },
+    {
+      category: "payment",
+      question: "Can I change my payment frequency?",
+      answer:
+        "Yes, you can change your payment frequency (daily, weekly, or monthly) from your dashboard under the 'Payment Settings' section. Changes will take effect from your next billing cycle.",
+    },
+    {
+      category: "insurance",
+      question: "What does my insurance cover?",
+      answer:
+        "Your insurance coverage depends on your selected plan. Generally, our plans cover inpatient, outpatient, maternity, optical, and dental services. You can view your specific coverage details in your dashboard under 'Medical Cover'.",
+    },
+    {
+      category: "insurance",
+      question: "How do I make a claim?",
+      answer:
+        "You can submit a claim through your dashboard by navigating to 'Claims' and clicking 'Submit New Claim'. Fill in the required information about your medical service and submit. Our team will process your claim within 48 hours.",
+    },
+    {
+      category: "insurance",
+      question: "Which hospitals can I visit with my insurance?",
+      answer:
+        "Our insurance is accepted at a wide network of hospitals and clinics across Kenya. You can view the full list of partner facilities in your dashboard under 'Network Hospitals'.",
+    },
+    {
+      category: "account",
+      question: "How do I update my personal information?",
+      answer:
+        "You can update your personal information by going to your profile settings. Click on your profile picture in the top right corner and select 'Profile' to make changes to your personal details.",
+    },
+    {
+      category: "account",
+      question: "I forgot my password. How do I reset it?",
+      answer:
+        "You can reset your password by clicking 'Forgot Password' on the login page. We'll send a password reset link to your registered email address.",
+    },
+  ];
+
+  const filteredFaqs = faqs.filter(
+    (faq) =>
+      (activeTab === "help" || faq.category === activeTab) &&
+      (searchQuery === "" ||
+        faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        faq.answer.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  return (
+    <div className="bg-gray-50/60 dark:bg-gray-900/70 min-h-screen py-[4rem] md:py-[5rem]">
+      <div className="relative overflow-hidden bg-gradient-to-r from-secondary-900 via-primary-700 to-primary-900">
+        {/* Background image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/matwana.jpg"
+            alt="Background"
+            className="w-full h-full object-cover opacity-20 mix-blend-overlay"
+          />
+        </div>
+
+        {/* Animated background elements */}
+        <div className="absolute inset-0 z-10">
+          <div className="absolute -top-24 -right-24 rounded-full w-64 h-64 bg-secondary-500 opacity-20 blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/4 rounded-full w-96 h-96 bg-secondary-500 opacity-10 blur-3xl"></div>
+          <div className="absolute -bottom-32 -left-32 rounded-full w-80 h-80 bg-secondary-400 opacity-10 blur-3xl"></div>
+        </div>
+
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 relative z-20">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
+          >
+           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
+              How Can We Help You?
+            </h1>
+            <p className="text-secondary-100 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8">
+              Find answers to common questions or reach out to our support team
+              for assistance
+            </p>
+
+            {/* Search Bar */}
+            <div className="max-w-xl mx-auto relative">
+              <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                <div className="pl-4">
+                  <FiSearch className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search for answers..."
+                  className="w-full py-2.5 sm:py-3 px-4 text-sm sm:text-base focus:outline-none dark:bg-gray-800 dark:text-white"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+      
+
+      {/* Main Content */}
+      <div className="max-w-screen-2xl mx-auto px-2 sm:px-4 lg:px-8 py-8">
+        {/* Support Options */}
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow">
+            <div className="bg-secondary-100 dark:bg-secondary-900 p-3 rounded-full mb-4">
+              <TbMessage className="h-8 w-8 text-secondary-600 dark:text-secondary-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Live Chat
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Chat with our support team in real-time for immediate assistance
+            </p>
+            <button className="mt-auto bg-secondary-600 hover:bg-secondary-700 text-white py-2 px-4 rounded-lg font-medium">
+              Start Chat
+            </button>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow">
+            <div className="bg-secondary-100 dark:bg-secondary-900 p-3 rounded-full mb-4">
+              <FiPhone className="h-8 w-8 text-secondary-600 dark:text-secondary-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Call Us
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Speak directly with our customer support representatives
+            </p>
+            <a
+              href="tel:+254700123456"
+              className="mt-auto bg-secondary-600 hover:bg-secondary-700 text-white py-2 px-4 rounded-lg font-medium"
+            >
+              +254 700 123 456
+            </a>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow">
+            <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full mb-4">
+              <FiMail className="h-8 w-8 text-green-600 dark:text-green-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Email Support
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Send us an email and we'll respond within 24 hours
+            </p>
+            <a
+              href="mailto:support@crewafya.com"
+              className="mt-auto bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium"
+            >
+              support@crewafya.com
+            </a>
+          </div>
+        </div> */}
+
+        {/* Tabs */}
+        <div className="mb-8">
+          <div className="border-b-2 border-gray-200 dark:border-gray-700">
+            <nav className="-mb-px flex space-x-4 md:space-x-8">
+              <button
+                onClick={() => setActiveTab("help")}
+                className={`${
+                  activeTab === "help"
+                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base flex items-center`}
+              >
+                <TbHeartHandshake className="mr-2 h-5 w-5" />
+                All Help Topics
+              </button>
+              <button
+                onClick={() => setActiveTab("payment")}
+                className={`${
+                  activeTab === "payment"
+                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base flex items-center`}
+              >
+                <MdOutlinePayments className="mr-2 h-5 w-5" />
+                Payments
+              </button>
+              <button
+                onClick={() => setActiveTab("insurance")}
+                className={`${
+                  activeTab === "insurance"
+                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base flex items-center`}
+              >
+                <MdOutlineHealthAndSafety className="mr-2 h-5 w-5" />
+                Insurance
+              </button>
+              <button
+                onClick={() => setActiveTab("account")}
+                className={`${
+                  activeTab === "account"
+                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base flex items-center`}
+              >
+                <RiCustomerService2Line className="mr-2 h-5 w-5" />
+                Account
+              </button>
+            </nav> 
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* FAQs Section */}
+          <div className="lg:col-span-2">
+            <div className="bg-white pb-10 dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-lg sm:text-xl font-bold text-secondary-700 dark:text-white mb-6">
+                  Frequently Asked Questions
+                </h2>
+
+                {filteredFaqs.length > 0 ? (
+                  <div className="space-y-2.5 sm:space-y-4">
+                    {filteredFaqs.map((faq, index) => (
+                      <div
+                        key={index}
+                        className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+                      >
+                        <button
+                          className="w-full flex justify-between items-center p-4 text-left focus:outline-none"
+                          onClick={() => toggleFaq(index)}
+                        >
+                          <span className="text-sm sm:text-base font-medium text-zinc-800 dark:text-white">
+                            {faq.question}
+                          </span>
+                          {expandedFaq === index ? (
+                            <FiChevronUp className="h-4 sm:h-5 w-4 sm:w-5 text-gray-500" />
+                          ) : (
+                            <FiChevronDown className="h-4 sm:h-5 w-4 sm:w-5 text-gray-500" />
+                          )}
+                        </button>
+                        {expandedFaq === index && (
+                          <div className="p-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+                            <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
+                              {faq.answer}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 dark:text-gray-400">
+                      No results found for "{searchQuery}". Try a different
+                      search term or browse our help categories.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="lg:col-span-1">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-lg sm:text-xl font-bold text-secondary-700 dark:text-white mb-6">
+                  Contact Support
+                </h2>
+                <form onSubmit={handleSubmit}>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-secondary-500 focus:border-secondary-500 dark:bg-gray-700 dark:text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-secondary-500 focus:border-secondary-500 dark:bg-gray-700 dark:text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-secondary-500 focus:border-secondary-500 dark:bg-gray-700 dark:text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Issue Category
+                      </label>
+                      <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-secondary-500 focus:border-secondary-500 dark:bg-gray-700 dark:text-white"
+                      >
+                        <option value="payment">Payment Issue</option>
+                        <option value="insurance">Insurance Coverage</option>
+                        <option value="claim">Claim Processing</option>
+                        <option value="account">Account Management</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Subject
+                      </label>
+                      <input
+                        type="text"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-secondary-500 focus:border-secondary-500 dark:bg-gray-700 dark:text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Message
+                      </label>
+                      <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        required
+                        rows={4}
+                        className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-secondary-500 focus:border-secondary-500 dark:bg-gray-700 dark:text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <button
+                        type="submit"
+                        className="w-full text-sm md:text-base bg-secondary-600 hover:bg-secondary-700 text-white py-2 px-4 rounded-lg font-medium"
+                      >
+                        Submit Request
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div className="lg:col-span-1 mt-4 bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+              <div className="p-6">
+                {/* <h2 className="text-xl font-bold text-secondary-700 dark:text-white mb-2">
+                  Get In Touch
+                </h2> */}
+                <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base mb-4">
+                  We're here to help! If you have any questions or need assistance, please don't hesitate to contact us.
+                </p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base  mb-2">
+                  Email: support@crewafya.com
+                </p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base  mb-2">
+                  Phone: +254 700 123 456
+                </p>
+                
+                
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SupportPage;

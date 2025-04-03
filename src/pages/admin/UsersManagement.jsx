@@ -304,7 +304,7 @@ const UserManagement = ({
         <form onSubmit={handleSearch} className="relative w-full sm:w-[40%]">
           <input
             type="text"
-            placeholder="Search users..."
+            placeholder="Search members..."
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-admin-500 focus:border-admin-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -576,12 +576,12 @@ const UserManagement = ({
                   >
                     {user.insuranceCoverage ? (
                       <div>
-                        <div className="font-semibold text-gray-600 dark:text-white">
+                        <div className="font-semibold text-primary-600 dark:text-white">
                           {formatPlanName(user.insuranceCoverage.plan)}
                         </div>
                         <div>
                           <span
-                            className={`pl-3 w-full inline-flex text-xs leading-5 font-semibold rounded-full ${getPlanStatusClass(
+                            className={`pl-3 w-full inline-flex text-[0.68rem] leading-5 font-semibold rounded-full ${getPlanStatusClass(
                               user.insuranceCoverage.status
                             )}`}
                           >

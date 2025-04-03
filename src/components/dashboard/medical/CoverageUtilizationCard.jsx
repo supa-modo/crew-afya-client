@@ -25,11 +25,11 @@ const CoverageUtilizationCard = ({ utilization }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
-      <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 p-4">
-        <h3 className="text-white font-semibold flex items-center">
+    <div className=" rounded-sm overflow-hidden ">
+      <div className=" px-4">
+        <h3 className="text-amber-700 dark:text-amber-600 font-semibold flex items-center">
           <TbChartBar className="mr-2 h-5 w-5" />
-          Coverage Utilization
+          Medical Coverage Utilization
         </h3>
       </div>
       <div className="p-5 space-y-4">

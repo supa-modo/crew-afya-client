@@ -54,6 +54,7 @@ const AddNewUserPage = () => {
       try {
         setLoadingPlans(true);
         const response = await getAllPlans();
+        console.log(response);
         if (response.success && response.data && response.data.length > 0) {
           // Map API data to the format expected by MedicalPlanSelector
           setAvailablePlans(
@@ -66,6 +67,7 @@ const AddNewUserPage = () => {
                 : "For Driver/Conductor",
               premiums: {
                 daily: plan.dailyPremium,
+                weekly: plan.weeklyPremium,
                 monthly: plan.monthlyPremium,
                 annual: plan.annualPremium,
               },
