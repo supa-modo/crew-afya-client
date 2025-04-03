@@ -11,7 +11,8 @@ import {
   FiCalendar,
   FiCheckCircle,
 } from "react-icons/fi";
-import { TbBuildingBank, TbHeartHandshake, TbShieldCheck } from "react-icons/tb";
+import { TbBuildingBank, TbCreditCardPay, TbHeartHandshake, TbShieldCheck, TbShieldHalfFilled, TbShieldHeart } from "react-icons/tb";
+import { PiUsersDuotone } from "react-icons/pi";
 
 const AboutUsPage = () => {
   // Animation variants
@@ -100,10 +101,10 @@ const AboutUsPage = () => {
             transition={{ duration: 0.5 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary-700 dark:text-white mb-4">
               Our Mission
             </h2>
-            <div className="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
+            <div className="w-24 h-1 bg-secondary-600 mx-auto mb-6"></div>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               At CrewAfya, we're dedicated to improving the lives of matatu workers by providing 
               accessible healthcare solutions, financial stability, and a sense of community.
@@ -182,10 +183,10 @@ const AboutUsPage = () => {
               transition={{ duration: 0.5 }}
               className="md:w-1/2"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-secondary-700 dark:text-white mb-4">
                 Our Story
               </h2>
-              <div className="w-24 h-1 bg-secondary-500 mb-6"></div>
+              <div className="w-24 h-1 bg-secondary-600 mb-6"></div>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
                 CrewAfya was founded in 2020 with a simple yet powerful vision: to address the healthcare 
                 challenges faced by matatu workers across Kenya. We recognized that these essential workers, 
@@ -232,10 +233,10 @@ const AboutUsPage = () => {
             transition={{ duration: 0.5 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary-600 dark:text-white mb-4">
               How CrewAfya Works
             </h2>
-            <div className="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
+            <div className="w-24 h-1 bg-primary-500 mx-auto mb-6"></div>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Our platform is designed to be simple, accessible, and effective in meeting the needs 
               of matatu workers.
@@ -254,9 +255,9 @@ const AboutUsPage = () => {
               className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 shadow-md"
             >
               <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
-                <FiUsers className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <PiUsersDuotone className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-bold text-primary-600 dark:text-white mb-2">
                 1. Join the Union
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
@@ -269,9 +270,9 @@ const AboutUsPage = () => {
               className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 shadow-md"
             >
               <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4">
-                <FiShield className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <TbShieldHalfFilled className="w-6 h-6 sm:w-7 sm:h-7 text-green-600 dark:text-green-400" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-bold text-primary-600 dark:text-white mb-2">
                 2. Select Coverage
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
@@ -284,9 +285,9 @@ const AboutUsPage = () => {
               className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 shadow-md"
             >
               <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
-                <FiCreditCard className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                <TbCreditCardPay className="w-6 sm:w-7 h-6 sm:h-7 text-purple-600 dark:text-purple-400" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-bold text-primary-600 dark:text-white mb-2">
                 3. Make Payments
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
@@ -299,9 +300,9 @@ const AboutUsPage = () => {
               className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 shadow-md"
             >
               <div className="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-4">
-                <FiHeart className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                <TbShieldHeart className="w-6 sm:w-7 h-6 sm:h-7 text-orange-600 dark:text-orange-400" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-bold text-primary-600 dark:text-white mb-2">
                 4. Access Benefits
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
@@ -322,10 +323,10 @@ const AboutUsPage = () => {
             transition={{ duration: 0.5 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary-700 dark:text-white mb-4">
               Our Core Values
             </h2>
-            <div className="w-24 h-1 bg-secondary-500 mx-auto mb-6"></div>
+            <div className="w-24 h-1 bg-secondary-600 mx-auto mb-6"></div>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               These principles guide everything we do at CrewAfya.
             </p>
@@ -339,11 +340,11 @@ const AboutUsPage = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="flex items-start gap-4"
             >
-              <div className="w-12 h-12 rounded-full bg-secondary-100 dark:bg-secondary-900/30 flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-secondary-200 dark:bg-secondary-900/30 flex items-center justify-center flex-shrink-0">
                 <FiCheckCircle className="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-bold text-primary-600 dark:text-white mb-2">
                   Accessibility
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
@@ -360,11 +361,11 @@ const AboutUsPage = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="flex items-start gap-4"
             >
-              <div className="w-12 h-12 rounded-full bg-secondary-100 dark:bg-secondary-900/30 flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-secondary-200 dark:bg-secondary-900/30 flex items-center justify-center flex-shrink-0">
                 <FiCheckCircle className="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-bold text-primary-600 dark:text-white mb-2">
                   Transparency
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
@@ -381,11 +382,11 @@ const AboutUsPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="flex items-start gap-4"
             >
-              <div className="w-12 h-12 rounded-full bg-secondary-100 dark:bg-secondary-900/30 flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-secondary-200 dark:bg-secondary-900/30 flex items-center justify-center flex-shrink-0">
                 <FiCheckCircle className="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-bold text-primary-600 dark:text-white mb-2">
                   Community
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
@@ -402,11 +403,11 @@ const AboutUsPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="flex items-start gap-4"
             >
-              <div className="w-12 h-12 rounded-full bg-secondary-100 dark:bg-secondary-900/30 flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-secondary-200 dark:bg-secondary-900/30 flex items-center justify-center flex-shrink-0">
                 <FiCheckCircle className="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-bold text-primary-600 dark:text-white mb-2">
                   Innovation
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
