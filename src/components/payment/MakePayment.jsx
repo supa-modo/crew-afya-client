@@ -253,7 +253,7 @@ const MakePayment = ({
 
             // Call onPaymentComplete callback if provided
             if (typeof onPaymentComplete === "function") {
-              setTimeout(() => onPaymentComplete(true), 2000);
+              setTimeout(() => onPaymentComplete(true), 5000);
             }
 
             // Reset form after success (with delay)

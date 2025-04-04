@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { FiX, FiCheck, FiLoader } from "react-icons/fi";
+import { FiX, FiCheck, FiLoader, FiAlertTriangle } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { TbShieldCheckFilled } from "react-icons/tb";
-import { updateSubscription } from "../../services/subscriptionService";
+import { updateSubscription, getUserSubscription } from "../../services/subscriptionService";
+import { apiGet } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 
 const ChangeFrequencyModal = ({
   isOpen,
@@ -11,10 +13,14 @@ const ChangeFrequencyModal = ({
   currentFrequency,
   onFrequencyChanged,
 }) => {
+  const { user } = useAuth();
   const [selectedFrequency, setSelectedFrequency] = useState(currentFrequency || "daily");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [showPaymentPrompt, setShowPaymentPrompt] = useState(false);
+  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [isLoadingPayments, setIsLoadingPayments] = useState(false);
 
   // Reset state when modal opens
   useEffect(() => {
@@ -22,8 +28,35 @@ const ChangeFrequencyModal = ({
       setSelectedFrequency(currentFrequency || "daily");
       setIsSuccess(false);
       setError(null);
+      setShowPaymentPrompt(false);
+      
+      // Load payment history when modal opens
+      if (user && user.id) {
+        loadPaymentHistory();
+      }
     }
-  }, [isOpen, currentFrequency]);
+  }, [isOpen, currentFrequency, user]);
+  
+  // Load user's payment history to check if they've already paid for the new frequency
+  const loadPaymentHistory = async () => {
+    if (!user || !user.id) return;
+    
+    setIsLoadingPayments(true);
+    try {
+      const response = await apiGet("/payments/history", {
+        limit: 50,
+        offset: 0
+      });
+      
+      if (response && response.success && response.data) {
+        setPaymentHistory(response.data);
+      }
+    } catch (error) {
+      console.error("Error loading payment history:", error);
+    } finally {
+      setIsLoadingPayments(false);
+    }
+  };
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
@@ -69,6 +102,57 @@ const ChangeFrequencyModal = ({
     return 0;
   };
 
+  // Check if user has already paid for the selected frequency
+  const hasAlreadyPaidForFrequency = () => {
+    if (!paymentHistory || paymentHistory.length === 0) return false;
+    
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    // Filter payments to find those matching the selected frequency
+    const relevantPayments = paymentHistory.filter(payment => {
+      // Check if payment description contains the frequency
+      const frequencyPattern = new RegExp(`\\(${selectedFrequency}\\)`, 'i');
+      return payment.status === 'completed' && 
+             payment.description && 
+             frequencyPattern.test(payment.description);
+    });
+    
+    if (relevantPayments.length === 0) return false;
+    
+    // Check if any payment is recent based on frequency
+    return relevantPayments.some(payment => {
+      const paymentDate = new Date(payment.paymentDate);
+      
+      // Calculate if the payment is still valid based on frequency
+      switch (selectedFrequency) {
+        case 'daily':
+          // Valid if paid today
+          return paymentDate.getDate() === today.getDate() &&
+                 paymentDate.getMonth() === today.getMonth() &&
+                 paymentDate.getFullYear() === today.getFullYear();
+        
+        case 'weekly':
+          // Valid if paid within the last 7 days
+          const weekAgo = new Date(today);
+          weekAgo.setDate(today.getDate() - 7);
+          return paymentDate >= weekAgo;
+        
+        case 'monthly':
+          // Valid if paid in the current month
+          return paymentDate.getMonth() === today.getMonth() &&
+                 paymentDate.getFullYear() === today.getFullYear();
+        
+        case 'annual':
+          // Valid if paid in the current year
+          return paymentDate.getFullYear() === today.getFullYear();
+        
+        default:
+          return false;
+      }
+    });
+  };
+
   const handleSubmit = async () => {
     if (selectedFrequency === currentFrequency) {
       onClose();
@@ -79,21 +163,56 @@ const ChangeFrequencyModal = ({
     setError(null);
 
     try {
-      // Update payment frequency using the subscription service
-      const response = await updateSubscription(currentPlan?.id, {
+      // Make sure we have a valid subscription
+      if (!currentPlan) {
+        throw new Error("No valid subscription found. Please refresh the page and try again.");
+      }
+      
+      // Always fetch the subscription from the server to get the correct ID
+      // This ensures we have the most up-to-date subscription data with the proper ID
+      console.log("Fetching subscription for user:", user.id);
+      const subscriptionResponse = await getUserSubscription(user.id);
+      
+      if (!subscriptionResponse || !subscriptionResponse.success) {
+        console.error("Failed to get subscription:", subscriptionResponse);
+        throw new Error("Could not retrieve subscription details. Please refresh and try again.");
+      }
+      
+      if (!subscriptionResponse.data || !subscriptionResponse.data.id) {
+        console.error("Invalid subscription data:", subscriptionResponse.data);
+        throw new Error("No valid subscription ID found. Please contact support.");
+      }
+      
+      const subscriptionId = subscriptionResponse.data.id;
+      console.log("Using subscription ID:", subscriptionId);
+      
+      // Update payment frequency using the subscription service with the correct subscription ID
+      const response = await updateSubscription(subscriptionId, {
         frequency: selectedFrequency
       });
 
       if (response && response.success) {
-        setIsSuccess(true);
-
-        // Update the parent component
-        onFrequencyChanged(selectedFrequency);
-
-        // Close the modal after a short delay
-        setTimeout(() => {
-          onClose();
-        }, 2000);
+        // Check if user needs to make a payment for the new frequency
+        const alreadyPaid = hasAlreadyPaidForFrequency();
+        
+        if (!alreadyPaid) {
+          // Show payment prompt instead of success message
+          setShowPaymentPrompt(true);
+          
+          // Update the parent component
+          onFrequencyChanged(selectedFrequency);
+        } else {
+          // If already paid, show success message
+          setIsSuccess(true);
+          
+          // Update the parent component
+          onFrequencyChanged(selectedFrequency);
+          
+          // Close the modal after a short delay
+          setTimeout(() => {
+            onClose();
+          }, 5000);
+        }
       } else {
         throw new Error(
           response.message || "Failed to update payment frequency"
@@ -104,6 +223,18 @@ const ChangeFrequencyModal = ({
       console.error("Error updating frequency:", error);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+  
+  // Handle payment prompt action
+  const handlePaymentPromptAction = (action) => {
+    if (action === 'pay') {
+      //TODO:Handle redirection to payment
+      // Close modal and let parent component handle redirecting to payment
+      onClose();
+    } else {
+      // Just close the modal
+      onClose();
     }
   };
 
@@ -181,7 +312,43 @@ const ChangeFrequencyModal = ({
             </div>
           )}
 
-          {isSuccess ? (
+          {showPaymentPrompt ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="pb-8 pt-6 text-center"
+            >
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-amber-100 dark:bg-amber-900/30">
+                <FiAlertTriangle className="h-10 w-10 text-amber-600 dark:text-amber-400" />
+              </div>
+              <h3 className="mt-6 text-base font-medium text-primary-600 dark:text-white">
+                Payment frequency updated!
+              </h3>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Your payment frequency has been changed to{" "}
+                <span className="font-medium text-gray-700 dark:text-gray-300">
+                  {selectedFrequency}
+                </span>.
+              </p>
+              <p className="mt-3 text-sm text-amber-600 dark:text-amber-400">
+                You need to make a payment for the new {selectedFrequency} period to maintain your coverage.
+              </p>
+              <div className="mt-6 flex justify-center space-x-4">
+                <button
+                  onClick={() => handlePaymentPromptAction('pay')}
+                  className="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  Make Payment Now
+                </button>
+                <button
+                  onClick={() => handlePaymentPromptAction('later')}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                >
+                  Pay Later
+                </button>
+              </div>
+            </motion.div>
+          ) : isSuccess ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -194,44 +361,46 @@ const ChangeFrequencyModal = ({
                 Payment frequency updated!
               </h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Your payment frequency has been changed to{" "}
-                <span className="text-secondary-700 font-semibold">
-                  {frequencies.find((f) => f.id === selectedFrequency)?.label}
-                </span>{" "}
-                payments.
+                Your payment frequency has been successfully changed to{" "}
+                <span className="font-medium text-gray-700 dark:text-gray-300">
+                  {selectedFrequency}
+                </span>.
+              </p>
+              <p className="mt-3 text-sm text-green-600 dark:text-green-400">
+                You've already made a payment for this period. Your coverage is active.
               </p>
             </motion.div>
           ) : (
             <>
-              <div className="mt-4 md:mt-6 space-y-3 px-4 sm:px-0">
-                <div className="grid grid-cols-1 gap-2">
-                  {frequencies.map((frequency) => (
-                    <div
-                      key={frequency.id}
-                      className={`relative rounded-lg border-2 px-5 py-2 sm:p-4 cursor-pointer transition-all duration-200 ${
-                        selectedFrequency === frequency.id
-                          ? "border-primary-500 bg-primary-50 dark:bg-primary-900/10"
-                          : "border-gray-200 dark:border-gray-700 hover:border-primary-300"
-                      }`}
-                      onClick={() => setSelectedFrequency(frequency.id)}
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <h4 className="font-semibold text-primary-600 dark:text-white">
-                            {frequency.label}
-                          </h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {frequency.description}
-                          </p>
-                        </div>
-                        {selectedFrequency === frequency.id && (
-                          <div className="flex-shrink-0 text-primary-600">
-                            <FiCheck className="h-5 w-5" />
-                          </div>
-                        )}
-                      </div>
+          <div className="mt-4 md:mt-6 space-y-3 px-4 sm:px-0">
+            <div className="grid grid-cols-1 gap-2">
+              {frequencies.map((frequency) => (
+                <div
+                  key={frequency.id}
+                  className={`relative rounded-lg border-2 px-5 py-2 sm:p-4 cursor-pointer transition-all duration-200 ${
+                    selectedFrequency === frequency.id
+                      ? "border-primary-500 bg-primary-50 dark:bg-primary-900/10"
+                      : "border-gray-200 dark:border-gray-700 hover:border-primary-300"
+                  }`}
+                  onClick={() => setSelectedFrequency(frequency.id)}
+                >
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="font-semibold text-primary-600 dark:text-white">
+                        {frequency.label}
+                      </h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {frequency.description}
+                      </p>
                     </div>
-                  ))}
+                    {selectedFrequency === frequency.id && (
+                      <div className="flex-shrink-0 text-primary-600">
+                        <FiCheck className="h-5 w-5" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
                 </div>
               </div>
 

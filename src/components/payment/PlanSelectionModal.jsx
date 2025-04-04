@@ -6,8 +6,9 @@ import {
   FiLoader,
   FiPhone,
   FiInfo,
+  FiAlertTriangle,
 } from "react-icons/fi";
-import { TbCoins, TbShieldCheckFilled } from "react-icons/tb";
+import { TbCoins, TbShieldCheckFilled, TbExchange } from "react-icons/tb";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
 import { PiWarningDuotone } from "react-icons/pi";
@@ -20,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import PlanDetailsModal from "./PlanDetailsModal";
 import ConfirmationModal from "../common/ConfirmationModal";
+import { getUserSubscription } from "../../services/subscriptionService";
 
 const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
   const [step, setStep] = useState(1);
@@ -35,6 +37,8 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedPlanForDetails, setSelectedPlanForDetails] = useState(null);
   const [showMembershipRequiredModal, setShowMembershipRequiredModal] = useState(false);
+  const [existingSubscription, setExistingSubscription] = useState(null);
+  const [showCancelSubscriptionModal, setShowCancelSubscriptionModal] = useState(false);
 
   // New state for payment tracking
   const [checkoutRequestId, setCheckoutRequestId] = useState(null);
@@ -134,7 +138,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
     }
   }, [isOpen]);
 
-  // Reset state when modal is opened
+  // Reset state when modal is opened and check for existing subscriptions
   useEffect(() => {
     if (isOpen) {
       setStep(1);
@@ -144,8 +148,38 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
       setPaymentStatus("idle");
       setErrorMessage("");
       setActiveTab(0);
+      
+      // Check if user already has an active subscription
+      if (user && user.id) {
+        checkExistingSubscription();
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, user]);
+  
+  // Function to check if user already has an active subscription
+  const checkExistingSubscription = async () => {
+    try {
+      setLoading(true);
+      const response = await getUserSubscription(user.id);
+      
+      if (response && response.success && response.data && response.data.id) {
+        // User has an existing subscription
+        setExistingSubscription({
+          id: response.data.id,
+          plan: response.data.plan,
+          frequency: response.data.frequency || response.data.paymentFrequency || "daily",
+          status: response.data.status
+        });
+      } else {
+        setExistingSubscription(null);
+      }
+    } catch (error) {
+      console.error("Error checking existing subscription:", error);
+      setExistingSubscription(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Cleanup interval on component unmount
   useEffect(() => {
@@ -166,7 +200,27 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
       }, 100);
       return;
     }
+    
+    // Check if user has an existing subscription
+    if (existingSubscription && existingSubscription.id) {
+      setSelectedPlan(plan);
+      setShowCancelSubscriptionModal(true);
+      return;
+    }
     setSelectedPlan(plan);
+    setStep(2);
+  };
+  
+  // Handle confirmation to cancel existing subscription and proceed with new plan
+  const handleConfirmCancelSubscription = () => {
+    setShowCancelSubscriptionModal(false);
+    setStep(2); // Proceed to frequency selection
+  };
+  
+  // Handle rejection of cancellation
+  const handleRejectCancelSubscription = () => {
+    setShowCancelSubscriptionModal(false);
+    setSelectedPlan(null);
   };
 
   const handleNextStep = () => {
@@ -1098,6 +1152,34 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
         </div>
       </div>
       
+      {/* Confirmation Modal for Existing Subscription */}
+      <ConfirmationModal
+        isOpen={showCancelSubscriptionModal}
+        onClose={handleRejectCancelSubscription}
+        onConfirm={handleConfirmCancelSubscription}
+        title="Change Subscription Plan"
+        message={
+          existingSubscription ? (
+            <>
+              <p className="mb-3">
+                You already have an active subscription to the <strong>{existingSubscription.plan?.name || "current"}</strong> plan.
+              </p>
+              <p className="mb-3">
+                Selecting a new plan will cancel your current subscription. You will need to make a payment for the new plan.
+              </p>
+              <p>
+                Do you want to proceed with changing your subscription plan?
+              </p>
+            </>
+          ) : (
+            "Do you want to change your subscription plan?"
+          )
+        }
+        confirmText="Yes, Change Plan"
+        cancelText="Keep Current Plan"
+        type="confirmation"
+        icon={<TbExchange className="h-8 w-8 text-amber-600" />}
+      />
     </>
   );
 };

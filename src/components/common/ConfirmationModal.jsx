@@ -1,5 +1,5 @@
 import React from "react";
-import { FiAlertTriangle } from "react-icons/fi";
+import { FiAlertTriangle, FiInfo, FiCheckCircle } from "react-icons/fi";
 import { PiWarningDuotone } from "react-icons/pi";
 
 const ConfirmationModal = ({
@@ -10,10 +10,48 @@ const ConfirmationModal = ({
   message = "Are you sure you want to proceed with this action?",
   confirmText = "Confirm",
   cancelText = "Cancel",
-  icon = <PiWarningDuotone className="h-8 w-8 text-red-600 dark:text-red-500" />,
-  confirmButtonClass = "bg-red-600 hover:bg-red-700",
+  type = "confirmation", // Can be: 'confirmation', 'success', 'error', 'info'
+  icon,
+  confirmButtonClass,
   isLoading = false,
+  showCancelButton = true,
 }) => {
+  // Define styling based on type
+  const getModalStyling = () => {
+    switch (type) {
+      case "success":
+        return {
+          icon: icon || <FiCheckCircle className="h-8 w-8 text-green-600 dark:text-green-500" />,
+          bgColor: "bg-green-200 dark:bg-green-900/50",
+          buttonClass: confirmButtonClass || "bg-green-600 hover:bg-green-700",
+          ringColor: "focus:ring-green-500"
+        };
+      case "error":
+        return {
+          icon: icon || <FiAlertTriangle className="h-8 w-8 text-red-600 dark:text-red-500" />,
+          bgColor: "bg-red-200 dark:bg-red-900/50",
+          buttonClass: confirmButtonClass || "bg-red-600 hover:bg-red-700",
+          ringColor: "focus:ring-red-500"
+        };
+      case "info":
+        return {
+          icon: icon || <FiInfo className="h-8 w-8 text-blue-600 dark:text-blue-500" />,
+          bgColor: "bg-blue-200 dark:bg-blue-900/50",
+          buttonClass: confirmButtonClass || "bg-blue-600 hover:bg-blue-700",
+          ringColor: "focus:ring-blue-500"
+        };
+      case "confirmation":
+      default:
+        return {
+          icon: icon || <PiWarningDuotone className="h-8 w-8 text-amber-600 dark:text-amber-500" />,
+          bgColor: "bg-amber-200 dark:bg-amber-900/50",
+          buttonClass: confirmButtonClass || "bg-amber-600 hover:bg-amber-700",
+          ringColor: "focus:ring-amber-500"
+        };
+    }
+  };
+
+  const modalStyle = getModalStyling();
   if (!isOpen) return null;
 
   return (
@@ -42,8 +80,8 @@ const ConfirmationModal = ({
         >
           <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-center">
-              <div className="mx-auto flex-shrink-0 flex items-center justify-center h-14 w-14 rounded-full bg-red-200 dark:bg-red-900/50 sm:mx-0 sm:h-16  sm:w-16 ">
-                {icon}
+              <div className={`mx-auto flex-shrink-0 flex items-center justify-center h-14 w-14 rounded-full ${modalStyle.bgColor} sm:mx-0 sm:h-16 sm:w-16`}>
+                {modalStyle.icon}
               </div>
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <h3
@@ -63,7 +101,7 @@ const ConfirmationModal = ({
           <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex flex-row-reverse gap-4 sm:gap-0">
             <button
               type="button"
-              className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm ${confirmButtonClass} ${
+              className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 ${modalStyle.ringColor} sm:ml-3 sm:w-auto sm:text-sm ${modalStyle.buttonClass} ${
                 isLoading ? "opacity-75 cursor-not-allowed" : ""
               }`}
               onClick={onConfirm}
@@ -97,14 +135,16 @@ const ConfirmationModal = ({
                 confirmText
               )}
             </button>
-            <button
-              type="button"
-              className=" w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-6 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-              onClick={onClose}
-              disabled={isLoading}
-            >
-              {cancelText}
-            </button>
+            {showCancelButton && (
+              <button
+                type="button"
+                className="w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-6 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                onClick={onClose}
+                disabled={isLoading}
+              >
+                {cancelText}
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -24,12 +24,12 @@ import {
   getUserSubscription,
   getCoverageUtilization,
   saveSubscription,
+  updateSubscription,
 } from "../services/subscriptionService";
 
 import LoanStatus from "../components/dashboard/LoanStatus";
 import UnionMembershipModal from "../components/UnionMembershipModal";
 import OverviewTab from "../components/dashboard/OverviewTab";
-import MembershipTab from "../components/dashboard/MembershipTab";
 import MedicalCoverTab from "../components/dashboard/MedicalCoverTab";
 
 const DashboardPage = () => {
@@ -66,7 +66,6 @@ const DashboardPage = () => {
       try {
         // Get subscription from server
         const response = await getUserSubscription(user.id);
-        console.log(response);
 
         if (
           response &&
@@ -218,17 +217,35 @@ const DashboardPage = () => {
 
     try {
       setIsSubmitting(true);
+      console.log("Updating subscription frequency to:", newFrequency);
+      
+      // First, get the actual subscription ID from the server
+      const subscriptionResponse = await getUserSubscription(user.id);
+      
+      if (!subscriptionResponse || !subscriptionResponse.success || !subscriptionResponse.data || !subscriptionResponse.data.id) {
+        console.error("Failed to get subscription details:", subscriptionResponse);
+        throw new Error("Could not retrieve subscription details. Please refresh and try again.");
+      }
+      
+      const subscriptionId = subscriptionResponse.data.id;
+      console.log("Found subscription ID:", subscriptionId);
+      
+      // Now update the subscription using the updateSubscription function instead of saveSubscription
+      const response = await updateSubscription(subscriptionId, {
+        frequency: newFrequency
+      });
 
-      // Call the API to update the subscription frequency
-      const response = await saveSubscription(
-        user.id,
-        userSubscription.plan.id,
-        newFrequency
-      );
-
-      if (response && response.data) {
+      if (response && response.success && response.data) {
+        console.log("Subscription updated successfully:", response.data);
+        
         // Update local state with the server response
-        setUserSubscription(response.data);
+        const updatedSubscription = {
+          ...userSubscription,
+          frequency: newFrequency,
+          paymentFrequency: newFrequency
+        };
+        
+        setUserSubscription(updatedSubscription);
 
         // Update next payment date if available in the response
         if (response.data.nextPaymentDate) {
@@ -261,7 +278,8 @@ const DashboardPage = () => {
         // Close the modal
         handleCloseFrequencyModal();
       } else {
-        throw new Error("Failed to update subscription frequency");
+        console.error("Failed to update subscription:", response);
+        throw new Error(response?.message || "Failed to update subscription frequency");
       }
     } catch (error) {
       console.error("Error updating subscription frequency:", error);

@@ -42,7 +42,6 @@ export const getUserDocuments = async () => {
   try {
     const response = await apiGet("/documents");
 
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch documents:", error);

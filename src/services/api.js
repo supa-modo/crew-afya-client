@@ -158,8 +158,7 @@ export const handleApiError = (error) => {
       errorMessage = "Server error. Please try again later.";
     } else {
       // Generic error message as last resort
-      errorMessage =
-        "An error occurred while processing your request. Please try again later in 10 minutes.";
+      errorMessage = "An error occurred while processing your request.";
     }
 
     console.error("API Error:", {

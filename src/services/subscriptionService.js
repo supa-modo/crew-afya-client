@@ -2,42 +2,62 @@ import { apiGet, apiPost, apiPut } from "./api";
 
 /**
  * Save user subscription to the server
- * @param {Object} subscriptionData - Subscription data object
- * @param {Object} subscriptionData.plan - Selected plan
- * @param {string} subscriptionData.frequency - Payment frequency (daily, weekly, monthly, annual)
- * @param {string} subscriptionData.userId - User ID
+ * @param {string|Object} userIdOrData - User ID or subscription data object
+ * @param {string} [planId] - Plan ID (if first param is userId)
+ * @param {string} [frequency] - Payment frequency (if first param is userId)
  * @returns {Promise<Object>} - Response data
  */
-export const saveSubscription = async (subscriptionData) => {
+export const saveSubscription = async (userIdOrData, planId, frequency) => {
   try {
-    // Ensure all required fields are present
-    if (!subscriptionData.userId) {
-      console.error("Missing userId in subscription data");
-      return { success: false, message: "User ID is required" };
+    let normalizedData = {};
+    
+    // Handle both calling patterns: (userId, planId, frequency) or (subscriptionData)
+    if (typeof userIdOrData === 'string') {
+      // Called with individual parameters
+      console.log("saveSubscription called with individual parameters");
+      normalizedData = {
+        userId: userIdOrData,
+        planId: planId,
+        frequency: frequency
+      };
+    } else if (typeof userIdOrData === 'object') {
+      // Called with a subscription data object
+      console.log("saveSubscription called with data object");
+      const subscriptionData = userIdOrData;
+      
+      // Ensure all required fields are present
+      if (!subscriptionData.userId) {
+        console.error("Missing userId in subscription data");
+        return { success: false, message: "User ID is required" };
+      }
+      
+      if (!subscriptionData.planId) {
+        console.error("Missing planId in subscription data");
+        return { success: false, message: "Plan ID is required" };
+      }
+      
+      if (!subscriptionData.paymentFrequency && !subscriptionData.frequency) {
+        console.error("Missing frequency in subscription data");
+        return { success: false, message: "Payment frequency is required" };
+      }
+      
+      // Normalize the data
+      normalizedData = {
+        userId: subscriptionData.userId,
+        planId: subscriptionData.planId,
+        frequency: subscriptionData.paymentFrequency || subscriptionData.frequency,
+      };
+      
+      // Add startDate if provided
+      if (subscriptionData.startDate) {
+        normalizedData.startDate = subscriptionData.startDate;
+      }
+    } else {
+      console.error("Invalid parameters for saveSubscription");
+      return { success: false, message: "Invalid parameters for subscription" };
     }
     
-    if (!subscriptionData.planId) {
-      console.error("Missing planId in subscription data");
-      return { success: false, message: "Plan ID is required" };
-    }
-    
-    if (!subscriptionData.paymentFrequency && !subscriptionData.frequency) {
-      console.error("Missing frequency in subscription data");
-      return { success: false, message: "Payment frequency is required" };
-    }
-    
-    // Normalize the data
-    const normalizedData = {
-      userId: subscriptionData.userId,
-      planId: subscriptionData.planId,
-      frequency: subscriptionData.paymentFrequency || subscriptionData.frequency,
-    };
-    
-    // Add startDate if provided
-    if (subscriptionData.startDate) {
-      normalizedData.startDate = subscriptionData.startDate;
-    }
-    
+    console.log("Saving subscription with data:", normalizedData);
     const response = await apiPost("/subscriptions", normalizedData);
     return response;
   } catch (error) {
