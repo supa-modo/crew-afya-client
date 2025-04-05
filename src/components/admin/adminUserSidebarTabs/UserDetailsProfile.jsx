@@ -20,6 +20,7 @@ import {
   updateUserInsurance,
   getUserById,
 } from "../../../services/userService";
+import { FaSave } from "react-icons/fa";
 
 const UserDetailsProfile = ({ user, onUserUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -605,7 +606,7 @@ const UserDetailsProfile = ({ user, onUserUpdate }) => {
                 </>
               ) : (
                 <>
-                  <FiSave className="mr-1.5 h-4 w-4" />
+                  <FaSave className="mr-1.5 h-4 w-4" />
                   Save Changes
                 </>
               )}

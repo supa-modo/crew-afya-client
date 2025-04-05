@@ -1,12 +1,13 @@
 import React from "react";
-import { TbUsers, TbShieldCheck, TbWallet, TbTrendingUp } from "react-icons/tb";
+import { TbShieldCheck, TbWallet, TbTrendingUp } from "react-icons/tb";
+import { PiUsersDuotone } from "react-icons/pi";
 
 const UnionStatsGrid = () => {
   const stats = [
     {
       title: "Union Membership",
       value: "Active",
-      icon: <TbUsers className="h-6 w-6 text-blue-500" />,
+      icon: <Piusersduotone className="h-6 w-6 text-blue-500" />,
       change: "+14",
       changeText: "new members this week",
       bgClass: "bg-blue-100 dark:bg-blue-900/20",

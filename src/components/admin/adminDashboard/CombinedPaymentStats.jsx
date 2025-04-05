@@ -122,7 +122,7 @@ const CombinedPaymentStats = ({ summary, chartData, formatCurrency }) => {
                               {formatCurrency(plan.revenue)}
                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {plan.name}
+                              {plan.name} - Revenue (Month to date)
                             </p>
                           </div>
                         </div>
@@ -251,7 +251,7 @@ const CombinedPaymentStats = ({ summary, chartData, formatCurrency }) => {
           {/* Chart legend */}
           <div className="flex justify-center flex-wrap gap-2 mt-2">
             <div className="flex items-center">
-              <div className="h-3 w-3 rounded-full bg-indigo-500 mr-1"></div>
+              <div className="h-[1.1rem] w-2.5 rounded-md bg-indigo-500 mr-1"></div>
               <span className="text-xs text-gray-600 dark:text-gray-400">
                 Total Medical
               </span>
@@ -259,7 +259,7 @@ const CombinedPaymentStats = ({ summary, chartData, formatCurrency }) => {
             {medicalPlans.map((plan, index) => (
               <div key={index} className="flex items-center">
                 <div
-                  className="h-3 w-3 rounded-full mr-1"
+                  className="h-[1.1rem] w-2.5 rounded-md mr-1"
                   style={{ backgroundColor: plan.color }}
                 ></div>
                 <span className="text-xs text-gray-600 dark:text-gray-400">

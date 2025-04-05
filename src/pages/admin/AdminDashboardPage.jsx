@@ -7,21 +7,17 @@ import PaymentType from "../../components/admin/adminDashboard/PaymentType";
 import PaymentTrendChart from "../../components/admin/adminDashboard/PaymentTrendChart";
 import PlanDistributionChart from "../../components/admin/adminDashboard/PlanDistributionChart";
 import {
-  FiActivity,
-  FiUsers,
   FiAlertCircle,
   FiArrowUpRight,
   FiSearch,
-  FiClock,
 } from "react-icons/fi";
-import {
-  TbArrowNarrowRight,
-} from "react-icons/tb";
+import { TbArrowNarrowRight } from "react-icons/tb";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
 import {
   PiCaretDownDuotone,
   PiSlidersDuotone,
   PiUserDuotone,
+  PiUsersThreeDuotone,
 } from "react-icons/pi";
 
 const AdminDashboardPage = () => {
@@ -155,11 +151,17 @@ const AdminDashboardPage = () => {
       enrollmentTrend,
       paymentTrend,
       planDistribution: [
-        { name: "Crew Afya Lite", value: 7235 },
-        { name: "Crew Afya (M+3)", value: 2621 },
+        { name: "Crew Afya Lite (M)", value: 7235 },
+        { name: "Crew Afya (M+1)", value: 2621 },
+        { name: "Crew Afya (M+2)", value: 2621 },
+        { name: "Crew Afya (M+3)", value: 1234 },
+        { name: "Crew Afya (M+4)", value: 2453 },
+        { name: "Crew Afya (M+5)", value: 50 },
+        { name: "Crew Afya (M+6)", value: 100 },
       ],
       paymentTypeDistribution: [
         { name: "Daily", value: 5642 },
+        { name: "Weekly", value: 3287 },
         { name: "Monthly", value: 3287 },
         { name: "Annual", value: 927 },
       ],
@@ -311,12 +313,12 @@ const AdminDashboardPage = () => {
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                   Total Members
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-2xl font-bold text-admin-600 dark:text-admin-500 mt-1">
                   {dashboardData.summary.totalMembers.toLocaleString()}
                 </p>
               </div>
               <div className="h-12 w-12 rounded-full bg-admin-100 dark:bg-admin-900/30 flex items-center justify-center">
-                <FiUsers className="h-6 w-6 text-admin-600 dark:text-admin-400" />
+                <PiUsersThreeDuotone className="h-7 w-7 text-admin-600 dark:text-admin-400" />
               </div>
             </div>
             <div className="mt-3 flex items-center">
@@ -350,7 +352,7 @@ const AdminDashboardPage = () => {
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                   Medical Cover Active
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-2xl font-bold text-primary-600 dark:text-primary-500 mt-1">
                   {dashboardData.summary.activeMedical.toLocaleString()}
                 </p>
               </div>
@@ -389,7 +391,7 @@ const AdminDashboardPage = () => {
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                   Union Members Active
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-2xl font-bold text-admin-600 dark:text-admin-500 mt-1">
                   {dashboardData.summary.activeUnion.toLocaleString()}
                 </p>
               </div>
@@ -428,7 +430,7 @@ const AdminDashboardPage = () => {
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                   Pending Actions
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-2xl font-bold text-admin-600 dark:text-admin-500 mt-1">
                   {dashboardData.pendingActions.length}
                 </p>
               </div>
@@ -469,7 +471,7 @@ const AdminDashboardPage = () => {
             formatDate={formatDate}
           />
 
-          {/* Defaulters and Action Items */}
+          {/* Defaulters and Action Items
           <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="p-5">
               <div className="flex justify-between items-center mb-6">
@@ -487,6 +489,7 @@ const AdminDashboardPage = () => {
 
               <div className="space-y-4">
                 {/* Pending Payments */}
+          {/*
                 <div className="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/10 rounded-lg border border-yellow-100 dark:border-yellow-900/20">
                   <div className="flex items-center">
                     <div className="p-2 bg-yellow-100 dark:bg-yellow-800/30 rounded-lg mr-3">
@@ -512,6 +515,7 @@ const AdminDashboardPage = () => {
                 </div>
 
                 {/* Payment Defaulters */}
+          {/*
                 <div className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-lg border border-red-100 dark:border-red-900/20">
                   <div className="flex items-center">
                     <div className="p-2 bg-red-100 dark:bg-red-800/30 rounded-lg mr-3">
@@ -537,6 +541,7 @@ const AdminDashboardPage = () => {
                 </div>
 
                 {/* Pending Actions */}
+          {/*
                 {dashboardData.pendingActions.map((action) => (
                   <div
                     key={action.id}
@@ -586,7 +591,7 @@ const AdminDashboardPage = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Right Column - Member Distribution Quick Actions, and Recent Activity */}
@@ -594,24 +599,24 @@ const AdminDashboardPage = () => {
           {/* Quick Actions */}
           <QuickActions />
 
-          {/* Payment Type Distribution */}
-          <PaymentType
-            paymentTypeDistribution={dashboardData.paymentTypeDistribution}
-            totalMembers={dashboardData.summary.totalMembers}
-          />
-
           {/* Plan Distribution */}
           <PlanDistributionChart
             planDistribution={dashboardData.planDistribution}
             totalMembers={dashboardData.summary.totalMembers}
           />
 
-          {/* Recent Payments */}
+          {/* Payment Type Distribution */}
+          <PaymentType
+            paymentTypeDistribution={dashboardData.paymentTypeDistribution}
+            totalMembers={dashboardData.summary.totalMembers}
+          />
+
+          {/* Recent Payments
           <RecentPayments
             recentPayments={dashboardData.recentPayments}
             formatCurrency={formatCurrency}
             formatTime={formatTime}
-          />
+          /> */}
         </div>
       </div>
     </div>

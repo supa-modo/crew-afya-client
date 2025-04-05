@@ -7,7 +7,7 @@ import { FiAlertCircle } from "react-icons/fi";
 // Import our components
 import UserInfoForm from "../../components/admin/UserInfoForm";
 import MedicalPlanSelector from "../../components/admin/MedicalPlanSelector";
-import { TbHome2 } from "react-icons/tb";
+import { TbChevronRight, TbHome2 } from "react-icons/tb";
 
 // Import services
 import { createUser, getAllPlans } from "../../services/userService";
@@ -320,7 +320,7 @@ const AddNewUserPage = () => {
     <div className="pb-6">
       <div className="max-w-screen-2xl mx-auto ">
         {/* Breadcrumb */}
-        <div className="mb-4">
+        <div className="mb-8">
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
               <li>
@@ -333,56 +333,19 @@ const AddNewUserPage = () => {
                 </Link>
               </li>
               <li className="flex items-center">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <TbChevronRight className="w-4 h-4" />
                 <Link to="/admin/users" className="ml-2 hover:text-admin-600">
                   User Management
                 </Link>
               </li>
               <li className="flex items-center">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-                <span className="ml-2 text-gray-700 dark:text-gray-300 font-medium">
+                <TbChevronRight className="w-4 h-4" />
+                <span className="ml-2 text-admin-700 dark:text-gray-300 font-semibold">
                   Add New User
                 </span>
               </li>
             </ol>
           </nav>
-        </div>
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <button
-              onClick={() => navigate("/admin/users")}
-              className="mr-4 flex items-center justify-center rounded-md p-2 text-admin-600 hover:bg-admin-100 hover:text-admin-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-admin-500 dark:hover:bg-admin-900 dark:text-admin-400"
-            >
-              <FaArrowLeft className="h-5 w-5" />
-            </button>
-            <h1 className="text-2xl font-semibold text-admin-700 dark:text-admin-500">
-              Add New User
-            </h1>
-          </div>
         </div>
 
         {formCompleted ? (

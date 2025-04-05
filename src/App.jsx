@@ -53,6 +53,11 @@ function App() {
                   path="forgot-password"
                   element={<ForgotPasswordPage />}
                 />
+                {/* Support both formats: /reset-password?token=xyz and /reset-password/:token */}
+                <Route
+                  path="reset-password"
+                  element={<ResetPasswordPage />}
+                />
                 <Route
                   path="reset-password/:token"
                   element={<ResetPasswordPage />}

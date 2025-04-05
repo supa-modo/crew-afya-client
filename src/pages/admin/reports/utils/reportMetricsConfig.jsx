@@ -1,4 +1,5 @@
 import React from "react";
+import { PiUsersDuotone } from "react-icons/pi";
 import {
   TbCashBanknote,
   TbCash,
@@ -6,7 +7,6 @@ import {
   TbInfoCircle,
   TbAlertCircle,
   TbArrowsExchange,
-  TbUsers,
   TbClock,
   TbCheck,
   TbShield,
@@ -70,14 +70,14 @@ export const getMetricsConfig = (darkMode) => {
         id: "activeUsers",
         name: "Active Users",
         description: "Number of users making payments",
-        icon: <TbUsers className="h-5 w-5" />,
+        icon: <PiUsersDuotone className="h-5 w-5" />,
         color: CHART_COLORS[0],
       },
       {
         id: "newUsers",
         name: "New Users",
         description: "Number of newly registered users",
-        icon: <TbUsers className="h-5 w-5" />,
+        icon: <PiUsersDuotone className="h-5 w-5" />,
         color: CHART_COLORS[1],
       },
       {
@@ -91,7 +91,7 @@ export const getMetricsConfig = (darkMode) => {
         id: "userRetention",
         name: "User Retention",
         description: "Percentage of users making regular payments",
-        icon: <TbUsers className="h-5 w-5" />,
+        icon: <PiUsersDuotone className="h-5 w-5" />,
         color: CHART_COLORS[3],
       },
     ],

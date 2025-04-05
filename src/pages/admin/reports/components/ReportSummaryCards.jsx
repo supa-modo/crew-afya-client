@@ -4,7 +4,6 @@ import {
   TbCash,
   TbInfoCircle,
   TbAlertCircle,
-  TbUsers,
   TbCheck,
   TbShield,
   TbDeviceMobile,
@@ -16,6 +15,7 @@ import {
   formatPercentage,
   formatTime,
 } from "../utils/formatters";
+import { PiUsersDuotone } from "react-icons/pi";
 
 const ReportSummaryCards = ({ reportType, summaryData }) => {
   if (!summaryData) return null;
@@ -132,7 +132,7 @@ const ReportSummaryCards = ({ reportType, summaryData }) => {
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
               <div className="flex items-center">
                 <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-500 mr-4">
-                  <TbUsers className="h-6 w-6" />
+                  <PiUsersDuotone className="h-6 w-6" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400">

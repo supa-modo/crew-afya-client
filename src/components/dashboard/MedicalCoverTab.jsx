@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FiLoader, FiAlertCircle } from "react-icons/fi";
-import { TbShieldPlus, TbCalendarTime, TbShieldHalfFilled } from "react-icons/tb";
+import { TbShieldPlus, TbCalendarTime, TbShieldHalfFilled, TbFileInvoice } from "react-icons/tb";
 import { Link } from "react-router-dom";
 
 // Import our new component structure
@@ -8,7 +8,12 @@ import CoverageUtilizationCard from "./medical/CoverageUtilizationCard";
 import PlanDetailsCard from "./medical/PlanDetailsCard";
 import BenefitsCard from "./medical/BenefitsCard";
 import EmergencyContactsCard from "./medical/EmergencyContactsCard";
+import ClaimsHistoryTable from "./medical/ClaimsHistoryTable";
+import CoverageLimitsCard from "./medical/CoverageLimitsCard";
 import { BiSupport } from "react-icons/bi";
+
+// Import services
+import { getUserClaims, getCoverageLimits } from "../../services/claimsService";
 
 const MedicalCoverTab = ({ 
   userSubscription, 
@@ -17,7 +22,53 @@ const MedicalCoverTab = ({
   error, 
   handleOpenFrequencyModal 
 }) => {
-  // No need to fetch data here as it's passed from the parent component
+  const [claims, setClaims] = useState([]);
+  const [claimsLoading, setClaimsLoading] = useState(false);
+  const [claimsError, setClaimsError] = useState(null);
+  
+  const [coverageLimits, setCoverageLimits] = useState(null);
+  const [limitsLoading, setLimitsLoading] = useState(false);
+  const [limitsError, setLimitsError] = useState(null);
+  // Fetch user's claims and coverage limits when subscription data is available
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (userSubscription?.userId) {
+        // Fetch user claims
+        setClaimsLoading(true);
+        try {
+          const response = await getUserClaims(userSubscription.userId);
+          if (response.success) {
+            setClaims(response.data.claims || []);
+          } else {
+            setClaimsError(response.message || 'Failed to fetch claims');
+          }
+        } catch (err) {
+          console.error('Error fetching user claims:', err);
+          setClaimsError('An error occurred while fetching claims');
+        } finally {
+          setClaimsLoading(false);
+        }
+        
+        // Fetch coverage limits
+        setLimitsLoading(true);
+        try {
+          const response = await getCoverageLimits(userSubscription.userId);
+          if (response.success) {
+            setCoverageLimits(response.data);
+          } else {
+            setLimitsError(response.message || 'Failed to fetch coverage limits');
+          }
+        } catch (err) {
+          console.error('Error fetching coverage limits:', err);
+          setLimitsError('An error occurred while fetching coverage limits');
+        } finally {
+          setLimitsLoading(false);
+        }
+      }
+    };
+    
+    fetchUserData();
+  }, [userSubscription]);
 
   if (isLoading) {
     return (
@@ -132,16 +183,49 @@ const MedicalCoverTab = ({
         </div>
       </div>
 
-      {/* Bottom section - Claims and documents */}
-      <div className="mt-8">
-        {/* Recent Claims */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h3 className="text-lg font-semibold text-amber-700 dark:text-white mb-4">
-            Recent Claims
-          </h3>
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            <p>No recent claims found.</p>
+      {/* Bottom section - Claims and Coverage Limits */}
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Coverage Limits Card - 1/3 width on large screens */}
+        <div className="lg:col-span-1">
+          <CoverageLimitsCard 
+            coverageLimits={coverageLimits} 
+            loading={limitsLoading} 
+          />
+        </div>
+        
+        {/* Claims History - 2/3 width on large screens */}
+        <div className="lg:col-span-2">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-amber-700 dark:text-white flex items-center">
+                <TbFileInvoice className="mr-2 h-5 w-5 text-amber-600" />
+                Claims History
+              </h3>
+              <Link 
+                to="/claims/new" 
+                className="text-xs font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+              >
+                Submit New Claim
+              </Link>
+            </div>
             
+            {claimsError ? (
+              <div className="text-center py-4 text-red-500 dark:text-red-400">
+                <p>{claimsError}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="mt-2 text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+                >
+                  Try Again
+                </button>
+              </div>
+            ) : (
+              <ClaimsHistoryTable 
+                claims={claims} 
+                loading={claimsLoading} 
+                coverageLimits={coverageLimits}
+              />
+            )}
           </div>
         </div>
       </div>

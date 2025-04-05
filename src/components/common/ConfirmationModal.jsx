@@ -23,6 +23,7 @@ const ConfirmationModal = ({
         return {
           icon: icon || <FiCheckCircle className="h-8 w-8 text-green-600 dark:text-green-500" />,
           bgColor: "bg-green-200 dark:bg-green-900/50",
+          textColor: "text-green-700 dark:text-green-500",
           buttonClass: confirmButtonClass || "bg-green-600 hover:bg-green-700",
           ringColor: "focus:ring-green-500"
         };
@@ -30,6 +31,7 @@ const ConfirmationModal = ({
         return {
           icon: icon || <FiAlertTriangle className="h-8 w-8 text-red-600 dark:text-red-500" />,
           bgColor: "bg-red-200 dark:bg-red-900/50",
+          textColor: "text-red-700 dark:text-red-500",
           buttonClass: confirmButtonClass || "bg-red-600 hover:bg-red-700",
           ringColor: "focus:ring-red-500"
         };
@@ -37,6 +39,7 @@ const ConfirmationModal = ({
         return {
           icon: icon || <FiInfo className="h-8 w-8 text-blue-600 dark:text-blue-500" />,
           bgColor: "bg-blue-200 dark:bg-blue-900/50",
+          textColor: "text-blue-700 dark:text-blue-500",
           buttonClass: confirmButtonClass || "bg-blue-600 hover:bg-blue-700",
           ringColor: "focus:ring-blue-500"
         };
@@ -45,6 +48,7 @@ const ConfirmationModal = ({
         return {
           icon: icon || <PiWarningDuotone className="h-8 w-8 text-amber-600 dark:text-amber-500" />,
           bgColor: "bg-amber-200 dark:bg-amber-900/50",
+          textColor: "text-amber-700 dark:text-amber-500",
           buttonClass: confirmButtonClass || "bg-amber-600 hover:bg-amber-700",
           ringColor: "focus:ring-amber-500"
         };
@@ -85,13 +89,13 @@ const ConfirmationModal = ({
               </div>
               <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <h3
-                  className="text-lg leading-6 font-semibold text-gray-700 dark:text-white"
+                  className={`text-base md:text-lg leading-6 font-semibold ${modalStyle.textColor}`}
                   id="modal-headline"
                 >
                   {title}
                 </h3>
                 <div className="mt-2">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-[0.83rem] md:text-sm text-gray-500 dark:text-gray-400">
                     {message}
                   </p>
                 </div>
@@ -101,7 +105,7 @@ const ConfirmationModal = ({
           <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex flex-row-reverse gap-4 sm:gap-0">
             <button
               type="button"
-              className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 ${modalStyle.ringColor} sm:ml-3 sm:w-auto sm:text-sm ${modalStyle.buttonClass} ${
+              className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-3 md:px-8 py-2 text-[0.83rem] sm:text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 ${modalStyle.ringColor} sm:ml-3 sm:w-auto sm:text-sm ${modalStyle.buttonClass} ${
                 isLoading ? "opacity-75 cursor-not-allowed" : ""
               }`}
               onClick={onConfirm}
@@ -138,7 +142,7 @@ const ConfirmationModal = ({
             {showCancelButton && (
               <button
                 type="button"
-                className="w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-6 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                className="w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-1 md:px-6 py-2 bg-white dark:bg-gray-800 text-[0.83rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto"
                 onClick={onClose}
                 disabled={isLoading}
               >

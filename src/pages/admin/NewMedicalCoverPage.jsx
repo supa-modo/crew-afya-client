@@ -16,11 +16,14 @@ import {
   TbShieldHalfFilled,
   TbShieldFilled,
   TbShieldCheck,
+  TbChevronRight,
+  TbListDetails,
 } from "react-icons/tb";
 import { MdHealthAndSafety } from "react-icons/md";
 import insuranceService from "../../services/insuranceService";
 import { createPlan } from "../../services/planService";
 import { PlanType } from "../../constants/enums";
+import { PiUserDuotone, PiUsersDuotone } from "react-icons/pi";
 
 const NewMedicalCoverPage = () => {
   const navigate = useNavigate();
@@ -301,9 +304,9 @@ const NewMedicalCoverPage = () => {
 
   return (
     <div className="pb-10">
-      <div className="max-w-screen-2xl mx-auto">
+      <div className=" mx-auto">
         {/* Breadcrumb */}
-        <div className="mb-4">
+        <div className="mb-8">
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
               <li>
@@ -316,38 +319,14 @@ const NewMedicalCoverPage = () => {
                 </Link>
               </li>
               <li className="flex items-center">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <TbChevronRight className="w-4 h-4" />
                 <Link to="/admin/plans" className="ml-2 hover:text-admin-600">
                   Insurance Plans
                 </Link>
               </li>
               <li className="flex items-center">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-                <span className="ml-2 text-gray-700 dark:text-gray-300 font-medium">
+                <TbChevronRight className="w-4 h-4" />
+                <span className="ml-2 text-admin-700 dark:text-admin-600 font-medium">
                   New Medical Cover
                 </span>
               </li>
@@ -355,21 +334,6 @@ const NewMedicalCoverPage = () => {
           </nav>
         </div>
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center">
-            <button
-              onClick={() => navigate("/admin/plans")}
-              className="p-2 mr-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700"
-            >
-              <FiArrowLeft className="h-5 w-5" />
-            </button>
-            <h1 className="text-2xl font-semibold text-admin-700 dark:text-admin-500 flex items-center">
-              <TbShieldFilled className="mr-2 h-7 w-7 text-admin-600" />
-              Create New Medical Cover Plan
-            </h1>
-          </div>
-        </div>
 
         {/* Form Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -467,7 +431,7 @@ const NewMedicalCoverPage = () => {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <FiUser className="h-5 w-5 text-gray-400" />
+                        <PiUserDuotone className="h-5 w-5 text-gray-400" />
                       </div>
                       <select
                         id="category"
@@ -491,7 +455,7 @@ const NewMedicalCoverPage = () => {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <FiUser className="h-5 w-5 text-gray-400" />
+                        <PiUsersDuotone className="h-5 w-5 text-gray-400" />
                       </div>
                       <input
                         type="text"
@@ -523,7 +487,7 @@ const NewMedicalCoverPage = () => {
                     </label>
                     <div className="relative">
                       <div className="absolute top-3 left-0 pl-4 flex items-start pointer-events-none">
-                        <FiList className="h-5 w-5 text-gray-400" />
+                        <TbListDetails className="h-5 w-5 text-gray-400" />
                       </div>
                       <textarea
                         id="description"

@@ -1192,12 +1192,12 @@ export const MembershipRequiredModal = ({ isOpen, onClose, onConfirm }) => {
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={onConfirm}
-      title="Membership Required"
+      title="Membership Required!"
       message="You need to complete your union membership registration before subscribing to a medical plan. Would you like to complete your registration now?"
       confirmText="Complete Registration"
       cancelText="Not Now"
       confirmButtonClass="bg-secondary-600 hover:bg-secondary-700"
-      icon={<PiWarningDuotone className="h-8 w-8 text-secondary-600" />}
+      icon={<PiWarningDuotone className="h-8 w-8 text-amber-500" />}
     />
   );
 };

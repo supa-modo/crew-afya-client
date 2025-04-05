@@ -1,6 +1,6 @@
 import React from "react";
 import { PiUsersThreeDuotone } from "react-icons/pi";
-import { TbEdit, TbTrash, TbUsers } from "react-icons/tb";
+import { TbEdit, TbTrash } from "react-icons/tb";
 
 const PlanCard = ({
   plan,

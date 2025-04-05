@@ -8,6 +8,7 @@ import {
   TbHealthRecognition,
   TbSearch,
   TbShieldPlus,
+  TbChevronRight,
 } from "react-icons/tb";
 import { MdHealthAndSafety } from "react-icons/md";
 import { useTheme } from "../../context/ThemeContext";
@@ -179,7 +180,7 @@ const InsurancePlansPage = () => {
 
   return (
     <div className="pb-6">
-      <div className="max-w-screen-2xl mx-auto">
+      <div className="mx-auto">
         {/* Breadcrumb */}
         <div className="mb-4">
           <nav className="flex" aria-label="Breadcrumb">
@@ -194,19 +195,7 @@ const InsurancePlansPage = () => {
                 </Link>
               </li>
               <li className="flex items-center">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <TbChevronRight className="w-4 h-4" />
                 <span className="ml-2 text-gray-700 dark:text-gray-300 font-medium">
                   Insurance Plans
                 </span>

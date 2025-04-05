@@ -2,13 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  FiUsers,
-  FiShield,
-  FiCreditCard,
-  FiTruck,
-  FiHeart,
-  FiAward,
-  FiCalendar,
   FiCheckCircle,
 } from "react-icons/fi";
 import { TbBuildingBank, TbCreditCardPay, TbHeartHandshake, TbShieldCheck, TbShieldHalfFilled, TbShieldHeart } from "react-icons/tb";

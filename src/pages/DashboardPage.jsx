@@ -10,7 +10,7 @@ import {
   TbShieldCheckFilled,
   TbHomeDot,
   TbIdBadge2,
-  TbUsersGroup,
+  TbChevronRight,
 } from "react-icons/tb";
 import { PiUserCircle, PiUserDuotone, PiUsersDuotone } from "react-icons/pi";
 import { MdPayments } from "react-icons/md";
@@ -132,9 +132,9 @@ const DashboardPage = () => {
     fetchMockData();
 
     // Check if user has paid membership based on the membershipStatus from user object
-    if (user && user.membershipStatus === 'active') {
+    if (user && user.membershipStatus === "active") {
       setHasPaidMembership(true);
-    } else if (user && user.membershipStatus === 'pending') {
+    } else if (user && user.membershipStatus === "pending") {
       // If membership status is pending, show the membership modal
       setShowMembershipModal(true);
       setHasPaidMembership(false);
@@ -218,33 +218,43 @@ const DashboardPage = () => {
     try {
       setIsSubmitting(true);
       console.log("Updating subscription frequency to:", newFrequency);
-      
+
       // First, get the actual subscription ID from the server
       const subscriptionResponse = await getUserSubscription(user.id);
-      
-      if (!subscriptionResponse || !subscriptionResponse.success || !subscriptionResponse.data || !subscriptionResponse.data.id) {
-        console.error("Failed to get subscription details:", subscriptionResponse);
-        throw new Error("Could not retrieve subscription details. Please refresh and try again.");
+
+      if (
+        !subscriptionResponse ||
+        !subscriptionResponse.success ||
+        !subscriptionResponse.data ||
+        !subscriptionResponse.data.id
+      ) {
+        console.error(
+          "Failed to get subscription details:",
+          subscriptionResponse
+        );
+        throw new Error(
+          "Could not retrieve subscription details. Please refresh and try again."
+        );
       }
-      
+
       const subscriptionId = subscriptionResponse.data.id;
       console.log("Found subscription ID:", subscriptionId);
-      
+
       // Now update the subscription using the updateSubscription function instead of saveSubscription
       const response = await updateSubscription(subscriptionId, {
-        frequency: newFrequency
+        frequency: newFrequency,
       });
 
       if (response && response.success && response.data) {
         console.log("Subscription updated successfully:", response.data);
-        
+
         // Update local state with the server response
         const updatedSubscription = {
           ...userSubscription,
           frequency: newFrequency,
-          paymentFrequency: newFrequency
+          paymentFrequency: newFrequency,
         };
-        
+
         setUserSubscription(updatedSubscription);
 
         // Update next payment date if available in the response
@@ -279,7 +289,9 @@ const DashboardPage = () => {
         handleCloseFrequencyModal();
       } else {
         console.error("Failed to update subscription:", response);
-        throw new Error(response?.message || "Failed to update subscription frequency");
+        throw new Error(
+          response?.message || "Failed to update subscription frequency"
+        );
       }
     } catch (error) {
       console.error("Error updating subscription frequency:", error);
@@ -360,19 +372,7 @@ const DashboardPage = () => {
                 </Link>
               </li>
               <li className="flex items-center">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <TbChevronRight className="w-4 h-4" />
                 <span className="ml-2 text-gray-700 dark:text-gray-300 font-medium">
                   Dashboard
                 </span>
@@ -484,7 +484,7 @@ const DashboardPage = () => {
                           Union Membership
                         </p>
                         <h3 className="text-lg sm:text-xl capitalize font-bold text-secondary-700 dark:text-white mt-1">
-                        {user?.membershipStatus}
+                          {user?.membershipStatus}
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           Registered:{" "}
@@ -536,7 +536,7 @@ const DashboardPage = () => {
                     label: "Overview",
                     icon: <TbActivity className="h-5 w-5" />,
                   },
-                  
+
                   {
                     id: "medical",
                     label: "Medical Cover",

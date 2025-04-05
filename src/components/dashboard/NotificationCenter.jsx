@@ -1,5 +1,6 @@
 import React from "react";
-import { TbBell, TbMoneybag, TbUsers, TbCreditCard } from "react-icons/tb";
+import { PiUsersDuotone } from "react-icons/pi";
+import { TbBell, TbMoneybag, TbCreditCard } from "react-icons/tb";
 
 const NotificationCenter = ({ notifications }) => {
   if (!notifications || notifications.length === 0) {
@@ -26,7 +27,7 @@ const NotificationCenter = ({ notifications }) => {
       case "payment":
         return <TbMoneybag className="h-6 w-6 text-orange-500" />;
       case "union":
-        return <TbUsers className="h-6 w-6 text-blue-500" />;
+        return <PiUsersDuotone className="h-6 w-6 text-blue-500" />;
       case "loan":
         return <TbCreditCard className="h-6 w-6 text-purple-500" />;
       default:

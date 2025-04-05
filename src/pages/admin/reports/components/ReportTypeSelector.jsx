@@ -1,5 +1,6 @@
 import React from "react";
-import { TbReportMoney, TbUsers, TbShield, TbCash } from "react-icons/tb";
+import { PiUsersDuotone } from "react-icons/pi";
+import { TbReportMoney, TbShield, TbCash } from "react-icons/tb";
 
 const ReportTypeSelector = ({ reportType, handleReportTypeChange }) => {
   return (
@@ -27,7 +28,7 @@ const ReportTypeSelector = ({ reportType, handleReportTypeChange }) => {
           }`}
           onClick={() => handleReportTypeChange("user")}
         >
-          <TbUsers className="h-5 w-5 mr-2 text-admin-600 dark:text-admin-400" />
+          <PiUsersDuotone className="h-5 w-5 mr-2 text-admin-600 dark:text-admin-400" />
           <span>User Analytics</span>
         </button>
         <button

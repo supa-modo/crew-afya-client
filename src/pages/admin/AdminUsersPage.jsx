@@ -5,7 +5,7 @@ import { FaUserPlus, FaSearch, FaFilter } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import UsersManagement from "./UsersManagement";
 import { PiUserCirclePlus, PiUserCirclePlusDuotone } from "react-icons/pi";
-import { TbHome2 } from "react-icons/tb";
+import { TbChevronRight, TbHome2 } from "react-icons/tb";
 
 const AdminUsersPage = () => {
   const { darkMode } = useTheme();
@@ -55,19 +55,7 @@ const AdminUsersPage = () => {
                 </Link>
               </li>
               <li className="flex items-center">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <TbChevronRight className="w-4 h-4" />
                 <span className="ml-2 text-gray-700 dark:text-gray-300 font-medium">
                   User Management
                 </span>

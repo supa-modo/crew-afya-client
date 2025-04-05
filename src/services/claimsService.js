@@ -130,6 +130,34 @@ export const deleteClaim = async (claimId) => {
 };
 
 /**
+ * Get claims for a specific user
+ * @param {string} userId - User ID
+ * @param {Object} options - Query options
+ * @returns {Promise} Promise with user claims data
+ */
+export const getUserClaims = async (userId, options = {}) => {
+  try {
+    const { page = 1, limit = 10, status } = options;
+    
+    // Build query params
+    const params = new URLSearchParams();
+    params.append('page', page);
+    params.append('limit', limit);
+    if (status) params.append('status', status);
+    
+    const response = await api.get(`/claims/user/${userId}?${params.toString()}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching claims for user ${userId}:`, error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Failed to fetch user claims',
+      data: { claims: [], total: 0 }
+    };
+  }
+};
+
+/**
  * Get remaining coverage limits for a user
  * @param {string} userId - User ID
  * @returns {Promise} Promise with coverage limits data
@@ -154,5 +182,6 @@ export default {
   updateClaim,
   updateClaimStatus,
   deleteClaim,
+  getUserClaims,
   getCoverageLimits
 };

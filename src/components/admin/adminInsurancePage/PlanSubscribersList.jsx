@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  FiSearch,
   FiChevronDown,
   FiChevronUp,
   FiChevronRight,
   FiChevronLeft,
-  FiFilter,
-  FiUsers,
-  FiDownload,
   FiEye,
   FiUser,
 } from "react-icons/fi";
@@ -277,7 +273,7 @@ const PlanSubscribersList = ({ plan }) => {
           </div>
         ) : error ? (
           <div className="text-center py-16">
-            <FiUsers className="mx-auto h-12 w-12 text-gray-400" />
+            <PiUsersDuotone className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
               Error Loading Subscribers
             </h3>
@@ -295,7 +291,7 @@ const PlanSubscribersList = ({ plan }) => {
           </div>
         ) : totalItems === 0 ? (
           <div className="text-center py-16">
-            <FiUsers className="mx-auto h-12 w-12 text-gray-400" />
+            <PiUsersThreeDuotone className="mx-auto h-16 w-16 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
               No subscribers found
             </h3>

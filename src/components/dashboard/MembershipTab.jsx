@@ -1,12 +1,10 @@
 import React from "react";
 import {
-  TbUsersGroup,
   TbRoute,
   TbCurrency,
   TbIdBadge2,
-  TbCalendarEvent,
 } from "react-icons/tb";
-import { PiHandshake } from "react-icons/pi";
+import { PiHandshake, PiUsersThreeDuotone } from "react-icons/pi";
 
 const MembershipTab = ({ user }) => {
   return (
@@ -14,7 +12,7 @@ const MembershipTab = ({ user }) => {
       <div className="bg-white dark:bg-gray-800 shadow-md overflow-hidden mb-6">
         <div className="p-6">
           <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center">
-            <TbUsersGroup className="mr-2 h-6 w-6 text-primary-600" />
+            <PiUsersThreeDuotone className="mr-2 h-6 w-6 text-primary-600" />
             Membership Details
           </h2>
 
