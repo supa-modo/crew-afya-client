@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiSave, FiX, FiUpload, FiLoader, FiSearch } from 'react-icons/fi';
+import {  FiLoader } from 'react-icons/fi';
 import { TbFileInvoice, TbSearch, TbArrowRight, TbUser, TbId, TbAlertCircle } from 'react-icons/tb';
 import { PiCaretDown } from 'react-icons/pi';
 import { createClaim, updateClaim } from '../../../services/claimsService';

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FiSave, FiPlus } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 import { formatCurrency } from "../../../utils/formatCurrency";
 import { formatDate, formatDateForInput } from "../../../utils/formatDate";
 import {

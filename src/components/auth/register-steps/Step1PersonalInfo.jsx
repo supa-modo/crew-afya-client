@@ -86,7 +86,7 @@ const Step1PersonalInfo = ({
       </div>
 
       <div className="flex items-center flex-col sm:flex-row gap-2">
-      <div className="w-[40%]">
+      <div className="w-full md:w-[40%]">
         <label
           htmlFor="idNumber"
           className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
@@ -110,7 +110,7 @@ const Step1PersonalInfo = ({
           />
         </div>
       </div>
-      <div className="w-[60%]">
+      <div className="w-full md:w-[60%]">
         <label
           htmlFor="email"
           className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"

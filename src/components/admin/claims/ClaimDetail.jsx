@@ -31,8 +31,6 @@ const ClaimDetail = ({ claim, onDelete, onStatusUpdate }) => {
 
   if (!claim) return null;
 
-
-
   const handleStatusChange = (e) => {
     setStatusUpdateData({
       ...statusUpdateData,
@@ -396,7 +394,7 @@ const ClaimDetail = ({ claim, onDelete, onStatusUpdate }) => {
         <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
           <Link
             to="/admin/claims"
-            className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-admin-500"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:border-admin-500 focus:outline-none focus:ring-1 focus:ring-admin-500"
           >
             <FiChevronLeft className="-ml-1 mr-2 h-4 w-4" />
             Back to Claims

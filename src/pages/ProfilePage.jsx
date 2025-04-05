@@ -5,7 +5,6 @@ import {
   FiPhone,
   FiLock,
   FiUpload,
-  FiSave,
   FiTrash2,
   FiFile,
   FiHome,

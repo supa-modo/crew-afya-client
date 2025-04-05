@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FiPlus,
   FiFilter,
@@ -41,6 +41,8 @@ const ClaimsManagementPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const pageSize = 10;
+
+  const navigate=useNavigate();
 
   useEffect(() => {
     fetchClaims();
@@ -177,7 +179,7 @@ const ClaimsManagementPage = () => {
   };
 
   return (
-    <div className="max-w-screen-2xl mx-auto">
+    <div className=" mx-auto">
       {/* Breadcrumb */}
       <div className="mb-8">
         <nav className="flex" aria-label="Breadcrumb">
@@ -216,7 +218,7 @@ const ClaimsManagementPage = () => {
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-admin-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-admin-700 focus:outline-none focus:ring-2 focus:ring-admin-500 focus:ring-offset-2 sm:w-auto"
           >
             <FiPlus className="mr-2 h-4 w-4" />
-            New Claim
+            Add New Claim
           </Link>
         </div>
       </div>
@@ -411,7 +413,13 @@ const ClaimsManagementPage = () => {
                 {sortedClaims.map(( claim, index) => (
                   <tr
                     key={claim.id}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-700/30"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700/30 cursor-pointer"
+                    onClick={(e) => {
+                      // Prevent row click if the event originated from the action buttons
+                      if (!e.target.closest('a[href*="/edit"]') && !e.target.closest('button')) {
+                        navigate(`/admin/claims/${claim.id}`);
+                      }
+                    }}
                   >
                     <td className="px-6 py-4 font-medium text-gray-500 whitespace-nowrap">
                       {index + 1}.
@@ -459,13 +467,6 @@ const ClaimsManagementPage = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-3">
-                        <Link
-                          to={`/admin/claims/${claim.id}`}
-                          className="text-admin-600 hover:text-admin-900 dark:text-admin-400 dark:hover:text-admin-300"
-                        >
-                          <FiEye className="h-5 w-5" />
-                          <span className="sr-only">View</span>
-                        </Link>
                         <Link
                           to={`/admin/claims/${claim.id}/edit`}
                           className="flex items-center space-x-1 text-amber-600 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300"

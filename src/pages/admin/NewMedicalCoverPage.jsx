@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  FiSave,
   FiPlus,
   FiMinus,
   FiArrowLeft,
@@ -24,6 +23,7 @@ import insuranceService from "../../services/insuranceService";
 import { createPlan } from "../../services/planService";
 import { PlanType } from "../../constants/enums";
 import { PiUserDuotone, PiUsersDuotone } from "react-icons/pi";
+import { FaSave } from "react-icons/fa";
 
 const NewMedicalCoverPage = () => {
   const navigate = useNavigate();
@@ -1018,7 +1018,7 @@ const NewMedicalCoverPage = () => {
                   </>
                 ) : (
                   <>
-                    <FiSave className="mr-2 h-4 w-4" /> Create Plan
+                    <FaSave className="mr-2 h-4 w-4" /> Create Plan
                   </>
                 )}
               </button>

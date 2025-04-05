@@ -58,7 +58,7 @@ const ClaimFormPage = () => {
               </li>
               <li className="flex items-center">
                 <TbChevronRight className="w-4 h-4" />
-                <Link to="/admin/users" className="ml-2 hover:text-admin-600">
+                <Link to="/admin/claims" className="ml-2 hover:text-admin-600">
                   Medical Claims
                 </Link>
               </li>

@@ -13,14 +13,44 @@ import { MdHealthAndSafety } from "react-icons/md";
 import { TbShieldCheck } from "react-icons/tb";
 
 const PlanDetailsModal = ({ plan, onClose, onSave }) => {
-  const [formData, setFormData] = useState({ ...plan });
+  const defaultPremiums = {
+    daily: 0,
+    weekly: 0,
+    monthly: 0,
+    quarterly: 0,
+    semiAnnually: 0,
+    annually: 0
+  };
+
+  const defaultCoverageDetails = {
+    inpatient: 0,
+    outpatient: 0,
+    dental: 0,
+    optical: 0,
+    maternity: 0,
+    accident: 0,
+    emergency: 0
+  };
+
+  // Initialize formData with default values to prevent undefined errors
+  const [formData, setFormData] = useState({
+    ...plan,
+    premiums: plan?.premiums ? { ...defaultPremiums, ...plan.premiums } : defaultPremiums,
+    coverageDetails: plan?.coverageDetails ? { ...defaultCoverageDetails, ...plan.coverageDetails } : defaultCoverageDetails,
+    benefits: plan?.benefits || []
+  });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Initialize form data when plan changes
   useEffect(() => {
     if (plan) {
-      setFormData({ ...plan });
+      setFormData({
+        ...plan,
+        premiums: plan.premiums ? { ...defaultPremiums, ...plan.premiums } : defaultPremiums,
+        coverageDetails: plan.coverageDetails ? { ...defaultCoverageDetails, ...plan.coverageDetails } : defaultCoverageDetails,
+        benefits: plan.benefits || []
+      });
     }
   }, [plan]);
 
@@ -111,7 +141,7 @@ const PlanDetailsModal = ({ plan, onClose, onSave }) => {
     }
 
     // Validate premiums
-    ["daily", "monthly", "annual"].forEach((frequency) => {
+    ["daily", "weekly", "monthly", "annual"].forEach((frequency) => {
       const premium = formData.premiums[frequency];
       if (premium === "" || isNaN(premium) || premium <= 0) {
         newErrors[
@@ -444,7 +474,7 @@ const PlanDetailsModal = ({ plan, onClose, onSave }) => {
                         Coverage Details
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {Object.entries(formData.coverageDetails).map(
+                        {Object.entries(formData.coverageDetails || {}).map(
                           ([key, value]) => (
                             <div key={key}>
                               <label
@@ -505,7 +535,7 @@ const PlanDetailsModal = ({ plan, onClose, onSave }) => {
                       </div>
 
                       <div className="space-y-3">
-                        {formData.benefits.map((benefit, index) => (
+                        {(formData.benefits || []).map((benefit, index) => (
                           <div
                             key={index}
                             className="flex flex-col md:flex-row md:items-end space-y-3 md:space-y-0 md:space-x-4 px-4 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700"

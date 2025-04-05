@@ -9,7 +9,6 @@ import PlanDetailsCard from "./medical/PlanDetailsCard";
 import BenefitsCard from "./medical/BenefitsCard";
 import EmergencyContactsCard from "./medical/EmergencyContactsCard";
 import ClaimsHistoryTable from "./medical/ClaimsHistoryTable";
-import CoverageLimitsCard from "./medical/CoverageLimitsCard";
 import { BiSupport } from "react-icons/bi";
 
 // Import services
@@ -37,6 +36,7 @@ const MedicalCoverTab = ({
         setClaimsLoading(true);
         try {
           const response = await getUserClaims(userSubscription.userId);
+          console.log(response);
           if (response.success) {
             setClaims(response.data.claims || []);
           } else {
@@ -183,30 +183,18 @@ const MedicalCoverTab = ({
         </div>
       </div>
 
-      {/* Bottom section - Claims and Coverage Limits */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Coverage Limits Card - 1/3 width on large screens */}
-        <div className="lg:col-span-1">
-          <CoverageLimitsCard 
-            coverageLimits={coverageLimits} 
-            loading={limitsLoading} 
-          />
-        </div>
-        
-        {/* Claims History - 2/3 width on large screens */}
-        <div className="lg:col-span-2">
+      {/* Bottom section - Claims */}
+      <div className="mt-8 ">
+                
+        {/* Claims History  */}
+        <div className="w-full">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-amber-700 dark:text-white flex items-center">
-                <TbFileInvoice className="mr-2 h-5 w-5 text-amber-600" />
+                <TbFileInvoice className="mr-2 h-5 w-5 " />
                 Claims History
               </h3>
-              <Link 
-                to="/claims/new" 
-                className="text-xs font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
-              >
-                Submit New Claim
-              </Link>
+              
             </div>
             
             {claimsError ? (
@@ -221,7 +209,7 @@ const MedicalCoverTab = ({
               </div>
             ) : (
               <ClaimsHistoryTable 
-                claims={claims} 
+                userId={userSubscription?.userId}
                 loading={claimsLoading} 
                 coverageLimits={coverageLimits}
               />

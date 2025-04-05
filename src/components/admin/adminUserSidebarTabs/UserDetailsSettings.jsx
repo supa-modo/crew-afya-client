@@ -1,11 +1,8 @@
 import React, { useState } from "react";
+import { FaSave } from "react-icons/fa";
 import {
-  FiSave,
-  FiLock,
   FiAlertTriangle,
-  FiMail,
   FiBell,
-  FiShield,
 } from "react-icons/fi";
 import { TbLockFilled } from "react-icons/tb";
 
@@ -374,7 +371,7 @@ const UserDetailsSettings = ({ user }) => {
                     </span>
                   ) : (
                     <span className="flex items-center">
-                      <FiSave className="mr-2 -ml-1 h-4 w-4" />
+                      <FaSave className="mr-2 -ml-1 h-4 w-4" />
                       Save Settings
                     </span>
                   )}

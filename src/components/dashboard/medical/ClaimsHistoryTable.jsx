@@ -1,10 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiEye, FiFileText } from 'react-icons/fi';
 import { TbFileInvoice, TbCalendarTime, TbCurrencyDollar } from 'react-icons/tb';
+import { Link } from 'react-router-dom';
 import ClaimStatusBadge from '../../admin/claims/ClaimStatusBadge';
 import ClaimTypeIcon from '../../admin/claims/ClaimTypeIcon';
+import { getUserClaims } from '../../../services/claimsService';
+import { formatDate } from '../../../utils/formatDate';
+import { formatCurrency } from '../../../utils/formatCurrency';
 
-const ClaimsHistoryTable = ({ claims, loading, coverageLimits }) => {
+const ClaimsHistoryTable = ({ userId, loading: externalLoading, coverageLimits }) => {
+  const [claims, setClaims] = useState([]);
+  const [loading, setLoading] = useState(externalLoading || false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchClaims = async () => {
+      if (!userId) return;
+      
+      setLoading(true);
+      try {
+        const response = await getUserClaims(userId);
+        console.log(response)
+        if (response.success) {
+          setClaims(response.data.claims || []);
+        } else {
+          setError(response.message || 'Failed to fetch claims');
+        }
+      } catch (err) {
+        console.error('Error fetching claims:', err);
+        setError('An error occurred while fetching claims');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchClaims();
+  }, [userId]);
   if (loading) {
     return (
       <div className="flex justify-center items-center py-8">
@@ -19,25 +50,12 @@ const ClaimsHistoryTable = ({ claims, loading, coverageLimits }) => {
         <TbFileInvoice className="mx-auto h-12 w-12 text-gray-400 mb-4" />
         <p>No claims history found.</p>
         <p className="mt-2 text-sm">
-          When you submit medical claims, they will appear here.
+          Once your medical claims are recorded, they will appear here.
         </p>
       </div>
     );
   }
 
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-KE', {
-      style: 'currency',
-      currency: 'KES',
-      minimumFractionDigits: 0
-    }).format(amount || 0);
-  };
 
   return (
     <div className="overflow-x-auto">
@@ -104,13 +122,14 @@ const ClaimsHistoryTable = ({ claims, loading, coverageLimits }) => {
                 <ClaimStatusBadge status={claim.status} />
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
+                <Link
+                  to={`/admin/claims/${claim.id}`}
                   className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 mr-3"
                   title="View Claim Details"
                 >
                   <FiEye className="h-5 w-5" />
                   <span className="sr-only">View</span>
-                </button>
+                </Link>
                 <button
                   className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
                   title="View Receipt"
