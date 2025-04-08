@@ -86,56 +86,54 @@ const Step1PersonalInfo = ({
       </div>
 
       <div className="flex items-center flex-col sm:flex-row gap-2">
-      <div className="w-full md:w-[40%]">
-        <label
-          htmlFor="idNumber"
-          className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-        >
-          ID Number
-        </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <PiIdentificationBadgeDuotone className="h-5 sm:h-6 w-5 sm:w-6 text-gray-400" />
+        <div className="w-full md:w-[40%]">
+          <label
+            htmlFor="idNumber"
+            className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+          >
+            ID Number
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <PiIdentificationBadgeDuotone className="h-5 sm:h-6 w-5 sm:w-6 text-gray-400" />
+            </div>
+            <input
+              id="idNumber"
+              name="idNumber"
+              type="text"
+              value={formData.idNumber}
+              onChange={handleChange}
+              className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
+              placeholder="Enter your ID number"
+              required
+              disabled={isSubmitting}
+            />
           </div>
-          <input
-            id="idNumber"
-            name="idNumber"
-            type="text"
-            value={formData.idNumber}
-            onChange={handleChange}
-            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
-            placeholder="Enter your ID number"
-            required
-            disabled={isSubmitting}
-          />
+        </div>
+        <div className="w-full md:w-[60%]">
+          <label
+            htmlFor="email"
+            className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
+          >
+            Email Address (Optional)
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <FiMail className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
+              placeholder="example@email.com"
+              disabled={isSubmitting}
+            />
+          </div>
         </div>
       </div>
-      <div className="w-full md:w-[60%]">
-        <label
-          htmlFor="email"
-          className="block text-[0.83rem] ml-1 sm:text-sm font-medium text-gray-500 dark:text-gray-300 mb-1"
-        >
-          Email Address (Optional)
-        </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <FiMail className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
-            placeholder="example@email.com"
-            disabled={isSubmitting}
-          />
-        </div>
-      </div>
-      </div>
-
-      
 
       <div>
         <label

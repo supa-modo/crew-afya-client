@@ -26,6 +26,7 @@ import {
   saveSubscription,
   updateSubscription,
 } from "../services/subscriptionService";
+import { getUserClaims, getCoverageLimits } from "../services/claimsService";
 
 import LoanStatus from "../components/dashboard/LoanStatus";
 import UnionMembershipModal from "../components/UnionMembershipModal";
@@ -42,6 +43,14 @@ const DashboardPage = () => {
   const [coverageUtilization, setCoverageUtilization] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Claims and coverage states
+  const [claims, setClaims] = useState([]);
+  const [claimsLoading, setClaimsLoading] = useState(false);
+  const [claimsError, setClaimsError] = useState(null);
+  const [coverageLimits, setCoverageLimits] = useState(null);
+  const [limitsLoading, setLimitsLoading] = useState(false);
+  const [limitsError, setLimitsError] = useState(null);
 
   // Document states
   const [documents, setDocuments] = useState([]);
@@ -110,6 +119,7 @@ const DashboardPage = () => {
 
     const loadCoverageUtilization = async (userId) => {
       try {
+        // Fetch coverage utilization data
         const coverageData = await getCoverageUtilization(userId);
         if (coverageData && coverageData.success && coverageData.data) {
           setCoverageUtilization(coverageData.data);
@@ -119,8 +129,38 @@ const DashboardPage = () => {
             coverageData.message
           );
           // The getCoverageUtilization function now returns default data structure
-          // even on error, so we can still use it
-          setCoverageUtilization(coverageData.data);
+        }
+        
+        // Fetch user claims
+        setClaimsLoading(true);
+        try {
+          const claimsResponse = await getUserClaims(userId);
+          if (claimsResponse && claimsResponse.success) {
+            setClaims(claimsResponse.data?.claims || []);
+          } else {
+            setClaimsError(claimsResponse?.message || 'Failed to fetch claims');
+          }
+        } catch (claimsErr) {
+          console.error('Error fetching user claims:', claimsErr);
+          setClaimsError('An error occurred while fetching claims');
+        } finally {
+          setClaimsLoading(false);
+        }
+        
+        // Fetch coverage limits
+        setLimitsLoading(true);
+        try {
+          const limitsResponse = await getCoverageLimits(userId);
+          if (limitsResponse && limitsResponse.success) {
+            setCoverageLimits(limitsResponse.data);
+          } else {
+            setLimitsError(limitsResponse?.message || 'Failed to fetch coverage limits');
+          }
+        } catch (limitsErr) {
+          console.error('Error fetching coverage limits:', limitsErr);
+          setLimitsError('An error occurred while fetching coverage limits');
+        } finally {
+          setLimitsLoading(false);
         }
       } catch (utilError) {
         console.error("Error loading coverage utilization:", utilError);
@@ -628,7 +668,13 @@ const DashboardPage = () => {
                       coverageUtilization={coverageUtilization}
                       isLoading={isLoading}
                       error={error}
-                      handleOpenFrequencyModal={handleOpenFrequencyModal}
+                      handleOpenFrequencyModal={() => setIsFrequencyModalOpen(true)}
+                      claims={claims}
+                      claimsLoading={claimsLoading}
+                      claimsError={claimsError}
+                      coverageLimits={coverageLimits}
+                      limitsLoading={limitsLoading}
+                      limitsError={limitsError}
                     />
                   </div>
                 )}

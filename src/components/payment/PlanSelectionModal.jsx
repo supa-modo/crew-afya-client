@@ -36,9 +36,11 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
   const [loading, setLoading] = useState(true);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedPlanForDetails, setSelectedPlanForDetails] = useState(null);
-  const [showMembershipRequiredModal, setShowMembershipRequiredModal] = useState(false);
+  const [showMembershipRequiredModal, setShowMembershipRequiredModal] =
+    useState(false);
   const [existingSubscription, setExistingSubscription] = useState(null);
-  const [showCancelSubscriptionModal, setShowCancelSubscriptionModal] = useState(false);
+  const [showCancelSubscriptionModal, setShowCancelSubscriptionModal] =
+    useState(false);
 
   // New state for payment tracking
   const [checkoutRequestId, setCheckoutRequestId] = useState(null);
@@ -48,7 +50,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
 
   const navigate = useNavigate();
   const { user } = useAuth();
-  const isMembershipActive = user && user.membershipStatus === 'active';
+  const isMembershipActive = user && user.membershipStatus === "active";
 
   // Function to get premium amount based on frequency
   const getFrequencyAmount = (plan, frequency) => {
@@ -148,27 +150,30 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
       setPaymentStatus("idle");
       setErrorMessage("");
       setActiveTab(0);
-      
+
       // Check if user already has an active subscription
       if (user && user.id) {
         checkExistingSubscription();
       }
     }
   }, [isOpen, user]);
-  
+
   // Function to check if user already has an active subscription
   const checkExistingSubscription = async () => {
     try {
       setLoading(true);
       const response = await getUserSubscription(user.id);
-      
+
       if (response && response.success && response.data && response.data.id) {
         // User has an existing subscription
         setExistingSubscription({
           id: response.data.id,
           plan: response.data.plan,
-          frequency: response.data.frequency || response.data.paymentFrequency || "daily",
-          status: response.data.status
+          frequency:
+            response.data.frequency ||
+            response.data.paymentFrequency ||
+            "daily",
+          status: response.data.status,
         });
       } else {
         setExistingSubscription(null);
@@ -200,7 +205,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
       }, 100);
       return;
     }
-    
+
     // Check if user has an existing subscription
     if (existingSubscription && existingSubscription.id) {
       setSelectedPlan(plan);
@@ -210,13 +215,13 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
     setSelectedPlan(plan);
     setStep(2);
   };
-  
+
   // Handle confirmation to cancel existing subscription and proceed with new plan
   const handleConfirmCancelSubscription = () => {
     setShowCancelSubscriptionModal(false);
     setStep(2); // Proceed to frequency selection
   };
-  
+
   // Handle rejection of cancellation
   const handleRejectCancelSubscription = () => {
     setShowCancelSubscriptionModal(false);
@@ -1151,7 +1156,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Confirmation Modal for Existing Subscription */}
       <ConfirmationModal
         isOpen={showCancelSubscriptionModal}
@@ -1162,10 +1167,13 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
           existingSubscription ? (
             <>
               <p className="mb-3">
-                You already have an active subscription to the <strong>{existingSubscription.plan?.name || "current"}</strong> plan.
+                You already have an active subscription to the{" "}
+                <strong>{existingSubscription.plan?.name || "current"}</strong>{" "}
+                plan.
               </p>
               <p className="mb-3">
-                Selecting a new plan will cancel your current subscription. You will need to make a payment for the new plan.
+                Selecting a new plan will cancel your current subscription. You
+                will need to make a payment for the new plan.
               </p>
               <p>
                 Do you want to proceed with changing your subscription plan?

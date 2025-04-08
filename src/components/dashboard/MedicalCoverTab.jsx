@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FiLoader, FiAlertCircle } from "react-icons/fi";
 import { TbShieldPlus, TbCalendarTime, TbShieldHalfFilled, TbFileInvoice } from "react-icons/tb";
 import { Link } from "react-router-dom";
+import { BiSupport } from "react-icons/bi";
 
 // Import our new component structure
 import CoverageUtilizationCard from "./medical/CoverageUtilizationCard";
@@ -9,67 +10,21 @@ import PlanDetailsCard from "./medical/PlanDetailsCard";
 import BenefitsCard from "./medical/BenefitsCard";
 import EmergencyContactsCard from "./medical/EmergencyContactsCard";
 import ClaimsHistoryTable from "./medical/ClaimsHistoryTable";
-import { BiSupport } from "react-icons/bi";
-
-// Import services
-import { getUserClaims, getCoverageLimits } from "../../services/claimsService";
 
 const MedicalCoverTab = ({ 
   userSubscription, 
   coverageUtilization, 
   isLoading, 
   error, 
-  handleOpenFrequencyModal 
+  handleOpenFrequencyModal,
+  // New props for centralized data fetching
+  claims = [],
+  claimsLoading = false,
+  claimsError = null,
+  coverageLimits = null,
+  limitsLoading = false,
+  limitsError = null
 }) => {
-  const [claims, setClaims] = useState([]);
-  const [claimsLoading, setClaimsLoading] = useState(false);
-  const [claimsError, setClaimsError] = useState(null);
-  
-  const [coverageLimits, setCoverageLimits] = useState(null);
-  const [limitsLoading, setLimitsLoading] = useState(false);
-  const [limitsError, setLimitsError] = useState(null);
-  // Fetch user's claims and coverage limits when subscription data is available
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (userSubscription?.userId) {
-        // Fetch user claims
-        setClaimsLoading(true);
-        try {
-          const response = await getUserClaims(userSubscription.userId);
-          console.log(response);
-          if (response.success) {
-            setClaims(response.data.claims || []);
-          } else {
-            setClaimsError(response.message || 'Failed to fetch claims');
-          }
-        } catch (err) {
-          console.error('Error fetching user claims:', err);
-          setClaimsError('An error occurred while fetching claims');
-        } finally {
-          setClaimsLoading(false);
-        }
-        
-        // Fetch coverage limits
-        setLimitsLoading(true);
-        try {
-          const response = await getCoverageLimits(userSubscription.userId);
-          if (response.success) {
-            setCoverageLimits(response.data);
-          } else {
-            setLimitsError(response.message || 'Failed to fetch coverage limits');
-          }
-        } catch (err) {
-          console.error('Error fetching coverage limits:', err);
-          setLimitsError('An error occurred while fetching coverage limits');
-        } finally {
-          setLimitsLoading(false);
-        }
-      }
-    };
-    
-    fetchUserData();
-  }, [userSubscription]);
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">

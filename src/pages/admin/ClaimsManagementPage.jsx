@@ -3,14 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   FiPlus,
   FiFilter,
-  FiSearch,
   FiChevronDown,
   FiChevronUp,
   FiChevronLeft,
   FiChevronRight,
-  FiEdit,
-  FiEye,
-  FiTrash2,
 } from "react-icons/fi";
 import {
   TbChevronRight,
@@ -21,7 +17,6 @@ import {
   TbSearch,
   TbTrash,
 } from "react-icons/tb";
-import AdminLayout from "../../components/admin/adminLayout/AdminLayout";
 import { getAllClaims, deleteClaim } from "../../services/claimsService";
 import ClaimStatusBadge from "../../components/admin/claims/ClaimStatusBadge";
 import ClaimTypeIcon from "../../components/admin/claims/ClaimTypeIcon";

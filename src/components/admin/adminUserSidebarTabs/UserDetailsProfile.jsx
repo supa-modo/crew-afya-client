@@ -7,10 +7,7 @@ import {
   TbCash,
   TbClockCheck,
   TbEdit,
-  TbShieldHalfFilled,
   TbTrash,
-  TbUserEdit,
-  TbUserX,
 } from "react-icons/tb";
 import { MdHealthAndSafety } from "react-icons/md";
 import { PiUserDuotone } from "react-icons/pi";
@@ -651,6 +648,7 @@ const UserDetailsProfile = ({ user, onUserUpdate }) => {
                   </span>
                 </h4>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  {/* //TODO: streamline provider details and policy number */}
                   {insuranceCoverage?.provider || "Crew Afya"}
                   {(insuranceCoverage?.policyNumber &&
                     ` • Policy #${insuranceCoverage?.policyNumber}`) ||
