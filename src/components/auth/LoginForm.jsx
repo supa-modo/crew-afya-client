@@ -46,6 +46,36 @@ const LoginForm = () => {
     }
   }, [authError]);
 
+  // Function to format phone number to international format
+  const formatPhoneNumber = (phone) => {
+    if (!phone) return phone;
+    
+    // If it's likely an ID number (not a phone), return as is
+    if (phone.length > 10 || phone.length < 10 || isNaN(phone.replace(/\D/g, ''))) {
+      return phone;
+    }
+    
+    // Remove any non-digit characters
+    let cleaned = phone.replace(/\D/g, '');
+    
+    // Handle Kenyan numbers
+    if (cleaned.startsWith('0')) {
+      // Convert 07xx or 01xx format to +254xxx
+      return `+254${cleaned.substring(1)}`;
+    } else if ((cleaned.startsWith('7') || cleaned.startsWith('1')) && cleaned.length === 9) {
+      // Handle numbers without country code or leading zero (7xx or 1xx)
+      return `+254${cleaned}`;
+    } else if (cleaned.startsWith('254')) {
+      // Already in international format, add + prefix
+      return `+${cleaned}`;
+    } else if (!cleaned.startsWith('254')) {
+      // Any other format, add 254 prefix
+      return `+254${cleaned}`;
+    }
+    
+    return phone; // Return original if none of the conditions match
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -60,8 +90,11 @@ const LoginForm = () => {
       setFormError("");
       clearError();
 
+      // Format phone number if it appears to be a phone number
+      const formattedIdentifier = formatPhoneNumber(identifier);
+      
       // Attempt to login
-      const userData = await login(identifier, password, rememberMe);
+      const userData = await login(formattedIdentifier, password, rememberMe);
 
       // If we get here, login was successful
       console.log("Login successful:", userData);

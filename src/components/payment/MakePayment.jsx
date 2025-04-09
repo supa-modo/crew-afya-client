@@ -8,7 +8,8 @@ import {
   checkPaymentStatus,
   getPendingPayment,
   clearPendingPayment,
-  recoverPaymentProcess
+  recoverPaymentProcess,
+  verifyMpesaPayment,
 } from "../../services/paymentService";
 
 // Import our refactored components
@@ -48,18 +49,18 @@ const MakePayment = ({
   // Helper function to safely get premium amount based on frequency
   const getFrequencyAmount = (plan, frequency) => {
     if (!plan) return 0;
-    
+
     // Handle plans with premiums object
     if (plan.premiums && plan.premiums[frequency] !== undefined) {
       return plan.premiums[frequency];
     }
-    
+
     // Handle plans with individual premium fields (e.g., dailyPremium, monthlyPremium)
     const premiumField = `${frequency}Premium`;
     if (plan[premiumField] !== undefined) {
       return plan[premiumField];
     }
-    
+
     return 0;
   };
 
@@ -83,44 +84,58 @@ const MakePayment = ({
       try {
         setIsRecovering(true);
         const recoveryResult = await recoverPaymentProcess();
-        
+
         if (recoveryResult && recoveryResult.recovered) {
           // We have recovered a payment, update the UI accordingly
           setPaymentId(recoveryResult.paymentId);
           setCheckoutRequestId(recoveryResult.checkoutRequestId);
-          
+
           // Set the appropriate status based on the recovered payment
           if (recoveryResult.status === "completed") {
             setPaymentStatus("success");
             setMpesaReceiptNumber(recoveryResult.data.mpesaReceiptNumber);
-            
+
             // Notify parent component if payment was successful
             if (typeof onPaymentComplete === "function") {
               setTimeout(() => onPaymentComplete(true), 1000);
             }
           } else if (recoveryResult.status === "failed") {
             setPaymentStatus("error");
-            setErrorMessage(recoveryResult.data.failureReason || "Payment failed. Please try again.");
+            setErrorMessage(
+              recoveryResult.data.failureReason ||
+                "Payment failed. Please try again."
+            );
           } else {
             // Payment is still pending, restart status check
             setPaymentStatus("waiting");
             startStatusCheck(recoveryResult.paymentId);
           }
-        } else if (recoveryResult && !recoveryResult.recovered && recoveryResult.pendingPayment) {
+        } else if (
+          recoveryResult &&
+          !recoveryResult.recovered &&
+          recoveryResult.pendingPayment
+        ) {
           // We have a pending payment but couldn't get its status
           // Try to extract phone number and other details
           if (recoveryResult.pendingPayment.payload) {
-            setPhoneNumber(recoveryResult.pendingPayment.payload.phoneNumber || "");
+            setPhoneNumber(
+              recoveryResult.pendingPayment.payload.phoneNumber || ""
+            );
           }
-          
+
           // If the payment was in error state, show error
           if (recoveryResult.pendingPayment.status === "error") {
             setPaymentStatus("error");
-            setErrorMessage(recoveryResult.pendingPayment.error || "Payment process was interrupted. Please try again.");
+            setErrorMessage(
+              recoveryResult.pendingPayment.error ||
+                "Payment process was interrupted. Please try again."
+            );
           } else {
             // Otherwise, let the user try again
             setPaymentStatus("idle");
-            setErrorMessage("We found an incomplete payment. Please try again.");
+            setErrorMessage(
+              "We found an incomplete payment. Please try again."
+            );
           }
         }
       } catch (error) {
@@ -129,7 +144,7 @@ const MakePayment = ({
         setIsRecovering(false);
       }
     };
-    
+
     checkForPendingPayments();
   }, [onPaymentComplete]);
 
@@ -307,7 +322,9 @@ const MakePayment = ({
 
       if (paymentType === "medical") {
         amount = getFrequencyAmount(selectedPlan, frequency);
-        description = `Payment for ${selectedPlan?.name || "Medical"} (${frequency}) medical cover`;
+        description = `Payment for ${
+          selectedPlan?.name || "Medical"
+        } (${frequency}) medical cover`;
       } else if (paymentType === "membership") {
         amount = unionDuesAmount; // Fixed one-time fee
         description = `Payment for union membership`;
@@ -406,22 +423,46 @@ const MakePayment = ({
       setErrorMessage("Please enter a valid M-Pesa transaction code");
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
-      // This would call a backend endpoint to verify the transaction
-      // For now, we'll just simulate success
-      setPaymentStatus("success");
-      setMpesaReceiptNumber(transactionCode);
-      
-      // Call onPaymentComplete callback if provided
-      if (typeof onPaymentComplete === "function") {
-        setTimeout(() => onPaymentComplete(true), 2000);
+      // Call the backend endpoint to verify the transaction
+      const result = await verifyMpesaPayment(transactionCode);
+
+      if (result.success) {
+        setPaymentStatus("success");
+        setMpesaReceiptNumber(transactionCode);
+
+        // Store payment details in localStorage for recovery
+        if (result.data && result.data.payment) {
+          localStorage.setItem(
+            "pendingPayment",
+            JSON.stringify({
+              id: result.data.payment.id,
+              amount: result.data.payment.amount,
+              status: result.data.payment.status,
+              mpesaReceiptNumber: transactionCode,
+              paymentType: paymentType,
+              timestamp: new Date().toISOString(),
+            })
+          );
+        }
+
+        // Call onPaymentComplete callback if provided
+        if (typeof onPaymentComplete === "function") {
+          setTimeout(() => onPaymentComplete(true), 2000);
+        }
+      } else {
+        setErrorMessage(
+          result.message || "Could not verify transaction. Please try again."
+        );
+        setPaymentStatus("error");
       }
     } catch (error) {
       console.error("Error verifying transaction:", error);
       setErrorMessage("Could not verify transaction. Please try again.");
+      setPaymentStatus("error");
     } finally {
       setIsSubmitting(false);
     }

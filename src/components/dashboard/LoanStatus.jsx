@@ -8,28 +8,28 @@ import {
 import { Link } from "react-router-dom";
 
 const LoanStatus = ({ loans }) => {
-  if (!loans || loans.length === 0) {
-    return (
-      <div className="">
-        <div className="text-center py-8 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl">
-          <TbWallet className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-          <h3 className="text-lg font-medium text-amber-800 dark:text-white mb-2">
-            No Active Loans
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 mb-4 max-w-md mx-auto">
-            You currently don't have any active loans. Apply for a loan to
-            access funds for your needs.
-          </p>
-          <Link
-            to="/loans"
-            className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg font-medium shadow-md hover:bg-purple-700 transition-all"
-          >
-            View Loan Options
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // if (!loans || loans.length === 0) {
+  //   return (
+  //     <div className="">
+  //       <div className="text-center py-8 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl">
+  //         <TbWallet className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+  //         <h3 className="text-lg font-medium text-amber-800 dark:text-white mb-2">
+  //           No Active Loans
+  //         </h3>
+  //         <p className="text-gray-500 dark:text-gray-400 mb-4 max-w-md mx-auto">
+  //           You currently don't have any active loans. Apply for a loan to
+  //           access funds for your needs.
+  //         </p>
+  //         <Link
+  //           to="/loans"
+  //           className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg font-medium shadow-md hover:bg-purple-700 transition-all"
+  //         >
+  //           View Loan Options
+  //         </Link>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="">

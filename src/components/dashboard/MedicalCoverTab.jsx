@@ -1,6 +1,11 @@
 import React from "react";
 import { FiLoader, FiAlertCircle } from "react-icons/fi";
-import { TbShieldPlus, TbCalendarTime, TbShieldHalfFilled, TbFileInvoice } from "react-icons/tb";
+import {
+  TbShieldPlus,
+  TbCalendarTime,
+  TbShieldHalfFilled,
+  TbFileInvoice,
+} from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { BiSupport } from "react-icons/bi";
 
@@ -11,11 +16,12 @@ import BenefitsCard from "./medical/BenefitsCard";
 import EmergencyContactsCard from "./medical/EmergencyContactsCard";
 import ClaimsHistoryTable from "./medical/ClaimsHistoryTable";
 
-const MedicalCoverTab = ({ 
-  userSubscription, 
-  coverageUtilization, 
-  isLoading, 
-  error, 
+const MedicalCoverTab = ({
+  userId,
+  userSubscription,
+  coverageUtilization,
+  isLoading,
+  error,
   handleOpenFrequencyModal,
   // New props for centralized data fetching
   claims = [],
@@ -23,7 +29,7 @@ const MedicalCoverTab = ({
   claimsError = null,
   coverageLimits = null,
   limitsLoading = false,
-  limitsError = null
+  limitsError = null,
 }) => {
   if (isLoading) {
     return (
@@ -75,15 +81,15 @@ const MedicalCoverTab = ({
     outpatient: 0,
     dental: 0,
     optical: 0,
-    maternity: 0
+    maternity: 0,
   };
-  
+
   const utilization = coverageUtilization?.utilization || {
     inpatient: 0,
     outpatient: 0,
     dental: 0,
     optical: 0,
-    maternity: 0
+    maternity: 0,
   };
 
   return (
@@ -91,7 +97,9 @@ const MedicalCoverTab = ({
       {/* Header */}
       <div className="mb-8">
         <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-xl shadow-lg p-6 text-white">
-          <h2 className="text-lg sm-text-xl md:text-2xl font-bold mb-2">Your Medical Coverage</h2>
+          <h2 className="text-lg sm-text-xl md:text-2xl font-bold mb-2">
+            Your Medical Coverage
+          </h2>
           <p className="text-primary-100 text-sm sm:text-base">
             View your plan details, benefits, and coverage utilization
           </p>
@@ -99,8 +107,11 @@ const MedicalCoverTab = ({
             <div className="mt-4 flex items-center text-xs sm:text-sm text-primary-100">
               <TbCalendarTime className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               <span>
-                Payment Plan: <span className="font-medium capitalize text-secondary-400">{userSubscription.frequency}</span> 
-                <button 
+                Payment Plan:{" "}
+                <span className="font-medium capitalize text-secondary-400">
+                  {userSubscription.frequency}
+                </span>
+                <button
                   onClick={handleOpenFrequencyModal}
                   className="ml-2 underline hover:text-white transition-colors"
                 >
@@ -126,8 +137,8 @@ const MedicalCoverTab = ({
         {/* Right column - 1/3 width on large screens */}
         <div className="space-y-8">
           {/* Plan Details Card */}
-          <PlanDetailsCard 
-            plan={userSubscription.plan} 
+          <PlanDetailsCard
+            plan={userSubscription.plan}
             coverage={coverage}
             frequency={userSubscription.frequency}
             handleOpenFrequencyModal={handleOpenFrequencyModal}
@@ -140,7 +151,6 @@ const MedicalCoverTab = ({
 
       {/* Bottom section - Claims */}
       <div className="mt-8 ">
-                
         {/* Claims History  */}
         <div className="w-full">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -149,23 +159,22 @@ const MedicalCoverTab = ({
                 <TbFileInvoice className="mr-2 h-5 w-5 " />
                 Claims History
               </h3>
-              
             </div>
-            
+
             {claimsError ? (
               <div className="text-center py-4 text-red-500 dark:text-red-400">
                 <p>{claimsError}</p>
-                <button 
-                  onClick={() => window.location.reload()} 
+                <button
+                  onClick={() => window.location.reload()}
                   className="mt-2 text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                 >
                   Try Again
                 </button>
               </div>
             ) : (
-              <ClaimsHistoryTable 
-                userId={userSubscription?.userId}
-                loading={claimsLoading} 
+              <ClaimsHistoryTable
+                userId={userId}
+                loading={claimsLoading}
                 coverageLimits={coverageLimits}
               />
             )}
@@ -182,10 +191,8 @@ const MedicalCoverTab = ({
           <TbShieldHalfFilled className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
           Change Coverage Plan
         </Link>
-        <button
-          className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-primary-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
-        >
-          <BiSupport className="mr-2 h-4 w-4 sm:h-5 sm:w-5"/>
+        <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-primary-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
+          <BiSupport className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
           Contact Support
         </button>
       </div>

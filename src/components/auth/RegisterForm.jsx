@@ -1,9 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  TbAlertTriangle,
-  TbPhoneDone,
-} from "react-icons/tb";
+import { TbAlertTriangle, TbPhoneDone } from "react-icons/tb";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 
@@ -55,6 +52,39 @@ const RegisterForm = () => {
     verifyOtp,
   } = useAuth();
   const navigate = useNavigate();
+
+  // Function to format phone number to international format
+  const formatPhoneNumber = (phone) => {
+    if (!phone) return phone;
+
+    // If it's likely an ID number (not a phone), return as is
+    if (phone.length > 10 || isNaN(phone.replace(/\D/g, ""))) {
+      return phone;
+    }
+
+    // Remove any non-digit characters
+    let cleaned = phone.replace(/\D/g, "");
+
+    // Handle Kenyan numbers
+    if (cleaned.startsWith("0")) {
+      // Convert 07xx or 01xx format to +254xxx
+      return `+254${cleaned.substring(1)}`;
+    } else if (
+      (cleaned.startsWith("7") || cleaned.startsWith("1")) &&
+      cleaned.length === 9
+    ) {
+      // Handle numbers without country code or leading zero (7xx or 1xx)
+      return `+254${cleaned}`;
+    } else if (cleaned.startsWith("254")) {
+      // Already in international format, add + prefix
+      return `+${cleaned}`;
+    } else if (!cleaned.startsWith("254")) {
+      // Any other format, add 254 prefix
+      return `+254${cleaned}`;
+    }
+
+    return phone; // Return original if none of the conditions match
+  };
 
   // Clear form error when component unmounts
   useEffect(() => {
@@ -391,12 +421,14 @@ const RegisterForm = () => {
         otherNames = nameParts.slice(1, nameParts.length - 1).join(" ");
       }
 
+      const formattedPhoneNumber = formatPhoneNumber(formData.phoneNumber);
+
       const userData = {
         firstName,
         lastName,
         otherNames,
         email: formData.email || null,
-        phoneNumber: formData.phoneNumber,
+        phoneNumber: formattedPhoneNumber,
         idNumber: formData.idNumber,
         password: formData.password,
         county: formData.county,

@@ -24,6 +24,8 @@ import {
 import Pagination from "../../common/Pagination";
 import { MpesaIcon } from "../../common/icons";
 import { getUserPayments } from "../../../services/paymentService";
+import { formatDate, formatDate2 } from "../../../utils/formatDate";
+import { formatCurrency } from "../../../utils/formatCurrency";
 
 const UserDetailsPayments = ({ user }) => {
   const [payments, setPayments] = useState([]);
@@ -32,7 +34,7 @@ const UserDetailsPayments = ({ user }) => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState(null);
-  const paymentsPerPage = 6;
+  const paymentsPerPage = 10;
 
   useEffect(() => {
     // Fetch payments for this user
@@ -147,10 +149,11 @@ const UserDetailsPayments = ({ user }) => {
 
   // Filter payments based on search term and status
   const filteredPayments = payments.filter((payment) => {
+    // Safely check if properties exist before calling toLowerCase
     const matchesSearch =
-      payment.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.planName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.method.toLowerCase().includes(searchTerm.toLowerCase());
+      (payment.mpesaReceiptNumber?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (payment.description?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (payment.paymentMethod?.toLowerCase() || '').includes(searchTerm.toLowerCase())
 
     const matchesStatus =
       filterStatus === "all" || payment.status === filterStatus;
@@ -167,21 +170,7 @@ const UserDetailsPayments = ({ user }) => {
   );
   const totalPages = Math.ceil(filteredPayments.length / paymentsPerPage);
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -213,20 +202,6 @@ const UserDetailsPayments = ({ user }) => {
     }
   };
 
-  const getPaymentMethodIcon = (method) => {
-    switch (method.toLowerCase()) {
-      case "m-pesa":
-        return <TbBrandCashapp className="h-5 w-5 text-green-500" />;
-      case "card payment":
-        return <TbCreditCard className="h-5 w-5 text-blue-500" />;
-      case "cash":
-        return <TbCashBanknote className="h-5 w-5 text-yellow-500" />;
-      case "bank transfer":
-        return <TbCashBanknote className="h-5 w-5 text-purple-500" />;
-      default:
-        return <TbCashBanknote className="h-5 w-5 text-gray-500" />;
-    }
-  };
 
   const handleDownloadReceipt = async (paymentId) => {
     // In a real app, this would call an API to download a receipt
@@ -362,7 +337,7 @@ const UserDetailsPayments = ({ user }) => {
                     scope="col"
                     className="px-6 py-5 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
-                    Plan
+                    Service
                   </th>
                   <th
                     scope="col"
@@ -379,12 +354,12 @@ const UserDetailsPayments = ({ user }) => {
                     className="hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                      {payment.reference}
+                      {payment.mpesaReceiptNumber}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       <div className="flex items-center">
                         <FiCalendar className="mr-1.5 h-4 w-4 text-gray-400 dark:text-gray-500" />
-                        {formatDate(payment.date)}
+                        {formatDate(payment.paymentDate)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-medium">
@@ -392,19 +367,19 @@ const UserDetailsPayments = ({ user }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       <div className="flex items-center">
-                        {payment.method === "M-Pesa" ? (
+                        {payment.paymentMethod === "mpesa" ? (
                           <MpesaIcon width={60} height={20} />
-                        ) : payment.method === "Card" ? (
+                        ) : payment.paymentMethod === "card" ? (
                           <TbCreditCard className="mr-2 h-5 w-5 text-blue-500" />
-                        ) : payment.method === "Cash" ? (
+                        ) : payment.paymentMethod === "cash" ? (
                           <TbCash className="mr-2 h-5 w-5 text-yellow-500" />
-                        ) : payment.method === "Bank Transfer" ? (
+                        ) : payment.paymentMethod === "bank" ? (
                           <PiBankDuotone className="mr-2 h-5 w-5 text-purple-500" />
                         ) : (
                           <TbHistory className="mr-2 h-5 w-5 text-gray-500" />
                         )}
-                        <span className="ml-1.5">{payment.method}</span>
-                      </div>
+                       
+                        </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
@@ -420,8 +395,8 @@ const UserDetailsPayments = ({ user }) => {
                         </span>
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {payment.planName}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 uppercase">
+                      {payment.metadata?.paymentType}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button

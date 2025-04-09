@@ -130,7 +130,7 @@ const DashboardPage = () => {
           );
           // The getCoverageUtilization function now returns default data structure
         }
-        
+
         // Fetch user claims
         setClaimsLoading(true);
         try {
@@ -138,15 +138,15 @@ const DashboardPage = () => {
           if (claimsResponse && claimsResponse.success) {
             setClaims(claimsResponse.data?.claims || []);
           } else {
-            setClaimsError(claimsResponse?.message || 'Failed to fetch claims');
+            setClaimsError(claimsResponse?.message || "Failed to fetch claims");
           }
         } catch (claimsErr) {
-          console.error('Error fetching user claims:', claimsErr);
-          setClaimsError('An error occurred while fetching claims');
+          console.error("Error fetching user claims:", claimsErr);
+          setClaimsError("An error occurred while fetching claims");
         } finally {
           setClaimsLoading(false);
         }
-        
+
         // Fetch coverage limits
         setLimitsLoading(true);
         try {
@@ -154,11 +154,13 @@ const DashboardPage = () => {
           if (limitsResponse && limitsResponse.success) {
             setCoverageLimits(limitsResponse.data);
           } else {
-            setLimitsError(limitsResponse?.message || 'Failed to fetch coverage limits');
+            setLimitsError(
+              limitsResponse?.message || "Failed to fetch coverage limits"
+            );
           }
         } catch (limitsErr) {
-          console.error('Error fetching coverage limits:', limitsErr);
-          setLimitsError('An error occurred while fetching coverage limits');
+          console.error("Error fetching coverage limits:", limitsErr);
+          setLimitsError("An error occurred while fetching coverage limits");
         } finally {
           setLimitsLoading(false);
         }
@@ -169,7 +171,6 @@ const DashboardPage = () => {
 
     loadSubscription();
     fetchDocuments();
-    fetchMockData();
 
     // Check if user has paid membership based on the membershipStatus from user object
     if (user && user.membershipStatus === "active") {
@@ -181,48 +182,7 @@ const DashboardPage = () => {
     }
   }, [user]);
 
-  const fetchMockData = () => {
-    // Mock notifications
-    setNotifications([
-      {
-        id: 1,
-        type: "payment",
-        title: "Premium Payment Due",
-        message: "Your monthly insurance premium is due in 2 days",
-        date: "2023-10-15",
-        isRead: false,
-      },
-      {
-        id: 2,
-        type: "union",
-        title: "Member Meeting",
-        message: "Quarterly union meeting scheduled for next week",
-        date: "2023-10-12",
-        isRead: true,
-      },
-      {
-        id: 3,
-        type: "loan",
-        title: "Loan Application Approved",
-        message: "Your vehicle improvement loan has been approved",
-        date: "2023-10-10",
-        isRead: false,
-      },
-    ]);
-
-    // Mock active loans
-    setActiveLoans([
-      {
-        id: 1,
-        type: "Vehicle Improvement",
-        amount: 150000,
-        balance: 95000,
-        monthlyPayment: 7500,
-        nextPayment: "October 30, 2023",
-        status: "active",
-      },
-    ]);
-  };
+  // We've removed the mock data function as we're now using real data from the API
 
   const fetchDocuments = async () => {
     try {
@@ -664,11 +624,14 @@ const DashboardPage = () => {
                       </p>
                     </div>
                     <MedicalCoverTab
+                      userId={user?.id}
                       userSubscription={userSubscription}
                       coverageUtilization={coverageUtilization}
                       isLoading={isLoading}
                       error={error}
-                      handleOpenFrequencyModal={() => setIsFrequencyModalOpen(true)}
+                      handleOpenFrequencyModal={() =>
+                        setIsFrequencyModalOpen(true)
+                      }
                       claims={claims}
                       claimsLoading={claimsLoading}
                       claimsError={claimsError}

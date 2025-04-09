@@ -415,7 +415,7 @@ const Navbar = () => {
               </button>
               <button
                 onClick={() => {
-                  setIsMenuOpen(false);
+                  setIsMenuOpen(!isMenuOpen);
                 }}
                 className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-secondary-600 dark:hover:text-secondary-400 focus:outline-none focus:ring-27 focus:ring-secondary-500 dark:focus:ring-offset-gray-900 transition-colors duration-200"
                 aria-expanded={isMenuOpen}

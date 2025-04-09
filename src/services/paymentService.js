@@ -69,16 +69,19 @@ export const initiateM_PesaPayment = async (paymentData) => {
     };
 
     console.log("Sending M-Pesa payment request:", payload);
-    
+
     // Save payment attempt to localStorage before making the API call
     try {
-      localStorage.setItem("crewAfya_pendingPayment", JSON.stringify({
-        type: 'mpesa_initiation',
-        payload,
-        status: 'pending',
-        initiatedAt: new Date().toISOString(),
-        timestamp: Date.now()
-      }));
+      localStorage.setItem(
+        "crewAfya_pendingPayment",
+        JSON.stringify({
+          type: "mpesa_initiation",
+          payload,
+          status: "pending",
+          initiatedAt: new Date().toISOString(),
+          timestamp: Date.now(),
+        })
+      );
     } catch (error) {
       console.error("Error saving payment to localStorage:", error);
     }
@@ -91,19 +94,22 @@ export const initiateM_PesaPayment = async (paymentData) => {
         response?.message || "Failed to process payment. Please try again."
       );
     }
-    
+
     // Update localStorage with payment ID and checkout request ID
     if (response.success && response.data && response.data.payment) {
       try {
-        localStorage.setItem("crewAfya_pendingPayment", JSON.stringify({
-          type: 'mpesa_initiation',
-          payload,
-          status: 'waiting',
-          paymentId: response.data.payment.id,
-          checkoutRequestId: response.data.stkResponse?.CheckoutRequestID,
-          initiatedAt: new Date().toISOString(),
-          timestamp: Date.now()
-        }));
+        localStorage.setItem(
+          "crewAfya_pendingPayment",
+          JSON.stringify({
+            type: "mpesa_initiation",
+            payload,
+            status: "waiting",
+            paymentId: response.data.payment.id,
+            checkoutRequestId: response.data.stkResponse?.CheckoutRequestID,
+            initiatedAt: new Date().toISOString(),
+            timestamp: Date.now(),
+          })
+        );
       } catch (error) {
         console.error("Error updating payment in localStorage:", error);
       }
@@ -135,20 +141,25 @@ export const initiateM_PesaPayment = async (paymentData) => {
     if (error.response?.data?.errorMessage) {
       errorMessage = `M-Pesa error: ${error.response.data.errorMessage}`;
     }
-    
+
     // Update localStorage with error
     try {
-      const pendingPaymentData = localStorage.getItem("crewAfya_pendingPayment");
+      const pendingPaymentData = localStorage.getItem(
+        "crewAfya_pendingPayment"
+      );
       if (pendingPaymentData) {
         const pendingPayment = JSON.parse(pendingPaymentData);
-        if (pendingPayment && pendingPayment.type === 'mpesa_initiation') {
-          localStorage.setItem("crewAfya_pendingPayment", JSON.stringify({
-            ...pendingPayment,
-            status: 'error',
-            error: errorMessage,
-            errorAt: new Date().toISOString(),
-            timestamp: Date.now()
-          }));
+        if (pendingPayment && pendingPayment.type === "mpesa_initiation") {
+          localStorage.setItem(
+            "crewAfya_pendingPayment",
+            JSON.stringify({
+              ...pendingPayment,
+              status: "error",
+              error: errorMessage,
+              errorAt: new Date().toISOString(),
+              timestamp: Date.now(),
+            })
+          );
         }
       }
     } catch (error) {
@@ -218,16 +229,29 @@ export const getPaymentMethods = async () => {
 };
 
 /**
- * Get all payments for a user
+ * Get payments for a specific user
  * @param {string} userId - User ID
- * @returns {Promise} Promise with payments data
+ * @returns {Promise<Object>} Response containing payments data
  */
 export const getUserPayments = async (userId) => {
   try {
-    const response = await apiGet(`/users/${userId}/payments`);
-    return response.data;
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+
+    const response = await apiGet(`/payments/admin/${userId}/history`);
+    return response;
   } catch (error) {
-    throw error.response?.data || { message: "Failed to fetch payments" };
+    console.error("Error getting user payments:", error);
+
+    let errorMessage = "Failed to fetch payments";
+    if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    throw new Error(errorMessage);
   }
 };
 
@@ -271,26 +295,34 @@ export const checkPaymentStatus = async (paymentId) => {
     }
 
     const response = await apiGet(`/payments/${paymentId}/status`);
-    
+
     // If payment is completed or failed, clear it from localStorage
     if (response.success && response.data) {
       try {
         // Update payment status in localStorage
-        const pendingPaymentData = localStorage.getItem("crewAfya_pendingPayment");
+        const pendingPaymentData = localStorage.getItem(
+          "crewAfya_pendingPayment"
+        );
         if (pendingPaymentData) {
           const pendingPayment = JSON.parse(pendingPaymentData);
           if (pendingPayment && pendingPayment.paymentId === paymentId) {
             // If payment is completed or failed, remove from localStorage
-            if (response.data.status === 'completed' || response.data.status === 'failed') {
+            if (
+              response.data.status === "completed" ||
+              response.data.status === "failed"
+            ) {
               localStorage.removeItem("crewAfya_pendingPayment");
             } else {
               // Otherwise update the status
-              localStorage.setItem("crewAfya_pendingPayment", JSON.stringify({
-                ...pendingPayment,
-                status: response.data.status,
-                lastChecked: new Date().toISOString(),
-                timestamp: Date.now()
-              }));
+              localStorage.setItem(
+                "crewAfya_pendingPayment",
+                JSON.stringify({
+                  ...pendingPayment,
+                  status: response.data.status,
+                  lastChecked: new Date().toISOString(),
+                  timestamp: Date.now(),
+                })
+              );
             }
           }
         }
@@ -298,7 +330,7 @@ export const checkPaymentStatus = async (paymentId) => {
         console.error("Error updating payment status in localStorage:", error);
       }
     }
-    
+
     return response;
   } catch (error) {
     console.error("Error checking payment status:", error);
@@ -326,11 +358,13 @@ export const verifyMpesaPayment = async (transactionCode) => {
       throw new Error("M-Pesa transaction code is required");
     }
 
-    const response = await apiPost("/payments/mpesa/verify", { transactionCode });
+    const response = await apiPost("/payments/mpesa/verify", {
+      transactionCode,
+    });
     return response;
   } catch (error) {
     console.error("Error verifying M-Pesa payment:", error);
-    
+
     let errorMessage = "Failed to verify payment";
     if (error.response?.data?.message) {
       errorMessage = error.response.data.message;
@@ -350,15 +384,15 @@ export const getPendingPayment = () => {
   try {
     const paymentData = localStorage.getItem("crewAfya_pendingPayment");
     if (!paymentData) return null;
-    
+
     const payment = JSON.parse(paymentData);
-    
+
     // Check if payment is too old (older than 24 hours)
     if (Date.now() - payment.timestamp > 24 * 60 * 60 * 1000) {
       localStorage.removeItem("crewAfya_pendingPayment");
       return null;
     }
-    
+
     return payment;
   } catch (error) {
     console.error("Error retrieving payment from localStorage:", error);
@@ -383,38 +417,41 @@ export const clearPendingPayment = () => {
  */
 export const recoverPaymentProcess = async () => {
   const pendingPayment = getPendingPayment();
-  
+
   if (!pendingPayment) return null;
-  
+
   // If the payment is too old (more than 1 hour), clear it and return null
-  if (Date.now() - new Date(pendingPayment.initiatedAt).getTime() > 60 * 60 * 1000) {
+  if (
+    Date.now() - new Date(pendingPayment.initiatedAt).getTime() >
+    60 * 60 * 1000
+  ) {
     clearPendingPayment();
     return null;
   }
-  
+
   // If we have a payment ID, check its status
   if (pendingPayment.paymentId) {
     try {
       const statusResponse = await checkPaymentStatus(pendingPayment.paymentId);
-      
+
       if (statusResponse.success) {
         return {
           recovered: true,
           status: statusResponse.data.status,
           paymentId: pendingPayment.paymentId,
           checkoutRequestId: pendingPayment.checkoutRequestId,
-          data: statusResponse.data
+          data: statusResponse.data,
         };
       }
     } catch (error) {
       console.error("Error recovering payment:", error);
     }
   }
-  
+
   // If we couldn't recover with the payment ID, return the pending payment info
   return {
     recovered: false,
-    pendingPayment
+    pendingPayment,
   };
 };
 
