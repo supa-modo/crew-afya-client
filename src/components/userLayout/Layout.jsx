@@ -46,7 +46,7 @@ const Layout = () => {
         </div>
 
         {/* Content */}
-        <Navbar />
+        
         <main className="flex-grow relative" style={{ zIndex: "2" }}>
           {/* Subtle grid pattern */}
           <div className="absolute inset-0 opacity-5 pointer-events-none">
@@ -76,9 +76,11 @@ const Layout = () => {
               />
             </svg>
           </div>
+          <Navbar />
           <Outlet />
-        </main>
+          
         <Footer />
+        </main>
       </div>
     </AuthRedirect>
   );

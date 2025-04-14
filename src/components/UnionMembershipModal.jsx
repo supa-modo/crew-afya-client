@@ -1,4 +1,4 @@
-// src/components/modals/UnionMembershipModal.jsx
+// src/components/UnionMembershipModal.jsx
 import { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
 import { PiUserDuotone } from "react-icons/pi";
@@ -36,19 +36,19 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
     if (success && user) {
       try {
         // Update user membership status to active
-        await updateMembershipStatus(user.id, 'active');
-        
+        await updateMembershipStatus(user.id, "active");
+
         // Update user data in context
         if (updateUserData) {
-          updateUserData({ ...user, membershipStatus: 'active' });
+          updateUserData({ ...user, membershipStatus: "active" });
         }
-        
+
         // Call the parent's onPaymentComplete if provided
         if (onPaymentComplete) {
           onPaymentComplete(success);
         }
       } catch (error) {
-        console.error('Error updating membership status:', error);
+        console.error("Error updating membership status:", error);
       }
     } else if (onPaymentComplete) {
       onPaymentComplete(success);

@@ -14,8 +14,6 @@ import { useAuth } from "../context/AuthContext";
 import {
   uploadDocument,
   getUserDocuments,
-  deleteUserDocument,
-  uploadUserDocument,
 } from "../services/documentService";
 import {
   updateUserProfile,

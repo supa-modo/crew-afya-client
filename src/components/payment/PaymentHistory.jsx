@@ -27,6 +27,8 @@ import {
   TbMoneybag,
   TbReceipt,
   TbShieldHalfFilled,
+  TbReportMoney,
+  TbFileDownload,
 } from "react-icons/tb";
 import { formatDate } from "../../utils/formatDate";
 import { MpesaIcon } from "../common/icons";
@@ -190,28 +192,32 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
 
     switch (status) {
       case "completed":
-        bgColor = "bg-green-200 dark:bg-green-900/50";
+        bgColor =
+          "bg-gradient-to-r from-green-500/10 to-green-600/10 border border-green-300 dark:border-green-800/50";
         textColor = "text-green-700 dark:text-green-400";
         icon = <FiCheck className="mr-1 h-4 w-4" />;
         break;
       case "failed":
-        bgColor = "bg-red-200 dark:bg-red-900/50";
+        bgColor =
+          "bg-gradient-to-r from-red-500/10 to-red-600/10 border border-red-300 dark:border-red-800/50";
         textColor = "text-red-700 dark:text-red-400";
         icon = <FiX className="mr-1 h-4 w-4" />;
         break;
       case "pending":
-        bgColor = "bg-yellow-200 dark:bg-yellow-900/50";
+        bgColor =
+          "bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-300 dark:border-yellow-800/50";
         textColor = "text-yellow-700 dark:text-yellow-400";
         icon = <FiClock className="mr-1 h-4 w-4" />;
         break;
       default:
-        bgColor = "bg-gray-200 dark:bg-gray-700";
+        bgColor =
+          "bg-gradient-to-r from-gray-500/10 to-gray-600/10 border border-gray-300 dark:border-gray-800/50";
         textColor = "text-gray-700 dark:text-gray-400";
     }
 
     return (
       <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor}`}
+        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium shadow-sm ${bgColor} ${textColor}`}
       >
         {icon}
         {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -227,13 +233,13 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-md shadow-sm p-4 border border-gray-200 dark:border-gray-700 animate-pulse">
-        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-6 w-1/4"></div>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 animate-pulse">
+        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-lg mb-6 w-1/4"></div>
         <div className="space-y-4">
           {[...Array(3)].map((_, index) => (
             <div
               key={index}
-              className="h-16 bg-gray-200 dark:bg-gray-700 rounded-md"
+              className="h-16 bg-gray-200 dark:bg-gray-700 rounded-xl"
             ></div>
           ))}
         </div>
@@ -243,7 +249,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
 
   if (error) {
     return (
-      <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-md shadow-sm text-red-700 dark:text-red-400 border border-red-100 dark:border-red-900/30">
+      <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-xl shadow-md text-red-700 dark:text-red-400 border border-red-100 dark:border-red-900/30">
         <h3 className="text-lg font-medium mb-2 flex items-center">
           <FiAlertCircle className="h-5 w-5 mr-2" />
           Error loading payment history
@@ -255,12 +261,12 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
 
   if (payments.length === 0) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-md shadow-sm p-6 border border-gray-200 dark:border-gray-700 text-center">
-        <div className="inline-flex items-center justify-center h-16 w-16 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 mb-4">
-          <FiCreditCard className="h-8 w-8" />
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 border border-gray-200 dark:border-gray-700 text-center">
+        <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 text-gray-500 dark:text-gray-400 mb-4 shadow-md">
+          <TbReceipt className="h-8 w-8" />
         </div>
         <h3 className="text-base md:text-lg font-medium text-gray-900 dark:text-white mb-2">
-          No payment history
+          No payment history yet
         </h3>
         <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
           You haven't made any payments yet. When you make payments, they will
@@ -292,20 +298,23 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
   );
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div className="p-3 pt-5 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+    <div className="bg-white dark:bg-gray-800 rounded-xl rounded-t-2xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="p-4 pt-5 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-750">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          {/* Dynamic Title - Hidden on mobile */}
+          {/* Dynamic Title */}
           <div className="flex items-center gap-2 md:w-[50%]">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-600 dark:text-white">
+            <div className="bg-primary-50 dark:bg-primary-900/30 p-2 rounded-lg shadow-sm mr-2">
+              <TbReportMoney className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+            </div>
+            <h2 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-white">
               {title}
             </h2>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              ({filteredPayments.length} transactions)
+            <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full">
+              {filteredPayments.length} transactions
             </span>
           </div>
 
-          {/* Search and Filters - Full width on mobile */}
+          {/* Search and Filters */}
           <div className="w-full md:w-[50%] flex flex-row items-end sm:items-center gap-3">
             <div className="relative w-full">
               <form onSubmit={handleSearch} className="w-full">
@@ -315,7 +324,7 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                   </div>
                   <input
                     type="text"
-                    className="text-sm block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
+                    className="text-sm block w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
                     placeholder="Search by reference or method..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -326,25 +335,25 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
 
             <button
               onClick={toggleFilters}
-              className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap ${
+              className={`inline-flex items-center px-4 py-2.5 border rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
                 showFilters
                   ? "bg-primary-50 text-primary-700 border-primary-300 dark:bg-primary-900/20 dark:text-primary-400 dark:border-primary-700"
-                  : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-              } transition-colors duration-200`}
+                  : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:border-gray-600"
+              }`}
             >
               <FiFilter className="mr-2 h-4 w-4" />
               Filters
             </button>
 
-            <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200">
-              <FiDownload className="mr-2 h-4 w-4" />
+            <button className="inline-flex items-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200">
+              <TbFileDownload className="mr-2 h-4 w-4" />
               Export
             </button>
           </div>
         </div>
 
         {showFilters && (
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
+          <div className="mt-5 grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
             <div>
               <label
                 htmlFor="status"
@@ -499,11 +508,11 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
                   {payment.status === "completed" && (
                     <button
                       onClick={() => handleDownloadReceipt(payment)}
-                      className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 items-center gap-2 transition-colors duration-200"
+                      className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 items-center gap-2 transition-colors duration-200 bg-primary-50 dark:bg-primary-900/20 px-3 py-1.5 rounded-lg shadow-sm border border-primary-200 dark:border-primary-800/50"
                       title="View Receipt"
                     >
                       <div className="flex items-center gap-2">
-                        <TbReceipt className="h-5 w-5" />
+                        <TbReceipt className="h-4 w-4" />
                         <span>Receipt</span>
                       </div>
                     </button>
@@ -515,15 +524,17 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
         </table>
       </div>
 
-      {/* Replace custom pagination with Pagination component */}
+      {/* Pagination */}
       {totalPages > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={filteredPayments.length}
-          pageSize={pageSize}
-          onPageChange={handlePageChange}
-        />
+        <div className="bg-gray-100 dark:bg-gray-800/50">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredPayments.length}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
+          />
+        </div>
       )}
 
       {/* Receipt Modal */}

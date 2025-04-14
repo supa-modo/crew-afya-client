@@ -11,9 +11,12 @@ import {
   TbHomeDot,
   TbIdBadge2,
   TbChevronRight,
+  TbDashboard,
+  TbClock,
+  TbStarFilled,
 } from "react-icons/tb";
 import { PiUserCircle, PiUserDuotone, PiUsersDuotone } from "react-icons/pi";
-import { MdPayments } from "react-icons/md";
+import { MdPayments, MdSpaceDashboard } from "react-icons/md";
 import {
   getUserDocuments,
   deleteUserDocument,
@@ -28,10 +31,10 @@ import {
 } from "../services/subscriptionService";
 import { getUserClaims, getCoverageLimits } from "../services/claimsService";
 
-import LoanStatus from "../components/dashboard/LoanStatus";
 import UnionMembershipModal from "../components/UnionMembershipModal";
 import OverviewTab from "../components/dashboard/OverviewTab";
 import MedicalCoverTab from "../components/dashboard/MedicalCoverTab";
+import MembershipCard from "../components/dashboard/MembershipCard";
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -355,17 +358,17 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="bg-gray-50/40 dark:bg-gray-900/40 pb-6 mt-4 sm:mt-10 min-h-screen">
+    <div className="bg-gradient-to-br from-gray-50/80 to-white/70 dark:from-gray-900/70 dark:to-gray-800/70 min-h-screen pb-10">
       {/* Main dashboard content */}
-      <div className="pt-16">
+      <div className="pt-20 sm:pt-24">
         {/* Breadcrumb */}
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-5">
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
               <li>
                 <Link
                   to="/"
-                  className="hover:text-primary-600 flex items-center"
+                  className="hover:text-primary-600 flex items-center transition-colors duration-200"
                 >
                   <TbHomeDot className="h-5 w-5 mr-2" />
                   Home
@@ -382,212 +385,275 @@ const DashboardPage = () => {
         </div>
 
         {/* Header section with welcome message and quick actions */}
-
-        <div className="max-w-screen-2xl mx-auto px-2 sm:px-3 lg:px-4 mb-4">
-          <div className="bg-white dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-            <div className="px-4 py-4 sm:px-8 sm:py-5 flex flex-col md:flex-row md:items-center md:justify-between border-b border-gray-200 dark:border-gray-700 mb-4">
-              <div className="flex items-center space-x-2 font-lexend">
-                <PiUserDuotone className="hidden md:flex mr-2 h-10 w-10 text-primary-600" />
-                <div>
-                  <h1 className="text-lg sm:text-xl lg:text-[1.4rem] font-bold text-secondary-700 dark:text-secondary-500 flex items-center">
-                    Welcome, {user?.firstName || "User"}!
-                  </h1>
-                  <p className=" text-sm  text-gray-600 dark:text-gray-400">
-                    Manage your Union membership, medical coverage, and loan
-                    applications all in one place.
-                  </p>
-                </div>
+        <div className="max-w-screen-2xl mx-auto px-0 sm:px-3 lg:px-8 mb-6">
+          {/* Header with gradient background */}
+          <div className="px-3 py-5 sm:px-4 sm:py-6 flex flex-col md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start space-x-3">
+              <div className="hidden md:flex h-14 w-14 rounded-full bg-primary-600/20 backdrop-blur-sm items-center justify-center flex-shrink-0">
+                <PiUserDuotone className="h-8 w-8 text-primary-600" />
               </div>
-              <div className="mt-4 md:mt-0 flex space-x-4">
-                <Link
-                  to="/payments"
-                  className="inline-flex items-center px-4 sm:px-5 py-2 bg-secondary-700 border border-green-600 rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white dark:text-green-200  dark:bg-secondary-900 hover:bg-secondary-800 dark:hover:bg-secondary-800 transition-colors duration-200"
-                >
-                  <TbCreditCardPay className="mr-2 h-5 sm:h-6 w-5 sm:w-6" />
-                  Make a Payment
-                </Link>
-                <Link
-                  to="/profile"
-                  className="inline-flex items-center px-5 sm:px-6 py-2 border border-transparent rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200"
-                >
-                  <PiUserCircle className="mr-2 h-5 sm:h-6 w-5 sm:w-6" />
-                  View Profile
-                </Link>
+              <div>
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-primary-600 flex items-center">
+                  Welcome, {user?.firstName + " " + user?.lastName || "Logged inUser"}!
+                </h1>
+                <p className="text-gray-500 dark:text-gray-300 font-medium text-sm mt-1 max-w-2xl">
+                  Manage your Union membership, medical coverage, and loan
+                  applications all in one place.
+                </p>
               </div>
             </div>
-
-            <div className="flex flex-col md:flex-row gap-3 px-3 sm:px-6 lg:px-6 mb-3 sm:mb-4 md:mb-6">
-              <div className="md:w-[50%] bg-gradient-to-r from-primary-800 via-primary-700 to-primary-600 rounded-2xl p-5 sm:p-6 text-white shadow-md relative">
-                <div className="flex justify-between">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="opacity-80 text-xs sm:text-sm ">
-                        Matatu Workers Union
-                      </span>
-                      <div className="w-1 h-1 rounded-full bg-white"></div>
-                      <div className="text-xs rounded-lg text-secondary-400">
-                        {user?.membershipStatus}
-                      </div>
-                    </div>
-
-                    <div className="text-lg sm:text-xl font-semibold mb-4">
-                      {user?.firstName} {user?.otherNames}{" "}
-                      {user?.lastName || "Member"}
-                    </div>
-                    <div className="grid grid-cols-2 gap-10 sm:gap-8">
-                      <div>
-                        <div className="opacity-80 text-[0.7rem] sm:text-xs">
-                          Member ID
-                        </div>
-                        <div className="text-[0.7rem] sm:text-xs md:text-sm text-secondary-400">
-                          {user?.membershipNumber || "-------"}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="opacity-80 text-[0.7rem] sm:text-xs">
-                          Operation Route
-                        </div>
-                        <div className="text-[0.7rem] sm:text-xs md:text-sm text-amber-500">
-                          {user?.route || "Thika Road"}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="absolute top-5 right-5 flex h-12 w-12 md:h-20 md:w-20 rounded-full bg-white/20 items-center justify-center">
-                    <TbBus className="h-7 w-7 md:h-12 md:w-12 text-white" />
-                  </div>
+            <div className="mt-5 md:mt-0 flex space-x-3 sm:space-x-4">
+              <Link
+                to="/payments"
+                className="inline-flex items-center px-4 sm:px-5 py-3 bg-secondary-600 border border-secondary-500 rounded-[0.6rem] text-xs sm:text-sm font-medium text-white hover:bg-secondary-700 transition-all duration-200 shadow-sm"
+              >
+                <TbCreditCardPay className="mr-2 h-5 sm:h-5 w-5 sm:w-5" />
+                Make a Payment
+              </Link>
+              <Link
+                to="/profile"
+                className="inline-flex items-center px-4 sm:px-5 py-3 bg-primary-600 backdrop-blur-sm border border-gray-200 dark:border-primary-700 rounded-[0.6rem] text-xs sm:text-sm font-medium text-white hover:bg-gray-700 transition-all duration-200 shadow-sm"
+              >
+                <PiUserCircle className="mr-2 h-5 sm:h-5 w-5 sm:w-5" />
+                View Profile
+              </Link>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-3xl rounded-b-none sm:rounded-b-3xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
+            {/* Cards section */}
+            <div className="px-3 sm:px-6 py-5 sm:py-6">
+              <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+                {/* Membership Card section */}
+                <div className="lg:w-[55%]">
+                  <MembershipCard user={user} />
                 </div>
 
-                <div className="mt-4 sm:mt-6 pt-4 border-t border-white/20 flex justify-between text-[0.68rem]  sm:text-xs md:text-sm">
-                  <div className="flex items-center ">
-                    <TbCalendarEvent className="mr-2 h-4 w-4" />
-                    <span className="hidden sm:inline mr-1">Member since:</span>
-                    <span className="inline sm:hidden mr-1">Since: </span>
-                    <span className="text-secondary-400 ">
-                      {user?.joinDate || "Jan 15, 2023"}
-                    </span>
-                  </div>
-                  <div className="flex items-center">
-                    <TbRoute className="mr-2 h-4 w-4" />
-                    SACCO: {user?.sacco || "Kawangware Sacco"}
-                  </div>
-                </div>
-              </div>
+                {/* Stats section */}
+                <div className="lg:w-[45%] flex flex-col gap-5">
+                  {/* Stats Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-sm px-5 py-4 border border-emerald-100 dark:border-gray-700 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full -mr-10 -mt-10 blur-xl group-hover:bg-emerald-500/20 transition-all duration-300"></div>
+                      <div className="relative flex justify-between z-10">
+                        <div>
+                          <p className="text-[0.65rem] sm:text-[0.7rem] text-emerald-700 dark:text-emerald-400 font-medium uppercase tracking-wider mb-1">
+                            Union Membership
+                          </p>
+                          <h3 className="text-lg sm:text-xl capitalize font-bold text-emerald-800 dark:text-white flex items-center">
+                            {user?.membershipStatus || "Active"}
+                            <span className="ml-2 flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                          </h3>
+                          <p className="text-[0.7rem] sm:text-xs text-emerald-700/70 dark:text-emerald-400/70 mt-1 font-medium">
+                            Registered:{" "}
+                            <span className="font-semibold">
+                              {formatDate(user?.membershipDate) || "---------"}
+                            </span>
+                          </p>
+                        </div>
+                        <div className="h-12 w-12 rounded-full bg-emerald-200 dark:bg-emerald-900/70 flex items-center justify-center">
+                          <TbIdBadge2 className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                      </div>
+                    </div>
 
-              <div className="md:w-[50%]">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-1">
-                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md px-4 py-3 border border-l-4 border-l-green-500">
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="text-[0.7rem] text-gray-500 dark:text-gray-400">
-                          Union Membership
-                        </p>
-                        <h3 className="text-lg sm:text-xl capitalize font-bold text-secondary-700 dark:text-white mt-1">
-                          {user?.membershipStatus}
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-sm px-5 py-4 border border-blue-100 dark:border-gray-700 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full -mr-10 -mt-10 blur-xl group-hover:bg-blue-500/20 transition-all duration-300"></div>
+                      <div className="relative flex justify-between z-10">
+                        <div>
+                          <p className="text-[0.65rem] sm:text-[0.7rem] text-blue-700 dark:text-blue-400 font-medium uppercase tracking-wider mb-1">
+                            Medical Cover
+                          </p>
+                          <h3 className="text-lg sm:text-xl font-bold text-blue-800 dark:text-white">
+                            {userSubscription?.plan?.name || "No Active Plan"}
+                          </h3>
+                          <p className="text-[0.7rem] sm:text-xs text-blue-700/70 dark:text-blue-400/70 mt-1 font-medium">
+                            {userSubscription?.startDate
+                              ? `Active since ${formatDate(
+                                  userSubscription?.startDate
+                                )}`
+                              : "Not activated"}
+                          </p>
+                        </div>
+                        <div className="h-12 w-12 rounded-full bg-blue-200 dark:bg-blue-800/70 flex items-center justify-center">
+                          <TbShieldCheckFilled className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Loan status */}
+                  <div className="bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-sm p-4 sm:px-5 border border-gray-200 dark:border-gray-700 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gray-500/5 rounded-full -mr-10 -mt-10 blur-xl group-hover:bg-gray-500/10 transition-all duration-300"></div>
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-base font-bold text-gray-800 dark:text-white flex items-center">
+                          <TbClock className="mr-2 h-5 w-5 text-gray-600 dark:text-gray-400" />
+                          Upcoming Payments
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          Registered:{" "}
-                          <span className="font-medium">
-                            {formatDate(user?.membershipDate) || "---------"}
-                          </span>
-                        </p>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                          {activeLoans.length || 0} Active
+                        </span>
                       </div>
-                      <div className="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                        <TbIdBadge2 className="h-6 w-6 text-green-600 dark:text-green-400" />
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md px-4 py-3 border border-l-4 border-l-blue-500">
-                    <div className="flex justify-between">
-                      <div>
-                        <p className="text-[0.7rem] text-gray-500 dark:text-gray-400">
-                          Medical Cover
-                        </p>
-                        <h3 className="text-lg sm:text-xl font-bold text-primary-600 dark:text-white mt-1">
-                          {userSubscription?.plan?.name || "No Active Plan"}
-                        </h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          Active since {formatDate(userSubscription?.startDate)}
-                        </p>
-                      </div>
-                      <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                        <TbShieldCheckFilled className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                      {activeLoans && activeLoans.length > 0 ? (
+                        <div className="space-y-3">
+                          {activeLoans.map((loan, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between bg-white dark:bg-gray-800/50 p-3 rounded-xl border border-gray-200 dark:border-gray-700"
+                            >
+                              <div className="flex items-center">
+                                <div className="h-8 w-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mr-3">
+                                  <MdPayments className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-800 dark:text-white">
+                                    {loan.type || "Loan Payment"}
+                                  </p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    Due: {formatDate(loan.dueDate)}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm font-bold text-gray-800 dark:text-white">
+                                  KES {loan.amount}
+                                </p>
+                                <p
+                                  className={`text-xs ${
+                                    loan.status === "overdue"
+                                      ? "text-red-500"
+                                      : "text-emerald-500"
+                                  }`}
+                                >
+                                  {loan.status === "overdue"
+                                    ? "Overdue"
+                                    : "On time"}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-4 bg-white/50 dark:bg-gray-800/30 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            No active loans or upcoming payments
+                          </p>
+                        </div>
+                      )}
+
+                      <div className="mt-2 text-right">
+                        <Link
+                          to="/loans"
+                          className="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium inline-flex items-center"
+                        >
+                          View all loans
+                          <TbChevronRight className="ml-1 h-4 w-4" />
+                        </Link>
                       </div>
                     </div>
                   </div>
                 </div>
-                <LoanStatus loans={activeLoans} />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Dashboard Navigation Tabs */}
-        <div className="md:max-w-screen-2xl mx-auto md:px-4 mb-6">
-          <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-3xl md:rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
-            {/* Tab Navigation - Enhanced Style */}
+        {/* Dashboard Navigation Tabs - Enhanced Design */}
+        <div className="max-w-screen-2xl mx-auto px-0 sm:px-3 lg:px-8 mb-8">
+          <div className="bg-white dark:bg-gray-800 backdrop-blur-md rounded-3xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+            {/* Tab Navigation - Enhanced */}
             <div className="relative">
-              <div className="flex items-center justify-between md:justify-start border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between md:justify-start overflow-x-auto scrollbar-hide">
                 {[
                   {
                     id: "overview",
-                    label: "Overview",
-                    icon: <TbActivity className="h-5 w-5" />,
+                    label: "Dashboard ",
+                    icon: <MdSpaceDashboard className="h-5 w-5" />,
+                    color: "from-primary-500/10 to-primary-600/10",
+                    activeColor: "bg-primary-600 text-white",
+                    iconColor: "text-primary-600 dark:text-primary-400",
                   },
-
                   {
                     id: "medical",
-                    label: "Medical Cover",
+                    label: "Medical ",
                     icon: <TbShieldCheckFilled className="h-5 w-5" />,
+                    color: "from-blue-500/10 to-blue-600/10",
+                    activeColor: "bg-blue-600 text-white",
+                    iconColor: "text-blue-600 dark:text-blue-400",
                   },
                   {
                     id: "membership",
-                    label: "Membership",
+                    label: " Membership",
                     icon: <PiUsersDuotone className="h-5 w-5" />,
+                    color: "from-emerald-500/10 to-emerald-600/10",
+                    activeColor: "bg-emerald-600 text-white",
+                    iconColor: "text-emerald-600 dark:text-emerald-400",
                   },
                 ].map((tab) => (
                   <button
                     key={tab.id}
-                    className={`group relative min-w-[120px] sm:min-w-[160px] flex items-center justify-center px-4 py-3 font-medium text-sm transition-colors duration-200 ${
+                    className={`group relative min-w-[160px] sm:min-w-[180px] md:min-w-[200px] flex items-center justify-center px-4 py-4 font-medium text-sm transition-all duration-200 ${
                       activeTab === tab.id
-                        ? "text-primary-600 dark:text-primary-400 bg-gradient-to-b from-transparent to-primary-100 dark:to-primary-900/20"
-                        : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30"
+                        ? "text-gray-900 dark:text-white"
+                        : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/30"
                     }`}
                     onClick={() => setActiveTab(tab.id)}
                   >
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 sm:space-x-3">
                       <span
-                        className={`flex items-center justify-center h-10 md:h-11 w-10 md:w-11 rounded-lg transition-all duration-200 ${
+                        className={`flex items-center justify-center h-9 sm:h-11 w-9 sm:w-11 rounded-lg transition-all duration-300 ${
                           activeTab === tab.id
-                            ? "bg-primary-100 text-primary-600 dark:bg-primary-900/40 dark:text-primary-400"
-                            : "bg-gray-100 text-gray-500 group-hover:bg-gray-200 dark:bg-gray-700/70 dark:text-gray-400 dark:group-hover:bg-gray-600/70"
+                            ? tab.activeColor
+                            : `bg-gradient-to-br ${tab.color} ${tab.iconColor}`
                         }`}
                       >
                         {tab.icon}
                       </span>
-                      <span className="font-medium">{tab.label}</span>
+                      <span className="font-medium text-xs sm:text-sm flex flex-col items-center">
+                        {(() => {
+                          const words = tab.label.split(" ");
+                          const firstWord = words[0];
+                          const restWords = words.slice(1).join(" ");
+                          return (
+                            <>
+                              <span className="block">{firstWord}</span>
+                              <span className="block">{restWords}</span>
+                            </>
+                          );
+                        })()}
+                      </span>
+
+                      {/* Glowing Active Indicator */}
+                      {activeTab === tab.id && (
+                        <span className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-full h-1 rounded-full bg-primary-500 shadow-lg shadow-primary-500/30"></span>
+                      )}
                     </div>
-                    {activeTab === tab.id && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 dark:bg-primary-500"></div>
-                    )}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Tab Content Area - Enhanced Padding and Animation */}
-            <div className="px-2 sm:px-4 py-4">
+            {/* Tab Content Area */}
+            <div className="px-4 sm:px-6 py-6">
               <div className="transition-all duration-300 ease-in-out">
                 {/* Overview Tab Content */}
                 {activeTab === "overview" && (
                   <div className="animate-fadeIn">
-                    <div className="mb-6 px-3">
-                      <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        View and manage your membership details, upcoming
-                        payments, and documents.
-                      </p>
+                    <div className="mb-6">
+                      <div className="bg-gradient-to-r from-primary-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 p-5 rounded-2xl">
+                        <h2 className="text-base sm:text-lg md:text-xl text-primary-800 dark:text-white font-bold flex items-center mb-2">
+                          <TbStarFilled className="h-5 w-5 mr-2 text-amber-500" />
+                          Dashboard Overview
+                        </h2>
+                        <p className="text-[0.8rem] sm:text-sm text-gray-700 dark:text-gray-300">
+                          View and manage your membership details, upcoming
+                          payments, and documents.
+                        </p>
+                      </div>
                     </div>
                     <OverviewTab
                       nextPaymentDate={formatDate(nextPaymentDate)}
@@ -597,31 +663,25 @@ const DashboardPage = () => {
                       isLoadingDocs={isLoadingDocs}
                       handleDeleteDocument={handleDeleteDocument}
                       isSubmitting={isSubmitting}
+                      isLoadingCoverage={isLoading}
                     />
                   </div>
                 )}
-
-                {/* Membership Tab Content */}
-                {/* {activeTab === "membership" && (
-                  <div className="animate-fadeIn">
-                    <div className="mb-6">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        Manage your Matatu Workers Union membership details and
-                        benefits.
-                      </p>
-                    </div>
-                    <MembershipTab hasPaidMembership={hasPaidMembership} />
-                  </div>
-                )} */}
 
                 {/* Medical Cover Tab Content */}
                 {activeTab === "medical" && (
                   <div className="animate-fadeIn">
                     <div className="mb-6">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        View and manage your medical coverage plan, dependents,
-                        and claims.
-                      </p>
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 p-5 rounded-2xl">
+                        <h2 className="text-xl text-blue-800 dark:text-white font-bold flex items-center mb-2">
+                          <TbShieldCheckFilled className="h-5 w-5 mr-2 text-blue-600" />
+                          Medical Coverage
+                        </h2>
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                          View and manage your medical coverage plan,
+                          dependents, and claims.
+                        </p>
+                      </div>
                     </div>
                     <MedicalCoverTab
                       userId={user?.id}
@@ -639,6 +699,44 @@ const DashboardPage = () => {
                       limitsLoading={limitsLoading}
                       limitsError={limitsError}
                     />
+                  </div>
+                )}
+
+                {/* Membership Tab Content */}
+                {activeTab === "membership" && (
+                  <div className="animate-fadeIn">
+                    <div className="mb-6">
+                      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-gray-800 dark:to-gray-700 p-5 rounded-2xl">
+                        <h2 className="text-xl text-emerald-800 dark:text-white font-bold flex items-center mb-2">
+                          <PiUsersDuotone className="h-5 w-5 mr-2 text-emerald-600" />
+                          Union Membership
+                        </h2>
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                          Manage your Matatu Workers Union membership details
+                          and benefits.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-center py-8 px-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
+                      <div className="mx-auto h-16 w-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-4">
+                        <PiUsersDuotone className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                        Membership Status: {user?.membershipStatus || "Active"}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6">
+                        Your Union membership is currently active. Access
+                        exclusive benefits, union services and discounts for
+                        Matatu Workers.
+                      </p>
+                      <button
+                        onClick={() => navigate("/payments")}
+                        className="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors duration-200"
+                      >
+                        <TbIdBadge2 className="mr-2 h-5 w-5" />
+                        Manage Membership
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

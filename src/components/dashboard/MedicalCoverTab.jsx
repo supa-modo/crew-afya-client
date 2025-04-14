@@ -11,10 +11,10 @@ import { BiSupport } from "react-icons/bi";
 
 // Import our new component structure
 import CoverageUtilizationCard from "./medical/CoverageUtilizationCard";
-import PlanDetailsCard from "./medical/PlanDetailsCard";
 import BenefitsCard from "./medical/BenefitsCard";
 import EmergencyContactsCard from "./medical/EmergencyContactsCard";
 import ClaimsHistoryTable from "./medical/ClaimsHistoryTable";
+import HealthInsuranceCard from "./HealthInsuranceCard";
 
 const MedicalCoverTab = ({
   userId,
@@ -23,7 +23,6 @@ const MedicalCoverTab = ({
   isLoading,
   error,
   handleOpenFrequencyModal,
-  // New props for centralized data fetching
   claims = [],
   claimsLoading = false,
   claimsError = null,
@@ -93,91 +92,63 @@ const MedicalCoverTab = ({
   };
 
   return (
-    <div className="max-w-screen-2xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-xl shadow-lg p-6 text-white">
-          <h2 className="text-lg sm-text-xl md:text-2xl font-bold mb-2">
-            Your Medical Coverage
-          </h2>
-          <p className="text-primary-100 text-sm sm:text-base">
-            View your plan details, benefits, and coverage utilization
-          </p>
-          {userSubscription.frequency && (
-            <div className="mt-4 flex items-center text-xs sm:text-sm text-primary-100">
-              <TbCalendarTime className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              <span>
-                Payment Plan:{" "}
-                <span className="font-medium capitalize text-secondary-400">
-                  {userSubscription.frequency}
-                </span>
-                <button
-                  onClick={handleOpenFrequencyModal}
-                  className="ml-2 underline hover:text-white transition-colors"
-                >
-                  Change
-                </button>
-              </span>
-            </div>
-          )}
+    <div className="max-w-screen-2xl mx-auto px-0 sm:px-2 md:px-6">
+      {/* Main content */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left column - Insurance Card */}
+        <div className="space-y-8">
+          <HealthInsuranceCard
+            user={userId}
+            subscription={userSubscription}
+            handleOpenFrequencyModal={handleOpenFrequencyModal}
+          />
+        </div>
+
+        {/* Right column - Coverage Utilization */}
+        <div className="space-y-8">
+          <CoverageUtilizationCard
+            utilization={utilization}
+            loading={isLoading}
+          />
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left column - 2/3 width on large screens */}
-        <div className="lg:col-span-2 space-y-8 rounded-sm overflow-hidden border-r-2 dark:border-gray-700">
-          {/* Coverage Utilization Card */}
-          <CoverageUtilizationCard utilization={utilization} />
-
-          {/* Benefits Card */}
-          <BenefitsCard plan={userSubscription.plan} />
-        </div>
-
-        {/* Right column - 1/3 width on large screens */}
-        <div className="space-y-8">
-          {/* Plan Details Card */}
-          <PlanDetailsCard
-            plan={userSubscription.plan}
-            coverage={coverage}
-            frequency={userSubscription.frequency}
-            handleOpenFrequencyModal={handleOpenFrequencyModal}
-          />
-
-          {/* Emergency Contacts Card */}
-          <EmergencyContactsCard />
-        </div>
+      <div className="mt-8">
+        {/* Benefits Card */}
+        <BenefitsCard plan={userSubscription.plan} />
       </div>
 
       {/* Bottom section - Claims */}
-      <div className="mt-8 ">
+      <div className="mt-8">
         {/* Claims History  */}
         <div className="w-full">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-amber-700 dark:text-white flex items-center">
-                <TbFileInvoice className="mr-2 h-5 w-5 " />
-                Claims History
+          <div className="">
+            <div className="px-4">
+              <h3 className="text-base font-semibold text-amber-800 dark:text-amber-400 flex items-center">
+                <TbFileInvoice className="mr-2 h-5 w-5" />
+                Medical Claims History
               </h3>
             </div>
 
-            {claimsError ? (
-              <div className="text-center py-4 text-red-500 dark:text-red-400">
-                <p>{claimsError}</p>
-                <button
-                  onClick={() => window.location.reload()}
-                  className="mt-2 text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
-                >
-                  Try Again
-                </button>
-              </div>
-            ) : (
-              <ClaimsHistoryTable
-                userId={userId}
-                loading={claimsLoading}
-                coverageLimits={coverageLimits}
-              />
-            )}
+            <div className="p-4">
+              {claimsError ? (
+                <div className="text-center py-4 text-red-500 dark:text-red-400">
+                  <p>{claimsError}</p>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="mt-2 text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              ) : (
+                <ClaimsHistoryTable
+                  userId={userId}
+                  loading={claimsLoading}
+                  coverageLimits={coverageLimits}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -186,12 +157,12 @@ const MedicalCoverTab = ({
       <div className="mt-8 flex flex-wrap gap-4 justify-center">
         <Link
           to="/payments"
-          className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-secondary-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+          className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-secondary-700 dark:text-secondary-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
           <TbShieldHalfFilled className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
           Change Coverage Plan
         </Link>
-        <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-primary-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
+        <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-primary-700 dark:text-primary-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
           <BiSupport className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
           Contact Support
         </button>

@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { TbCreditCardFilled, TbShieldHalfFilled } from "react-icons/tb";
+import {
+  TbCreditCardFilled,
+  TbShieldHalfFilled,
+  TbReceiptOff,
+  TbReceipt2,
+  TbWallet,
+} from "react-icons/tb";
 import { PiUserDuotone } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,6 +24,63 @@ import PaymentStatus from "./PaymentStatus";
 import PaymentTypeSelector from "./PaymentTypeSelector";
 import { RiCommunityLine, RiUserCommunityLine } from "react-icons/ri";
 
+// Component for handling phone number input and submission
+const PaymentFormContainer = ({
+  paymentType,
+  phoneNumber,
+  setPhoneNumber,
+  errorMessage,
+  isSubmitting,
+  getCurrentAmount,
+  getPaymentTypeTitle,
+  handleSubmit,
+  disabled,
+}) => {
+  return (
+    <motion.div
+      key="payment-form"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="space-y-4"
+    >
+      <PaymentForm
+        phoneNumber={phoneNumber}
+        setPhoneNumber={setPhoneNumber}
+        paymentType={paymentType}
+        errorMessage={errorMessage}
+        getCurrentAmount={getCurrentAmount}
+        getPaymentTypeTitle={getPaymentTypeTitle}
+        isSubmitting={isSubmitting}
+        handleSubmit={handleSubmit}
+        disabled={disabled}
+      />
+    </motion.div>
+  );
+};
+
+// Component for displaying loading state
+const PaymentLoader = () => {
+  return (
+    <motion.div
+      key="recovering"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="flex flex-col items-center justify-center py-8"
+    >
+      <div className="w-16 h-16 flex items-center justify-center bg-primary-50 dark:bg-primary-900/20 rounded-full relative mb-4">
+        <div className="absolute inset-0 rounded-full border-t-2 border-r-2 border-primary-500 animate-spin"></div>
+        <TbWallet className="h-7 w-7 text-primary-500" />
+      </div>
+      <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+        Checking for pending payments...
+      </p>
+    </motion.div>
+  );
+};
+
+// Main MakePayment component
 const MakePayment = ({
   selectedPlan,
   frequency,
@@ -86,57 +149,13 @@ const MakePayment = ({
         const recoveryResult = await recoverPaymentProcess();
 
         if (recoveryResult && recoveryResult.recovered) {
-          // We have recovered a payment, update the UI accordingly
-          setPaymentId(recoveryResult.paymentId);
-          setCheckoutRequestId(recoveryResult.checkoutRequestId);
-
-          // Set the appropriate status based on the recovered payment
-          if (recoveryResult.status === "completed") {
-            setPaymentStatus("success");
-            setMpesaReceiptNumber(recoveryResult.data.mpesaReceiptNumber);
-
-            // Notify parent component if payment was successful
-            if (typeof onPaymentComplete === "function") {
-              setTimeout(() => onPaymentComplete(true), 1000);
-            }
-          } else if (recoveryResult.status === "failed") {
-            setPaymentStatus("error");
-            setErrorMessage(
-              recoveryResult.data.failureReason ||
-                "Payment failed. Please try again."
-            );
-          } else {
-            // Payment is still pending, restart status check
-            setPaymentStatus("waiting");
-            startStatusCheck(recoveryResult.paymentId);
-          }
+          handleRecoveredPayment(recoveryResult);
         } else if (
           recoveryResult &&
           !recoveryResult.recovered &&
           recoveryResult.pendingPayment
         ) {
-          // We have a pending payment but couldn't get its status
-          // Try to extract phone number and other details
-          if (recoveryResult.pendingPayment.payload) {
-            setPhoneNumber(
-              recoveryResult.pendingPayment.payload.phoneNumber || ""
-            );
-          }
-
-          // If the payment was in error state, show error
-          if (recoveryResult.pendingPayment.status === "error") {
-            setPaymentStatus("error");
-            setErrorMessage(
-              recoveryResult.pendingPayment.error ||
-                "Payment process was interrupted. Please try again."
-            );
-          } else {
-            // Otherwise, let the user try again
-            setPaymentStatus("idle");
-            setErrorMessage(
-              "We found an incomplete payment. Please try again."
-            );
-          }
+          handlePendingPayment(recoveryResult.pendingPayment);
         }
       } catch (error) {
         console.error("Error recovering payment:", error);
@@ -147,6 +166,54 @@ const MakePayment = ({
 
     checkForPendingPayments();
   }, [onPaymentComplete]);
+
+  // Handle recovered payment from the server
+  const handleRecoveredPayment = (recoveryResult) => {
+    // We have recovered a payment, update the UI accordingly
+    setPaymentId(recoveryResult.paymentId);
+    setCheckoutRequestId(recoveryResult.checkoutRequestId);
+
+    // Set the appropriate status based on the recovered payment
+    if (recoveryResult.status === "completed") {
+      setPaymentStatus("success");
+      setMpesaReceiptNumber(recoveryResult.data.mpesaReceiptNumber);
+
+      // Notify parent component if payment was successful
+      if (typeof onPaymentComplete === "function") {
+        setTimeout(() => onPaymentComplete(true), 1000);
+      }
+    } else if (recoveryResult.status === "failed") {
+      setPaymentStatus("error");
+      setErrorMessage(
+        recoveryResult.data.failureReason || "Payment failed. Please try again."
+      );
+    } else {
+      // Payment is still pending, restart status check
+      setPaymentStatus("waiting");
+      startStatusCheck(recoveryResult.paymentId);
+    }
+  };
+
+  // Handle pending payment that couldn't be recovered
+  const handlePendingPayment = (pendingPayment) => {
+    // Try to extract phone number and other details
+    if (pendingPayment.payload) {
+      setPhoneNumber(pendingPayment.payload.phoneNumber || "");
+    }
+
+    // If the payment was in error state, show error
+    if (pendingPayment.status === "error") {
+      setPaymentStatus("error");
+      setErrorMessage(
+        pendingPayment.error ||
+          "Payment process was interrupted. Please try again."
+      );
+    } else {
+      // Otherwise, let the user try again
+      setPaymentStatus("idle");
+      setErrorMessage("We found an incomplete payment. Please try again.");
+    }
+  };
 
   // Array of payment types for navigation
   const paymentTypes = [
@@ -261,34 +328,11 @@ const MakePayment = ({
 
           // If payment completed, show success
           if (status === "completed") {
-            setPaymentStatus("success");
-            setMpesaReceiptNumber(response.data.mpesaReceiptNumber);
-            clearInterval(interval);
-            setStatusCheckInterval(null);
-
-            // Call onPaymentComplete callback if provided
-            if (typeof onPaymentComplete === "function") {
-              setTimeout(() => onPaymentComplete(true), 5000);
-            }
-
-            // Reset form after success (with delay)
-            setTimeout(() => {
-              setPaymentStatus("idle");
-              setPhoneNumber("");
-              setCheckoutRequestId(null);
-              setPaymentId(null);
-              setMpesaReceiptNumber(null);
-            }, 10000);
+            handlePaymentSuccess(response.data.mpesaReceiptNumber, interval);
           }
           // If payment failed, show error
           else if (status === "failed") {
-            setPaymentStatus("error");
-            setErrorMessage(
-              response.data.failureReason ||
-                "Payment was not completed. Please try again."
-            );
-            clearInterval(interval);
-            setStatusCheckInterval(null);
+            handlePaymentFailure(response.data.failureReason, interval);
           }
           // Otherwise continue checking (pending status)
         }
@@ -301,6 +345,43 @@ const MakePayment = ({
     setStatusCheckInterval(interval);
   };
 
+  // Handle successful payment completion
+  const handlePaymentSuccess = (receiptNumber, interval = null) => {
+    setPaymentStatus("success");
+    setMpesaReceiptNumber(receiptNumber);
+
+    if (interval) {
+      clearInterval(interval);
+      setStatusCheckInterval(null);
+    }
+
+    // Call onPaymentComplete callback if provided
+    if (typeof onPaymentComplete === "function") {
+      setTimeout(() => onPaymentComplete(true), 5000);
+    }
+
+    // Reset form after success (with delay)
+    setTimeout(() => {
+      setPaymentStatus("idle");
+      setPhoneNumber("");
+      setCheckoutRequestId(null);
+      setPaymentId(null);
+      setMpesaReceiptNumber(null);
+    }, 10000);
+  };
+
+  // Handle payment failure
+  const handlePaymentFailure = (reason, interval = null) => {
+    setPaymentStatus("error");
+    setErrorMessage(reason || "Payment was not completed. Please try again.");
+
+    if (interval) {
+      clearInterval(interval);
+      setStatusCheckInterval(null);
+    }
+  };
+
+  // Form submission handler
   const handleSubmit = async (e) => {
     // Always prevent the default form submission to avoid page reload
     if (e && e.preventDefault) {
@@ -317,70 +398,33 @@ const MakePayment = ({
     setErrorMessage("");
 
     try {
-      // Determine payment amount based on payment type
-      let amount, description;
+      // Determine payment amount and description
+      const paymentDetails = getPaymentDetails();
 
-      if (paymentType === "medical") {
-        amount = getFrequencyAmount(selectedPlan, frequency);
-        description = `Payment for ${
-          selectedPlan?.name || "Medical"
-        } (${frequency}) medical cover`;
-      } else if (paymentType === "membership") {
-        amount = unionDuesAmount; // Fixed one-time fee
-        description = `Payment for union membership`;
-      } else if (paymentType === "loan") {
-        // Future implementation for loan repayments
-        amount = 0; // This would be replaced with actual loan repayment amount
-        description = `Payment for loan repayment`;
-      }
-
-      if (!amount || isNaN(Number(amount))) {
+      if (!paymentDetails.amount || isNaN(Number(paymentDetails.amount))) {
         throw new Error(
           "Invalid payment amount. Please select a valid payment type."
         );
       }
 
-      console.log(`Initiating payment for ${paymentType}: ${amount} KES`); // Debug log
+      console.log(
+        `Initiating payment for ${paymentType}: ${paymentDetails.amount} KES`
+      ); // Debug log
 
-      // Use the enhanced payment service to initiate M-Pesa payment
+      // Initiate payment
       const response = await initiateM_PesaPayment({
         //TODO: uncomment in production to use the actual amount
-        // amount: Number(amount),
+        // amount: Number(paymentDetails.amount),
         amount: 1, // Using 1 KES for testing
         phoneNumber,
-        description: description,
+        description: paymentDetails.description,
         paymentType: paymentType, // Add payment type to track in backend
       });
 
       console.log("Payment response:", response); // Debugging
 
       if (response && response.success) {
-        // Store checkout request ID and payment ID for status checking
-        if (
-          response.data &&
-          response.data.payment &&
-          response.data.stkResponse
-        ) {
-          setCheckoutRequestId(response.data.stkResponse.CheckoutRequestID);
-          setPaymentId(response.data.payment.id);
-
-          // Start checking status
-          startStatusCheck(response.data.payment.id);
-        }
-
-        setPaymentStatus("waiting");
-
-        // Set timeout to change status to "timeout" after 60 seconds if no update
-        setTimeout(() => {
-          setPaymentStatus((currentStatus) => {
-            if (currentStatus === "waiting") {
-              // If still waiting after 60 seconds, show timeout message
-              // But don't clear the interval - keep checking in the background
-              return "timeout";
-            }
-            return currentStatus;
-          });
-        }, 60000); // 60 seconds timeout
+        handlePaymentInitiated(response);
       } else {
         setPaymentStatus("error");
         setErrorMessage(
@@ -398,6 +442,53 @@ const MakePayment = ({
     }
   };
 
+  // Get payment details based on payment type
+  const getPaymentDetails = () => {
+    let amount, description;
+
+    if (paymentType === "medical") {
+      amount = getFrequencyAmount(selectedPlan, frequency);
+      description = `Payment for ${
+        selectedPlan?.name || "Medical"
+      } (${frequency}) medical cover`;
+    } else if (paymentType === "membership") {
+      amount = unionDuesAmount; // Fixed one-time fee
+      description = `Payment for union membership`;
+    } else if (paymentType === "loan") {
+      // Future implementation for loan repayments
+      amount = 0; // This would be replaced with actual loan repayment amount
+      description = `Payment for loan repayment`;
+    }
+
+    return { amount, description };
+  };
+
+  // Handle successful payment initiation
+  const handlePaymentInitiated = (response) => {
+    // Store checkout request ID and payment ID for status checking
+    if (response.data && response.data.payment && response.data.stkResponse) {
+      setCheckoutRequestId(response.data.stkResponse.CheckoutRequestID);
+      setPaymentId(response.data.payment.id);
+
+      // Start checking status
+      startStatusCheck(response.data.payment.id);
+    }
+
+    setPaymentStatus("waiting");
+
+    // Set timeout to change status to "timeout" after 60 seconds if no update
+    setTimeout(() => {
+      setPaymentStatus((currentStatus) => {
+        if (currentStatus === "waiting") {
+          // If still waiting after 60 seconds, show timeout message
+          // But don't clear the interval - keep checking in the background
+          return "timeout";
+        }
+        return currentStatus;
+      });
+    }, 60000); // 60 seconds timeout
+  };
+
   // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-KE", {
@@ -406,6 +497,7 @@ const MakePayment = ({
     }).format(amount);
   };
 
+  // Try again handler
   const handleTryAgain = () => {
     setPaymentStatus("idle");
     setErrorMessage("");
@@ -505,77 +597,126 @@ const MakePayment = ({
     }
   }, [paymentStatus, onPaymentComplete]);
 
+  const getPaymentTypeMainColor = () => {
+    switch (paymentType) {
+      case "medical":
+        return "from-primary-600 to-primary-700 text-white";
+      case "membership":
+        return "from-green-600 to-green-700 text-white";
+      default:
+        return "from-gray-600 to-gray-700 text-white";
+    }
+  };
+
+  const getPaymentTypeAccentColor = () => {
+    switch (paymentType) {
+      case "medical":
+        return "from-primary-50 to-blue-50 dark:from-primary-900/30 dark:to-blue-900/20 border-primary-200 dark:border-primary-800/50";
+      case "membership":
+        return "from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 border-green-200 dark:border-green-800/50";
+      default:
+        return "from-gray-50 to-gray-100 dark:from-gray-900/30 dark:to-gray-900/20 border-gray-200 dark:border-gray-800/50";
+    }
+  };
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg px-2 sm:px-8 pb-2">
-      <h3 className="text-base sm:text-lg font-semibold text-secondary-700 dark:text-white mb-2">
-        Make a Payment
-      </h3>
-      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4">
-        {fixedPaymentType
-          ? `Please enter your M-Pesa number to complete your payment for ${getPaymentTypeTitle()}.`
-          : "Select a payment type and enter your M-Pesa phone number to complete your payment."}
-      </p>
+    <div className="">
+      {/* Payment summary panel */}
+      <div
+        className={`bg-gradient-to-r ${getPaymentTypeAccentColor()} px-5 py-4 rounded-xl border shadow-sm`}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="bg-white/80 dark:bg-gray-800 p-2 rounded-lg shadow-sm mr-3">
+              {paymentType === "medical" ? (
+                <TbShieldHalfFilled className="h-5 w-5 text-primary-600" />
+              ) : paymentType === "membership" ? (
+                <RiUserCommunityLine className="h-5 w-5 text-green-600" />
+              ) : (
+                <TbCreditCardFilled className="h-5 w-5 text-gray-600" />
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                {getPaymentTypeTitle()}
+              </p>
+              <p className="text-base font-semibold text-gray-900 dark:text-white">
+                {formatCurrency(getCurrentAmount())}
+              </p>
+            </div>
+          </div>
+          <div>
+            {getCurrentAmount() > 0 ? (
+              <div className="flex items-center text-sm">
+                <TbReceipt2 className="h-4 w-4 text-gray-600 dark:text-gray-400 mr-1" />
+                <span className="text-gray-600 dark:text-gray-400">
+                  {paymentType === "membership"
+                    ? "One-time payment"
+                    : "Recurring payment"}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center text-sm">
+                <TbReceiptOff className="h-4 w-4 text-amber-600 mr-1" />
+                <span className="text-amber-600">No active plan</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
-      <AnimatePresence mode="wait">
-        {isRecovering ? (
-          <motion.div
-            key="recovering"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex flex-col items-center justify-center p-4"
-          >
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500 mb-2"></div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Checking for pending payments...
-            </p>
-          </motion.div>
-        ) : paymentStatus === "idle" ? (
-          <motion.div
-            key="payment-form"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="space-y-4"
-          >
-            {/* Payment Type Selector */}
-            <PaymentTypeSelector
-              paymentTypes={paymentTypes}
-              paymentType={paymentType}
-              activeTabIndex={activeTabIndex}
-              navigateTab={navigateTab}
-              handlePaymentTypeChange={handlePaymentTypeChange}
-              disabled={fixedPaymentType}
-            />
+      <div className="pb-5">
+        <AnimatePresence mode="wait">
+          {isRecovering ? (
+            <PaymentLoader />
+          ) : paymentStatus === "idle" ? (
+            <motion.div
+              key="payment-form"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="space-y-5"
+            >
+              {/* Payment Type Selector */}
+              <PaymentTypeSelector
+                paymentTypes={paymentTypes}
+                paymentType={paymentType}
+                activeTabIndex={activeTabIndex}
+                navigateTab={navigateTab}
+                handlePaymentTypeChange={handlePaymentTypeChange}
+                disabled={fixedPaymentType}
+              />
 
-            {/* Payment Form */}
-            <PaymentForm
+              {/* Payment Form */}
+              <PaymentForm
+                phoneNumber={phoneNumber}
+                setPhoneNumber={setPhoneNumber}
+                paymentType={paymentType}
+                errorMessage={errorMessage}
+                getCurrentAmount={getCurrentAmount}
+                getPaymentTypeTitle={getPaymentTypeTitle}
+                isSubmitting={isSubmitting}
+                handleSubmit={handleSubmit}
+                disabled={paymentType === "loan"}
+              />
+            </motion.div>
+          ) : (
+            <PaymentStatus
+              status={paymentStatus}
               phoneNumber={phoneNumber}
-              setPhoneNumber={setPhoneNumber}
-              paymentType={paymentType}
-              errorMessage={errorMessage}
               getCurrentAmount={getCurrentAmount}
               getPaymentTypeTitle={getPaymentTypeTitle}
-              isSubmitting={isSubmitting}
-              handleSubmit={handleSubmit}
-              disabled={paymentType === "loan"}
+              formatCurrency={formatCurrency}
+              errorMessage={errorMessage}
+              mpesaReceiptNumber={mpesaReceiptNumber}
+              handleTryAgain={handleTryAgain}
+              handleManualVerification={handleManualVerification}
+              paymentId={paymentId}
+              paymentType={paymentType}
             />
-          </motion.div>
-        ) : (
-          <PaymentStatus
-            status={paymentStatus}
-            phoneNumber={phoneNumber}
-            getCurrentAmount={getCurrentAmount}
-            getPaymentTypeTitle={getPaymentTypeTitle}
-            formatCurrency={formatCurrency}
-            errorMessage={errorMessage}
-            mpesaReceiptNumber={mpesaReceiptNumber}
-            handleTryAgain={handleTryAgain}
-            handleManualVerification={handleManualVerification}
-            paymentId={paymentId}
-          />
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

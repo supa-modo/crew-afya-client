@@ -11,7 +11,7 @@ import {
 import { TbCoins, TbShieldCheckFilled, TbExchange } from "react-icons/tb";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
-import { PiWarningDuotone } from "react-icons/pi";
+import { PiWarningDuotone, PiUserCircleFill } from "react-icons/pi";
 import {
   initiateM_PesaPayment,
   checkPaymentStatus,
@@ -505,7 +505,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
       <div className="fixed inset-0 z-[100] overflow-y-auto">
         <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
           <div
-            className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
+            className="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-80 backdrop-blur-sm"
             onClick={handleClose}
             aria-hidden="true"
           ></div>
@@ -517,11 +517,11 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
             &#8203;
           </span>
 
-          <div className="inline-block w-full sm:max-w-3xl md:max-w-4xl px-5 pt-6 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl dark:bg-gray-800 sm:my-6 sm:align-middle sm:px-10 sm:pb-8">
+          <div className="inline-block w-full sm:max-w-3xl md:max-w-4xl px-5 pt-6 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-2xl dark:bg-gray-800 sm:my-6 sm:align-middle sm:px-10 sm:pb-8 border border-gray-200 dark:border-gray-700">
             <div className="absolute top-0 right-0 pt-4 pr-4">
               <button
                 type="button"
-                className="text-gray-400 bg-white rounded-md hover:text-red-500 dark:bg-gray-800 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="text-gray-400 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:text-primary-500 dark:hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200"
                 onClick={handleClose}
               >
                 <span className="sr-only">Close</span>
@@ -531,7 +531,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
 
             {/* Step title */}
             <div className="flex justify-between items-center mb-6 sm:mb-8">
-              <h3 className="text-xl font-semibold text-secondary-700 dark:text-secondary-600">
+              <h3 className="text-xl font-semibold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
                 {step === 1 && "Select Your Health Cover Plan"}
                 {step === 2 && "Payment Details"}
                 {step === 3 && (
@@ -545,7 +545,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
             </div>
 
             {/* Step indicator */}
-            <div className="mb-5 sm:mb-8 px-4 sm:px-8 md:px-14">
+            <div className="mb-6 sm:mb-8 px-4 sm:px-8 md:px-14">
               <div className="flex items-center justify-between">
                 {[1, 2, 3].map((i) => (
                   <div
@@ -553,19 +553,21 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                     className={`flex items-center ${i < 3 ? "w-full" : ""}`}
                   >
                     <div
-                      className={`flex items-center justify-center w-8 h-8 rounded-full ${
-                        step >= i
-                          ? "bg-secondary-600 text-white"
-                          : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
+                      className={`flex items-center justify-center w-8 h-8 rounded-full shadow-md transition-all duration-300 ${
+                        step > i
+                          ? "bg-gradient-to-r from-primary-600 to-primary-500 text-white"
+                          : step === i
+                          ? "bg-primary-600 text-white ring-2 ring-primary-200 dark:ring-primary-900"
+                          : "bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500"
                       }`}
                     >
                       {i}
                     </div>
                     {i < 3 && (
                       <div
-                        className={`flex-1 h-1 mx-2 ${
+                        className={`flex-1 h-1 mx-2 rounded-full transition-all duration-300 ${
                           step > i
-                            ? "bg-secondary-600"
+                            ? "bg-gradient-to-r from-primary-600 to-primary-500"
                             : "bg-gray-200 dark:bg-gray-700"
                         }`}
                       ></div>
@@ -594,7 +596,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
                 >
                   {/* Mobile Tabs */}
                   <div className="md:hidden mb-4">
@@ -602,24 +604,24 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                       <button
                         onClick={prevTab}
                         disabled={activeTab === 0}
-                        className={`p-2 rounded-full ${
+                        className={`p-2 rounded-full shadow-sm transition-all duration-200 ${
                           activeTab === 0
                             ? "text-gray-400 cursor-not-allowed"
-                            : "text-secondary-700 hover:bg-secondary-100"
+                            : "text-primary-600 hover:bg-primary-50 hover:shadow"
                         }`}
                       >
                         <FiArrowLeft className="h-5 w-5" />
                       </button>
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
                         {activeTab + 1} of {plans.length}
                       </span>
                       <button
                         onClick={nextTab}
                         disabled={activeTab === plans.length - 1}
-                        className={`p-2 rounded-full ${
+                        className={`p-2 rounded-full shadow-sm transition-all duration-200 ${
                           activeTab === plans.length - 1
                             ? "text-gray-400 cursor-not-allowed"
-                            : "text-secondary-700 hover:bg-secondary-100"
+                            : "text-primary-600 hover:bg-primary-50 hover:shadow"
                         }`}
                       >
                         <FiArrowRight className="h-5 w-5" />
@@ -639,10 +641,10 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                             className="w-full flex-shrink-0 px-1"
                           >
                             <div
-                              className={`relative p-4 rounded-xl border-2 transition-all duration-200 ${
+                              className={`relative p-5 rounded-xl border transition-all duration-200 shadow-md hover:shadow-lg ${
                                 selectedPlan?.id === plan.id
-                                  ? "border-primary-500 bg-primary-50 dark:bg-primary-900/10"
-                                  : "border-gray-200 dark:border-gray-700 hover:border-primary-300"
+                                  ? "border-primary-500 bg-gradient-to-br from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/10"
+                                  : "border-gray-200 dark:border-gray-700 hover:border-primary-300 bg-white dark:bg-gray-800"
                               }`}
                               onClick={() => handleSelectPlan(plan)}
                             >
@@ -651,7 +653,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                                   <TbShieldCheckFilled className="h-7 w-7 text-primary-500" />
                                 </div>
                               )}
-                              <h3 className="text-xl font-bold text-secondary-700 dark:text-white mb-2">
+                              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
                                 {plan.name}
                               </h3>
                               <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4">
@@ -668,7 +670,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                                       <span className="text-gray-600 dark:text-gray-400">
                                         {benefit.name}
                                       </span>
-                                      <span className="font-semibold text-primary-600 dark:text-primary-500">
+                                      <span className="font-semibold text-primary-600 dark:text-primary-400">
                                         {benefit.limit}
                                       </span>
                                     </div>
@@ -686,7 +688,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                                         setSelectedPlanForDetails(plan);
                                         setShowDetailsModal(true);
                                       }}
-                                      className="text-xs flex items-center text-secondary-600 hover:text-secondary-800 dark:text-secondary-400 dark:hover:text-secondary-300 transition-colors duration-200"
+                                      className="text-xs flex items-center text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200 bg-primary-50 dark:bg-primary-900/20 px-2 py-1 rounded-md shadow-sm"
                                     >
                                       <FiInfo className="mr-1" /> View full
                                       details
@@ -697,18 +699,19 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                               <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
                                 <div className="flex justify-between items-center mb-2">
                                   <select
-                                    className="block w-1/2 pl-3 pr-10 py-2 font-semibold text-gray-600 dark:text-gray-300 border border-gray-400 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm dark:bg-gray-700"
+                                    className="block w-1/2 pl-3 pr-10 py-2 font-semibold text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm dark:bg-gray-700 shadow-sm"
                                     value={selectedFrequency}
                                     onChange={(e) =>
                                       setSelectedFrequency(e.target.value)
                                     }
+                                    onClick={(e) => e.stopPropagation()}
                                   >
                                     <option value="daily">Daily</option>
                                     <option value="weekly">Weekly</option>
                                     <option value="monthly">Monthly</option>
                                     <option value="annual">Annual</option>
                                   </select>
-                                  <span className="text-xl font-bold text-secondary-700 dark:text-secondary-500">
+                                  <span className="text-xl font-bold text-primary-700 dark:text-primary-400">
                                     KES{" "}
                                     {getFrequencyAmount(
                                       plan,
@@ -730,25 +733,25 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                       <button
                         onClick={prevTab}
                         disabled={activeTab === 0}
-                        className={`p-2 rounded-full ${
+                        className={`p-2 rounded-full shadow-sm transition-all duration-200 ${
                           activeTab === 0
                             ? "text-gray-400 cursor-not-allowed"
-                            : "text-secondary-700 hover:bg-secondary-100"
+                            : "text-primary-600 hover:bg-primary-50 hover:shadow"
                         }`}
                       >
                         <FiArrowLeft className="h-5 w-5" />
                       </button>
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
                         {Math.floor(activeTab / 2) + 1} of{" "}
                         {Math.ceil(plans.length / 2)}
                       </span>
                       <button
                         onClick={nextTab}
                         disabled={activeTab >= plans.length - 2}
-                        className={`p-2 rounded-full ${
+                        className={`p-2 rounded-full shadow-sm transition-all duration-200 ${
                           activeTab >= plans.length - 2
                             ? "text-gray-400 cursor-not-allowed"
-                            : "text-secondary-700 hover:bg-secondary-100"
+                            : "text-primary-600 hover:bg-primary-50 hover:shadow"
                         }`}
                       >
                         <FiArrowRight className="h-5 w-5" />
@@ -768,10 +771,10 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                             className="w-1/2 flex-shrink-0 px-2"
                           >
                             <div
-                              className={`relative p-5 rounded-xl border-2 transition-all duration-200 ${
+                              className={`relative p-5 rounded-xl border transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1 ${
                                 selectedPlan?.id === plan.id
-                                  ? "border-primary-500 bg-primary-50 dark:bg-primary-900/10"
-                                  : "border-gray-200 dark:border-gray-700 hover:border-primary-300"
+                                  ? "border-primary-500 bg-gradient-to-br from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/10"
+                                  : "border-gray-200 dark:border-gray-700 hover:border-primary-300 bg-white dark:bg-gray-800"
                               }`}
                               onClick={() => handleSelectPlan(plan)}
                             >
@@ -780,7 +783,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                                   <TbShieldCheckFilled className="h-8 w-8 text-primary-500" />
                                 </div>
                               )}
-                              <h3 className="text-xl font-bold text-gray-700 dark:text-white mb-2">
+                              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
                                 {plan.name}
                               </h3>
                               <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-4">
@@ -797,7 +800,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                                       <span className="text-gray-600 dark:text-gray-400">
                                         {benefit.name}
                                       </span>
-                                      <span className="font-semibold text-primary-600 dark:text-primary-500">
+                                      <span className="font-semibold text-primary-600 dark:text-primary-400">
                                         {benefit.limit}
                                       </span>
                                     </div>
@@ -815,7 +818,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                                         setSelectedPlanForDetails(plan);
                                         setShowDetailsModal(true);
                                       }}
-                                      className="text-xs flex items-center text-secondary-600 hover:text-secondary-800 dark:text-secondary-400 dark:hover:text-secondary-300 transition-colors duration-200"
+                                      className="text-xs flex items-center text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200 bg-primary-50 dark:bg-primary-900/20 px-2 py-1 rounded-md shadow-sm"
                                     >
                                       <FiInfo className="mr-1" /> View full
                                       details
@@ -826,18 +829,19 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                               <div className="pt-5 border-t border-gray-200 dark:border-gray-700">
                                 <div className="flex justify-between items-center mb-4">
                                   <select
-                                    className="block w-1/2 pl-3 pr-10 py-2 font-semibold text-gray-600 dark:text-gray-300 border border-gray-400 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm dark:bg-gray-700"
+                                    className="block w-1/2 pl-3 pr-10 py-2 font-semibold text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm dark:bg-gray-700 shadow-sm"
                                     value={selectedFrequency}
                                     onChange={(e) =>
                                       setSelectedFrequency(e.target.value)
                                     }
+                                    onClick={(e) => e.stopPropagation()}
                                   >
                                     <option value="daily">Daily</option>
                                     <option value="weekly">Weekly</option>
                                     <option value="monthly">Monthly</option>
                                     <option value="annual">Annual</option>
                                   </select>
-                                  <span className="text-2xl font-bold text-secondary-700 dark:text-secondary-500">
+                                  <span className="text-2xl font-bold text-primary-700 dark:text-primary-400">
                                     KES{" "}
                                     {getFrequencyAmount(
                                       plan,
@@ -853,14 +857,14 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                     </div>
                   </div>
 
-                  <div className="mt-4 flex justify-end">
+                  <div className="mt-6 flex justify-end">
                     <button
                       type="button"
                       onClick={handleNextStep}
                       disabled={!selectedPlan}
-                      className={`inline-flex items-center px-7 py-2 border border-transparent rounded-lg shadow-sm text-sm md:text-base font-medium text-white ${
+                      className={`inline-flex items-center px-7 py-3 border border-transparent rounded-xl shadow-md text-sm md:text-base font-medium text-white transition-all duration-200 ${
                         selectedPlan
-                          ? "bg-secondary-700 hover:bg-secondary-800"
+                          ? "bg-gradient-to-r from-primary-600 to-primary-700 hover:shadow-lg transform hover:-translate-y-0.5"
                           : "bg-gray-300 cursor-not-allowed"
                       } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500`}
                     >
@@ -878,19 +882,19 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
                 >
-                  <div className="bg-primary-50 dark:bg-primary-900/10 px-4 py-4 rounded-xl border border-primary-300 dark:border-primary-800 mb-6">
+                  <div className="bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/30 dark:to-blue-900/20 px-6 py-5 rounded-xl border border-primary-200 dark:border-primary-800/50 mb-6 shadow-md">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+                        <div className="bg-white/80 dark:bg-gray-800 p-2.5 rounded-lg shadow-sm mr-3">
                           <MdOutlineHealthAndSafety className="h-6 w-6 text-primary-600 dark:text-primary-400" />
                         </div>
-                        <div className="ml-3">
-                          <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div>
+                          <h3 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-white">
                             {selectedPlan.name}
                           </h3>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
                             {getFrequencyAmount(selectedPlan, selectedFrequency)
                               ? `KES ${getFrequencyAmount(
                                   selectedPlan,
@@ -903,7 +907,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                     </div>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-5 p-5 bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
                     <div>
                       <label
                         htmlFor="amount"
@@ -942,7 +946,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                           value={phoneNumber}
                           onChange={(e) => setPhoneNumber(e.target.value)}
                           placeholder="+254700000000"
-                          className="block w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-secondary-600 focus:border-secondary-600 dark:bg-gray-700 dark:text-white"
+                          className="block w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:text-white"
                         />
                       </div>
                       <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -955,7 +959,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                     <button
                       type="button"
                       onClick={handlePrevStep}
-                      className="inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-secondary-500"
+                      className="inline-flex items-center px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary-500 transition-all duration-200"
                     >
                       <FiArrowLeft className="mr-2 -ml-1 h-5 w-5" />
                       Back
@@ -964,9 +968,9 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                       type="button"
                       onClick={handleInitiatePayment}
                       disabled={!phoneNumber || isSubmitting}
-                      className={`inline-flex items-center px-6 py-2 sm:py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                      className={`inline-flex items-center px-6 py-2.5 border border-transparent rounded-xl shadow-md text-sm font-medium text-white transition-all duration-200 ${
                         phoneNumber && !isSubmitting
-                          ? "bg-secondary-600 hover:bg-secondary-700"
+                          ? "bg-gradient-to-r from-primary-600 to-primary-700 hover:shadow-lg transform hover:-translate-y-0.5"
                           : "bg-gray-300 cursor-not-allowed"
                       } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500`}
                     >
@@ -993,13 +997,21 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-center py-4"
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="text-center py-8"
                 >
                   {paymentStatus === "processing" && (
-                    <div className="flex flex-col items-center">
-                      <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
-                        <FiLoader className="h-8 w-8 text-primary-600 dark:text-primary-400 animate-spin" />
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex flex-col items-center"
+                    >
+                      <div className="w-20 h-20 mb-6 flex items-center justify-center rounded-full bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/30 dark:to-blue-900/20 shadow-md">
+                        <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 relative">
+                          <div className="absolute inset-0 rounded-full border-t-3 border-primary-500 animate-spin"></div>
+                          <FiLoader className="h-8 w-8 text-primary-600 dark:text-primary-400" />
+                        </div>
                       </div>
                       <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
                         Processing Payment Request
@@ -1014,89 +1026,35 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                         </span>{" "}
                         via M-Pesa...
                       </p>
-                    </div>
+                    </motion.div>
                   )}
 
                   {paymentStatus === "waiting" && (
-                    <div className="flex flex-col items-center">
-                      <div className="sm:w-20 sm:h-20 w-16 h-16 mb-2 flex items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900/30">
-                        <FiLoader className="h-8 w-8 text-yellow-600 dark:text-yellow-400 animate-spin" />
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex flex-col items-center"
+                    >
+                      <div className="sm:w-24 sm:h-24 w-20 h-20 mb-4 flex items-center justify-center rounded-full bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/20 shadow-md">
+                        <div className="w-16 h-16 sm:w-18 sm:h-18 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 relative">
+                          <div className="absolute inset-0 rounded-full border-t-3 border-yellow-500 animate-spin"></div>
+                          <FiLoader className="h-8 w-8 text-yellow-600 dark:text-yellow-400 animate-spin" />
+                        </div>
                       </div>
                       <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
                         Payment In Progress
                       </h3>
-                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-2">
-                        An M-Pesa prompt has been sent to your phone (
-                        {phoneNumber}).
-                      </p>
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        Please enter your M-Pesa PIN when prompted to complete
-                        the payment of KES{" "}
-                        <span className="font-semibold">
-                          {getFrequencyAmount(
-                            selectedPlan,
-                            selectedFrequency
-                          )?.toLocaleString() || "N/A"}
-                        </span>
-                        .
-                      </p>
-                      <p className="text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
-                        Waiting for confirmation... This may take a few moments.
-                      </p>
-                    </div>
-                  )}
-
-                  {paymentStatus === "timeout" && (
-                    <div className="flex flex-col items-center">
-                      <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
-                        <PiWarningDuotone className="h-8 w-8 text-orange-600 dark:text-orange-400" />
-                      </div>
-                      <h3 className="text-base sm:text-lg font-medium text-orange-600 dark:text-orange-400 mb-2">
-                        Payment Status Unknown
-                      </h3>
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center mb-2">
-                        We didn't receive confirmation for your payment request.
-                        If you completed the payment on your phone, it may still
-                        be processing.
-                      </p>
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
-                        You can check your payment history later to confirm if
-                        it was successful.
-                      </p>
-                      <div className="flex space-x-4">
-                        <button
-                          type="button"
-                          onClick={handleTryAgain}
-                          className="inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-600"
-                        >
-                          Try Again
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleClose}
-                          className="inline-flex items-center px-7 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {paymentStatus === "success" && (
-                    <div className="flex flex-col items-center">
-                      <div className="sm:w-20 sm:h-20 w-16 h-16 mb-2 flex items-center justify-center rounded-full bg-green-200 dark:bg-green-600/40">
-                        <TbShieldCheckFilled className="h-8 sm:h-10 w-8 sm:w-10 text-green-600 dark:text-green-400" />
-                      </div>
-                      <p className="text-gray-600 dark:text-gray-400 text-lg sm:text-xl font-semibold mb-2">
-                        Payment Successful!
-                      </p>
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">
-                        Your health insurance plan has been activated
-                        successfully.
-                      </p>
-                      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 my-3">
-                        <p className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-300">
-                          Amount: KES{" "}
+                      <div className="bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/10 px-6 py-4 rounded-xl border border-yellow-200 dark:border-yellow-800/50 mb-4 shadow-md max-w-md">
+                        <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-2">
+                          An M-Pesa prompt has been sent to your phone:
+                        </p>
+                        <p className="text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 mb-2">
+                          {phoneNumber}
+                        </p>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                          Please enter your M-Pesa PIN when prompted to complete
+                          the payment of KES{" "}
                           <span className="font-semibold">
                             {getFrequencyAmount(
                               selectedPlan,
@@ -1104,51 +1062,143 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                             )?.toLocaleString() || "N/A"}
                           </span>
                         </p>
-                        {mpesaReceiptNumber && (
-                          <p className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-300">
-                            M-Pesa Receipt: {mpesaReceiptNumber}
-                          </p>
-                        )}
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => onClose()}
-                        className="inline-flex items-center px-6 py-2.5 border border-transparent rounded-lg shadow-sm text-sm  font-medium text-white bg-secondary-600 hover:bg-secondary-700 focus:outline-none focus:ring-1 focus:ring-secondary-600"
-                      >
-                        <TbCoins className="mr-2 h-5 w-5" />
-                        View Payment History
-                      </button>
-                    </div>
+                      <p className="text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
+                        Waiting for confirmation... This may take a few moments.
+                      </p>
+                    </motion.div>
                   )}
 
-                  {paymentStatus === "error" && (
-                    <div className="flex flex-col items-center">
-                      <div className="sm:w-20 sm:h-20 w-16 h-16 mb-2 flex items-center justify-center rounded-full bg-red-200 dark:bg-red-500/40">
-                        <PiWarningDuotone className="h-8 sm:h-10 w-8 sm:w-10 text-red-600 dark:text-red-400" />
+                  {paymentStatus === "timeout" && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex flex-col items-center"
+                    >
+                      <div className="w-20 h-20 mb-4 flex items-center justify-center rounded-full bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/20 shadow-md">
+                        <PiWarningDuotone className="h-10 w-10 text-orange-600 dark:text-orange-400" />
                       </div>
-                      <p className="text-red-600 dark:text-red-400 text-lg sm:text-xl font-semibold mb-2">
-                        Payment Failed
-                      </p>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base mb-4">
-                        {errorMessage}
-                      </p>
-                      <div className="flex space-x-4">
+                      <h3 className="text-base sm:text-lg font-medium text-orange-600 dark:text-orange-400 mb-2">
+                        Payment Status Unknown
+                      </h3>
+                      <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/10 px-6 py-4 rounded-xl border border-orange-200 dark:border-orange-800/50 mb-4 shadow-md max-w-md">
+                        <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 text-center mb-2">
+                          We didn't receive confirmation for your payment
+                          request. If you completed the payment on your phone,
+                          it may still be processing.
+                        </p>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center">
+                          You can check your payment history later to confirm if
+                          it was successful.
+                        </p>
+                      </div>
+                      <div className="flex space-x-4 mt-4">
                         <button
                           type="button"
                           onClick={handleTryAgain}
-                          className="inline-flex items-center px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                          className="inline-flex items-center px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
                         >
                           Try Again
                         </button>
                         <button
                           type="button"
                           onClick={handleClose}
-                          className="inline-flex items-center px-7 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                          className="inline-flex items-center px-6 py-2.5 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 transition-all duration-200"
                         >
                           Cancel
                         </button>
                       </div>
-                    </div>
+                    </motion.div>
+                  )}
+
+                  {paymentStatus === "success" && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex flex-col items-center"
+                    >
+                      <div className="sm:w-24 sm:h-24 w-20 h-20 mb-4 flex items-center justify-center rounded-full bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/20 shadow-md">
+                        <div className="w-16 h-16 sm:w-18 sm:h-18 flex items-center justify-center rounded-full bg-white dark:bg-gray-800">
+                          <TbShieldCheckFilled className="h-10 sm:h-12 w-10 sm:w-12 text-green-600 dark:text-green-400" />
+                        </div>
+                      </div>
+                      <p className="text-gray-800 dark:text-gray-200 text-xl sm:text-2xl font-semibold mb-2">
+                        Payment Successful!
+                      </p>
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">
+                        Your health insurance plan has been activated
+                        successfully.
+                      </p>
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 px-6 py-4 rounded-xl border border-green-200 dark:border-green-800/50 my-4 shadow-md max-w-md">
+                        <p className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          Amount:
+                          <span className="text-green-700 dark:text-green-400 font-semibold ml-2">
+                            KES{" "}
+                            {getFrequencyAmount(
+                              selectedPlan,
+                              selectedFrequency
+                            )?.toLocaleString() || "N/A"}
+                          </span>
+                        </p>
+                        {mpesaReceiptNumber && (
+                          <p className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
+                            M-Pesa Receipt:
+                            <span className="text-green-700 dark:text-green-400 font-semibold ml-2">
+                              {mpesaReceiptNumber}
+                            </span>
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => onClose()}
+                        className="inline-flex items-center px-6 py-2.5 border border-transparent rounded-xl shadow-md text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:shadow-lg transition-all duration-200"
+                      >
+                        <TbCoins className="mr-2 h-5 w-5" />
+                        View Payment History
+                      </button>
+                    </motion.div>
+                  )}
+
+                  {paymentStatus === "error" && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex flex-col items-center"
+                    >
+                      <div className="sm:w-24 sm:h-24 w-20 h-20 mb-4 flex items-center justify-center rounded-full bg-gradient-to-r from-red-100 to-red-50 dark:from-red-900/30 dark:to-red-900/10 shadow-md">
+                        <div className="w-16 h-16 sm:w-18 sm:h-18 flex items-center justify-center rounded-full bg-white dark:bg-gray-800">
+                          <PiWarningDuotone className="h-10 sm:h-12 w-10 sm:w-12 text-red-600 dark:text-red-400" />
+                        </div>
+                      </div>
+                      <p className="text-red-600 dark:text-red-400 text-lg sm:text-xl font-semibold mb-2">
+                        Payment Failed
+                      </p>
+                      <div className="bg-gradient-to-r from-red-50 to-red-50/70 dark:from-red-900/20 dark:to-red-900/10 px-6 py-4 rounded-xl border border-red-200 dark:border-red-800/50 mb-4 shadow-md max-w-md">
+                        <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base">
+                          {errorMessage}
+                        </p>
+                      </div>
+                      <div className="flex space-x-4">
+                        <button
+                          type="button"
+                          onClick={handleTryAgain}
+                          className="inline-flex items-center px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+                        >
+                          Try Again
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleClose}
+                          className="inline-flex items-center px-6 py-2.5 border border-transparent rounded-xl shadow-md text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 transition-all duration-200"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </motion.div>
                   )}
                 </motion.div>
               )}
@@ -1192,20 +1242,45 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
   );
 };
 
-// Separate component for the membership required modal
-// This ensures it's not nested inside the plan selection modal
 export const MembershipRequiredModal = ({ isOpen, onClose, onConfirm }) => {
   return (
     <ConfirmationModal
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={onConfirm}
-      title="Membership Required!"
-      message="You need to complete your union membership registration before subscribing to a medical plan. Would you like to complete your registration now?"
-      confirmText="Complete Registration"
+      title={
+        <div className="flex items-center text-amber-600 dark:text-amber-400">
+          <span className="text-lg font-bold">Union Membership Required!</span>
+        </div>
+      }
+      message={
+        <div className="mt-4 bg-gradient-to-r from-amber-50 to-amber-50/50 dark:from-gray-800 dark:to-gray-700 p-4 rounded-lg border border-amber-100 dark:border-gray-700">
+          <p className="text-gray-700 dark:text-gray-300 mb-2">
+            You need to complete your union membership registration before
+            subscribing to a medical plan.
+          </p>
+          <p className="text-gray-700 dark:text-gray-300">
+            Would you like to complete your registration now?
+          </p>
+        </div>
+      }
+      confirmText={
+        <span className="flex items-center">
+          <PiUserCircleFill className="mr-2 h-5 w-5" />
+          Complete Registration
+        </span>
+      }
       cancelText="Not Now"
-      confirmButtonClass="bg-secondary-600 hover:bg-secondary-700"
-      icon={<PiWarningDuotone className="h-8 w-8 text-amber-500" />}
+      confirmButtonClass="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white shadow-md hover:shadow-lg transition-all duration-200 rounded-lg"
+      cancelButtonClass="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-sm hover:shadow transition-all duration-200 rounded-lg"
+      icon={
+          <PiWarningDuotone className="h-8 w-8 text-amber-600 dark:text-amber-400 animate-pulse" />
+       
+      }
+      containerClass="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+      headerClass="p-6 bg-gradient-to-r from-amber-50 to-amber-50/40 dark:from-gray-800 dark:to-gray-700"
+      bodyClass="p-6"
+      footerClass="px-6 py-4 bg-gray-50 dark:bg-gray-800 "
     />
   );
 };

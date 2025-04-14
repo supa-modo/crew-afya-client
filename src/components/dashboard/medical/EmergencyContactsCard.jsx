@@ -64,7 +64,6 @@ const EmergencyContactsCard = () => {
             <li>Always keep your membership ID ready when calling</li>
             <li>For emergencies, seek medical attention immediately</li>
             <li>Contact claims assistance within 48 hours of hospital admission</li>
-            <li>Download the CrewAfya app for quick access to your digital ID card</li>
           </ul>
         </div>
       </div>

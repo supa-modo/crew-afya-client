@@ -76,7 +76,7 @@ const BenefitsCard = ({ plan }) => {
       <div className=" px-4">
         <h3 className="text-amber-700 dark:text-amber-600 font-semibold flex items-center">
           <TbListCheck className="mr-2 h-5 w-5" />
-          Plan Benefits
+          Health Plan Benefits
         </h3>
       </div>
       <div className="p-5">

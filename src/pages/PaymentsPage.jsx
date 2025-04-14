@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import {
-  FiCheck,
-  FiArrowRight,
-} from "react-icons/fi";
+import { FiCheck, FiArrowRight } from "react-icons/fi";
 import MakePayment from "../components/payment/MakePayment";
 import PaymentHistory from "../components/payment/PaymentHistory";
-import PlanSelectionModal, { MembershipRequiredModal } from "../components/payment/PlanSelectionModal";
+import PlanSelectionModal, {
+  MembershipRequiredModal,
+} from "../components/payment/PlanSelectionModal";
 import { Link, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -13,6 +12,9 @@ import {
   TbCreditCardFilled,
   TbHome2,
   TbShieldHalfFilled,
+  TbCalendarEvent,
+  TbMoneybag,
+  TbCoins,
 } from "react-icons/tb";
 import { BiSolidShieldX } from "react-icons/bi";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
@@ -20,7 +22,11 @@ import { PiUserDuotone } from "react-icons/pi";
 import { useAuth } from "../context/AuthContext";
 import UnionMembershipHistory from "../components/payment/UnionMembershipHistory";
 import { RiUserCommunityLine } from "react-icons/ri";
-import { saveSubscription, getUserSubscription, getPremiumAmount } from "../services/subscriptionService";
+import {
+  saveSubscription,
+  getUserSubscription,
+  getPremiumAmount,
+} from "../services/subscriptionService";
 
 const PaymentsPage = () => {
   const { user } = useAuth();
@@ -44,23 +50,31 @@ const PaymentsPage = () => {
   const [activeTab, setActiveTab] = useState("medical"); // "medical" or "union"
   const [hasPaidMembership, setHasPaidMembership] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [showMembershipRequiredModal, setShowMembershipRequiredModal] = useState(false);
+  const [showMembershipRequiredModal, setShowMembershipRequiredModal] =
+    useState(false);
 
   // Load user subscription data from server
   useEffect(() => {
     const loadSubscription = async () => {
       if (!user || !user.id) return;
-      
+
       setIsLoading(true);
-      
+
       try {
         // Get subscription from server
         const response = await getUserSubscription(user.id);
-        
-        if (response && response.success && response.data && response.data.plan) {
+
+        if (
+          response &&
+          response.success &&
+          response.data &&
+          response.data.plan
+        ) {
           // If server has subscription data, use it
           setSelectedPlan(response.data.plan);
-          setSelectedFrequency(response.data.frequency || response.data.paymentFrequency || "daily");
+          setSelectedFrequency(
+            response.data.frequency || response.data.paymentFrequency || "daily"
+          );
         } else {
           // No subscription found
           setSelectedPlan(null);
@@ -82,20 +96,20 @@ const PaymentsPage = () => {
   useEffect(() => {
     const saveUserSubscription = async () => {
       if (!selectedPlan || !user || !user.id) return;
-      
+
       // Save to server
       try {
         await saveSubscription({
           planId: selectedPlan.id,
           frequency: selectedFrequency,
-          userId: user.id
+          userId: user.id,
         });
       } catch (error) {
         console.error("Error saving subscription to server:", error);
         // Continue even if server save fails, as we have no fallback
       }
     };
-    
+
     saveUserSubscription();
   }, [selectedPlan, selectedFrequency, user]);
 
@@ -112,7 +126,7 @@ const PaymentsPage = () => {
 
   const handleOpenPlanModal = (isChanging = false) => {
     // Check if user has active membership status before opening the plan modal
-    if (user && user.membershipStatus !== 'active') {
+    if (user && user.membershipStatus !== "active") {
       setShowMembershipRequiredModal(true);
       return;
     }
@@ -133,14 +147,14 @@ const PaymentsPage = () => {
     setSelectedPlan(plan);
     setSelectedFrequency(frequency);
     setIsPlanModalOpen(false);
-    
+
     // Save to server immediately after selection
     if (user && user.id) {
       saveSubscription({
         planId: plan.id,
         frequency: frequency,
-        userId: user.id
-      }).catch(error => {
+        userId: user.id,
+      }).catch((error) => {
         console.error("Error saving subscription after plan selection:", error);
       });
     }
@@ -148,14 +162,14 @@ const PaymentsPage = () => {
 
   // Check membership status based on user object
   useEffect(() => {
-    if (user && user.membershipStatus === 'active') {
+    if (user && user.membershipStatus === "active") {
       setHasPaidMembership(true);
     } else {
       setHasPaidMembership(false);
       // Show membership modal if status is pending
-      if (user && user.membershipStatus === 'pending') {
+      if (user && user.membershipStatus === "pending") {
         // Open the membership modal
-        setActiveTab('union');
+        setActiveTab("union");
       }
     }
   }, [user]);
@@ -168,9 +182,8 @@ const PaymentsPage = () => {
   };
 
   return (
-    <div className="bg-gray-50/40 dark:bg-gray-900/40 py-6 mt-14 sm:mt-20 min-h-screen">
-      {/* Overlay div for better text visibility */}
-      <div className="absolute inset-0 " style={{ zIndex: "-1" }}></div>
+    <div className="bg-gradient-to-br from-gray-50/60 to-gray-100/60 dark:from-gray-900/60 dark:to-gray-800/60 min-h-screen pb-10">
+      <div className="pt-20 sm:pt-24">
 
       {/* Breadcrumb */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
@@ -205,40 +218,49 @@ const PaymentsPage = () => {
       </div>
 
       {/* Header section */}
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-5">
-        <div className="bg-white flex flex-col md:flex-row justify-between items-center dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-          <div className="px-6 py-5 sm:px-8 sm:py-6">
-            <h1 className="text-base sm:text-lg md:text-xl font-bold text-green-700 flex items-center">
-              <TbCreditCardFilled className="mr-2 h-6 w-6 text-gray-400" />
+      <div className="max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8 mb-8">
+        <div className="bg-gray-50 dark:bg-gray-800 pt-5 sm:pt-7 pb-8 flex flex-col md:flex-row justify-between items-center rounded-2xl overflow-hidden border border-secondary-700/20 shadow-xl relative">
+          <div className="relative z-10 px-5 sm:px-8 text-secondary-700 dark:text-secondary-500">
+            <h1 className="text-lg sm:text-xl font-bold flex items-center">
+              <TbCreditCardFilled className="mr-3 h-8 w-8 text-secondary-700 dark:text-secondary-500" />
               Payments & Subscriptions
             </h1>
-            <p className="mt-1 text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400">
-              Make payments for medical cover and union membership. Keep track of your
-              payment history.
+            <p className="mt-2 text-[0.8rem] sm:text-[0.95rem] font-medium text-gray-500 dark:text-gray-300 max-w-2xl">
+              Make payments for medical cover and union membership. Keep track
+              of your payment history and manage your subscription plans.
             </p>
           </div>
-          <div className="px-6 pb-5 mr-auto md:mr-0 md:px-0 md:py-0">
-            {selectedPlan && activeTab === "medical" && (
+          {selectedPlan && activeTab === "medical" && (
+          <div className="px-8 pt-5 md:pt-8 z-10 w-full sm:w-auto">
+           
               <button
-                className="btn-primary text-xs sm:text-sm text-white md:mr-6 px-4 py-2 rounded-md"
+                className="w-full sm:w-auto text-primary-700 bg-primary-100 transition-all duration-200 font-semibold text-sm py-3 px-8 rounded-lg shadow-md hover:shadow-lg"
                 onClick={() => handleOpenPlanModal(true)}
               >
                 Change Your Plan
               </button>
-            )}
+           
+          </div>
+           )}
+
+          {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-secondary-100/30 dark:bg-secondary-900/30 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary-200/20 dark:bg-secondary-900/20 rounded-full -ml-24 -mb-24 blur-2xl"></div>
+          <div className="absolute right-14 sm:right-48 top-5 opacity-10">
+            <TbCoins className="h-24 w-24 text-secondary-700" />
           </div>
         </div>
       </div>
 
       {/* Payment Type Tabs */}
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-1">
-        <div className="bg-white dark:bg-gray-800 rounded-t-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div className="max-w-screen-2xl mx-auto px-0 md:px-8">
+        <div className="bg-white dark:bg-gray-800 rounded-t-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
           <div className="flex border-b border-gray-200 dark:border-gray-700">
             <button
               onClick={() => setActiveTab("medical")}
-              className={`flex-1 py-4 px-6 text-center font-medium text-xs sm:text-sm md:text-base ${
+              className={`relative flex-1 py-4 px-6 text-center font-medium text-sm md:text-base transition-all duration-200 ${
                 activeTab === "medical"
-                  ? "border-b-2 border-primary-500 text-primary-600 dark:text-primary-400"
+                  ? "text-primary-600 dark:text-primary-400 overflow-hidden"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               }`}
             >
@@ -246,12 +268,15 @@ const PaymentsPage = () => {
                 <TbShieldHalfFilled className="h-5 w-5 mr-2" />
                 Medical Cover
               </div>
+              {activeTab === "medical" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-400 via-primary-600 to-primary-400 shadow-sm"></div>
+              )}
             </button>
             <button
               onClick={() => setActiveTab("union")}
-              className={`flex-1 py-4 px-6 text-center font-medium text-xs sm:text-sm md:text-base ${
+              className={`relative flex-1 py-4 px-6 text-center font-medium text-sm md:text-base transition-all duration-200 ${
                 activeTab === "union"
-                  ? "border-b-2 border-green-500 text-green-600 dark:text-green-400"
+                  ? "text-green-600 dark:text-green-400 overflow-hidden"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               }`}
             >
@@ -259,34 +284,38 @@ const PaymentsPage = () => {
                 <PiUserDuotone className="h-5 w-5 mr-2" />
                 Membership
               </div>
+              {activeTab === "union" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-green-400 via-green-600 to-green-400 shadow-sm"></div>
+              )}
             </button>
           </div>
         </div>
       </div>
 
       {/* Content based on active tab */}
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-screen-2xl mx-auto px-0 md:px-8">
         {activeTab === "medical" ? (
-          <div className="bg-white dark:bg-gray-800 shadow-sm rounded-b-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-b-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
             <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8 px-4 md:px-8 py-8">
               {/* Calendar Component */}
-              <div className="bg-white md:w-[40%] dark:bg-gray-800">
-                <h3 className="text-base sm:text-lg font-semibold text-primary-600 mb-2">
+              <div className="bg-white md:w-[40%] dark:bg-gray-800 rounded-xl">
+                <h3 className="text-base sm:text-lg font-semibold text-primary-600 flex items-center mb-2">
+                  <TbCalendarEvent className="mr-2 h-5 w-5 text-primary-500" />
                   Your Payment Calendar
                 </h3>
                 <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400 mb-4">
                   Monitor your premium payments and plan your payment schedule
                   effectively.
                 </p>
-                <div className="calendar-wrapper">
+                <div className="calendar-wrapper shadow-md rounded-xl  overflow-hidden">
                   <Calendar
                     onChange={setCalendarDate}
                     value={calendarDate}
                     tileClassName={tileClassName}
-                    className="w-full border-none rounded-lg shadow-sm spaced-calendar"
+                    className="w-full border-none rounded-lg overflow-hidden shadow-sm spaced-calendar"
                   />
                 </div>
-                <div className="mt-4 flex items-center justify-center space-x-6">
+                <div className="mt-5 flex items-center justify-center space-x-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg py-3 px-4 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center">
                     <div className="w-4 h-4 rounded bg-green-300 mr-2"></div>
                     <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -303,39 +332,18 @@ const PaymentsPage = () => {
               </div>
 
               {/* Make Payment Section */}
-              <div className="bg-white md:w-[60%] md:border-l md:border-gray-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden">
+              <div className="bg-white md:w-[60%] md:border-l md:border-gray-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden md:pl-8">
                 <div className="">
                   {isLoading ? (
                     <div className="text-center py-20">
                       <div className="animate-spin h-8 w-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                      <p className="text-gray-600 dark:text-gray-400">Loading your subscription...</p>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Loading your subscription...
+                      </p>
                     </div>
                   ) : selectedPlan ? (
                     <div className="space-y-4">
-                      <div className="bg-primary-50 dark:bg-primary-900/10 px-2 sm:px-4 py-4 md:mx-10 rounded-lg border border-primary-200 dark:border-primary-800 mb-2">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <MdOutlineHealthAndSafety className="h-6 w-6 text-primary-600 mt-0.5 mr-1 sm:mr-2 md:mr-3" />
-                            <div>
-                              <h3 className="font-medium text-[0.9rem] sm:text-base text-gray-900 dark:text-white">
-                                {selectedPlan.name}
-                              </h3>
-                              <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400">
-                                {selectedFrequency.charAt(0).toUpperCase() +
-                                  selectedFrequency.slice(1)}{" "}
-                                payment of KES{" "}
-                                {(selectedPlan[`${selectedFrequency}Premium`] || 
-                                  (selectedPlan.premiums && selectedPlan.premiums[selectedFrequency]) || 0).toLocaleString()}
-                              </p>
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-xs font-medium text-green-700 px-4 sm:px-6 py-1.5 rounded-full bg-green-200">
-                              Active
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      
                       <MakePayment
                         selectedPlan={selectedPlan}
                         frequency={selectedFrequency}
@@ -345,8 +353,10 @@ const PaymentsPage = () => {
                       />
                     </div>
                   ) : (
-                    <div className="text-center py-20">
-                      <BiSolidShieldX className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <div className="text-center py-20 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                      <div className="bg-white dark:bg-gray-700 w-16 h-16 mx-auto rounded-full flex items-center justify-center shadow-md mb-4">
+                        <BiSolidShieldX className="h-9 w-9 text-gray-400" />
+                      </div>
                       <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
                         You are not covered yet
                       </h3>
@@ -356,7 +366,7 @@ const PaymentsPage = () => {
                       </p>
                       <button
                         onClick={() => handleOpenPlanModal(false)}
-                        className="inline-flex items-center px-7 py-2 border border-transparent rounded-md shadow-sm text-[0.8rem] sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        className="inline-flex items-center px-8 py-3 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200"
                       >
                         Select a Plan
                         <FiArrowRight className="ml-2 -mr-1 h-4 w-4" />
@@ -368,7 +378,7 @@ const PaymentsPage = () => {
             </div>
 
             {/* Payment History Section */}
-            <div className="bg-white dark:bg-gray-800 overflow-hidden ">
+            <div className="bg-white dark:bg-gray-800 overflow-hidden border-t border-gray-200 dark:border-gray-700">
               <div className="py-6 sm:px-6 px-2">
                 <PaymentHistory title="Medical Payment History" />
               </div>
@@ -376,26 +386,27 @@ const PaymentsPage = () => {
           </div>
         ) : (
           /* Union Dues Content */
-          <div className="bg-white dark:bg-gray-800 shadow-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-            <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8 px-4 md:px-8 py-6">
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-b-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8 px-4 md:px-8 py-8">
               {/* Union Membership Info */}
               <div className="bg-white md:w-[40%] dark:bg-gray-800">
-                <h3 className="text-base sm:text-lg font-semibold text-secondary-600 mb-1">
+                <h3 className="text-base sm:text-lg font-semibold text-green-600 mb-3 flex items-center">
+                  <RiUserCommunityLine className="mr-2 h-5 w-5 text-green-500" />
                   Union Membership Status
                 </h3>
-                <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400 sm:mb-4">
+                <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400 mb-4">
                   Your current membership status information.
                 </p>
 
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 shadow-sm">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 rounded-xl p-6 shadow-md border border-green-200 dark:border-green-800/50">
                   {/* Status Badge */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
                       <span
-                        className={`inline-flex items-center px-4 py-1 rounded-lg text-xs font-medium ${
+                        className={`inline-flex items-center px-4 py-1.5 rounded-lg text-xs font-medium shadow-sm ${
                           hasPaidMembership
-                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                            : "bg-amber-200 text-amber-800 dark:bg-amber-800/60 dark:text-amber-400"
+                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800/50"
+                            : "bg-amber-100 text-amber-800 dark:bg-amber-800/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50"
                         }`}
                       >
                         <FiCheck className="mr-1" />
@@ -419,7 +430,7 @@ const PaymentsPage = () => {
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-600">
+                    <div className="flex justify-between items-center pt-2 border-t border-green-200/50 dark:border-green-800/30">
                       <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                         Registration Fee:
                       </span>
@@ -430,8 +441,9 @@ const PaymentsPage = () => {
                   </div>
                 </div>
 
-                <div className="mt-6">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <div className="mt-6 bg-white dark:bg-gray-800/50 p-5 rounded-xl border border-gray-200 dark:border-gray-700">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                    <RiUserCommunityLine className="h-5 w-5 text-green-500 mr-2" />
                     About Union Membership
                   </h4>
                   <p className="text-[0.8rem] text-gray-600 dark:text-gray-400">
@@ -451,8 +463,8 @@ const PaymentsPage = () => {
               <div className="bg-white md:w-[60%] md:border-l md:border-gray-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden">
                 <div className="md:pl-8">
                   {hasPaidMembership ? (
-                    <div className="bg-green-50 dark:bg-green-900/10 px-6 py-8 rounded-lg border border-green-200 dark:border-green-800 text-center">
-                      <div className="mx-auto w-16 h-16 flex items-center justify-center bg-green-100 dark:bg-green-800/20 rounded-full mb-4">
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 px-6 py-8 rounded-xl border border-green-200 dark:border-green-800/50 text-center shadow-md">
+                      <div className="mx-auto w-16 h-16 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full mb-4 shadow-md">
                         <FiCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
                       </div>
                       <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
@@ -465,18 +477,20 @@ const PaymentsPage = () => {
                       </p>
                       <button
                         onClick={() => navigate("/profile")}
-                        className="text-sm  px-5 py-2 border border-transparent rounded-md shadow-sm font-medium text-white bg-green-600 hover:bg-green-700"
+                        className="text-sm px-5 py-3 border border-transparent rounded-xl shadow-md font-medium text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 transition-all duration-200"
                       >
                         View Membership Details
                       </button>
                     </div>
                   ) : (
                     <>
-                      <div className="bg-green-50 dark:bg-green-900/10 px-4 py-4 rounded-lg border border-green-200 dark:border-green-800 mb-6">
+                      {/* <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 px-6 py-5 rounded-xl border border-green-200 dark:border-green-800/50 mb-6 shadow-md">
                         <div className="flex items-center">
-                          <RiUserCommunityLine className="h-8 w-8 text-green-600 dark:text-green-400 mr-3" />
+                          <div className="bg-white/80 dark:bg-gray-800 p-2.5 rounded-lg shadow-sm mr-3">
+                            <RiUserCommunityLine className="h-6 w-6 text-green-600 dark:text-green-400" />
+                          </div>
                           <div>
-                            <h3 className="font-medium text-sm sm:text-base text-gray-900 dark:text-white">
+                            <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white">
                               Union Membership Registration
                             </h3>
                             <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -484,9 +498,9 @@ const PaymentsPage = () => {
                             </p>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
 
-                      {/* Use the MakePayment component with membership config */}
+                      {/* MakePayment component with membership config */}
                       <MakePayment
                         selectedPlan={{
                           name: "Union Membership Registration",
@@ -518,13 +532,15 @@ const PaymentsPage = () => {
         )}
       </div>
 
+      </div>
+
       {/* Plan Selection Modal */}
       <PlanSelectionModal
         isOpen={isPlanModalOpen}
         onClose={() => handleClosePlanModal()}
         onPlanSelected={handlePlanSelected}
       />
-      
+
       {/* Membership Required Modal */}
       <MembershipRequiredModal
         isOpen={showMembershipRequiredModal}
@@ -532,10 +548,9 @@ const PaymentsPage = () => {
         onConfirm={() => {
           setShowMembershipRequiredModal(false);
           // Navigate to union tab
-          setActiveTab('union');
+          setActiveTab("union");
         }}
       />
-
     </div>
   );
 };
