@@ -191,15 +191,15 @@ const SupportPage = () => {
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Tabs */}
         <div className="mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-md">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-md">
             <div className="bg-gradient-to-r from-primary-600/5 to-primary-600/0 dark:from-primary-900/10 dark:to-primary-900/5 px-1 py-1 border-b border-gray-200 dark:border-gray-700">
               <nav className="flex flex-wrap">
                 <button
                   onClick={() => setActiveTab("help")}
                   className={`${
                     activeTab === "help"
-                      ? "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
-                      : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30"
+                      ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
+                      : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/70"
                   } whitespace-nowrap py-3 px-4 rounded-lg font-medium text-sm sm:text-base flex items-center mx-1 transition-colors duration-200`}
                 >
                   <TbHelpCircle className="mr-2 h-5 w-5" />
@@ -209,9 +209,9 @@ const SupportPage = () => {
                   onClick={() => setActiveTab("payment")}
                   className={`${
                     activeTab === "payment"
-                      ? "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
-                      : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30"
-                  } whitespace-nowrap py-3 px-4 rounded-lg font-medium text-sm sm:text-base flex items-center mx-1 transition-colors duration-200`}
+                    ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
+                    : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/70"
+                } whitespace-nowrap py-3 px-4 rounded-lg font-medium text-sm sm:text-base flex items-center mx-1 transition-colors duration-200`}
                 >
                   <MdOutlinePayments className="mr-2 h-5 w-5" />
                   Payments
@@ -220,8 +220,8 @@ const SupportPage = () => {
                   onClick={() => setActiveTab("insurance")}
                   className={`${
                     activeTab === "insurance"
-                      ? "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
-                      : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30"
+                    ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
+                      : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/70"
                   } whitespace-nowrap py-3 px-4 rounded-lg font-medium text-sm sm:text-base flex items-center mx-1 transition-colors duration-200`}
                 >
                   <MdOutlineHealthAndSafety className="mr-2 h-5 w-5" />
@@ -231,9 +231,9 @@ const SupportPage = () => {
                   onClick={() => setActiveTab("account")}
                   className={`${
                     activeTab === "account"
-                      ? "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
-                      : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/30"
-                  } whitespace-nowrap py-3 px-4 rounded-lg font-medium text-sm sm:text-base flex items-center mx-1 transition-colors duration-200`}
+                    ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
+                    : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/70"
+                } whitespace-nowrap py-3 px-4 rounded-lg font-medium text-sm sm:text-base flex items-center mx-1 transition-colors duration-200`}
                 >
                   <RiCustomerService2Line className="mr-2 h-5 w-5" />
                   Account
@@ -264,10 +264,10 @@ const SupportPage = () => {
                           initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.2, delay: index * 0.05 }}
-                          className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-sm transition-all duration-200"
+                          className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-sm transition-all duration-200"
                         >
                           <button
-                            className="w-full flex justify-between items-center p-4 text-left focus:outline-none bg-gray-50 dark:bg-gray-750 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                            className="w-full flex justify-between items-center p-4 text-left focus:outline-none bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                             onClick={() => toggleFaq(index)}
                           >
                             <span className="text-sm sm:text-base font-medium text-gray-800 dark:text-white">
@@ -335,7 +335,7 @@ const SupportPage = () => {
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       />
                     </div>
 
@@ -349,7 +349,7 @@ const SupportPage = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       />
                     </div>
 
@@ -362,7 +362,7 @@ const SupportPage = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       />
                     </div>
 
@@ -374,7 +374,7 @@ const SupportPage = () => {
                         name="category"
                         value={formData.category}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       >
                         <option value="payment">Payment Issue</option>
                         <option value="insurance">Insurance Coverage</option>
@@ -394,7 +394,7 @@ const SupportPage = () => {
                         value={formData.subject}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       />
                     </div>
 
@@ -408,14 +408,14 @@ const SupportPage = () => {
                         onChange={handleInputChange}
                         required
                         rows={4}
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       />
                     </div>
 
                     <div>
                       <button
                         type="submit"
-                        className="w-full inline-flex items-center justify-center px-5 py-2.5 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        className="w-full inline-flex items-center justify-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                       >
                         <FiMail className="mr-2 -ml-1 h-5 w-5" />
                         Submit Request
@@ -427,12 +427,7 @@ const SupportPage = () => {
             </div>
 
             <div className="mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-md">
-              <div className="bg-gradient-to-r from-blue-500/10 to-blue-600/5 dark:from-blue-900/20 dark:to-blue-900/10 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-base sm:text-lg font-semibold text-blue-800 dark:text-blue-500 flex items-center">
-                  <FiPhone className="mr-2 h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  Get In Touch
-                </h2>
-              </div>
+              
 
               <div className="p-6">
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">

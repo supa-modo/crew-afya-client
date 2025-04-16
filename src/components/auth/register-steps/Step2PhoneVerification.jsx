@@ -15,51 +15,50 @@ const Step2PhoneVerification = ({
 }) => {
   return (
     <div className="space-y-5">
-      <div className="text-center mb-2">
-        <div className="inline-flex items-center justify-center h-16 w-20 rounded-xl bg-secondary-100 dark:bg-secondary-900/30 text-secondary-600 dark:text-secondary-500 mb-4">
-          <TbShieldCheckFilled className="h-10 w-10" />
+      <div className="py-8 bg-white/40 border border-gray-200 rounded-xl">
+        <div className="text-center mb-6">
+        <div className="inline-flex items-center justify-center text-secondary-600 dark:text-secondary-500">
+          <TbShieldCheckFilled className="h-12 w-12" />
         </div>
-        <h3 className="text-lg font-bold font-geist text-gray-700 dark:text-white">
-          Verify Your Phone
-        </h3>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-          We've sent a 6-digit code to {formData.phoneNumber}
-        </p>
-      </div>
-
-      <div className="flex justify-center space-x-2 sm:space-x-3 mb-5">
-        {[0, 1, 2, 3, 4, 5].map((index) => (
-          <input
-            key={index}
-            id={`otp-${index}`}
-            type="text"
-            maxLength={1}
-            value={otpCode[index]}
-            onChange={(e) => handleOtpChange(index, e.target.value)}
-            onKeyDown={(e) => handleOtpKeyDown(index, e)}
-            className="w-10 h-12 sm:w-12 sm:h-14 text-gray-600 text-center text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:ring-secondary-600 focus:border-secondary-600 dark:bg-gray-700 dark:text-white dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
-            required
-            disabled={isSubmitting}
-          />
-        ))}
-      </div>
-
-      <div className="text-center mb-2">
-        {otpResendTimer > 0 ? (
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Resend code in{" "}
-            <span className="font-medium">{otpResendTimer}s</span>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            We've sent a 6-digit code to {formData.phoneNumber}
           </p>
-        ) : (
-          <button
-            type="button"
-            onClick={handleResendOtp}
-            disabled={isSubmitting}
-            className="text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
-          >
-            Resend verification code
-          </button>
-        )}
+        </div>
+
+        <div className="flex justify-center space-x-2 sm:space-x-3 mb-5">
+          {[0, 1, 2, 3, 4, 5].map((index) => (
+            <input
+              key={index}
+              id={`otp-${index}`}
+              type="text"
+              maxLength={1}
+              value={otpCode[index]}
+              onChange={(e) => handleOtpChange(index, e.target.value)}
+              onKeyDown={(e) => handleOtpKeyDown(index, e)}
+              className="w-12 h-12 sm:w-14 sm:h-14 text-gray-600 text-center text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:ring-secondary-600 focus:border-secondary-600 dark:bg-gray-700 dark:text-white dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
+              required
+              disabled={isSubmitting}
+            />
+          ))}
+        </div>
+
+        <div className="text-center mb-2">
+          {otpResendTimer > 0 ? (
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Resend code in{" "}
+              <span className="font-medium">{otpResendTimer}s</span>
+            </p>
+          ) : (
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              disabled={isSubmitting}
+              className="text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors duration-200"
+            >
+              Resend verification code
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex space-x-3">

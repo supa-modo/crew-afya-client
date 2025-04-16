@@ -6,7 +6,7 @@ import {
   PiUserDuotone,
   PiGenderIntersexDuotone,
 } from "react-icons/pi";
-import { TbGenderMale, TbGenderFemale } from "react-icons/tb";
+import { TbGenderMale, TbGenderFemale, TbPhone } from "react-icons/tb";
 
 const Step1PersonalInfo = ({
   formData,
@@ -94,17 +94,15 @@ const Step1PersonalInfo = ({
             ID Number
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <PiIdentificationBadgeDuotone className="h-5 sm:h-6 w-5 sm:w-6 text-gray-400" />
-            </div>
+            
             <input
               id="idNumber"
               name="idNumber"
               type="text"
               value={formData.idNumber}
               onChange={handleChange}
-              className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
-              placeholder="Enter your ID number"
+              className="text-sm text-gray-600/90 sm:text-base block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
+              placeholder="i.e. 12345678"
               required
               disabled={isSubmitting}
             />
@@ -144,7 +142,7 @@ const Step1PersonalInfo = ({
         </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <PiPhoneListDuotone className="h-5 sm:h-6 w-5 sm:w-6 text-gray-400" />
+            <TbPhone className="h-5 sm:h-6 w-5 sm:w-6 text-gray-400" />
           </div>
           <input
             id="phoneNumber"
@@ -153,7 +151,7 @@ const Step1PersonalInfo = ({
             value={formData.phoneNumber}
             onChange={handleChange}
             className="text-sm text-gray-600/90 sm:text-base block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-400 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
-            placeholder="+254700000000"
+            placeholder="+254XXXXXXXXX"
             required
             disabled={isSubmitting}
           />

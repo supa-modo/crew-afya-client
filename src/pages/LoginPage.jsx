@@ -25,7 +25,7 @@ const LoginPage = () => {
   }, [message, authError]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative bg-gradient-to-br from-blue-50/80 to-cyan-50/80 dark:from-gray-900/80 dark:to-blue-900/80">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative bg-gradient-to-br from-blue-50/90 to-cyan-50/90 dark:from-gray-900/80 dark:to-blue-900/80">
       {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img
@@ -33,7 +33,7 @@ const LoginPage = () => {
           alt="Health background"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/70 via-blue-50/60 to-transparent dark:from-gray-900/80 dark:via-gray-900/70 dark:to-gray-900/30 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-50/80 via-primary-50/90 to-primary-50/80 dark:from-gray-900/90 dark:via-gray-900/80 dark:to-gray-900/90 z-10" />
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 via-transparent to-blue-50/50 dark:from-gray-900/70 dark:via-gray-900/40 dark:to-gray-900/60 z-10 backdrop-blur-sm" />
       </div>
 
@@ -80,45 +80,36 @@ const LoginPage = () => {
           </motion.div>
         )}
 
-        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2, delay: 0.2 }}
-            className="px-8 pt-10 pb-6 text-center relative"
-          >
-            <div className="w-full ">
-              <img
-                src="/mwulogo.png"
-                alt="crewafya-logo"
-                className="w-24 h-24 md:w-32 md:h-32 mx-auto "
-              />
-            </div>
-            <div className="text-center mb-3 md:mb-4">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-secondary-600 dark:text-secondary-500 mb-1 sm:mb-2 md:mb-3">
-                Matatu Workers Union
-              </h1>
-              <p className="text-gray-500 font-medium text-sm lg:text-base">
-                Enter your login credentials to continue
-              </p>
-            </div>
+        <div className="w-full ">
+          <img
+            src="/mwulogo.png"
+            alt="crewafya-logo"
+            className="w-24 h-24 md:w-32 md:h-32 mx-auto "
+          />
+        </div>
+        <div className="text-center mb-3 md:mb-4 backdrop-blur-[2px]">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-secondary-600 dark:text-secondary-500 mb-1 sm:mb-2 md:mb-3">
+            Matatu Workers Union
+          </h1>
+          <p className="text-gray-500 font-medium text-sm lg:text-base">
+            Enter your login credentials to continue
+          </p>
+        </div>
 
-            {/* Animated underline */}
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "8rem" }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="h-1 bg-gradient-to-r from-secondary-700 to-secondary-500 rounded-full mx-auto"
-            ></motion.div>
-          </motion.div>
+        {/* Animated underline */}
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: "8rem" }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="h-1 bg-gradient-to-r from-secondary-700 to-secondary-500 rounded-full mx-auto"
+        ></motion.div>
 
-          <div className="px-4 pb-10">
-            <LoginForm />
-          </div>
+        <div className="px-4 py-6 backdrop-blur-[1px] dark:backdrop-blur-[3px]">
+          <LoginForm />
         </div>
 
         {/* Trust badges */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 1.2 }}
@@ -132,7 +123,7 @@ const LoginPage = () => {
             <TbLockFilled className="w-4 h-4 mr-1" />
             <span>HIPAA Compliant</span>
           </div>
-        </motion.div>
+        </motion.div> */}
       </motion.div>
     </div>
   );

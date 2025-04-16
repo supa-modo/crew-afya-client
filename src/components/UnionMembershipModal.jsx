@@ -7,6 +7,7 @@ import MakePayment from "./payment/MakePayment";
 import { TbArrowLeft } from "react-icons/tb";
 import { updateMembershipStatus } from "../services/userService";
 import { useAuth } from "../context/AuthContext";
+import { RiUserCommunityLine } from "react-icons/ri";
 
 const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
   const [step, setStep] = useState(1); // 1 for info, 2 for payment
@@ -80,35 +81,31 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
             </button>
           </div>
 
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg sm:text-xl font-semibold text-secondary-700 dark:text-secondary-600">
-              Union Membership Registration
-            </h3>
-          </div>
-
           {/* Step 1: Information */}
           {step === 1 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="text-center py-4"
+              className="text-center pb-4"
             >
               <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-secondary-100 dark:bg-secondary-900/30">
-                <PiUserDuotone className="h-8 w-8 text-secondary-600 dark:text-secondary-400" />
+                <RiUserCommunityLine className="h-10 w-10 text-secondary-600 dark:text-secondary-400" />
               </div>
 
-              <h2 className="text-base sm:text-lg font-semibold text-primary-700 dark:text-white mb-3">
-                Welcome to Matatu Workers Union!
-              </h2>
+              <div className="text-center mb-4">
+            <h3 className="text-lg sm:text-xl font-semibold text-secondary-700 dark:text-secondary-600">
+              Union Membership Registration
+            </h3>
+          </div>
 
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4">
-                To activate your membership, a one-time registration fee of KES
-                500 is required. This fee grants you lifetime access to all
-                union benefits, including:
+              <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 mb-8">
+              Welcome to Matatu Workers Union! To activate your membership, a one-time registration fee of KES
+                500 is required. This fee grants you access to all
+                union benefits:
               </p>
 
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
+              {/* <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
                 <ul className="text-left text-xs sm:text-sm space-y-2">
                   <li className="flex items-start">
                     <span className="text-secondary-600 mr-2">•</span>
@@ -129,7 +126,7 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
                     </span>
                   </li>
 
-                  {/* + more benefits */}
+                  
                   <li className="flex items-start">
                     <span className="text-secondary-600 mr-2">•</span>
                     <span className="text-gray-700 dark:text-gray-300">
@@ -137,18 +134,18 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
                     </span>
                   </li>
                 </ul>
-              </div>
+              </div> */}
 
               <div className="flex justify-center space-x-4">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-xs sm:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                  className="px-6 py-2.5 border border-gray-300 rounded-lg text-xs sm:text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100"
                 >
                   Pay Later
                 </button>
                 <button
                   onClick={() => setStep(2)}
-                  className="px-5 py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-secondary-600 hover:bg-secondary-700"
+                  className="px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white bg-gradient-to-br from-secondary-600 to-secondary-700 hover:bg-secondary-700"
                 >
                   Continue to Payment
                 </button>
@@ -162,22 +159,9 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
+              className="mt-7 sm:mt-10"
             >
-              <div className="bg-green-50 dark:bg-green-900/10 px-4 py-4 rounded-lg border border-green-200 dark:border-green-800 mb-6">
-                <div className="flex items-center">
-                  <PiUserDuotone className="h-7 w-7 text-green-600 dark:text-green-400 mr-3" />
-                  <div>
-                    <h3 className="font-medium text-sm sm:text-base text-gray-900 dark:text-white">
-                      Union Membership Registration
-                    </h3>
-                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      One-time payment of KES 500
-                    </p>
-                  </div>
-                </div>
-              </div>
 
-              {/* Import your payment component here */}
               <MakePayment
                 selectedPlan={{
                   name: "Union Membership Registration",

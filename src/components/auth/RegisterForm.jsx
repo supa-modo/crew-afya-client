@@ -292,8 +292,8 @@ const RegisterForm = () => {
       return false;
     }
 
-    if (formData.password.length < 8) {
-      setFormError("Password must be at least 8 characters long");
+    if (formData.password.length < 6) {
+      setFormError("Password must be at least 6 characters long");
       return false;
     }
 
@@ -476,9 +476,6 @@ const RegisterForm = () => {
           exit={{ opacity: 0 }}
           className="text-center mb-4"
         >
-          <h1 className="text-lg sm:text-2xl font-bold text-secondary-600 dark:text-secondary-700 mb-1 sm:mb-2 md:mb-3">
-            Create Your Account
-          </h1>
 
           {/* Animated underline */}
           <motion.div
@@ -522,17 +519,17 @@ const RegisterForm = () => {
         <div className="flex justify-center items-center mt-3 space-x-1">
           <div
             className={`h-2 w-12 rounded-full ${
-              step >= 1 ? "bg-secondary-600" : "bg-gray-300"
+              step >= 1 ? "bg-secondary-600" : "bg-gray-400/80"
             }`}
           ></div>
           <div
             className={`h-2 w-12 rounded-full ${
-              step >= 2 ? "bg-secondary-600" : "bg-gray-300"
+              step >= 2 ? "bg-secondary-600" : "bg-gray-400/80"
             }`}
           ></div>
           <div
             className={`h-2 w-12 rounded-full ${
-              step >= 3 ? "bg-secondary-600" : "bg-gray-300"
+              step >= 3 ? "bg-secondary-600" : "bg-gray-400/80"
             }`}
           ></div>
         </div>
@@ -547,7 +544,7 @@ const RegisterForm = () => {
             handleNextStep();
           }
         }}
-        className="px-1"
+        className="px-0.5"
       >
         {step === 1 && (
           <Step1PersonalInfo

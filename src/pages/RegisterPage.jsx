@@ -4,15 +4,15 @@ import RegisterForm from "../components/auth/RegisterForm";
 const RegisterPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative bg-gradient-to-br from-blue-50/80 to-cyan-50/80 dark:from-gray-900/80 dark:to-blue-900/80">
-      {/* Background image */}
-      <div className="absolute inset-0 z-0">
+     {/* Background image */}
+     <div className="absolute inset-0 z-0">
         <img
           src="/matwana.jpg"
           alt="Health background"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/70 via-blue-50/60 to-transparent dark:from-gray-900/80 dark:via-gray-900/70 dark:to-gray-900/30 z-10" />
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 via-transparent to-blue-50/50 dark:from-gray-900/70 dark:via-gray-900/40 dark:to-gray-900/60 z-10 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-50/90 via-primary-50/80 to-primary-50/90 dark:from-gray-900/90 dark:via-gray-900/80 dark:to-gray-900/90 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary-50/60 via-transparent to-primary-50/50 dark:from-gray-900/70 dark:via-gray-900/60 dark:to-gray-900/80 z-10 backdrop-blur-sm" />
       </div>
 
       {/* Background decorative elements */}
@@ -47,8 +47,7 @@ const RegisterPage = () => {
         transition={{ duration: 0.8, delay: 0.2 }}
         className="w-full max-w-[38rem] z-20 mt-8 md:mt-16"
       >
-        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm  rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-          <motion.div
+        <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, delay: 0.2 }}
@@ -63,10 +62,9 @@ const RegisterPage = () => {
             </div>
           </motion.div>
 
-          <div className="px-4 sm:px-8 pb-6 sm:pb-10 dark:bg-gray-800/50">
+          <div className="px-4 sm:px-8 pb-6 sm:pb-10 backdrop-blur-[1px] dark:backdrop-blur-[3px]">
             <RegisterForm />
           </div>
-        </div>
       </motion.div>
     </div>
   );

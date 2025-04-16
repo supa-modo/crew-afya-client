@@ -8,7 +8,7 @@ const Footer = () => {
 
   return (
     <footer
-      className="bg-gradient-to-br from-secondary-100/50 to-secondary-200/50 dark:bg-white border-t border-gray-200 dark:border-gray-700 relative"
+      className="bg-gradient-to-br from-secondary-100/50 to-secondary-200/50 dark:bg-gradient-br dark:from-secondary-900/30 dark:to-secondary-700/30 border-t border-gray-200 dark:border-gray-700 relative"
       style={{ zIndex: "10" }}
     >
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -24,7 +24,7 @@ const Footer = () => {
                 Matatu Workers Union
               </span>
             </Link>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">
               Streamlining Union membership management, medical coverage, and
               loan applications all in one place.
             </p>
@@ -85,7 +85,7 @@ const Footer = () => {
           {/* Services and Company sections - side by side on mobile */}
           <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-8 md:gap-8">
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-600 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 Services
               </h3>
               <ul className="mt-4 space-y-2">
@@ -124,7 +124,7 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-600 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 Company
               </h3>
               <ul className="mt-4 space-y-2">
@@ -165,7 +165,7 @@ const Footer = () => {
           </div>
 
           <div className="col-span-1">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-600 uppercase tracking-wider">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
               Contact Us
             </h3>
             <ul className="mt-4 space-y-2">

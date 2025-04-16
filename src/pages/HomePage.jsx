@@ -429,7 +429,7 @@ const HomePage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
               {/* Feature 1 - Medical Coverage */}
-              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl">
                 <div className="absolute top-0 left-0 w-full h-1 bg-secondary-500"></div>
                 <div className="p-8">
                   <div className="flex items-center space-x-5 mb-2 sm:mb-3 md:mb-4">
@@ -456,7 +456,7 @@ const HomePage = () => {
               </div>
 
               {/* Feature 2 - Flexible Payments */}
-              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl">
                 <div className="absolute top-0 left-0 w-full h-1 bg-primary-500"></div>
                 <div className="p-8">
                   <div className="flex items-center space-x-5 mb-2 sm:mb-3 md:mb-4">
@@ -483,7 +483,7 @@ const HomePage = () => {
               </div>
 
               {/* Feature 3 - USSD Access */}
-              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl">
                 <div className="absolute top-0 left-0 w-full h-1 bg-orange-500"></div>
                 <div className="p-8">
                   <div className="flex items-center space-x-5 mb-2 sm:mb-3 md:mb-4">
@@ -507,7 +507,7 @@ const HomePage = () => {
               </div>
 
               {/* Feature 4 - Secure Transactions */}
-              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl">
                 <div className="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
                 <div className="p-8">
                   <div className="flex items-center space-x-5 mb-2 sm:mb-3 md:mb-4">
@@ -533,7 +533,7 @@ const HomePage = () => {
               </div>
 
               {/* Feature 5 - Union Membership */}
-              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl">
                 <div className="absolute top-0 left-0 w-full h-1 bg-purple-500"></div>
                 <div className="p-8">
                   <div className="flex items-center space-x-5 mb-2 sm:mb-3 md:mb-4">
@@ -559,7 +559,7 @@ const HomePage = () => {
               </div>
 
               {/* Feature 6 - Financial Growth */}
-              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+              <div className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl">
                 <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500"></div>
                 <div className="p-8">
                   <div className="flex items-center space-x-5 mb-2 sm:mb-3 md:mb-4">
@@ -572,7 +572,7 @@ const HomePage = () => {
                   </div>
 
                   <p className="text-gray-600 text-sm sm:text-base dark:text-gray-400 mb-6">
-                    Track your savings, insurance contributions, and financial
+                    Track your insurance contributions, and financial
                     health with detailed analytics and personalized
                     recommendations.
                   </p>
@@ -622,7 +622,7 @@ const HomePage = () => {
                   step: "02",
                   title: "Select Your Benefits",
                   description:
-                    "Choose from our loan products and medical insurance plans based on your needs and eligibility.",
+                    "Choose from our medical health coverage plans and loan products based on your needs and eligibility.",
                   icon: <TbShieldHalfFilled className="h-8 w-8" />,
                 },
                 {
@@ -749,7 +749,7 @@ const HomePage = () => {
                     return (
                       <div
                         key={plan.id || index}
-                        className={`relative bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
+                        className={`relative bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl ${
                           isPremium
                             ? "ring-4 ring-secondary-500 dark:ring-secondary-400 ring-opacity-50"
                             : ""
@@ -946,7 +946,7 @@ const HomePage = () => {
       </div>
 
       {/* Call to Action Section */}
-      <div className="py-16 bg-secondary-700">
+      <div className="py-16 bg-secondary-700 dark:bg-secondary-800/50">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
             Join the Matatu Workers Union Today
@@ -996,7 +996,7 @@ const HomePage = () => {
               {
                 question: "What are the membership fees?",
                 answer:
-                  "The union charges a monthly membership fee of KSh 300, which can be paid daily, weekly, or monthly through M-Pesa. This fee gives you access to all union benefits including loan eligibility and representation.",
+                  "The union charges a one-time membership fee of KSh 500 paid through M-Pesa. This fee gives you access to all union benefits including loan eligibility and representation.",
               },
               {
                 question:

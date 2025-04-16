@@ -58,10 +58,10 @@ const AboutUsPage = () => {
             className="text-center"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              About <span className="text-secondary-400">CrewAfya</span>
+              About <span className="text-secondary-400">Matatu Workers Union</span>
             </h1>
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
-              Empowering matatu workers through comprehensive healthcare solutions, 
+              Empowering Kenyan matatu workers through comprehensive healthcare solutions, 
               financial services, and a supportive community.
             </p>
           </motion.div>
@@ -99,7 +99,7 @@ const AboutUsPage = () => {
             </h2>
             <div className="w-24 h-1 bg-secondary-600 mx-auto mb-6"></div>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              At CrewAfya, we're dedicated to improving the lives of matatu workers by providing 
+              At MWU Kenya, we're dedicated to improving the lives of matatu workers by providing 
               accessible healthcare solutions, financial stability, and a sense of community.
             </p>
           </motion.div>
@@ -115,11 +115,11 @@ const AboutUsPage = () => {
               <div className="w-16 h-16 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center mb-6 mx-auto">
                 <TbShieldCheck className="w-8 h-8 text-primary-600 dark:text-primary-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center mb-4">
+              <h3 className="text-xl font-bold text-gray-600 dark:text-white text-center mb-4">
                 Healthcare Access
               </h3>
               <p className="text-gray-600 dark:text-gray-300 text-center">
-                Providing affordable and comprehensive healthcare coverage tailored to the unique needs 
+                Providing affordable and comprehensive healthcare coverage through <span className="font-medium text-secondary-600">CrewAfya</span> - tailored to the unique needs 
                 of matatu workers and their families.
               </p>
             </motion.div>
@@ -134,11 +134,11 @@ const AboutUsPage = () => {
               <div className="w-16 h-16 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center mb-6 mx-auto">
                 <TbBuildingBank className="w-8 h-8 text-primary-600 dark:text-primary-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center mb-4">
+              <h3 className="text-xl font-bold text-gray-600 dark:text-white text-center mb-4">
                 Financial Empowerment
               </h3>
               <p className="text-gray-600 dark:text-gray-300 text-center">
-                Offering financial services including loans, savings programs, and financial literacy 
+                Offering financial services including loans, and financial literacy 
                 education to promote economic stability.
               </p>
             </motion.div>
@@ -153,7 +153,7 @@ const AboutUsPage = () => {
               <div className="w-16 h-16 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center mb-6 mx-auto">
                 <TbHeartHandshake className="w-8 h-8 text-primary-600 dark:text-primary-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white text-center mb-4">
+              <h3 className="text-xl font-bold text-gray-600 dark:text-white text-center mb-4">
                 Community Building
               </h3>
               <p className="text-gray-600 dark:text-gray-300 text-center">
@@ -181,9 +181,9 @@ const AboutUsPage = () => {
               </h2>
               <div className="w-24 h-1 bg-secondary-600 mb-6"></div>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                CrewAfya was founded in 2020 with a simple yet powerful vision: to address the healthcare 
+                Matatu Workers Union was founded with a simple yet powerful vision: to address the healthcare 
                 challenges faced by matatu workers across Kenya. We recognized that these essential workers, 
-                who keep our cities moving, often lacked access to quality healthcare and financial security.
+                who keep our busy cities moving, often lacked access to quality healthcare and financial security.
               </p>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
                 What began as a small initiative has grown into a comprehensive platform serving thousands 
@@ -191,7 +191,7 @@ const AboutUsPage = () => {
                 but also financial services, community support, and advocacy for better working conditions.
               </p>
               <p className="text-gray-600 dark:text-gray-300">
-                Today, CrewAfya stands as a testament to what's possible when we prioritize the wellbeing 
+                Today, Matatu Workers Union stands as a testament to what's possible when we prioritize the wellbeing 
                 of those who serve our communities every day.
               </p>
             </motion.div>
@@ -414,7 +414,7 @@ const AboutUsPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-primary-600 to-secondary-700">
+      <section className="py-16 bg-gradient-to-r from-primary-600 to-secondary-700 dark:bg-gradient-r dark:from-primary-700/50 dark:to-secondary-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

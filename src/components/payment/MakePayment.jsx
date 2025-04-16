@@ -227,7 +227,7 @@ const MakePayment = ({
     },
     {
       id: "membership",
-      label: "Union Membership",
+      label: "Union Membership ",
       icon: RiUserCommunityLine,
       color: "green",
       disabled: false,
@@ -611,11 +611,11 @@ const MakePayment = ({
   const getPaymentTypeAccentColor = () => {
     switch (paymentType) {
       case "medical":
-        return "from-primary-50 to-blue-50 dark:from-primary-900/30 dark:to-blue-900/20 border-primary-200 dark:border-primary-800/50";
+        return "from-primary-100 to-blue-50 dark:from-primary-900/30 dark:to-blue-900/20 border-primary-200 dark:border-primary-800/50";
       case "membership":
-        return "from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 border-green-200 dark:border-green-800/50";
+        return "from-green-100 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 border-green-200 dark:border-green-800/50";
       default:
-        return "from-gray-50 to-gray-100 dark:from-gray-900/30 dark:to-gray-900/20 border-gray-200 dark:border-gray-800/50";
+        return "from-gray-100 to-gray-50 dark:from-gray-900/30 dark:to-gray-900/20 border-gray-200 dark:border-gray-800/50";
     }
   };
 
@@ -627,13 +627,13 @@ const MakePayment = ({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <div className="bg-white/80 dark:bg-gray-800 p-2 rounded-lg shadow-sm mr-3">
+            <div className="bg-white/80 dark:bg-white/10 p-2 rounded-lg shadow-sm mr-3">
               {paymentType === "medical" ? (
-                <TbShieldHalfFilled className="h-5 w-5 text-primary-600" />
+                <TbShieldHalfFilled className="h-6 sm:h-7 w-6 sm:w-7 text-primary-600" />
               ) : paymentType === "membership" ? (
-                <RiUserCommunityLine className="h-5 w-5 text-green-600" />
+                <RiUserCommunityLine className="h-6 sm:h-7 w-6 sm:w-7 text-green-600" />
               ) : (
-                <TbCreditCardFilled className="h-5 w-5 text-gray-600" />
+                <TbCreditCardFilled className="h-6 sm:h-7 w-6 sm:w-7 text-gray-600" />
               )}
             </div>
             <div>
