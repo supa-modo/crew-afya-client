@@ -101,6 +101,9 @@ const ResetPasswordForm = () => {
         </motion.div>
       )}
 
+
+<div className="space-y-4 bg-white/40 dark:bg-gray-800/30 backdrop-blur-[2px] border border-gray-300 dark:border-gray-700 rounded-xl p-5">
+         
       {/* Password */}
       <div>
         <label
@@ -174,6 +177,7 @@ const ResetPasswordForm = () => {
             )}
           </button>
         </div>
+      </div>
       </div>
 
       <button

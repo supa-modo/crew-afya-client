@@ -67,7 +67,7 @@ const LoginPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-full max-w-lg z-20 mt-10 sm:mt-12 md:mt-24"
+        className="w-full max-w-lg z-20 mt-4 sm:mt-6 md:mt-16"
       >
         {message && (
           <motion.div
@@ -104,7 +104,7 @@ const LoginPage = () => {
           className="h-1 bg-gradient-to-r from-secondary-700 to-secondary-500 rounded-full mx-auto"
         ></motion.div>
 
-        <div className="px-4 py-6 backdrop-blur-[1px] dark:backdrop-blur-[3px]">
+        <div className=" py-6 backdrop-blur-[1px] dark:backdrop-blur-[3px]">
           <LoginForm />
         </div>
 

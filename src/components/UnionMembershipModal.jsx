@@ -60,7 +60,7 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
 
   return (
     <div className="fixed inset-0 z-[100] overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div className="flex items-center justify-center min-h-screen px-3 pt-4 pb-20 text-center sm:block sm:p-0">
         <div
           className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
           onClick={onClose}
@@ -70,7 +70,7 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
           &#8203;
         </span>
 
-        <div className="inline-block w-full sm:max-w-xl md:max-w-2xl px-5 pt-6 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl dark:bg-gray-800 sm:my-6 sm:align-middle sm:px-10 sm:pb-8">
+        <div className="inline-block w-full max-w-3xl px-5 pt-6 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl dark:bg-gray-800 sm:my-6 sm:align-middle sm:px-10 sm:pb-8">
           {/* Header */}
           <div className="absolute top-0 right-0 pt-4 pr-4">
             <button
@@ -94,47 +94,16 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
               </div>
 
               <div className="text-center mb-4">
-            <h3 className="text-lg sm:text-xl font-semibold text-secondary-700 dark:text-secondary-600">
+            <h3 className="text-base sm:text-lg font-semibold text-secondary-700 dark:text-secondary-600">
               Union Membership Registration
             </h3>
           </div>
 
               <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 mb-8">
-              Welcome to Matatu Workers Union! To activate your membership, a one-time registration fee of KES
+              Welcome to <span className="font-bold text-primary-600">Matatu Workers Union</span>! To activate your membership, a one-time registration fee of KES
                 500 is required. This fee grants you access to all
-                union benefits:
+                union benefits.
               </p>
-
-              {/* <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-6">
-                <ul className="text-left text-xs sm:text-sm space-y-2">
-                  <li className="flex items-start">
-                    <span className="text-secondary-600 mr-2">•</span>
-                    <span className="text-gray-700 dark:text-gray-300">
-                      Access to medical insurance plans
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-secondary-600 mr-2">•</span>
-                    <span className="text-gray-700 dark:text-gray-300">
-                      Financial services and loan opportunities
-                    </span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-secondary-600 mr-2">•</span>
-                    <span className="text-gray-700 dark:text-gray-300">
-                      Advocacy and representation
-                    </span>
-                  </li>
-
-                  
-                  <li className="flex items-start">
-                    <span className="text-secondary-600 mr-2">•</span>
-                    <span className="text-gray-700 dark:text-gray-300">
-                      + more
-                    </span>
-                  </li>
-                </ul>
-              </div> */}
 
               <div className="flex justify-center space-x-4">
                 <button
@@ -168,7 +137,7 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
                   premiums: {
                     daily: 0,
                     monthly: 0,
-                    annual: 500, // Use annual for the one-time fee
+                    annual: 500, // Using annual for the one-time fee
                   },
                 }}
                 frequency="annual"
@@ -177,7 +146,7 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
                 onPaymentComplete={handlePaymentComplete}
               />
 
-              <div className="mt-4 text-center">
+              <div className="text-center">
                 <button
                   onClick={() => setStep(1)}
                   className="text-sm font-medium text-secondary-600 hover:text-secondary-700"

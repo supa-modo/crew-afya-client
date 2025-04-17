@@ -15,7 +15,7 @@ const Step2PhoneVerification = ({
 }) => {
   return (
     <div className="space-y-5">
-      <div className="py-8 bg-white/40 border border-gray-200 rounded-xl">
+      <div className="py-8 bg-white/40 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700 rounded-xl">
         <div className="text-center mb-6">
         <div className="inline-flex items-center justify-center text-secondary-600 dark:text-secondary-500">
           <TbShieldCheckFilled className="h-12 w-12" />

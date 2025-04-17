@@ -57,12 +57,12 @@ const RegisterPage = () => {
               <img
                 src="/mwulogo.png"
                 alt="matatu-union-logo"
-                className="w-20 h-20 md:w-28 md:h-28 mx-auto"
+                className="w-24 h-24 md:w-28 md:h-28 mx-auto"
               />
             </div>
           </motion.div>
 
-          <div className="px-4 sm:px-8 pb-6 sm:pb-10 backdrop-blur-[1px] dark:backdrop-blur-[3px]">
+          <div className="px-2 sm:px-8 pb-6 sm:pb-10 backdrop-blur-[1px] dark:backdrop-blur-[3px]">
             <RegisterForm />
           </div>
       </motion.div>

@@ -23,15 +23,15 @@ const ForgotPasswordPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative bg-gradient-to-br from-blue-50/80 to-cyan-50/80 dark:from-gray-900/80 dark:to-blue-900/80">
-      {/* Background image */}
-      <div className="absolute inset-0 z-0">
+           {/* Background image */}
+     <div className="absolute inset-0 z-0">
         <img
           src="/matwana.jpg"
           alt="Health background"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/70 via-blue-50/60 to-transparent dark:from-gray-900/80 dark:via-gray-900/70 dark:to-gray-900/30 z-10" />
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 via-transparent to-blue-50/50 dark:from-gray-900/70 dark:via-gray-900/40 dark:to-gray-900/60 z-10 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-50/90 via-primary-50/80 to-primary-50/90 dark:from-gray-900/90 dark:via-gray-900/80 dark:to-gray-900/90 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary-50/60 via-transparent to-primary-50/50 dark:from-gray-900/70 dark:via-gray-900/60 dark:to-gray-900/80 z-10 backdrop-blur-sm" />
       </div>
 
       {/* Background decorative elements - improved for smaller screens */}
@@ -64,10 +64,9 @@ const ForgotPasswordPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-full max-w-lg z-20 mt-12 md:mt-20"
+        className="w-full max-w-lg z-20 mt-4 sm:mt-6 md:mt-16"
       >
-        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-          <motion.div
+        <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, delay: 0.2 }}
@@ -77,18 +76,19 @@ const ForgotPasswordPage = () => {
               <img
                 src="/mwulogo.png"
                 alt="crewafya-logo"
-                className="w-20 h-20 md:w-28 md:h-28 mx-auto"
+                className="w-24 h-24 md:w-28 md:h-28 mx-auto"
               />
             </div>
             <div className="text-center pt-4 mb-3 md:mb-4">
               <h1 className="text-xl sm:text-2xl font-bold text-secondary-700 dark:text-secondary-600 mb-1 sm:mb-2 md:mb-3">
-                Reset Your Password
+                Reset Your Account Password
               </h1>
-              <p className="text-gray-500 text-sm lg:text-base">
-                {resetSent
-                  ? `We've sent the password reset instructions to your ${resetMethod}`
-                  : "Enter your phone number or email address to reset your password"}
-              </p>
+              {resetSent && (
+                <p className="text-gray-500 text-sm lg:text-base">
+                  We've sent the password reset instructions to your{" "}
+                  {resetMethod === "email" ? "email" : "phone number"}
+                </p>
+              )}
             </div>
 
             {/* Animated underline */}
@@ -107,16 +107,16 @@ const ForgotPasswordPage = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="text-center px-4 py-6 bg-gray-100/90 dark:bg-secondary-900/30 rounded-xl mb-6"
+                  className="text-center px-4 py-6 bg-white/40 dark:bg-gray-800/30 backdrop-blur-[2px] border border-gray-300 dark:border-gray-700 rounded-xl mb-6"
                 >
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="mx-auto flex items-center justify-center h-14 w-20 rounded-xl bg-gray-300/80 dark:bg-gray-800/60 mb-3"
+                    className="mx-auto flex items-center justify-center mb-3"
                   >
                     {resetMethod === "email" ? (
-                      <TbMailFilled className="h-8 w-8 text-secondary-700 dark:text-secondary-600" />
+                      <TbMailFilled className="h-10 w-10 text-secondary-700 dark:text-secondary-600" />
                     ) : (
                       <TbPhone className="h-10 w-10 text-secondary-700 dark:text-secondary-600" />
                     )}
@@ -168,7 +168,7 @@ const ForgotPasswordPage = () => {
               </div>
             ) : (
               <>
-                <div className="mx-1 sm:mx-4">
+                <div className="">
                   <ForgotPasswordForm onSubmitSuccess={handleSubmitSuccess} />
                 </div>
 
@@ -184,24 +184,7 @@ const ForgotPasswordPage = () => {
               </>
             )}
           </div>
-        </div>
-
-        {/* Trust badges */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.2 }}
-          className="mt-8 flex justify-center space-x-6 opacity-70"
-        >
-          <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
-            <TbShieldCheckFilled className="w-4 h-4 mr-1" />
-            <span>Secure Process</span>
-          </div>
-          <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
-            <TbLockFilled className="w-4 h-4 mr-1" />
-            <span>HIPAA Compliant</span>
-          </div>
-        </motion.div>
+        
       </motion.div>
     </div>
   );

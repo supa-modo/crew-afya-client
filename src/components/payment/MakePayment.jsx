@@ -17,6 +17,7 @@ import {
   recoverPaymentProcess,
   verifyMpesaPayment,
 } from "../../services/paymentService";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 // Import our refactored components
 import PaymentForm from "./PaymentForm";
@@ -59,27 +60,6 @@ const PaymentFormContainer = ({
   );
 };
 
-// Component for displaying loading state
-const PaymentLoader = () => {
-  return (
-    <motion.div
-      key="recovering"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-center py-8"
-    >
-      <div className="w-16 h-16 flex items-center justify-center bg-primary-50 dark:bg-primary-900/20 rounded-full relative mb-4">
-        <div className="absolute inset-0 rounded-full border-t-2 border-r-2 border-primary-500 animate-spin"></div>
-        <TbWallet className="h-7 w-7 text-primary-500" />
-      </div>
-      <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-        Checking for pending payments...
-      </p>
-    </motion.div>
-  );
-};
-
 // Main MakePayment component
 const MakePayment = ({
   selectedPlan,
@@ -107,7 +87,6 @@ const MakePayment = ({
       ? 1
       : 2
   );
-  const [isRecovering, setIsRecovering] = useState(false);
 
   // Helper function to safely get premium amount based on frequency
   const getFrequencyAmount = (plan, frequency) => {
@@ -140,80 +119,6 @@ const MakePayment = ({
       );
     }
   }, [initialPaymentType, fixedPaymentType]);
-
-  // Check for pending payments on component mount
-  useEffect(() => {
-    const checkForPendingPayments = async () => {
-      try {
-        setIsRecovering(true);
-        const recoveryResult = await recoverPaymentProcess();
-
-        if (recoveryResult && recoveryResult.recovered) {
-          handleRecoveredPayment(recoveryResult);
-        } else if (
-          recoveryResult &&
-          !recoveryResult.recovered &&
-          recoveryResult.pendingPayment
-        ) {
-          handlePendingPayment(recoveryResult.pendingPayment);
-        }
-      } catch (error) {
-        console.error("Error recovering payment:", error);
-      } finally {
-        setIsRecovering(false);
-      }
-    };
-
-    checkForPendingPayments();
-  }, [onPaymentComplete]);
-
-  // Handle recovered payment from the server
-  const handleRecoveredPayment = (recoveryResult) => {
-    // We have recovered a payment, update the UI accordingly
-    setPaymentId(recoveryResult.paymentId);
-    setCheckoutRequestId(recoveryResult.checkoutRequestId);
-
-    // Set the appropriate status based on the recovered payment
-    if (recoveryResult.status === "completed") {
-      setPaymentStatus("success");
-      setMpesaReceiptNumber(recoveryResult.data.mpesaReceiptNumber);
-
-      // Notify parent component if payment was successful
-      if (typeof onPaymentComplete === "function") {
-        setTimeout(() => onPaymentComplete(true), 1000);
-      }
-    } else if (recoveryResult.status === "failed") {
-      setPaymentStatus("error");
-      setErrorMessage(
-        recoveryResult.data.failureReason || "Payment failed. Please try again."
-      );
-    } else {
-      // Payment is still pending, restart status check
-      setPaymentStatus("waiting");
-      startStatusCheck(recoveryResult.paymentId);
-    }
-  };
-
-  // Handle pending payment that couldn't be recovered
-  const handlePendingPayment = (pendingPayment) => {
-    // Try to extract phone number and other details
-    if (pendingPayment.payload) {
-      setPhoneNumber(pendingPayment.payload.phoneNumber || "");
-    }
-
-    // If the payment was in error state, show error
-    if (pendingPayment.status === "error") {
-      setPaymentStatus("error");
-      setErrorMessage(
-        pendingPayment.error ||
-          "Payment process was interrupted. Please try again."
-      );
-    } else {
-      // Otherwise, let the user try again
-      setPaymentStatus("idle");
-      setErrorMessage("We found an incomplete payment. Please try again.");
-    }
-  };
 
   // Array of payment types for navigation
   const paymentTypes = [
@@ -489,14 +394,6 @@ const MakePayment = ({
     }, 60000); // 60 seconds timeout
   };
 
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-    }).format(amount);
-  };
-
   // Try again handler
   const handleTryAgain = () => {
     setPaymentStatus("idle");
@@ -592,21 +489,10 @@ const MakePayment = ({
       // Wait a moment to show the success message before calling the callback
       const timer = setTimeout(() => {
         onPaymentComplete(true);
-      }, 3000);
+      }, 10000);
       return () => clearTimeout(timer);
     }
   }, [paymentStatus, onPaymentComplete]);
-
-  const getPaymentTypeMainColor = () => {
-    switch (paymentType) {
-      case "medical":
-        return "from-primary-600 to-primary-700 text-white";
-      case "membership":
-        return "from-green-600 to-green-700 text-white";
-      default:
-        return "from-gray-600 to-gray-700 text-white";
-    }
-  };
 
   const getPaymentTypeAccentColor = () => {
     switch (paymentType) {
@@ -623,31 +509,31 @@ const MakePayment = ({
     <div className="">
       {/* Payment summary panel */}
       <div
-        className={`bg-gradient-to-r ${getPaymentTypeAccentColor()} px-5 py-4 rounded-xl border shadow-sm`}
+        className={`bg-gradient-to-r ${getPaymentTypeAccentColor()} px-3 sm:px-5 py-4 mb-4 rounded-xl border shadow-sm`}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div className="bg-white/80 dark:bg-white/10 p-2 rounded-lg shadow-sm mr-3">
               {paymentType === "medical" ? (
-                <TbShieldHalfFilled className="h-6 sm:h-7 w-6 sm:w-7 text-primary-600" />
+                <TbShieldHalfFilled className="h-5 sm:h-7 w-5 sm:w-7 text-primary-600" />
               ) : paymentType === "membership" ? (
-                <RiUserCommunityLine className="h-6 sm:h-7 w-6 sm:w-7 text-green-600" />
+                <RiUserCommunityLine className="h-5 sm:h-7 w-5 sm:w-7 text-green-600" />
               ) : (
-                <TbCreditCardFilled className="h-6 sm:h-7 w-6 sm:w-7 text-gray-600" />
+                <TbCreditCardFilled className="h-5 sm:h-7 w-5 sm:w-7 text-gray-600" />
               )}
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <p className="text-[0.8rem] sm:text-sm font-medium text-gray-600 dark:text-gray-400">
                 {getPaymentTypeTitle()}
               </p>
-              <p className="text-base font-semibold text-gray-900 dark:text-white">
+              <p className="text-sm sm:text-base font-semibold text-secondary-700 dark:text-white">
                 {formatCurrency(getCurrentAmount())}
               </p>
             </div>
           </div>
           <div>
             {getCurrentAmount() > 0 ? (
-              <div className="flex items-center text-sm">
+              <div className="flex items-center text-[0.8rem] sm:text-sm">
                 <TbReceipt2 className="h-4 w-4 text-gray-600 dark:text-gray-400 mr-1" />
                 <span className="text-gray-600 dark:text-gray-400">
                   {paymentType === "membership"
@@ -667,9 +553,7 @@ const MakePayment = ({
 
       <div className="pb-5">
         <AnimatePresence mode="wait">
-          {isRecovering ? (
-            <PaymentLoader />
-          ) : paymentStatus === "idle" ? (
+          {paymentStatus === "idle" ? (
             <motion.div
               key="payment-form"
               initial={{ opacity: 0 }}

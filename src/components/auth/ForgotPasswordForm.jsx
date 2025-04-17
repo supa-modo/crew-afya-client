@@ -123,7 +123,7 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
       )}
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-6 ">
+        <div className="mb-6 bg-white/40 dark:bg-gray-800/30 backdrop-blur-[2px] border border-gray-300 dark:border-gray-700 rounded-xl py-5 px-4">
           <div className="flex justify-between items-center mb-2">
             <label
               htmlFor="identifier"
@@ -155,7 +155,7 @@ const ForgotPasswordForm = ({ onSubmitSuccess }) => {
               onChange={(e) => setIdentifier(e.target.value)}
               className="text-sm text-gray-600/90 sm:text-base  block w-full pl-12 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:outline-none focus:border-secondary-600 focus:ring-secondary-600 dark:bg-gray-700 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 dark:focus:ring-secondary-600 dark:focus:border-secondary-600 transition-colors duration-200"
               placeholder={
-                identifierType === "email" ? "you@example.com" : "+254700000000"
+                identifierType === "email" ? "Enter your account email" : "+2547XX XXX XXX"
               }
               required
               disabled={isSubmitting}

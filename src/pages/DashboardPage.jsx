@@ -94,6 +94,7 @@ const DashboardPage = () => {
               "daily",
             status: response.data.status || "ACTIVE",
             startDate: response.data.startDate,
+            nextPaymentDate: response.data.nextPaymentDate,
             endDate: response.data.endDate,
           };
 

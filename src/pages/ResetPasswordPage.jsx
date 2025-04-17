@@ -7,15 +7,15 @@ import ResetPasswordForm from "../components/auth/ResetPasswordForm";
 const ResetPasswordPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative bg-gradient-to-br from-blue-50/80 to-cyan-50/80 dark:from-gray-900/80 dark:to-blue-900/80">
-      {/* Background image */}
-      <div className="absolute inset-0 z-0">
+           {/* Background image */}
+     <div className="absolute inset-0 z-0">
         <img
           src="/matwana.jpg"
           alt="Health background"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/70 via-blue-50/60 to-transparent dark:from-gray-900/80 dark:via-gray-900/70 dark:to-gray-900/30 z-10" />
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 via-transparent to-blue-50/50 dark:from-gray-900/70 dark:via-gray-900/40 dark:to-gray-900/60 z-10 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-50/90 via-primary-50/80 to-primary-50/90 dark:from-gray-900/90 dark:via-gray-900/80 dark:to-gray-900/90 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary-50/60 via-transparent to-primary-50/50 dark:from-gray-900/70 dark:via-gray-900/60 dark:to-gray-900/80 z-10 backdrop-blur-sm" />
       </div>
 
       {/* Background decorative elements */}
@@ -49,28 +49,27 @@ const ResetPasswordPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-full max-w-lg z-20 mt-12 md:mt-24"
+        className="w-full max-w-lg z-20 mt-4 sm:mt-6 md:mt-16"
       >
-        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
-          <motion.div
+         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, delay: 0.2 }}
-            className="px-8 pt-10 pb-6 text-center relative"
+            className="px-8 pt-10 pb-5 text-center relative"
           >
             <div className="w-full">
               <img
                 src="/mwulogo.png"
                 alt="crewafya-logo"
-                className="w-16 h-16 md:w-20 md:h-20 mx-auto"
+               className="w-24 h-24 md:w-28 md:h-28 mx-auto "
               />
             </div>
-            <div className="text-center pt-4 mb-3 md:mb-4">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-secondary-700 dark:text-secondary-600 mb-1 sm:mb-2 md:mb-3">
-                Reset Your Password
+            <div className="text-center pt-2 mb-3 md:mb-4">
+              <h1 className="text-xl sm:text-2xl font-bold text-secondary-700 dark:text-secondary-600 mb-1 sm:mb-2">
+                Reset Your Account Password
               </h1>
               <p className="text-gray-500/85 text-sm lg:text-base">
-                Set a new password for your CrewAfya account
+                Set a new password for your account
               </p>
             </div>
 
@@ -83,10 +82,8 @@ const ResetPasswordPage = () => {
             ></motion.div>
           </motion.div>
 
-          <div className="px-4 pb-10">
-            <div className="mx-1 sm:mx-4">
+          <div className="">
               <ResetPasswordForm />
-            </div>
 
             <div className="mt-6 text-center">
               <Link
@@ -97,24 +94,8 @@ const ResetPasswordPage = () => {
               </Link>
             </div>
           </div>
-        </div>
 
-        {/* Trust badges */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.2 }}
-          className="mt-8 flex justify-center space-x-6 opacity-70"
-        >
-          <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
-            <TbShieldCheckFilled className="w-4 h-4 mr-1" />
-            <span>Secure Process</span>
-          </div>
-          <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
-            <TbLockFilled className="w-4 h-4 mr-1" />
-            <span>HIPAA Compliant</span>
-          </div>
-        </motion.div>
+        
       </motion.div>
     </div>
   );

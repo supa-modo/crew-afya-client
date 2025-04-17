@@ -23,6 +23,7 @@ import {
 import { apiGet, apiDownload } from "../../services/api";
 import { formatDate } from "../../utils/formatDate";
 import { MpesaIcon } from "../common/icons";
+import { StatusBadge } from "../../utils/statusBadge";
 
 const UnionMembershipHistory = () => {
   const [loading, setLoading] = useState(true);
@@ -110,43 +111,6 @@ const UnionMembershipHistory = () => {
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
-  };
-
-  // Status badge component
-  const StatusBadge = ({ status }) => {
-    let bgColor = "";
-    let textColor = "";
-    let icon = null;
-
-    switch (status) {
-      case "completed":
-        bgColor = "bg-green-200 dark:bg-green-900/50";
-        textColor = "text-green-700 dark:text-green-400";
-        icon = <FiCheck className="mr-1 h-4 w-4" />;
-        break;
-      case "failed":
-        bgColor = "bg-red-200 dark:bg-red-900/50";
-        textColor = "text-red-700 dark:text-red-400";
-        icon = <FiX className="mr-1 h-4 w-4" />;
-        break;
-      case "pending":
-        bgColor = "bg-yellow-200 dark:bg-yellow-900/50";
-        textColor = "text-yellow-700 dark:text-yellow-400";
-        icon = <FiClock className="mr-1 h-4 w-4" />;
-        break;
-      default:
-        bgColor = "bg-gray-100 dark:bg-gray-700";
-        textColor = "text-gray-700 dark:text-gray-400";
-    }
-
-    return (
-      <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor}`}
-      >
-        {icon}
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
-    );
   };
 
   // Handle download receipt

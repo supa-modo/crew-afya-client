@@ -60,10 +60,10 @@ const PaymentForm = ({
       <div>
         <label
           htmlFor="amount"
-          className="block text-[0.8rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center"
+          className=" text-[0.8rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center"
         >
           
-          Amount (KES)
+          Amount (Kshs.)
         </label>
         <input
           type="text"
@@ -87,7 +87,7 @@ const PaymentForm = ({
             type="tel"
             id="phoneNumber"
             name="phoneNumber"
-            placeholder="0712345678 or +254712345678"
+            placeholder="07XX XXX XXX"
             value={phoneNumber}
             onChange={handlePhoneChange}
             className="block w-full px-4 py-2.5 text-base text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent dark:bg-gray-800"
@@ -99,7 +99,7 @@ const PaymentForm = ({
           </div>
         </div>
         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Enter the phone number registered with M-Pesa
+          Enter your phone number registered with M-Pesa
         </p>
       </div>
 
@@ -124,7 +124,7 @@ const PaymentForm = ({
       {/* Submit Button */}
       <button
         type="submit"
-        className={`w-full flex justify-center items-center px-4 py-2.5 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-secondary-700/90 via-secondary-800/90 to-secondary-700 hover:bg-primary-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+        className={`w-full flex justify-center items-center px-4 py-2.5 border border-transparent rounded-md shadow-sm text-sm sm:text-[0.95rem] font-medium text-white bg-gradient-to-r from-secondary-700/90 via-secondary-800/90 to-secondary-700 hover:bg-primary-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed ${
           paymentType === "membership"
             ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
             : ""

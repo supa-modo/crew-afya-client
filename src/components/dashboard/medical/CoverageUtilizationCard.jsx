@@ -126,9 +126,9 @@ const CoverageUtilizationCard = ({ utilization, loading }) => {
 
   return (
     <div className="">
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {/* Inpatient */}
-        <div className="p-4 flex flex-row space-x-2 items-center rounded-xl bg-gradient-to-r from-blue-50 to-blue-50/50 dark:from-gray-800 dark:to-gray-700 border border-blue-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
+        <div className="px-4 py-3 flex flex-row space-x-2 items-center rounded-xl bg-gradient-to-r from-blue-50 to-blue-50/50 dark:from-gray-800 dark:to-gray-700 border border-blue-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
           <div className="p-2 rounded-lg bg-blue-200 dark:bg-blue-900/30 mr-3">
             {getCategoryIcon("inpatient")}
           </div>
@@ -136,32 +136,32 @@ const CoverageUtilizationCard = ({ utilization, loading }) => {
           <div className="flex-1">
             <div className="flex justify-between mb-2">
               <div>
-                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors duration-200">
+                <h4 className="text-[0.85rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors duration-200">
                   Inpatient
                 </h4>
               </div>
               <div className="flex items-center">
                 <span
-                  className={`text-xs font-semibold px-2 py-0.5 rounded-full ${getProgressBackground(
+                  className={`text-[0.7rem] sm:text-xs font-semibold px-2 py-0.5 rounded-full ${getProgressBackground(
                     inpatient.percentage
                   )}`}
                 >
                   {inpatient.percentage}%
                 </span>
-                <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                <span className="ml-2 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
                   used
                 </span>
               </div>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
               <div
-                className={`h-2.5 rounded-full transition-all duration-700 ease-in-out ${getProgressColor(
+                className={`h-2 sm:h-2.5 rounded-full transition-all duration-700 ease-in-out ${getProgressColor(
                   inpatient.percentage
                 )}`}
                 style={{ width: `${inpatient.percentage}%` }}
               ></div>
             </div>
-            <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex justify-between mt-2 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
               <span className="font-medium">
                 Used: {formatCurrency(inpatient.used)}
               </span>
@@ -173,7 +173,7 @@ const CoverageUtilizationCard = ({ utilization, loading }) => {
         </div>
 
         {/* Outpatient */}
-        <div className="p-4 flex flex-row space-x-2 items-center rounded-xl bg-gradient-to-r from-emerald-50 to-emerald-50/50 dark:from-gray-800 dark:to-gray-700 border border-emerald-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
+        <div className="px-4 py-3 flex flex-row space-x-2 items-center rounded-xl bg-gradient-to-r from-emerald-50 to-emerald-50/50 dark:from-gray-800 dark:to-gray-700 border border-emerald-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
           <div className="p-2 rounded-lg bg-emerald-200 dark:bg-emerald-900/30 mr-3">
             {getCategoryIcon("outpatient")}
           </div>
@@ -181,19 +181,19 @@ const CoverageUtilizationCard = ({ utilization, loading }) => {
           <div className="flex-1">
             <div className="flex justify-between mb-2">
               <div>
-                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors duration-200">
+                <h4 className="text-[0.85rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors duration-200">
                   Outpatient
                 </h4>
               </div>
               <div className="flex items-center ">
                 <span
-                  className={`text-xs font-semibold px-2 py-0.5 rounded-full ${getProgressBackground(
+                  className={`text-[0.7rem] sm:text-xs font-semibold px-2 py-0.5 rounded-full ${getProgressBackground(
                     outpatient.percentage
                   )}`}
                 >
                   {outpatient.percentage}%
                 </span>
-                <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                <span className="ml-2 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
                   used
                 </span>
               </div>
@@ -201,13 +201,13 @@ const CoverageUtilizationCard = ({ utilization, loading }) => {
 
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
               <div
-                className={`h-2.5 rounded-full transition-all duration-700 ease-in-out ${getProgressColor(
+                className={`h-2 sm:h-2.5 rounded-full transition-all duration-700 ease-in-out ${getProgressColor(
                   outpatient.percentage
                 )}`}
                 style={{ width: `${outpatient.percentage}%` }}
               ></div>
             </div>
-            <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex justify-between mt-2 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
               <span className="font-medium">
                 Used: {formatCurrency(outpatient.used)}
               </span>
@@ -219,7 +219,7 @@ const CoverageUtilizationCard = ({ utilization, loading }) => {
         </div>
 
         {/* Optical */}
-        <div className="p-4 flex flex-row space-x-2 items-center rounded-xl bg-gradient-to-r from-indigo-50 to-indigo-50/50 dark:from-gray-800 dark:to-gray-700 border border-indigo-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
+        <div className="px-4 py-3 flex flex-row space-x-2 items-center rounded-xl bg-gradient-to-r from-indigo-50 to-indigo-50/50 dark:from-gray-800 dark:to-gray-700 border border-indigo-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
           <div className="p-2 rounded-lg bg-indigo-200 dark:bg-indigo-900/30 mr-3">
             {getCategoryIcon("optical")}
           </div>
@@ -227,32 +227,32 @@ const CoverageUtilizationCard = ({ utilization, loading }) => {
           <div className="flex-1">
             <div className="flex justify-between mb-2">
               <div>
-                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors duration-200">
+                <h4 className="text-[0.85rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors duration-200">
                   Optical
                 </h4>
               </div>
               <div className="flex items-center">
                 <span
-                  className={`text-xs font-semibold px-2 py-0.5 rounded-full ${getProgressBackground(
+                  className={`text-[0.7rem] sm:text-xs font-semibold px-2 py-0.5 rounded-full ${getProgressBackground(
                     optical.percentage
                   )}`}
                 >
                   {optical.percentage}%
                 </span>
-                <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                <span className="ml-2 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
                   used
                 </span>
               </div>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
               <div
-                className={`h-2.5 rounded-full transition-all duration-700 ease-in-out ${getProgressColor(
+                className={`h-2 sm:h-2.5 rounded-full transition-all duration-700 ease-in-out ${getProgressColor(
                   optical.percentage
                 )}`}
                 style={{ width: `${optical.percentage}%` }}
               ></div>
             </div>
-            <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex justify-between mt-2 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
               <span className="font-medium">
                 Used: {formatCurrency(optical.used)}
               </span>
@@ -264,7 +264,7 @@ const CoverageUtilizationCard = ({ utilization, loading }) => {
         </div>
 
         {/* Maternity */}
-        <div className="p-4 flex flex-row space-x-2 items-center rounded-xl bg-gradient-to-r from-pink-50 to-pink-50/50 dark:from-gray-800 dark:to-gray-700 border border-pink-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
+        <div className="px-4 py-3 flex flex-row space-x-2 items-center rounded-xl bg-gradient-to-r from-pink-50 to-pink-50/50 dark:from-gray-800 dark:to-gray-700 border border-pink-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
           <div className="p-2 rounded-lg bg-pink-100 dark:bg-pink-900/30 mr-3">
             {getCategoryIcon("maternity")}
           </div>
@@ -272,32 +272,32 @@ const CoverageUtilizationCard = ({ utilization, loading }) => {
           <div className="flex-1">
             <div className="flex justify-between mb-2">
               <div>
-                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-pink-700 dark:group-hover:text-pink-300 transition-colors duration-200">
+                <h4 className="text-[0.85rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-pink-700 dark:group-hover:text-pink-300 transition-colors duration-200">
                   Maternity
                 </h4>
               </div>
               <div className="flex items-center">
                 <span
-                  className={`text-xs font-semibold px-2 py-0.5 rounded-full ${getProgressBackground(
+                  className={`text-[0.7rem] sm:text-xs font-semibold px-2 py-0.5 rounded-full ${getProgressBackground(
                     maternity.percentage
                   )}`}
                 >
                   {maternity.percentage}%
                 </span>
-                <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                <span className="ml-2 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
                   used
                 </span>
               </div>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
               <div
-                className={`h-2.5 rounded-full transition-all duration-700 ease-in-out ${getProgressColor(
+                className={`h-2 sm:h-2.5 rounded-full transition-all duration-700 ease-in-out ${getProgressColor(
                   maternity.percentage
                 )}`}
                 style={{ width: `${maternity.percentage}%` }}
               ></div>
             </div>
-            <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex justify-between mt-2 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
               <span className="font-medium">
                 Used: {formatCurrency(maternity.used)}
               </span>

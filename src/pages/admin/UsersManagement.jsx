@@ -279,17 +279,17 @@ const UserManagement = ({
 
   const getPlanStatusClass = (status) => {
     if (!status)
-      return "bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400";
+      return "bg-gray-100 border border-gray-300 dark:bg-gray-900 dark:border-gray-800 text-gray-600 dark:text-gray-400";
 
     switch (status.toLowerCase()) {
       case "active":
-        return "bg-green-200 text-green-800 dark:bg-green-700/30 dark:text-green-300";
+        return "bg-primary-100 border border-primary-300 dark:bg-primary-900/30 dark:border-primary-800 text-primary-600 dark:text-primary-300";
       case "expired":
-        return "bg-red-200 text-red-800 dark:bg-red-700/40 dark:text-red-300";
+        return "bg-red-100 border border-red-300 dark:bg-red-700/40 dark:border-red-600 text-red-600 dark:text-red-300";
       case "suspended":
-        return "bg-yellow-200 text-yellow-800 dark:bg-yellow-700/30 dark:text-yellow-300";
+        return "bg-yellow-100 border border-yellow-300 dark:bg-yellow-700/30 dark:border-yellow-600 text-yellow-600 dark:text-yellow-300";
       default:
-        return "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400";
+        return "bg-gray-100 border border-gray-300 dark:bg-gray-700 dark:border-gray-600 text-gray-600 dark:text-gray-400";
     }
   };
 
@@ -581,7 +581,7 @@ const UserManagement = ({
                         </div>
                         <div>
                           <span
-                            className={`pl-3 w-full inline-flex text-[0.68rem] leading-5 font-semibold rounded-full ${getPlanStatusClass(
+                            className={`px-5 py-0.5 w-fit text-[0.75rem] font-semibold rounded-full lowercase ${getPlanStatusClass(
                               user.insuranceCoverage.status
                             )}`}
                           >
@@ -600,10 +600,10 @@ const UserManagement = ({
                     onClick={() => handleViewUser(user)}
                   >
                     <span
-                      className={`px-3 inline-flex text-xs leading-5 font-semibold rounded-lg ${
+                      className={`px-5 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         user.role === "admin" || user.role === "superadmin"
-                          ? "bg-admin-200 text-admin-800 dark:bg-admin-900 dark:text-admin-200"
-                          : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                          ? "bg-admin-200 border border-admin-300 dark:bg-admin-900 dark:text-admin-200"
+                          : "bg-gray-200 border border-gray-300 dark:bg-gray-700 dark:text-gray-300"
                       }`}
                     >
                       {user.role?.charAt(0).toUpperCase() + user.role?.slice(1)}
@@ -632,13 +632,13 @@ const UserManagement = ({
                     onClick={() => handleViewUser(user)}
                   >
                     <span
-                      className={`px-3 inline-flex text-xs leading-5 font-semibold rounded-lg ${
-                        user.isActive
-                          ? "bg-green-200 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          : "bg-red-200 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                      className={`px-4 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        user.membershipStatus === "active"
+                          ? "bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-600 text-green-800 dark:text-green-400"
+                          : "bg-amber-100 dark:bg-amber-600/30 border border-amber-300 dark:border-amber-600 text-amber-800 dark:text-amber-400"
                       }`}
                     >
-                      {user.isActive ? "Active" : "Inactive"}
+                      {user.membershipStatus || "pending"}
                     </span>
                   </td>
                   <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">

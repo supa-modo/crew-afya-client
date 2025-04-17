@@ -29,12 +29,15 @@ import {
   TbShieldHalfFilled,
   TbReportMoney,
   TbFileDownload,
+  TbReportAnalytics,
 } from "react-icons/tb";
 import { formatDate } from "../../utils/formatDate";
 import { MpesaIcon } from "../common/icons";
 import { formatCurrency } from "../../utils/formatCurrency";
 import Pagination from "../common/Pagination";
 import PaymentReceiptModal from "../admin/adminPaymentsPageComponents/PaymentReceiptModal";
+import { PiCaretDownDuotone } from "react-icons/pi";
+import { StatusBadge } from "../../utils/statusBadge";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
@@ -184,46 +187,6 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
     setShowFilters(!showFilters);
   };
 
-  // Status badge component
-  const StatusBadge = ({ status }) => {
-    let bgColor = "";
-    let textColor = "";
-    let icon = null;
-
-    switch (status) {
-      case "completed":
-        bgColor =
-          "bg-gradient-to-r from-green-500/10 to-green-600/10 border border-green-300 dark:border-green-800/50";
-        textColor = "text-green-700 dark:text-green-400";
-        icon = <FiCheck className="mr-1 h-4 w-4" />;
-        break;
-      case "failed":
-        bgColor =
-          "bg-gradient-to-r from-red-500/10 to-red-600/10 border border-red-300 dark:border-red-800/50";
-        textColor = "text-red-700 dark:text-red-400";
-        icon = <FiX className="mr-1 h-4 w-4" />;
-        break;
-      case "pending":
-        bgColor =
-          "bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-300 dark:border-yellow-800/50";
-        textColor = "text-yellow-700 dark:text-yellow-400";
-        icon = <FiClock className="mr-1 h-4 w-4" />;
-        break;
-      default:
-        bgColor =
-          "bg-gradient-to-r from-gray-500/10 to-gray-600/10 border border-gray-300 dark:border-gray-800/50";
-        textColor = "text-gray-700 dark:text-gray-400";
-    }
-
-    return (
-      <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium shadow-sm ${bgColor} ${textColor}`}
-      >
-        {icon}
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
-    );
-  };
 
   // Handle view or download receipt
   const handleDownloadReceipt = (payment) => {
@@ -303,13 +266,13 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           {/* Dynamic Title */}
           <div className="flex items-center gap-2 md:w-[50%]">
-            <div className="bg-primary-50 dark:bg-primary-900/30 p-2 rounded-lg shadow-sm mr-2">
-              <TbReportMoney className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+            <div className="bg-gray-200 dark:bg-gray-700 p-2 rounded-md shadow-sm mr-2">
+              <TbReportAnalytics className="h-6 w-6 text-gray-500 dark:text-gray-400" />
             </div>
-            <h2 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-white">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-500 dark:text-white">
               {title}
             </h2>
-            <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full">
+            <span className="text-[0.75rem] text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-500 px-2 py-0.5 rounded-full">
               {filteredPayments.length} transactions
             </span>
           </div>
@@ -335,14 +298,14 @@ const PaymentHistory = ({ title = "Recent Transactions" }) => {
 
             <button
               onClick={toggleFilters}
-              className={`inline-flex items-center px-4 py-2.5 border rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
+              className={`relative flex justify-between items-center px-4 py-2.5 border rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
                 showFilters
                   ? "bg-primary-50 text-primary-700 border-primary-300 dark:bg-primary-900/20 dark:text-primary-400 dark:border-primary-700"
                   : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:border-gray-600"
               }`}
             >
-              <FiFilter className="mr-2 h-4 w-4" />
-              Filters
+              <span className="mr-2">Filters</span>
+              <PiCaretDownDuotone className="ml-2 h-4 w-4" />
             </button>
 
             <button className="inline-flex items-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200">

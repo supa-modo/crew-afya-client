@@ -118,19 +118,19 @@ const UserDetailsProfile = ({ user, onUserUpdate }) => {
 
   const getPlanStatusClass = (status) => {
     if (!status)
-      return "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+      return "bg-gray-100 border border-gray-300 dark:bg-gray-900 dark:border-gray-800 text-gray-600 dark:text-gray-400";
 
     switch (status.toLowerCase()) {
       case "active":
-        return "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200";
+        return "bg-green-100 border border-green-300 dark:bg-green-900/30 dark:border-green-800 text-green-600 dark:text-green-300";
       case "inactive":
-        return "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
-      case "expiring":
-        return "bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+        return "bg-gray-100 border border-gray-300 dark:bg-gray-900 dark:border-gray-800 text-gray-600 dark:text-gray-400";
+      case "pending":
+        return "bg-amber-100 border border-amber-300 text-amber-800 dark:bg-amber-900/30 dark:border-amber-600 dark:text-amber-200";
       case "expired":
-        return "bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200";
+        return "bg-red-100 border border-red-300 dark:bg-red-900/30 dark:border-red-800 text-red-600 dark:text-red-300";
       default:
-        return "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+        return "bg-gray-100 border border-gray-300 dark:bg-gray-900 dark:border-gray-800 text-gray-600 dark:text-gray-400";
     }
   };
 
@@ -267,7 +267,7 @@ const UserDetailsProfile = ({ user, onUserUpdate }) => {
                 </dt>
                 <dd className="mt-1">
                   <span
-                    className={`px-4 py-1 text-xs font-medium rounded-lg ${getPlanStatusClass(
+                    className={`px-5 py-1 text-xs font-medium rounded-full ${getPlanStatusClass(
                       user?.membershipStatus
                     )}`}
                   >
@@ -317,22 +317,7 @@ const UserDetailsProfile = ({ user, onUserUpdate }) => {
                   {user?.route || "N/A"}
                 </dd>
               </div>
-              <div className="sm:col-span-1">
-                <dt className="text-sm  text-gray-400 dark:text-gray-500">
-                  Account Status
-                </dt>
-                <dd className="mt-1">
-                  <span
-                    className={`px-4 py-1 text-xs font-medium rounded-lg ${
-                      user?.isActive
-                        ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
-                        : "bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200"
-                    }`}
-                  >
-                    {user?.isActive ? "Active" : "Inactive"}
-                  </span>
-                </dd>
-              </div>
+              
             </dl>
           </div>
         </div>

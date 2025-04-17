@@ -78,55 +78,6 @@ const PaymentTable = ({
     );
   };
 
-  // Get payment status info for badge
-  const getPaymentStatusInfo = (status) => {
-    switch (status) {
-      case "completed":
-        return {
-          color: "text-green-800 dark:text-green-400",
-          bgColor: "bg-green-100 dark:bg-green-900/30",
-          label: "Completed",
-        };
-      case "pending":
-        return {
-          color: "text-yellow-800 dark:text-yellow-400",
-          bgColor: "bg-yellow-100 dark:bg-yellow-900/30",
-          label: "Pending",
-        };
-      case "processing":
-        return {
-          color: "text-blue-800 dark:text-blue-400",
-          bgColor: "bg-blue-100 dark:bg-blue-900/30",
-          label: "Processing",
-        };
-      case "failed":
-        return {
-          color: "text-red-800 dark:text-red-400",
-          bgColor: "bg-red-100 dark:bg-red-900/30",
-          label: "Failed",
-        };
-      case "refunded":
-        return {
-          color: "text-purple-800 dark:text-purple-400",
-          bgColor: "bg-purple-100 dark:bg-purple-900/30",
-          label: "Refunded",
-        };
-      case "cancelled":
-        return {
-          color: "text-gray-800 dark:text-gray-400",
-          bgColor: "bg-gray-100 dark:bg-gray-700",
-          label: "Cancelled",
-        };
-      default:
-        return {
-          color: "text-gray-800 dark:text-gray-400",
-          bgColor: "bg-gray-100 dark:bg-gray-700",
-          label:
-            status?.charAt(0).toUpperCase() + status?.slice(1) || "Unknown",
-        };
-    }
-  };
-
   // Click handler for table row
   const handleRowClick = (payment) => {
     handleViewPayment(payment);
@@ -183,16 +134,14 @@ const PaymentTable = ({
 
   // Get payment service name from payment
   const getPaymentService = (payment) => {
-    
-    if (payment.metadata.paymentType == 'membership') {
-        return 'Membership Fee';
-    } else if (payment.metadata.paymentType == 'medical') {
-        return 'Medical Insurance';
-    } else if (payment.metadata.paymentType == 'loan-repayment') {
-        return 'Loan Repayment';
+    if (payment.metadata.paymentType == "membership") {
+      return "Membership Fee";
+    } else if (payment.metadata.paymentType == "medical") {
+      return "Medical Insurance";
+    } else if (payment.metadata.paymentType == "loan-repayment") {
+      return "Loan Repayment";
     }
-        return 'Other Services';
-    
+    return "Other Services";
   };
 
   // Status badge component
@@ -203,22 +152,26 @@ const PaymentTable = ({
 
     switch (status) {
       case "completed":
-        bgColor = "bg-green-200 dark:bg-green-900/50";
+        bgColor =
+          "bg-green-200 dark:bg-green-700/20 border border-green-300 dark:border-green-900";
         textColor = "text-green-700 dark:text-green-400";
         icon = <FiChevronUp className="mr-1 h-4 w-4" />;
         break;
       case "failed":
-        bgColor = "bg-red-200 dark:bg-red-900/50";
+        bgColor =
+          "bg-red-100 dark:bg-red-700/20 border border-red-300 dark:border-red-900";
         textColor = "text-red-700 dark:text-red-400";
         icon = <FiChevronDown className="mr-1 h-4 w-4" />;
         break;
       case "pending":
-        bgColor = "bg-yellow-200 dark:bg-yellow-900/50";
-        textColor = "text-yellow-700 dark:text-yellow-400";
+        bgColor =
+          "bg-amber-100 dark:bg-amber-700/20 border border-amber-300 dark:border-amber-900";
+        textColor = "text-amber-700 dark:text-amber-400";
         icon = <FiClock className="mr-1 h-4 w-4" />;
         break;
       default:
-        bgColor = "bg-gray-200 dark:bg-gray-700";
+        bgColor =
+          "bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-900";
         textColor = "text-gray-700 dark:text-gray-400";
     }
 
@@ -335,7 +288,11 @@ const PaymentTable = ({
                 <TbCalendarDot className="mr-2 h-5 w-5" />
               )}
               {renderTableHeader("ID/Reference", "id")}
-              {renderTableHeader("Member", "member", <PiUserDuotone className="mr-2 h-5 w-5"/>)}
+              {renderTableHeader(
+                "Member",
+                "member",
+                <PiUserDuotone className="mr-2 h-5 w-5" />
+              )}
               {renderTableHeader(
                 "Service",
                 "service",
@@ -384,18 +341,18 @@ const PaymentTable = ({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-700 dark:text-gray-400">
-                    
                     <div className="">
-                        <div className="text-sm font-medium text-gray-700 dark:text-white">
-                          {payment.user.firstName} {payment.user.lastName}
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          {payment.user.membershipNumber || "No Membership Number"}
-                        </div>
+                      <div className="text-sm font-medium text-gray-700 dark:text-white">
+                        {payment.user.firstName} {payment.user.lastName}
                       </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {payment.user.membershipNumber ||
+                          "No Membership Number"}
+                      </div>
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                   {getPaymentService(payment)}
+                    {getPaymentService(payment)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-400">
                     {formatCurrency(payment.amount)}
@@ -408,7 +365,6 @@ const PaymentTable = ({
                       className="flex justify-end"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      
                       <button
                         className="flex items-center gap-1 text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 p-1 pr-2 rounded-full transition-colors duration-150"
                         title="View Payment Receipt"

@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { FiCheck, FiArrowRight } from "react-icons/fi";
 import MakePayment from "../components/payment/MakePayment";
 import PaymentHistory from "../components/payment/PaymentHistory";
-import PlanSelectionModal, {
-  MembershipRequiredModal,
-} from "../components/payment/PlanSelectionModal";
+import PlanSelectionModal from "../components/payment/PlanSelectionModal";
+import MembershipRequiredModal from "../components/payment/MembershipRequiredModal";
 import { Link, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -15,10 +14,11 @@ import {
   TbCalendarEvent,
   TbMoneybag,
   TbCoins,
+  TbChevronRight,
 } from "react-icons/tb";
 import { BiSolidShieldX } from "react-icons/bi";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
-import { PiUserDuotone } from "react-icons/pi";
+import { PiUserDuotone, PiUsersThreeDuotone } from "react-icons/pi";
 import { useAuth } from "../context/AuthContext";
 import UnionMembershipHistory from "../components/payment/UnionMembershipHistory";
 import { RiUserCommunityLine } from "react-icons/ri";
@@ -281,7 +281,7 @@ const PaymentsPage = () => {
               }`}
             >
               <div className="flex items-center justify-center">
-                <PiUserDuotone className="h-5 w-5 mr-2" />
+                <RiUserCommunityLine className="h-5 w-5 mr-2" />
                 Membership
               </div>
               {activeTab === "union" && (
@@ -390,22 +390,22 @@ const PaymentsPage = () => {
             <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8 px-4 md:px-8 py-8">
               {/* Union Membership Info */}
               <div className="bg-white md:w-[40%] dark:bg-gray-800">
-                <h3 className="text-base sm:text-lg font-semibold text-green-600 mb-3 flex items-center">
-                  <RiUserCommunityLine className="mr-2 h-5 w-5 text-green-500" />
+                <h3 className="text-base sm:text-lg font-semibold text-secondary-700 mb-3 flex items-center">
+                  <RiUserCommunityLine className="mr-2 h-6 w-6 text-secondary-700" />
                   Union Membership Status
                 </h3>
                 <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-400 mb-4">
                   Your current membership status information.
                 </p>
 
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 rounded-xl p-6 shadow-md border border-green-200 dark:border-green-800/50">
+                <div className="bg-gradient-to-br from-secondary-50 to-emerald-50 dark:from-secondary-900/20 dark:to-emerald-900/10 rounded-xl p-6 shadow-md border border-secondary-200 dark:border-secondary-800/50">
                   {/* Status Badge */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
                       <span
                         className={`inline-flex items-center px-4 py-1.5 rounded-lg text-xs font-medium shadow-sm ${
                           hasPaidMembership
-                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800/50"
+                            ? "bg-secondary-100 text-secondary-800 dark:bg-secondary-900/30 dark:text-secondary-400 border border-secondary-300 dark:border-secondary-800/50"
                             : "bg-amber-100 text-amber-800 dark:bg-amber-800/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50"
                         }`}
                       >
@@ -423,18 +423,18 @@ const PaymentsPage = () => {
                       <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                         Membership Status:
                       </span>
-                      <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-white">
+                      <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-white">
                         {hasPaidMembership
                           ? "Lifetime Member"
                           : "Registration Incomplete"}
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-center pt-2 border-t border-green-200/50 dark:border-green-800/30">
+                    <div className="flex justify-between items-center pt-2 border-t border-secondary-200/50 dark:border-secondary-800/30">
                       <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                         Registration Fee:
                       </span>
-                      <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-white">
+                      <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-white">
                         KES 500 (One-time payment)
                       </span>
                     </div>
@@ -443,7 +443,7 @@ const PaymentsPage = () => {
 
                 <div className="mt-6 bg-white dark:bg-gray-800/50 p-5 rounded-xl border border-gray-200 dark:border-gray-700">
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                    <RiUserCommunityLine className="h-5 w-5 text-green-500 mr-2" />
+                    <PiUsersThreeDuotone className="h-5 w-5 text-secondary-500 mr-2" />
                     About Union Membership
                   </h4>
                   <p className="text-[0.8rem] text-gray-600 dark:text-gray-400">
@@ -463,9 +463,9 @@ const PaymentsPage = () => {
               <div className="bg-white md:w-[60%] md:border-l md:border-gray-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden">
                 <div className="md:pl-8">
                   {hasPaidMembership ? (
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 px-6 py-8 rounded-xl border border-green-200 dark:border-green-800/50 text-center shadow-md">
+                    <div className="bg-gradient-to-r from-secondary-50 to-emerald-50 dark:from-secondary-900/20 dark:to-emerald-900/10 px-6 py-8 rounded-xl border border-secondary-200 dark:border-secondary-800/50 text-center shadow-md">
                       <div className="mx-auto w-16 h-16 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full mb-4 shadow-md">
-                        <FiCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
+                        <FiCheck className="h-8 w-8 text-secondary-600 dark:text-secondary-400" />
                       </div>
                       <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
                         You're a Registered Member!
@@ -477,9 +477,12 @@ const PaymentsPage = () => {
                       </p>
                       <button
                         onClick={() => navigate("/profile")}
-                        className="text-sm px-5 py-3 border border-transparent rounded-xl shadow-md font-medium text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 transition-all duration-200"
+                        className="text-sm px-5 py-3 border border-transparent rounded-lg shadow-md font-medium text-white bg-gradient-to-r from-secondary-700/90 to-secondary-700 hover:from-secondary-800/90 hover:to-secondary-800 transition-all duration-200"
                       >
-                        View Membership Details
+                        <div className="flex items-center">
+                          <span className="mr-2">View Membership Details</span>
+                          <TbChevronRight className="h-4 w-4" />
+                        </div>
                       </button>
                     </div>
                   ) : (
