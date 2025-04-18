@@ -163,14 +163,14 @@ const SupportPage = () => {
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
               How Can We Help You?
             </h1>
-            <p className="text-secondary-100 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8">
+            <p className="text-secondary-100 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-8">
               Find answers to common questions or reach out to our support team
               for assistance
             </p>
 
             {/* Search Bar */}
             <div className="max-w-4xl mx-auto relative">
-              <div className="flex items-center bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200/40 dark:border-gray-700/40">
+              <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200/40 dark:border-gray-700/40">
                 <div className="pl-4">
                   <FiSearch className="h-5 w-5 text-gray-400" />
                 </div>
@@ -188,11 +188,11 @@ const SupportPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-screen-2xl mx-auto px-1.5 sm:px-4 md:px-6 lg:px-8 py-10">
         {/* Tabs */}
         <div className="mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-md">
-            <div className="bg-gradient-to-r from-primary-600/5 to-primary-600/0 dark:from-primary-900/10 dark:to-primary-900/5 px-1 py-1 border-b border-gray-200 dark:border-gray-700">
+            <div className="bg-gradient-to-r from-primary-600/5 to-primary-600/0 dark:from-primary-900/10 dark:to-primary-900/5 p-1 border-b border-gray-200 dark:border-gray-700">
               <nav className="flex flex-wrap">
                 <button
                   onClick={() => setActiveTab("help")}
@@ -200,7 +200,7 @@ const SupportPage = () => {
                     activeTab === "help"
                       ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
                       : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/70"
-                  } whitespace-nowrap py-3 px-4 rounded-lg font-medium text-sm sm:text-base flex items-center mx-1 transition-colors duration-200`}
+                  } whitespace-nowrap py-2.5 sm:py-3 px-4 rounded-lg font-medium text-[0.8rem] sm:text-sm md:text-base flex items-center md:mr-1 transition-colors duration-200`}
                 >
                   <TbHelpCircle className="mr-2 h-5 w-5" />
                   All Topics
@@ -209,9 +209,9 @@ const SupportPage = () => {
                   onClick={() => setActiveTab("payment")}
                   className={`${
                     activeTab === "payment"
-                    ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
-                    : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/70"
-                } whitespace-nowrap py-3 px-4 rounded-lg font-medium text-sm sm:text-base flex items-center mx-1 transition-colors duration-200`}
+                      ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
+                      : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/70"
+                  } whitespace-nowrap py-2.5 sm:py-3 px-4 rounded-lg font-medium text-[0.8rem] sm:text-sm md:text-base flex items-center md:mr-1 transition-colors duration-200`}
                 >
                   <MdOutlinePayments className="mr-2 h-5 w-5" />
                   Payments
@@ -220,9 +220,9 @@ const SupportPage = () => {
                   onClick={() => setActiveTab("insurance")}
                   className={`${
                     activeTab === "insurance"
-                    ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
+                      ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
                       : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/70"
-                  } whitespace-nowrap py-3 px-4 rounded-lg font-medium text-sm sm:text-base flex items-center mx-1 transition-colors duration-200`}
+                  } whitespace-nowrap py-2.5 sm:py-3 px-4 rounded-lg font-medium text-[0.8rem] sm:text-sm md:text-base flex items-center md:mr-1 transition-colors duration-200`}
                 >
                   <MdOutlineHealthAndSafety className="mr-2 h-5 w-5" />
                   Insurance
@@ -231,9 +231,9 @@ const SupportPage = () => {
                   onClick={() => setActiveTab("account")}
                   className={`${
                     activeTab === "account"
-                    ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
-                    : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/70"
-                } whitespace-nowrap py-3 px-4 rounded-lg font-medium text-sm sm:text-base flex items-center mx-1 transition-colors duration-200`}
+                      ? "bg-primary-200 dark:bg-primary-900/80 text-primary-600 dark:text-primary-400"
+                      : "text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700/70"
+                  } whitespace-nowrap py-2.5 sm:py-3 px-4 rounded-lg font-medium text-[0.8rem] sm:text-sm md:text-base flex items-center md:mr-1 transition-colors duration-200`}
                 >
                   <RiCustomerService2Line className="mr-2 h-5 w-5" />
                   Account
@@ -248,13 +248,12 @@ const SupportPage = () => {
           <div className="lg:col-span-2">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-md">
               <div className="bg-gradient-to-r from-amber-500/10 to-amber-600/5 dark:from-amber-900/20 dark:to-amber-900/10 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-base sm:text-lg font-semibold text-amber-800 dark:text-amber-400 flex items-center">
-                  <TbFileDescription className="mr-2 h-5 w-5 text-amber-600 dark:text-amber-400" />
+                <h2 className="text-sm sm:text-base md:text-lg font-semibold text-amber-800 dark:text-amber-400 ">
                   Frequently Asked Questions
                 </h2>
               </div>
 
-              <div className="p-6">
+              <div className="p-3 sm:p-6">
                 {filteredFaqs.length > 0 ? (
                   <div className="space-y-3 sm:space-y-4">
                     <AnimatePresence>
@@ -267,10 +266,10 @@ const SupportPage = () => {
                           className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-sm transition-all duration-200"
                         >
                           <button
-                            className="w-full flex justify-between items-center p-4 text-left focus:outline-none bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                            className="w-full flex justify-between items-center p-3 sm:p-4 text-left focus:outline-none bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                             onClick={() => toggleFaq(index)}
                           >
-                            <span className="text-sm sm:text-base font-medium text-gray-800 dark:text-white">
+                            <span className="text-[0.83rem] sm:text-sm md:text-base font-medium text-gray-800 dark:text-white">
                               {faq.question}
                             </span>
                             {expandedFaq === index ? (
@@ -288,8 +287,8 @@ const SupportPage = () => {
                                 transition={{ duration: 0.2 }}
                                 className="overflow-hidden"
                               >
-                                <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-                                  <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
+                                <div className="p-3 sm:p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                                  <p className="text-gray-600 dark:text-gray-300 text-[0.83rem] sm:text-sm md:text-base">
                                     {faq.answer}
                                   </p>
                                 </div>
@@ -316,17 +315,17 @@ const SupportPage = () => {
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-md">
               <div className="bg-gradient-to-r from-primary-600/10 to-primary-600/5 dark:from-primary-900/20 dark:to-primary-900/10 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-base sm:text-lg font-semibold text-primary-800 dark:text-primary-500 flex items-center">
+                <h2 className="text-sm sm:text-base md:text-lg font-semibold text-primary-800 dark:text-primary-500 flex items-center">
                   <TbMessageDots className="mr-2 h-5 w-5 text-primary-600 dark:text-primary-400" />
                   Contact Support
                 </h2>
               </div>
 
-              <div className="p-6">
+              <div className="p-3 sm:p-6">
                 <form onSubmit={handleSubmit}>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                      <label className="block text-[0.83rem] sm:text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
                         Full Name
                       </label>
                       <input
@@ -335,12 +334,12 @@ const SupportPage = () => {
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-[0.83rem] sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                      <label className="block text-[0.83rem] sm:text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
                         Email Address
                       </label>
                       <input
@@ -349,12 +348,12 @@ const SupportPage = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-[0.83rem] sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                      <label className="block text-[0.83rem] sm:text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
                         Phone Number
                       </label>
                       <input
@@ -362,19 +361,19 @@ const SupportPage = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-[0.83rem] sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                      <label className="block text-[0.83rem] sm:text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
                         Issue Category
                       </label>
                       <select
                         name="category"
                         value={formData.category}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-[0.83rem] sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       >
                         <option value="payment">Payment Issue</option>
                         <option value="insurance">Insurance Coverage</option>
@@ -385,7 +384,7 @@ const SupportPage = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                      <label className="block text-[0.83rem] sm:text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
                         Subject
                       </label>
                       <input
@@ -394,12 +393,12 @@ const SupportPage = () => {
                         value={formData.subject}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-[0.83rem] sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                      <label className="block text-[0.83rem] sm:text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-1.5">
                         Message
                       </label>
                       <textarea
@@ -415,7 +414,7 @@ const SupportPage = () => {
                     <div>
                       <button
                         type="submit"
-                        className="w-full inline-flex items-center justify-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        className="w-full inline-flex items-center justify-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-[0.83rem] sm:text-sm md:text-base font-medium text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                       >
                         <FiMail className="mr-2 -ml-1 h-5 w-5" />
                         Submit Request
@@ -427,8 +426,6 @@ const SupportPage = () => {
             </div>
 
             <div className="mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-md">
-              
-
               <div className="p-6">
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
                   We're here to help! If you have any questions or need

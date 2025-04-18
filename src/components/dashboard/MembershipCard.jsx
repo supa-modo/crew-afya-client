@@ -15,12 +15,12 @@ const MembershipCard = ({ user }) => {
                   Matatu Workers Union
                 </span>
                 <div className="w-1 h-4 rounded-full bg-white/20"></div>
-                <div className="flex items-center gap-2 text-[0.65rem] sm:text-xs px-2 py-0.5 rounded-lg bg-white/20 text-secondary-400 uppercase tracking-wide">
+                <div className="flex items-center gap-2 text-[0.6rem] sm:text-xs px-2 py-0.5 rounded-lg bg-white/20 text-secondary-400 uppercase tracking-wide">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-600"></div>
                   <span>{user?.membershipStatus || "Active"}</span>
                 </div>
               </div>
-              <div className="text-[1.2rem] sm:text-[1.35rem] font-semibold pt-1 mb-2 text-white">
+              <div className="text-[1.1rem] sm:text-[1.35rem] font-semibold pt-1 mb-2 text-white">
                 {user?.firstName} {user?.otherNames}{" "}
                 {user?.lastName || "Member"}
               </div>
@@ -37,7 +37,7 @@ const MembershipCard = ({ user }) => {
           </div>
 
           {/* Member Details Section */}
-          <div className="grid grid-cols-2 gap-8 sm:gap-10 mt-3 sm:mt-6 px-3">
+          <div className="grid grid-cols-2 gap-8 sm:gap-10 mt-2 sm:mt-4 md:mt-6 px-3">
             <div className="relative">
               <div className="opacity-80 text-xs mb-1 font-medium">
                 Member ID
@@ -69,7 +69,7 @@ const MembershipCard = ({ user }) => {
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-secondary-500/20 rounded-full -ml-20 -mb-20 blur-xl"></div>
 
         {/* Card Footer */}
-        <div className="mt-7 sm:mt-8 pt-4 border-t border-white/20 flex justify-between text-[0.68rem] sm:text-xs md:text-sm items-center">
+        <div className="mt-5 sm:mt-6 md:mt-8 pt-4 border-t border-white/20 flex justify-between text-[0.68rem] sm:text-xs md:text-sm items-center">
           <div className="flex items-center">
             <TbCalendarEvent className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-secondary-400" />
             <span className="hidden sm:inline mr-1">Member since:</span>

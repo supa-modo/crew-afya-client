@@ -45,7 +45,7 @@ const MedicalCoverTab = ({
         <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
+          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-[0.83rem] sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
         >
           Try Again
         </button>
@@ -57,16 +57,16 @@ const MedicalCoverTab = ({
     return (
       <div className="text-center py-12">
         <TbShieldPlus className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+        <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">
           No Active Medical Cover
         </h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 mx-auto">
           You currently don't have an active medical cover. Subscribe to a plan
           to get started with your healthcare coverage.
         </p>
         <Link
           to="/payments"
-          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
+          className="inline-flex items-center px-6 py-3 border border-transparent text-[0.83rem] sm:text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
         >
           View Insurance Plans
         </Link>
@@ -75,14 +75,6 @@ const MedicalCoverTab = ({
   }
 
   // Handle the case where coverageUtilization might not be available yet
-  const coverage = coverageUtilization?.coverage || {
-    inpatient: 0,
-    outpatient: 0,
-    dental: 0,
-    optical: 0,
-    maternity: 0,
-  };
-
   const utilization = coverageUtilization?.utilization || {
     inpatient: 0,
     outpatient: 0,
@@ -113,6 +105,7 @@ const MedicalCoverTab = ({
         </div>
       </div>
 
+
       <div className="mt-8">
         {/* Benefits Card */}
         <BenefitsCard plan={userSubscription.plan} />
@@ -123,20 +116,20 @@ const MedicalCoverTab = ({
         {/* Claims History  */}
         <div className="w-full">
           <div className="">
-            <div className="px-4">
+            <div className="">
               <h3 className="text-base font-semibold text-amber-800 dark:text-amber-400 flex items-center">
                 <TbFileInvoice className="mr-2 h-5 w-5" />
                 Medical Claims History
               </h3>
             </div>
 
-            <div className="p-4">
+            <div className="py-4">
               {claimsError ? (
                 <div className="text-center py-4 text-red-500 dark:text-red-400">
                   <p>{claimsError}</p>
                   <button
                     onClick={() => window.location.reload()}
-                    className="mt-2 text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+                    className="mt-2 text-[0.83rem] sm:text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                   >
                     Try Again
                   </button>
@@ -157,12 +150,12 @@ const MedicalCoverTab = ({
       <div className="mt-8 flex flex-wrap gap-4 justify-center">
         <Link
           to="/payments"
-          className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-secondary-700 dark:text-secondary-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-[0.83rem] sm:text-sm text-white dark:text-gray-300 bg-gradient-to-r from-secondary-700  to-secondary-800 dark:from-secondary-800  dark:to-secondary-900 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
           <TbShieldHalfFilled className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
           Change Coverage Plan
         </Link>
-        <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-primary-700 dark:text-primary-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+        <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-[0.83rem] sm:text-sm  text-white dark:text-gray-300 bg-gradient-to-r from-primary-700  to-primary-800 dark:from-primary-800 dark:via-primary-800 dark:to-primary-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
           <BiSupport className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
           Contact Support
         </button>

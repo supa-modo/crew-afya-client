@@ -9,7 +9,7 @@ import {
   FiUser,
 } from "react-icons/fi";
 import { TbShieldCheck, TbHealthRecognition, TbDownload, TbSearch } from "react-icons/tb";
-import { PiUsersDuotone, PiUsersThreeDuotone } from "react-icons/pi";
+import { PiUserDuotone, PiUsersDuotone, PiUsersThreeDuotone } from "react-icons/pi";
 import { getPlanSubscribers } from "../../../services/planService";
 
 const PlanSubscribersList = ({ plan }) => {
@@ -369,7 +369,7 @@ const PlanSubscribersList = ({ plan }) => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10 bg-admin-100 dark:bg-admin-900/30 rounded-full flex items-center justify-center">
-                        <FiUser className="h-5 w-5 text-admin-600 dark:text-admin-400" />
+                        <PiUserDuotone className="h-5 w-5 text-admin-600 dark:text-admin-400" />
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
@@ -395,8 +395,8 @@ const PlanSubscribersList = ({ plan }) => {
                     <span
                       className={`px-2.5 py-0.5 inline-flex text-xs leading-5 font-medium rounded-full ${
                         subscriber.status === "active"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                          ? "bg-green-100 border border-green-300 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                          : "bg-red-100 border border-red-300 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                       }`}
                     >
                       {subscriber.status.charAt(0).toUpperCase() +

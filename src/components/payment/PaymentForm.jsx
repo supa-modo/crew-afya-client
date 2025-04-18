@@ -78,7 +78,7 @@ const PaymentForm = ({
       <div>
         <label
           htmlFor="phoneNumber"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          className="block text-[0.8rem] sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
         >
           M-Pesa Phone Number <span className="text-red-500">*</span>
         </label>
@@ -90,7 +90,7 @@ const PaymentForm = ({
             placeholder="07XX XXX XXX"
             value={phoneNumber}
             onChange={handlePhoneChange}
-            className="block w-full px-4 py-2.5 text-base text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent dark:bg-gray-800"
+            className="block w-full px-4 py-2.5 text-sm sm:text-base text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 dark:focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800"
             disabled={isSubmitting || disabled}
             required
           />
@@ -98,7 +98,7 @@ const PaymentForm = ({
             <TbDeviceMobile className="h-5 w-5 text-gray-400" />
           </div>
         </div>
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        <p className="mt-1 text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400">
           Enter your phone number registered with M-Pesa
         </p>
       </div>
@@ -124,7 +124,7 @@ const PaymentForm = ({
       {/* Submit Button */}
       <button
         type="submit"
-        className={`w-full flex justify-center items-center px-4 py-2.5 border border-transparent rounded-md shadow-sm text-sm sm:text-[0.95rem] font-medium text-white bg-gradient-to-r from-secondary-700/90 via-secondary-800/90 to-secondary-700 hover:bg-primary-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+        className={`w-full flex justify-center items-center px-4 py-2.5 border border-transparent rounded-md shadow-sm text-[0.83rem] sm:text-sm md:text-[0.95rem] font-medium text-white bg-gradient-to-r from-secondary-700/90 via-secondary-800/90 to-secondary-700 hover:bg-primary-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed ${
           paymentType === "membership"
             ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
             : ""
@@ -163,7 +163,7 @@ const PaymentForm = ({
         )}
       </button>
 
-      <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
+      <p className="text-[0.7rem] sm:text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
         You will receive an M-Pesa STK push prompt on your phone
       </p>
     </motion.form>

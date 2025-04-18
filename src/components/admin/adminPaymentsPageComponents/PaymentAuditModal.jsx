@@ -24,28 +24,28 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
       case "completed":
         return {
           color: "text-green-600 dark:text-green-500",
-          bgColor: "bg-green-100 dark:bg-green-900/20",
+          bgColor: "bg-green-200 dark:bg-green-900/20 border border-green-400",
           icon: <TbCheck className="h-4 w-4" />,
           label: "Completed",
         };
       case "pending":
         return {
           color: "text-yellow-600 dark:text-yellow-500",
-          bgColor: "bg-yellow-100 dark:bg-yellow-900/20",
+          bgColor: "bg-yellow-200 dark:bg-yellow-900/20 border border-yellow-400",
           icon: <TbInfoCircle className="h-4 w-4" />,
           label: "Pending",
         };
       case "processing":
         return {
           color: "text-blue-600 dark:text-blue-500",
-          bgColor: "bg-blue-100 dark:bg-blue-900/20",
+          bgColor: "bg-blue-200 dark:bg-blue-900/20 border border-blue-400",
           icon: <TbArrowsExchange className="h-4 w-4" />,
           label: "Processing",
         };
       case "failed":
         return {
           color: "text-red-600 dark:text-red-500",
-          bgColor: "bg-red-100 dark:bg-red-900/20",
+          bgColor: "bg-red-200 dark:bg-red-900/20 border border-red-400",
           icon: <TbAlertCircle className="h-4 w-4" />,
           label: "Failed",
         };
@@ -59,14 +59,14 @@ const PaymentAuditModal = ({ payment, onClose, formatDate }) => {
       case "created":
         return {
           color: "text-blue-600 dark:text-blue-500",
-          bgColor: "bg-blue-100 dark:bg-blue-900/20",
+          bgColor: "bg-blue-200 dark:bg-blue-900/20 border border-blue-400",
           icon: <TbCreditCard className="h-4 w-4" />,
           label: "Created",
         };
       default:
         return {
           color: "text-gray-600 dark:text-gray-500",
-          bgColor: "bg-gray-100 dark:bg-gray-900/20",
+          bgColor: "bg-gray-200 dark:bg-gray-900/20 border border-gray-400",
           icon: <TbInfoCircle className="h-4 w-4" />,
           label: status.charAt(0).toUpperCase() + status.slice(1),
         };

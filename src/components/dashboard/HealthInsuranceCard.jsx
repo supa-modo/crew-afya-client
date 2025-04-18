@@ -14,7 +14,6 @@ const HealthInsuranceCard = ({
   subscription,
   handleOpenFrequencyModal,
 }) => {
-
   // Get premium amount based on frequency
   const getPremiumAmount = () => {
     if (!subscription?.plan) return 0;
@@ -37,39 +36,35 @@ const HealthInsuranceCard = ({
     <div className="w-full">
       <div className="bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 p-3 sm:p-6 rounded-2xl shadow-md border border-blue-100 dark:border-gray-700">
         {/* Card Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-5 sm:mb-6">
           <div className="flex items-center space-x-4">
-            <div className="h-10 w-10 sm:h-12 sm:w-12 bg-blue-500 rounded-lg sm:rounded-xl flex items-center justify-center">
-              <TbShieldCheckFilled className="h-6 sm:h-7 w-6 sm:w-7 text-white" />
-            </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-gray-500 dark:text-white">
-                Health Insurance Cover
-            </h3>
-              <p className="text-[0.8rem] sm:text-sm text-gray-600 dark:text-gray-300">
+              <h3 className="text-[0.95rem] sm:text-lg font-bold text-gray-500 dark:text-white">
+                Medical Cover
+              </h3>
+              <p className="text-[0.77rem] sm:text-sm text-gray-600 dark:text-gray-300">
                 CrewAfya Health Insurance
               </p>
             </div>
           </div>
           <div className="flex items-center">
-            <span className="px-3 sm:px-4 py-0.5 sm:py-1 text-[0.7rem] sm:text-xs font-medium rounded-full bg-secondary-200 border border-secondary-300 text-secondary-800 dark:bg-secondary-900/30 dark:text-secondary-400">
+            <span className="px-2 sm:px-4 py-0.5 sm:py-1 text-[0.7rem] sm:text-xs font-medium rounded-full bg-secondary-200 border border-secondary-300 text-secondary-800 dark:bg-secondary-900/30 dark:text-secondary-400">
               {subscription?.status || "Active"}
             </span>
-                  </div>
-                </div>
+          </div>
+        </div>
 
         {/* Plan Details */}
-        <div className="bg-white/60 dark:bg-gray-800/50 rounded-xl p-3.5 sm:p-4 mb-6">
-          <div className="flex items-center justify-between mb-6 sm:mb-8">
-              
-              <div>
-                <p className="text-[0.8rem] sm:text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Current Plan
-                </p>
-                <h4 className="text-lg sm:text-xl font-bold text-primary-600 dark:text-white">
-                  {subscription?.plan?.name || "Basic Medical Cover"}
-                </h4>
-              </div>
+        <div className="bg-white/60 dark:bg-gray-800/50 rounded-xl p-3.5 sm:p-4 mb-8">
+          <div className="flex items-center justify-between mb-4 sm:mb-8">
+            <div>
+              <p className="text-[0.76rem] sm:text-sm font-medium text-gray-600 dark:text-gray-400">
+                Current Plan
+              </p>
+              <h4 className="text-lg sm:text-xl font-bold text-primary-600 dark:text-white">
+                {subscription?.plan?.name || "Basic Medical Cover"}
+              </h4>
+            </div>
             <button
               onClick={handleOpenFrequencyModal}
               className="flex items-center space-x-1 text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
@@ -77,41 +72,38 @@ const HealthInsuranceCard = ({
               <TbEdit className="h-4 w-4" />
               <span>Change</span>
             </button>
-                </div>
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
-            
-              <div>
-                <p className="text-[0.8rem] sm:text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Premium
-                </p>
-                <p className="text-[0.93rem] sm:text-base font-bold text-secondary-700 dark:text-white">
-                  {formatCurrency(getPremiumAmount())}
-                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400 ml-1">
-                    {subscription?.frequency || "monthly"}
-                    </span>
-                </p>
-                </div>
+            <div>
+              <p className="text-[0.76rem] sm:text-sm font-medium text-gray-600 dark:text-gray-400">
+                Premium
+              </p>
+              <p className="text-[0.9rem] sm:text-base font-bold text-secondary-700 dark:text-white">
+                {formatCurrency(getPremiumAmount())}
+                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 ml-1">
+                  {subscription?.frequency || "monthly"}
+                </span>
+              </p>
+            </div>
 
-            
-              <div>
-                <p className="text-[0.8rem] sm:text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Coverage Limit
-                </p>
-                <p className="text-[0.93rem] sm:text-base font-bold text-gray-600 dark:text-white">
-                  {formatCurrency(subscription?.plan?.coverageLimit || 500000)}
-                </p>
-                  </div>
-                </div>
-                  </div>
+            <div>
+              <p className="text-[0.76rem] sm:text-sm font-medium text-gray-600 dark:text-gray-400">
+                Coverage Limit
+              </p>
+              <p className="text-[0.9rem] sm:text-base font-bold text-gray-600 dark:text-white">
+                {formatCurrency(subscription?.plan?.coverageLimit || 500000)}
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Coverage Dates */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white/60 dark:bg-gray-800/50 rounded-xl p-3 sm:p-4">
+        <div className="grid grid-cols-2 gap-4 mb-2 sm:mb-4">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
                 <TbCalendarEvent className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                  </div>
+              </div>
               <div>
                 <p className="text-[0.8rem] sm:text-sm font-medium text-gray-600 dark:text-gray-400">
                   Start Date
@@ -121,9 +113,7 @@ const HealthInsuranceCard = ({
                 </p>
               </div>
             </div>
-          </div>
 
-          <div className="bg-white/60 dark:bg-gray-800/50 rounded-xl p-3 sm:p-4">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-rose-100 dark:bg-rose-900/30 rounded-lg">
                 <TbClock className="h-5 w-5 text-rose-600 dark:text-rose-400" />
@@ -137,7 +127,6 @@ const HealthInsuranceCard = ({
                 </p>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </div>

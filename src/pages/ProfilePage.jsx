@@ -1,19 +1,10 @@
-import { useState, useEffect } from "react";
-import {
-  FiUser,
-  FiMail,
-  FiPhone,
-  FiLock,
-  FiUpload,
-  FiTrash2,
-  FiFile,
-  FiHome,
-  FiChevronRight,
-} from "react-icons/fi";
+import { useState, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   uploadDocument,
   getUserDocuments,
+  deleteUserDocument,
 } from "../services/documentService";
 import {
   updateUserProfile,
@@ -21,22 +12,46 @@ import {
   requestPhoneVerification,
   verifyPhoneNumber,
 } from "../services/userService";
-import { Link } from "react-router-dom";
+import {
+  showSuccessToast,
+  showErrorToast,
+  showWarningToast,
+} from "../utils/toast";
 import SecurityTab from "./profilepage/SecurityTab";
 import DocumentsTab from "./profilepage/DocumentsTab";
 import PersonalInfoTab from "./profilepage/PersonalInfoTab";
 import DocumentUploadModal from "./profilepage/DocumentUploadModal";
 import PhoneVerificationModal from "./profilepage/PhoneVerificationModal";
+import DependantsTab from "./profilepage/DependantsTab";
 import {
-  PiFilesDuotone,
+  PiUser,
+  PiUserCircle,
+  PiIdentificationCard,
+  PiFileText,
+  PiLock,
+  PiUsersThreeDuotone,
   PiUserDuotone,
-  PiUserGearDuotone,
+  PiCheck,
+  PiClock,
+  PiSpinner,
+  PiXCircle,
+  PiFilesDuotone,
 } from "react-icons/pi";
-import { TbHome2, TbLockFilled } from "react-icons/tb";
+import {
+  TbActivity,
+  TbHomeDot,
+  TbChevronRight,
+  TbStarFilled,
+  TbExclamationCircle,
+  TbAlertTriangle,
+  TbHome2,
+  TbLockSquareRounded,
+} from "react-icons/tb";
 
 const ProfilePage = () => {
   const { user, updateUser } = useAuth();
 
+  // State for user data
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
@@ -55,12 +70,16 @@ const ProfilePage = () => {
     confirmPassword: "",
   });
 
+  // UI state
+  const [activeTab, setActiveTab] = useState("personal-details");
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState("personal");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState({ type: "", text: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const [profileCompletionPercentage, setProfileCompletionPercentage] =
+    useState(50);
+  const [missingProfileItems, setMissingProfileItems] = useState([]);
 
-  // Add new state for documents
+  // Document states
   const [documents, setDocuments] = useState([]);
   const [isLoadingDocs, setIsLoadingDocs] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -73,54 +92,77 @@ const ProfilePage = () => {
   });
   const [hasIdDocument, setHasIdDocument] = useState(false);
   const [fileError, setFileError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   // Phone verification states
   const [showPhoneVerificationModal, setShowPhoneVerificationModal] =
     useState(false);
-  const [verificationStep, setVerificationStep] = useState("request");
-  const [verificationCode, setVerificationCode] = useState("");
   const [originalPhoneNumber, setOriginalPhoneNumber] = useState("");
 
-  // Add new state for document deletion confirmation
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [documentToDelete, setDocumentToDelete] = useState(null);
-
-  // Fetch documents on component mount
+  // Fetch user data and documents on component mount
   useEffect(() => {
-    fetchDocuments();
+    fetchUserData();
   }, []);
+
+  // Calculate profile completion percentage
+  useEffect(() => {
+    calculateProfileCompletion();
+  }, [user, documents, hasIdDocument]);
+
+  const fetchUserData = async () => {
+    try {
+      setIsLoading(true);
+      await fetchDocuments();
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      showErrorToast("Failed to fetch user data. Please refresh the page.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const calculateProfileCompletion = () => {
+    let percentage = 50; // Base percentage after registration
+    let missingItems = [];
+
+    // Add 25% if user has ID document
+    if (hasIdDocument) {
+      percentage += 25;
+    } else {
+      missingItems.push("Upload your ID document");
+    }
+
+    // Add 25% if membership status is active
+    if (user?.membershipStatus === "active") {
+      percentage += 25;
+    } else {
+      missingItems.push("Activate membership");
+    }
+
+    setProfileCompletionPercentage(percentage);
+    setMissingProfileItems(missingItems);
+  };
 
   const fetchDocuments = async () => {
     try {
       setIsLoadingDocs(true);
       const response = await getUserDocuments();
 
-      // Check if response exists and has data
+      // Process document data
       if (response && response.data) {
         setDocuments(response.data || []);
-
-        // Fix for checking if an ID document exists
         const docs = Array.isArray(response.data) ? response.data : [];
         const hasId = docs.some((doc) => doc.type === "identity");
-        console.log("Has ID document:", hasId);
-        setHasIdDocument(!!hasId); // Use !! to ensure it's a boolean
+        setHasIdDocument(!!hasId);
       } else {
-        // Handle case where response structure is different
         setDocuments(response || []);
-
-        // Also check in this case
         const docs = Array.isArray(response) ? response : [];
         const hasId = docs.some((doc) => doc.type === "identity");
-        console.log("Has ID document (alternative path):", hasId);
         setHasIdDocument(!!hasId);
       }
     } catch (error) {
       console.error("Error fetching documents:", error);
-      setMessage({
-        type: "error",
-        text: "Failed to fetch documents. Please try again.",
-      });
-      // Set hasIdDocument to false on error
+      showErrorToast("Failed to fetch documents. Please try again.");
       setHasIdDocument(false);
     } finally {
       setIsLoadingDocs(false);
@@ -163,11 +205,9 @@ const ProfilePage = () => {
         route: formData.route,
       });
 
-      // Fix: Check if updateUser exists in the auth context before calling it
       if (typeof updateUser === "function") {
         updateUser(response.data);
       } else {
-        // If updateUser is not available, at least update the local state
         setFormData((prev) => ({
           ...prev,
           firstName: response.data.firstName || prev.firstName,
@@ -182,17 +222,10 @@ const ProfilePage = () => {
         }));
       }
 
-      setMessage({
-        type: "success",
-        text: "Profile updated successfully",
-      });
-
+      showSuccessToast("Profile updated successfully");
       setIsEditing(false);
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: error.message || "Failed to update profile",
-      });
+      showErrorToast(error.message || "Failed to update profile");
     } finally {
       setIsSubmitting(false);
     }
@@ -202,21 +235,17 @@ const ProfilePage = () => {
     e.preventDefault();
 
     if (formData.newPassword !== formData.confirmPassword) {
-      setMessage({
-        type: "error",
-        text: "Passwords do not match",
-      });
+      setPasswordError("Passwords do not match");
+      showErrorToast("Passwords do not match");
       return;
     }
 
     try {
       setIsSubmitting(true);
+      setPasswordError("");
       await changeUserPassword(formData.currentPassword, formData.newPassword);
 
-      setMessage({
-        type: "success",
-        text: "Password changed successfully",
-      });
+      showSuccessToast("Password changed successfully");
 
       // Clear password fields
       setFormData((prev) => ({
@@ -226,17 +255,16 @@ const ProfilePage = () => {
         confirmPassword: "",
       }));
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: error.message || "Failed to change password",
-      });
+      // Set specific error message from the API response
+      const errorMessage = error.message || "Failed to change password";
+      setPasswordError(errorMessage);
+      showErrorToast(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleFileUploadClick = () => {
-    // Open the upload modal instead of directly opening the file dialog
     setShowUploadModal(true);
   };
 
@@ -292,47 +320,54 @@ const ProfilePage = () => {
   const handleDocumentSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation
+    if (!documentData.name.trim()) {
+      setFileError("Document name is required");
+      return;
+    }
+
+    if (!documentData.type) {
+      setFileError("Document type is required");
+      return;
+    }
+
     if (!documentData.file) {
       setFileError("Please select a file to upload");
       return;
     }
 
-    let progressInterval;
+    setFileError("");
+    setIsSubmitting(true);
+    setUploadProgress(0);
+
+    // Setup a progress interval to show simulated progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 10;
+      if (progress > 90) {
+        progress = 90;
+        clearInterval(progressInterval);
+      }
+      setUploadProgress(Math.min(progress, 90));
+    }, 300);
+
     try {
-      setIsSubmitting(true);
-      setUploadProgress(0);
-
-      // Simulate upload progress
-      progressInterval = setInterval(() => {
-        setUploadProgress((prev) => {
-          if (prev >= 95) {
-            clearInterval(progressInterval);
-            return prev;
-          }
-          return prev + 5;
-        });
-      }, 100);
-
       // Upload the document
-      await uploadDocument(
-        documentData.file,
-        documentData.name,
-        documentData.type,
-        documentData.description
-      );
+      const formData = new FormData();
+      formData.append("file", documentData.file);
+      formData.append("name", documentData.name);
+      formData.append("type", documentData.type);
+      formData.append("description", documentData.description || "");
 
+      const response = await uploadDocument(formData);
+
+      // Clear the progress interval
       clearInterval(progressInterval);
+
+      // Set progress to 100% to indicate completion
       setUploadProgress(100);
 
-      // Refresh the documents list
-      await fetchDocuments();
-
-      setMessage({
-        type: "success",
-        text: "Document uploaded successfully",
-      });
-
-      // Reset form and close modal
+      // Clear the form and close the modal
       setDocumentData({
         name: "",
         type: "",
@@ -340,6 +375,11 @@ const ProfilePage = () => {
         file: null,
       });
       setShowUploadModal(false);
+
+      // Refresh the documents list
+      await fetchDocuments();
+
+      showSuccessToast("Document uploaded successfully");
     } catch (error) {
       // Clear the progress interval if it exists
       if (progressInterval) clearInterval(progressInterval);
@@ -350,10 +390,7 @@ const ProfilePage = () => {
       if (error.message && error.message.includes("file")) {
         setFileError(error.message);
       } else {
-        setMessage({
-          type: "error",
-          text: "Failed to upload document. Please try again.",
-        });
+        showErrorToast("Failed to upload document. Please try again.");
         // Close the modal to show the error message
         setShowUploadModal(false);
       }
@@ -364,310 +401,295 @@ const ProfilePage = () => {
     }
   };
 
-  // const confirmDelete = async () => {
-  //   if (documentToDelete) {
-  //     try {
-  //       setIsSubmitting(true);
-  //       await deleteUserDocument(documentToDelete.id);
-  //       await fetchDocuments();
-
-  //       setMessage({
-  //         type: "success",
-  //         text: "Document deleted successfully",
-  //       });
-  //     } catch (error) {
-  //       setMessage({
-  //         type: "error",
-  //         text: error.message || "Failed to delete document",
-  //       });
-  //     } finally {
-  //       setIsSubmitting(false);
-  //       setShowDeleteModal(false);
-  //       setDocumentToDelete(null);
-  //     }
-  //   }
-  // };
-
-  const handleRequestVerificationCode = async () => {
+  const handleDeleteDocument = async (documentId) => {
     try {
       setIsSubmitting(true);
-      await requestPhoneVerification(formData.phoneNumber);
-      setVerificationStep("verify");
+      await deleteUserDocument(documentId);
+      await fetchDocuments();
 
-      setMessage({
-        type: "success",
-        text: "Verification code sent to your phone",
-      });
+      showSuccessToast("Document deleted successfully");
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: error.message || "Failed to send verification code",
-      });
+      showErrorToast(error.message || "Failed to delete document");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleVerifyPhoneNumber = async () => {
+  const handleVerifyPhoneNumber = async (phoneNumber, verificationCode) => {
     try {
       setIsSubmitting(true);
-      await verifyPhoneNumber(formData.phoneNumber, verificationCode);
+      await verifyPhoneNumber(phoneNumber, verificationCode);
 
       // Close modal and update profile
       setShowPhoneVerificationModal(false);
       await updateProfile();
 
-      setMessage({
-        type: "success",
-        text: "Phone number verified and profile updated successfully",
-      });
+      showSuccessToast(
+        "Phone number verified and profile updated successfully"
+      );
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: error.message || "Failed to verify phone number",
-      });
+      showErrorToast(error.message || "Failed to verify phone number");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  return (
-    <div className="min-h-screen max-w-screen-2xl mx-auto mt-16 px-4 py-8">
-      <div className="mb-6">
-        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-          <Link
-            to="/"
-            className="hover:text-primary-600 dark:hover:text-primary-400 items-center"
-          >
-            <TbHome2 className="inline mr-2 h-5 w-5" />
-            <span>Home</span>
-          </Link>
-          <FiChevronRight className="mx-2 h-4 w-4" />
-          <span className="text-gray-700 dark:text-gray-300">
-            Profile Management
-          </span>
-        </div>
-      </div>
+  // Determine which content to show based on active tab
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "personal-details":
+        return (
+          <PersonalInfoTab
+            formData={formData}
+            isEditing={isEditing}
+            isSubmitting={isSubmitting}
+            handleChange={handleChange}
+            handleSubmit={handlePersonalInfoSubmit}
+            setIsEditing={setIsEditing}
+          />
+        );
 
-      <div className="mb-6 pl-4">
-        <h1 className="text-lg md:text-xl font-bold text-green-700 ">
-          Your Account Profile
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Manage your personal information, documents and your passwords.
-        </p>
-      </div>
+      // case "dependants":
+      //   return <DependantsTab userId={user?.id} isLoading={isLoading} />;
 
-      {message.text && (
-        <div className="mb-4">
-          <div
-            className={`p-4 rounded-lg ${
-              message.type === "success"
-                ? "bg-green-200 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                : "bg-red-200 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-            } flex items-center`}
+      case "security":
+        return (
+          <SecurityTab
+            formData={formData}
+            isSubmitting={isSubmitting}
+            handleChange={handleChange}
+            handlePasswordSubmit={handlePasswordSubmit}
+            userData={user}
+            errorMessage={passwordError}
+            refreshUserData={() => {
+              if (typeof updateUser === "function") {
+                updateUser({ ...user, phoneVerified: true });
+              }
+            }}
+          />
+        );
+      case "documents":
+        return (
+          <DocumentsTab
+            documents={documents}
+            isLoadingDocs={isLoadingDocs}
+            uploadProgress={uploadProgress}
+            hasIdDocument={hasIdDocument}
+            handleFileUploadClick={handleFileUploadClick}
+            handleDeleteDocument={handleDeleteDocument}
+            setShowUploadModal={setShowUploadModal}
+            setIsSubmitting={setIsSubmitting}
+            fetchDocuments={fetchDocuments}
+          />
+        );
+      default:
+        return <div>Select a tab</div>;
+    }
+  };
+
+  // Render the tab navigation based on dashboard pattern
+  const renderTabNavigation = () => {
+    const tabs = [
+      {
+        id: "personal-details",
+        label: "Personal Details",
+        icon: <PiUser className="h-5 sm:h-6 w-5 sm:w-6" />,
+        color: "from-primary-500/20 to-primary-600/10",
+        iconColor: "text-primary-600",
+        textColor: "text-primary-600 dark:text-primary-300",
+      },
+      // {
+      //   id: "dependants",
+      //   label: "Dependants",
+      //   icon: <PiUsersThreeDuotone className="h-5 w-5" />,
+      //   color: "from-emerald-500/10 to-emerald-600/10",
+      //   activeColor: "bg-emerald-600 text-white",
+      //   iconColor: "text-emerald-600",
+      // },
+      {
+        id: "documents",
+        label: "Documents",
+        icon: <PiFilesDuotone className="h-5 sm:h-6 w-5 sm:w-6" />,
+        color: "from-blue-500/20 to-blue-600/10",
+        iconColor: "text-blue-500",
+        textColor: "text-blue-600 dark:text-blue-400",
+      },
+      {
+        id: "security",
+        label: "Security",
+        icon: <TbLockSquareRounded className="h-5 sm:h-6 w-5 sm:w-6" />,
+        color: "from-amber-500/20 to-amber-600/10",
+        iconColor: "text-amber-600",
+        textColor: "text-amber-600 ",
+      },
+    ];
+
+    return (
+      <div className="space-y-1">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            className={`group w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+              activeTab === tab.id
+                ? `bg-gradient-to-br ${tab.color} ${tab.textColor}`
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800"
+            }`}
+            onClick={() => setActiveTab(tab.id)}
           >
-            {message.type === "success" ? (
-              <svg
-                className="h-5 w-5 mr-2"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            ) : (
-              <svg
-                className="h-5 w-5 mr-2"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 01-1-1v-4a1 1 0 112 0v4a1 1 0 01-1 1z"
-                  clipRule="evenodd"
-                />
-              </svg>
+            <div
+              className={`mr-3 ${
+                activeTab === tab.id ? tab.iconColor : "text-gray-500"
+              }`}
+            >
+              {tab.icon}
+            </div>
+            <span>{tab.label}</span>
+            {activeTab === tab.id && (
+              <span className="ml-auto">
+                <TbChevronRight className="h-4 w-4" />
+              </span>
             )}
-            <span>{message.text}</span>
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-gray-50/60 to-gray-100/60 dark:from-gray-900/60 dark:to-gray-800/60 min-h-screen pb-10">
+      <div className="pt-20 sm:pt-24 max-w-screen-2xl mx-auto px-0 sm:px-2 lg:px-8">
+        {/* Breadcrumb */}
+        <div className="mb-6 px-2">
+          <div className="flex items-center text-[0.8rem] sm:text-sm text-gray-500 dark:text-gray-400">
+            <Link
+              to="/"
+              className="hover:text-primary-600 dark:hover:text-primary-400 items-center"
+            >
+              <TbHome2 className="inline mr-2 h-5 w-5" />
+              <span>Home</span>
+            </Link>
+
+            <TbChevronRight className="mx-2 h-4 w-4" />
+            <Link
+              to="/dashboard"
+              className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 items-center"
+            >
+              <span className="">Dashboard</span>
+            </Link>
+
+            <TbChevronRight className="mx-2 h-4 w-4" />
+            <span className="text-secondary-700 dark:text-secondary-500 font-medium">
+              Profile
+            </span>
           </div>
         </div>
-      )}
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="md:col-span-1">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="px-4 sm:px-6 py-6">
-              <div className="flex flex-col items-center">
-                <div className="flex sm:flex-col flex-row sm:space-x-0 space-x-4 sm:items-center">
-                  <div className="h-24 w-24 rounded-full bg-primary-200 dark:bg-primary-900/50 flex items-center justify-center text-primary-600 dark:text-primary-400 text-3xl font-bold mb-4">
-                    {/* {user?.firstName?.charAt(0) user?.lastName?.charAt(0) || ( */}
-                    <PiUserDuotone className="h-12 w-12" />
-                    {/* )} */}
+        <div className="px-2 mt-6">
+          {/* Document upload modal */}
+          {showUploadModal && (
+            <DocumentUploadModal
+              showUploadModal={showUploadModal}
+              setShowUploadModal={setShowUploadModal}
+              documentData={documentData}
+              setDocumentData={setDocumentData}
+              handleDocumentDataChange={handleDocumentDataChange}
+              handleDocumentFileChange={handleDocumentFileChange}
+              handleDocumentSubmit={handleDocumentSubmit}
+              isSubmitting={isSubmitting}
+              fileError={fileError}
+            />
+          )}
+
+          {/* Phone verification modal */}
+          <PhoneVerificationModal
+            show={showPhoneVerificationModal}
+            handleClose={() => setShowPhoneVerificationModal(false)}
+            phone={formData.phoneNumber}
+            onVerificationComplete={handleVerifyPhoneNumber}
+          />
+
+          {/* Header */}
+          <div className="mb-6">
+            <div>
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-secondary-700 dark:text-secondary-500">
+                Account Profile
+              </h1>
+              <p className="text-[0.83rem] sm:text-sm text-gray-500 mt-1">
+                Manage your personal information, documents and your passwords.
+              </p>
+            </div>
+          </div>
+
+          {/* Profile Completion Warning - Only show if less than 100% */}
+          {profileCompletionPercentage < 100 && (
+            <div className="mb-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 shadow-sm">
+              <div className="">
+                <div className="flex items-center space-x-2">
+                  <div className="flex-shrink-0">
+                    <TbAlertTriangle className="h-5 w-5 text-amber-500" />
                   </div>
-                  <div>
-                    <h2 className="text-lg sm:text-center font-semibold text-zinc-600 dark:text-white">
-                      {user?.firstName} {user?.otherNames} {user?.lastName}
-                    </h2>
-                    <p className="text-sm sm:text-center text-gray-500 dark:text-gray-400 mb-2">
-                      {user?.email || "john.doe@example.com"}
-                    </p>
-                    <div className="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                      <div
-                        className="bg-primary-600 h-1.5 rounded-full"
-                        style={{ width: "75%" }}
-                      ></div>
+                  <h3 className="text-[0.8rem] sm:text-sm font-medium text-amber-800 dark:text-amber-300">
+                    Profile completion: {profileCompletionPercentage}%
+                  </h3>
+                </div>
+
+                <div className="mt-1 sm:mt-2 pl-2 sm:pl-4 text-[0.8rem] sm:text-sm text-amber-700 dark:text-amber-300">
+                  {missingProfileItems.length > 0 && (
+                    <ul className="mt-1 pl-4 list-disc">
+                      {missingProfileItems.map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col space-y-6 md:space-y-0 md:grid md:grid-cols-4 md:gap-6">
+            {/* Left Sidebar */}
+            <div className="md:col-span-1">
+              <div className="bg-white dark:bg-gray-900 shadow rounded-xl overflow-hidden">
+                {/* User Profile Overview */}
+                <div className="px-4 py-5 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex flex-col items-center">
+                    <div className="w-20 sm:w-28 h-20 sm:h-28 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mb-3">
+                      <PiUserDuotone className="w-14 sm:w-20 h-14 sm:h-20 text-gray-400 dark:text-gray-500" />
                     </div>
-                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                      Profile completion: 75%
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-200">
+                      {user?.firstName} {user?.lastName}
+                    </h2>
+                    <p className="text-[0.83rem] sm:text-sm text-gray-500 dark:text-gray-400">
+                      {user?.email || user?.phoneNumber}
+                    </p>
+                    <p className="mt-1 sm:mt-2 text-[0.78rem] sm:text-[0.83rem] text-gray-500 dark:text-gray-400">
+                      Member No:{" "}
+                      <span className="font-medium text-[0.75rem] sm:text-[0.8rem] text-gray-600 dark:text-gray-300">
+                        {user?.membershipNumber}
+                      </span>
                     </p>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-4 sm:mt-6 space-y-1">
-                <button
-                  onClick={() => setActiveTab("personal")}
-                  className={`w-full flex items-center text-left px-4 py-2.5 sm:py-3 rounded-lg transition-colors duration-200 ${
-                    activeTab === "personal"
-                      ? "bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-400"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <PiUserGearDuotone
-                    className={`h-6 w-6 mr-3 ${
-                      activeTab === "personal"
-                        ? "text-primary-600"
-                        : "text-gray-400"
-                    }`}
-                  />
-                  <span className="text-sm sm:text-base">
-                    Personal Information
-                  </span>
-                </button>
-                <button
-                  onClick={() => setActiveTab("security")}
-                  className={`w-full flex items-center text-left px-4 py-2.5 sm:py-3 rounded-lg transition-colors duration-200 ${
-                    activeTab === "security"
-                      ? "bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-400"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <TbLockFilled
-                    className={`h-6 w-6 mr-3 ${
-                      activeTab === "security"
-                        ? "text-primary-600"
-                        : "text-gray-400"
-                    }`}
-                  />
-                  <span className="text-sm sm:text-base">Security</span>
-                </button>
-                <button
-                  onClick={() => setActiveTab("documents")}
-                  className={`w-full flex items-center text-left px-4 py-2.5 sm:py-3 rounded-lg transition-colors duration-200 ${
-                    activeTab === "documents"
-                      ? "bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-400"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
-                >
-                  <PiFilesDuotone
-                    className={`h-6 w-6 mr-3 ${
-                      activeTab === "documents"
-                        ? "text-primary-600"
-                        : "text-gray-400"
-                    }`}
-                  />
-                  <span className="text-sm sm:text-base">Documents</span>
-                </button>
+                {/* Navigation Links */}
+                <div className="py-4 px-2">
+                  <h3 className="text-[0.7rem] sm:text-xs font-semibold text-secondary-700 dark:text-secondary-500 uppercase tracking-wider mb-3 px-2">
+                    Account Settings
+                  </h3>
+                  {renderTabNavigation()}
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="md:col-span-3">
+              <div className="bg-white dark:bg-gray-900 shadow rounded-xl overflow-hidden">
+                {renderTabContent()}
               </div>
             </div>
           </div>
         </div>
-
-        <div className="md:col-span-3">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            {activeTab === "personal" && (
-              <PersonalInfoTab
-                formData={formData}
-                isEditing={isEditing}
-                isSubmitting={isSubmitting}
-                handleChange={handleChange}
-                handleSubmit={handlePersonalInfoSubmit}
-                setIsEditing={setIsEditing}
-              />
-            )}
-
-            {activeTab === "security" && (
-              <SecurityTab
-                formData={formData}
-                isSubmitting={isSubmitting}
-                handleChange={handleChange}
-                handlePasswordSubmit={handlePasswordSubmit}
-                userData={user}
-                refreshUserData={() => {
-                  // Refresh user data after phone verification
-                  if (typeof updateUser === "function") {
-                    updateUser({ ...user, phoneVerified: true });
-                  }
-                  setMessage({
-                    type: "success",
-                    text: "Phone number verified successfully",
-                  });
-                }}
-              />
-            )}
-
-            {activeTab === "documents" && (
-              <DocumentsTab
-                documents={documents}
-                isLoadingDocs={isLoadingDocs}
-                uploadProgress={uploadProgress}
-                hasIdDocument={hasIdDocument}
-                handleFileUploadClick={handleFileUploadClick}
-                setShowUploadModal={setShowUploadModal}
-                setIsSubmitting={setIsSubmitting}
-                setMessage={setMessage}
-                fetchDocuments={fetchDocuments}
-              />
-            )}
-          </div>
-        </div>
       </div>
-
-      {/* Document Upload Modal */}
-      <DocumentUploadModal
-        showUploadModal={showUploadModal}
-        setShowUploadModal={setShowUploadModal}
-        documentData={documentData}
-        setDocumentData={setDocumentData}
-        handleDocumentDataChange={handleDocumentDataChange}
-        handleDocumentFileChange={handleDocumentFileChange}
-        handleDocumentSubmit={handleDocumentSubmit}
-        isSubmitting={isSubmitting}
-        fileError={fileError}
-      />
-
-      {/* Phone Verification Modal */}
-      <PhoneVerificationModal
-        show={showPhoneVerificationModal}
-        handleClose={() => setShowPhoneVerificationModal(false)}
-        phone={formData.phoneNumber}
-        onVerificationComplete={handleVerifyPhoneNumber}
-      />
-
-      {/* Confirmation Modal */}
-      {/* <ConfirmationModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={confirmDelete}
-        title="Delete Document"
-        message={`Are you sure you want to delete "${documentToDelete?.name}"? This action cannot be undone.`}
-        confirmText="Delete"
-        isLoading={isSubmitting}
-      /> */}
     </div>
   );
 };

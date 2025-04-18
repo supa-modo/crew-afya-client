@@ -1,14 +1,25 @@
 export const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  if (!dateString) return "N/A";
+
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Invalid date";
+
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "Invalid date";
+  }
 };
 
 export const formatDateWithTime = (dateStr, includeTime = false) => {
   if (!dateStr) return "N/A";
 
+  try {
   const date = new Date(dateStr);
 
   if (isNaN(date.getTime())) return "Invalid date";
@@ -24,9 +35,12 @@ export const formatDateWithTime = (dateStr, includeTime = false) => {
     options.minute = "2-digit";
   }
 
-  return date.toLocaleDateString("en-US", options);
+    return date.toLocaleDateString("en-US", options);
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "Invalid date";
+  }
 };
-
 
 export const formatDateForInput = (dateString) => {
   if (!dateString) return "";

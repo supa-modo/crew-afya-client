@@ -67,7 +67,7 @@ const ClaimsHistoryTable = ({
         <p className="text-red-600 dark:text-red-400 mb-3">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 rounded-md transition-colors"
+          className="px-4 py-2 text-[0.83rem] sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 rounded-md transition-colors"
         >
           Try Again
         </button>
@@ -78,14 +78,14 @@ const ClaimsHistoryTable = ({
   if (!claims || claims.length === 0) {
     return (
       <div className="border border-gray-300 dark:border-gray-700 rounded-xl flex flex-col items-center justify-center py-10 text-gray-500 dark:text-gray-400">
-        <TbFileInvoice className="h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" />
-        <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <TbFileInvoice className="h-12 w-12 sm:h-16 sm:w-16 text-gray-400 dark:text-gray-500 mb-4" />
+        <h3 className="text-[0.9rem] sm:text-base md:text-lg   font-medium text-gray-700 dark:text-gray-300 mb-2">
           No Claims History
         </h3>
-        <p className="text-center text-sm max-w-md">
+        <p className="text-center text-[0.8rem] sm:text-sm">
           Once your medical claims are recorded, they will appear here.
         </p>
-        <p className="mt-2 text-xs text-primary-600 dark:text-primary-400">
+        <p className="mt-2 text-center text-xs text-primary-600 dark:text-primary-400">
           Need to make a claim? Contact our support team for assistance.
         </p>
       </div>

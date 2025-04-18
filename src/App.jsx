@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import { ThemeProvider } from "./context/ThemeContext";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { Analytics } from "@vercel/analytics/react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Layout from "./components/userLayout/Layout";
 import ScrollToTop from "./components/common/ScrollToTop";
 import HomePage from "./pages/HomePage";
@@ -32,6 +34,25 @@ import ClaimFormPage from "./pages/admin/ClaimFormPage";
 import SupportPage from "./pages/SupportPage";
 import AboutUsPage from "./pages/AboutUsPage";
 
+// Toast container with theme context
+const ThemedToastContainer = () => {
+  const { darkMode } = useTheme();
+  return (
+    <ToastContainer
+      position="top-right"
+      autoClose={8000}
+      hideProgressBar={false}
+      newestOnTop
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme={darkMode ? "dark" : "light"}
+    />
+  );
+};
+
 function App() {
   return (
     <>
@@ -40,6 +61,7 @@ function App() {
         <AuthProvider>
           <Router>
             <ScrollToTop />
+            <ThemedToastContainer />
             <Routes>
               {/* Public routes */}
               <Route path="/" element={<Layout />}>
@@ -54,10 +76,7 @@ function App() {
                   element={<ForgotPasswordPage />}
                 />
                 {/* Support both formats: /reset-password?token=xyz and /reset-password/:token */}
-                <Route
-                  path="reset-password"
-                  element={<ResetPasswordPage />}
-                />
+                <Route path="reset-password" element={<ResetPasswordPage />} />
                 <Route
                   path="reset-password/:token"
                   element={<ResetPasswordPage />}

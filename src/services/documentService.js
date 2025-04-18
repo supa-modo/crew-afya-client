@@ -2,21 +2,26 @@ import { apiDelete, apiGet, apiPatch, apiPost } from "./api";
 
 /**
  * Upload a document for the current user
- * @param {File} file - The file to upload
- * @param {string} name - Document name
- * @param {string} type - Document type (identity, insurance, medical, receipt, other)
- * @param {string} description - Document description (optional)
+ * @param {FormData|Object} formDataOrParams - FormData object or parameters for creating FormData
  * @returns {Promise} Promise with uploaded document data
  */
-export const uploadDocument = async (file, name, type, description = "") => {
+export const uploadDocument = async (formDataOrParams) => {
   try {
-    // Create form data
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("name", name);
-    formData.append("type", type);
-    if (description) {
-      formData.append("description", description);
+    let formData;
+
+    // Check if formDataOrParams is already a FormData object
+    if (formDataOrParams instanceof FormData) {
+      formData = formDataOrParams;
+    } else {
+      // If it's not FormData, assume it contains file, name, type, description
+      const { file, name, type, description = "" } = formDataOrParams;
+      formData = new FormData();
+      formData.append("file", file);
+      formData.append("name", name);
+      formData.append("type", type);
+      if (description) {
+        formData.append("description", description);
+      }
     }
 
     // Create custom config for multipart/form-data
@@ -30,7 +35,21 @@ export const uploadDocument = async (file, name, type, description = "") => {
     return response.data;
   } catch (error) {
     console.error("Document upload error:", error);
-    throw error;
+
+    // Handle error response with detailed message
+    if (error.response) {
+      if (error.response.data && error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (typeof error.response.data === "string") {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("Failed to upload document: Server error");
+      }
+    } else if (error.request) {
+      throw new Error("Failed to upload document: No response from server");
+    } else {
+      throw new Error("Failed to upload document: " + error.message);
+    }
   }
 };
 
@@ -79,7 +98,21 @@ export const deleteUserDocument = async (id) => {
     };
   } catch (error) {
     console.error("Failed to delete document:", error);
-    throw error;
+
+    // Handle error response with detailed message
+    if (error.response) {
+      if (error.response.data && error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (typeof error.response.data === "string") {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("Failed to delete document: Server error");
+      }
+    } else if (error.request) {
+      throw new Error("Failed to delete document: No response from server");
+    } else {
+      throw new Error("Failed to delete document: " + error.message);
+    }
   }
 };
 

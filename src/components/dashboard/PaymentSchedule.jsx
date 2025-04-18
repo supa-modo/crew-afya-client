@@ -115,16 +115,16 @@ const PaymentSchedule = ({
     <div className="rounded-xl overflow-hidden">
       {!hasSubscription ? (
         <div className=" ">
-          <div className="text-center py-4">
+          <div className="text-center py-3 sm:py-4">
             <div className="mx-auto h-16 w-16 rounded-full bg-gray-200/70 dark:bg-gray-700 flex items-center justify-center mb-4">
               <TbCalendarDue className="h-8 w-8 text-gray-400" />
             </div>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+            <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 sm:mb-4">
               No active subscription found.
             </p>
             <a
               href="/payments"
-              className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors duration-200"
+              className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 border border-transparent rounded-lg shadow-sm text-[0.83rem] sm:text-sm font-medium text-white transition-colors duration-200"
             >
               <TbArrowsShuffle className="mr-2 h-5 w-5" />
               Subscribe to a plan
@@ -135,9 +135,9 @@ const PaymentSchedule = ({
         <div className="">
           <div className="space-y-2 sm:space-y-3">
             {/* Next Payment Section */}
-            <div className="p-4 rounded-xl bg-gradient-to-r from-amber-50 to-amber-50/50 dark:from-gray-800 dark:to-gray-700 border border-amber-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-amber-50 to-amber-50/50 dark:from-gray-800 dark:to-gray-700 border border-amber-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
               <div className="flex justify-between items-center">
-                <div className="flex items-center mb-2">
+                <div className="flex items-center">
                   <div className="p-2 rounded-lg bg-amber-200 dark:bg-amber-900/30 mr-3">
                     <TbCalendarDue className="h-5 sm:h-6 w-5 sm:w-6 text-amber-600 dark:text-amber-400" />
                   </div>
@@ -159,7 +159,7 @@ const PaymentSchedule = ({
             </div>
 
             {/* Amount Section */}
-            <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-emerald-50/50 dark:from-gray-800 dark:to-gray-700 border border-emerald-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-emerald-50/50 dark:from-gray-800 dark:to-gray-700 border border-emerald-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300">
               <div className="flex items-center mb-2">
                 <div className="p-2 rounded-lg bg-emerald-200 dark:bg-emerald-900/30 mr-3">
                   <PiMoneyWavy className="h-5 sm:h-6 w-5 sm:w-6 text-emerald-600 dark:text-emerald-400" />
@@ -178,7 +178,7 @@ const PaymentSchedule = ({
 
             {/* Frequency Section */}
             <div
-              className={`p-4 rounded-xl bg-gradient-to-r from-${colorScheme}-50 to-${colorScheme}-50/50 dark:from-gray-800 dark:to-gray-700 border border-${colorScheme}-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300`}
+              className={`p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-${colorScheme}-50 to-${colorScheme}-50/50 dark:from-gray-800 dark:to-gray-700 border border-${colorScheme}-100 dark:border-gray-700 group hover:shadow-sm transition-all duration-300`}
             >
               <div className="flex items-center mb-2">
                 <div

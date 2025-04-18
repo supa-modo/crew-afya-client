@@ -23,6 +23,7 @@ import {
 } from "../services/documentService";
 import ChangeFrequencyModal from "../components/payment/ChangeFrequencyModal";
 import ConfirmationModal from "../components/common/ConfirmationModal";
+import PaymentReceiptModal from "../components/admin/adminPaymentsPageComponents/PaymentReceiptModal";
 import {
   getUserSubscription,
   getCoverageUtilization,
@@ -68,93 +69,80 @@ const DashboardPage = () => {
   const [showMembershipModal, setShowMembershipModal] = useState(false);
   const [hasPaidMembership, setHasPaidMembership] = useState(false);
 
+  // Receipt modal states
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState(null);
+
   useEffect(() => {
-    const loadSubscription = async () => {
+    const loadDashboardData = async () => {
       if (!user || !user.id) return;
 
       setIsLoading(true);
       setError(null);
 
       try {
-        // Get subscription from server
-        const response = await getUserSubscription(user.id);
+        // Create a batch load function to fetch multiple resources in parallel
+        const [subscriptionResponse, documentsResponse] = await Promise.all([
+          getUserSubscription(user.id),
+          getUserDocuments(),
+        ]);
 
+        // Process subscription data
         if (
-          response &&
-          response.success &&
-          response.data &&
-          response.data.plan
+          subscriptionResponse &&
+          subscriptionResponse.success &&
+          subscriptionResponse.data &&
+          subscriptionResponse.data.plan
         ) {
           // Normalize the data structure
           const normalizedSubscription = {
-            plan: response.data.plan,
+            id: subscriptionResponse.data.id,
+            plan: subscriptionResponse.data.plan,
             frequency:
-              response.data.frequency ||
-              response.data.paymentFrequency ||
+              subscriptionResponse.data.frequency ||
+              subscriptionResponse.data.paymentFrequency ||
               "daily",
-            status: response.data.status || "ACTIVE",
-            startDate: response.data.startDate,
-            nextPaymentDate: response.data.nextPaymentDate,
-            endDate: response.data.endDate,
+            status: subscriptionResponse.data.status || "ACTIVE",
+            startDate: subscriptionResponse.data.startDate,
+            nextPaymentDate: subscriptionResponse.data.nextPaymentDate,
+            endDate: subscriptionResponse.data.endDate,
           };
 
           setUserSubscription(normalizedSubscription);
 
           // Set next payment date if available
-          if (response.data.nextPaymentDate) {
-            setNextPaymentDate(new Date(response.data.nextPaymentDate));
+          if (subscriptionResponse.data.nextPaymentDate) {
+            setNextPaymentDate(
+              new Date(subscriptionResponse.data.nextPaymentDate)
+            );
           }
 
-          // Load coverage utilization data
-          loadCoverageUtilization(user.id);
-        } else {
-          // No subscription found
-          setUserSubscription(null);
-          console.warn("No active subscription found for user");
-        }
-      } catch (error) {
-        console.error("Error loading subscription:", error);
-        setError("Failed to load subscription data. Please try again later.");
-        setUserSubscription(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+          // Load coverage utilization data and related information in parallel
+          const [coverageData, claimsResponse, limitsResponse] =
+            await Promise.all([
+              getCoverageUtilization(user.id),
+              getUserClaims(user.id),
+              getCoverageLimits(user.id),
+            ]);
 
-    const loadCoverageUtilization = async (userId) => {
-      try {
-        // Fetch coverage utilization data
-        const coverageData = await getCoverageUtilization(userId);
-        if (coverageData && coverageData.success && coverageData.data) {
-          setCoverageUtilization(coverageData.data);
-        } else if (coverageData && !coverageData.success) {
-          console.warn(
-            "Failed to load coverage utilization:",
-            coverageData.message
-          );
-          // The getCoverageUtilization function now returns default data structure
-        }
+          // Process coverage utilization data
+          if (coverageData && coverageData.success && coverageData.data) {
+            setCoverageUtilization(coverageData.data);
+          } else if (coverageData && !coverageData.success) {
+            console.warn(
+              "Failed to load coverage utilization:",
+              coverageData.message
+            );
+          }
 
-        // Fetch user claims
-        setClaimsLoading(true);
-        try {
-          const claimsResponse = await getUserClaims(userId);
+          // Process claims data
           if (claimsResponse && claimsResponse.success) {
             setClaims(claimsResponse.data?.claims || []);
           } else {
             setClaimsError(claimsResponse?.message || "Failed to fetch claims");
           }
-        } catch (claimsErr) {
-          console.error("Error fetching user claims:", claimsErr);
-          setClaimsError("An error occurred while fetching claims");
-        } finally {
-          setClaimsLoading(false);
-        }
 
-        // Fetch coverage limits
-        setLimitsLoading(true);
-        try {
-          const limitsResponse = await getCoverageLimits(userId);
+          // Process coverage limits data
           if (limitsResponse && limitsResponse.success) {
             setCoverageLimits(limitsResponse.data);
           } else {
@@ -162,19 +150,31 @@ const DashboardPage = () => {
               limitsResponse?.message || "Failed to fetch coverage limits"
             );
           }
-        } catch (limitsErr) {
-          console.error("Error fetching coverage limits:", limitsErr);
-          setLimitsError("An error occurred while fetching coverage limits");
-        } finally {
-          setLimitsLoading(false);
+        } else {
+          // No subscription found
+          setUserSubscription(null);
+          console.warn("No active subscription found for user");
         }
-      } catch (utilError) {
-        console.error("Error loading coverage utilization:", utilError);
+
+        // Process documents data
+        if (documentsResponse && documentsResponse.data) {
+          setDocuments(documentsResponse.data || []);
+        } else {
+          // Handle case where response structure is different
+          setDocuments(documentsResponse || []);
+        }
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
+        setError("Failed to load dashboard data. Please try again later.");
+      } finally {
+        setIsLoading(false);
+        setClaimsLoading(false);
+        setLimitsLoading(false);
+        setIsLoadingDocs(false);
       }
     };
 
-    loadSubscription();
-    fetchDocuments();
+    loadDashboardData();
 
     // Check if user has paid membership based on the membershipStatus from user object
     if (user && user.membershipStatus === "active") {
@@ -186,27 +186,6 @@ const DashboardPage = () => {
     }
   }, [user]);
 
-  // We've removed the mock data function as we're now using real data from the API
-
-  const fetchDocuments = async () => {
-    try {
-      setIsLoadingDocs(true);
-      const response = await getUserDocuments();
-
-      // Check if response exists and has data
-      if (response && response.data) {
-        setDocuments(response.data || []);
-      } else {
-        // Handle case where response structure is different
-        setDocuments(response || []);
-      }
-    } catch (error) {
-      console.error("Error fetching documents:", error);
-    } finally {
-      setIsLoadingDocs(false);
-    }
-  };
-
   const handleOpenFrequencyModal = () => {
     setIsFrequencyModalOpen(true);
   };
@@ -216,90 +195,44 @@ const DashboardPage = () => {
   };
 
   const handleFrequencyChanged = async (newFrequency) => {
-    if (!userSubscription || !userSubscription.plan || !user || !user.id)
-      return;
+    if (!userSubscription || !user || !user.id) return;
 
     try {
       setIsSubmitting(true);
       console.log("Updating subscription frequency to:", newFrequency);
 
-      // First, get the actual subscription ID from the server
-      const subscriptionResponse = await getUserSubscription(user.id);
+      // Already have the subscription ID from the loadDashboardData function
+      const subscriptionId = userSubscription.id;
 
-      if (
-        !subscriptionResponse ||
-        !subscriptionResponse.success ||
-        !subscriptionResponse.data ||
-        !subscriptionResponse.data.id
-      ) {
-        console.error(
-          "Failed to get subscription details:",
-          subscriptionResponse
-        );
-        throw new Error(
-          "Could not retrieve subscription details. Please refresh and try again."
-        );
+      if (!subscriptionId) {
+        throw new Error("Subscription ID not found");
       }
 
-      const subscriptionId = subscriptionResponse.data.id;
-      console.log("Found subscription ID:", subscriptionId);
-
-      // Now update the subscription using the updateSubscription function instead of saveSubscription
+      // Call the API to update the subscription
       const response = await updateSubscription(subscriptionId, {
         frequency: newFrequency,
       });
 
-      if (response && response.success && response.data) {
-        console.log("Subscription updated successfully:", response.data);
-
-        // Update local state with the server response
-        const updatedSubscription = {
-          ...userSubscription,
+      // Update state with the new frequency
+      if (response && response.success) {
+        setUserSubscription((prev) => ({
+          ...prev,
           frequency: newFrequency,
-          paymentFrequency: newFrequency,
-        };
+        }));
 
-        setUserSubscription(updatedSubscription);
-
-        // Update next payment date if available in the response
-        if (response.data.nextPaymentDate) {
-          setNextPaymentDate(response.data.nextPaymentDate);
-        } else {
-          // Calculate next payment date based on frequency if not provided by server
-          const today = new Date();
-          let nextDate;
-
-          if (newFrequency === "daily") {
-            nextDate = new Date(today);
-            nextDate.setDate(today.getDate() + 1);
-          } else if (newFrequency === "weekly") {
-            nextDate = new Date(today);
-            nextDate.setDate(today.getDate() + 7);
-          } else if (newFrequency === "monthly") {
-            nextDate = new Date(today);
-            nextDate.setMonth(today.getMonth() + 1);
-          } else if (newFrequency === "annual") {
-            nextDate = new Date(today);
-            nextDate.setFullYear(today.getFullYear() + 1);
-          }
-
-          if (nextDate) {
-            const options = { year: "numeric", month: "long", day: "numeric" };
-            setNextPaymentDate(nextDate.toLocaleDateString("en-US", options));
-          }
-        }
-
-        // Close the modal
         handleCloseFrequencyModal();
+        // Success toast
+        showSuccessToast("Payment frequency updated successfully");
       } else {
-        console.error("Failed to update subscription:", response);
         throw new Error(
-          response?.message || "Failed to update subscription frequency"
+          response?.message || "Failed to update payment frequency"
         );
       }
     } catch (error) {
-      console.error("Error updating subscription frequency:", error);
-      // You could add error handling UI here
+      console.error("Error updating frequency:", error);
+      showErrorToast(
+        error.message || "Failed to update payment frequency. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -326,13 +259,6 @@ const DashboardPage = () => {
     }
   };
 
-  const handleDeleteDocument = async (documentId) => {
-    const document = documents.find((doc) => doc.id === documentId);
-    if (document) {
-      handleDeleteClick(document);
-    }
-  };
-
   // Handler for membership payment
   const handleMembershipPayment = (success) => {
     if (success) {
@@ -340,6 +266,12 @@ const DashboardPage = () => {
       localStorage.setItem("unionMembershipPaid", "true");
     }
     setShowMembershipModal(false);
+  };
+
+  // Handle viewing payment receipt
+  const handleViewReceipt = (payment) => {
+    setSelectedPayment(payment);
+    setShowReceiptModal(true);
   };
 
   // Format date for display
@@ -395,9 +327,10 @@ const DashboardPage = () => {
               </div>
               <div>
                 <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-primary-600 flex items-center">
-                  Welcome, {user?.firstName + " " + user?.lastName || "Logged inUser"}!
+                  Welcome,{" "}
+                  {user?.firstName + " " + user?.lastName || "Logged inUser"}!
                 </h1>
-                <p className="text-gray-500 dark:text-gray-300 font-medium text-sm mt-1 max-w-2xl">
+                <p className="text-gray-500 dark:text-gray-300 text-sm md:text-base mt-1 max-w-3xl">
                   Manage your Union membership, medical coverage, and loan
                   applications all in one place.
                 </p>
@@ -406,14 +339,14 @@ const DashboardPage = () => {
             <div className="mt-5 md:mt-0 flex space-x-3 sm:space-x-4">
               <Link
                 to="/payments"
-                className="inline-flex items-center px-4 sm:px-5 py-3 bg-secondary-600 border border-secondary-500 rounded-[0.6rem] text-xs sm:text-sm font-medium text-white hover:bg-secondary-700 transition-all duration-200 shadow-sm"
+                className="inline-flex items-center px-4 sm:px-5 py-2 sm:py-3 bg-secondary-600 border border-secondary-500 rounded-lg text-xs sm:text-sm font-medium text-white hover:bg-secondary-700 transition-all duration-200 shadow-sm"
               >
                 <TbCreditCardPay className="mr-2 h-5 sm:h-5 w-5 sm:w-5" />
                 Make a Payment
               </Link>
               <Link
                 to="/profile"
-                className="inline-flex items-center px-4 sm:px-5 py-3 bg-primary-600 backdrop-blur-sm border border-gray-200 dark:border-primary-700 rounded-[0.6rem] text-xs sm:text-sm font-medium text-white hover:bg-gray-700 transition-all duration-200 shadow-sm"
+                className="inline-flex items-center px-4 sm:px-5 md:px-6 py-2 sm:py-3 bg-primary-600 backdrop-blur-sm border border-gray-200 dark:border-primary-700 rounded-lg text-xs sm:text-sm font-medium text-white hover:bg-gray-700 transition-all duration-200 shadow-sm"
               >
                 <PiUserCircle className="mr-2 h-5 sm:h-5 w-5 sm:w-5" />
                 View Profile
@@ -422,7 +355,7 @@ const DashboardPage = () => {
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-3xl rounded-b-none sm:rounded-b-3xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
             {/* Cards section */}
-            <div className="px-3 sm:px-6 py-5 sm:py-6">
+            <div className="px-2 sm:px-4 md:px-6 py-5 sm:py-6">
               <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
                 {/* Membership Card section */}
                 <div className="lg:w-[55%]">
@@ -597,16 +530,16 @@ const DashboardPage = () => {
                 ].map((tab) => (
                   <button
                     key={tab.id}
-                    className={`group relative min-w-[160px] sm:min-w-[180px] md:min-w-[200px] flex items-center justify-center px-4 py-4 font-medium text-sm transition-all duration-200 ${
+                    className={`group relative min-w-[110px] sm:min-w-[180px] md:min-w-[200px] flex items-center justify-center px-2 sm:px-4 py-4 font-medium text-sm transition-all duration-200 ${
                       activeTab === tab.id
                         ? "text-gray-900 dark:text-white"
                         : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/30"
                     }`}
                     onClick={() => setActiveTab(tab.id)}
                   >
-                    <div className="flex items-center space-x-2 sm:space-x-3">
+                    <div className="flex items-center space-x-1.5 sm:space-x-3">
                       <span
-                        className={`flex items-center justify-center h-9 sm:h-11 w-9 sm:w-11 rounded-lg transition-all duration-300 ${
+                        className={`flex items-center justify-center h-8 sm:h-11 w-8 sm:w-11 rounded-md sm:rounded-lg transition-all duration-300 ${
                           activeTab === tab.id
                             ? tab.activeColor
                             : `bg-gradient-to-br ${tab.color} ${tab.iconColor}`
@@ -630,7 +563,7 @@ const DashboardPage = () => {
 
                       {/* Glowing Active Indicator */}
                       {activeTab === tab.id && (
-                        <span className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-full h-1 rounded-full bg-primary-500 shadow-lg shadow-primary-500/30"></span>
+                        <span className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-[90%] h-1 rounded-full bg-primary-500 shadow-lg shadow-primary-500/30"></span>
                       )}
                     </div>
                   </button>
@@ -639,7 +572,7 @@ const DashboardPage = () => {
             </div>
 
             {/* Tab Content Area */}
-            <div className="px-4 sm:px-6 py-6">
+            <div className="px-2 sm:px-6 py-6">
               <div className="transition-all duration-300 ease-in-out">
                 {/* Overview Tab Content */}
                 {activeTab === "overview" && (
@@ -662,9 +595,10 @@ const DashboardPage = () => {
                       handleOpenFrequencyModal={handleOpenFrequencyModal}
                       documents={documents}
                       isLoadingDocs={isLoadingDocs}
-                      handleDeleteDocument={handleDeleteDocument}
                       isSubmitting={isSubmitting}
                       isLoadingCoverage={isLoading}
+                      onViewReceipt={handleViewReceipt}
+                      coverageUtilizationData={coverageUtilization}
                     />
                   </div>
                 )}
@@ -673,12 +607,12 @@ const DashboardPage = () => {
                 {activeTab === "medical" && (
                   <div className="animate-fadeIn">
                     <div className="mb-6">
-                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 p-5 rounded-2xl">
-                        <h2 className="text-xl text-blue-800 dark:text-white font-bold flex items-center mb-2">
-                          <TbShieldCheckFilled className="h-5 w-5 mr-2 text-blue-600" />
+                      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 p-4 sm:p-5 rounded-2xl">
+                        <h2 className="text-base sm:text-lg md:text-xl text-primary-700 dark:text-white font-bold flex items-center mb-1 sm:mb-2">
+                          <TbShieldCheckFilled className="h-5 w-5 mr-2 text-primary-600" />
                           Medical Coverage
                         </h2>
-                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                        <p className="text-[0.8rem] sm:text-sm text-gray-700 dark:text-gray-300">
                           View and manage your medical coverage plan,
                           dependents, and claims.
                         </p>
@@ -707,32 +641,32 @@ const DashboardPage = () => {
                 {activeTab === "membership" && (
                   <div className="animate-fadeIn">
                     <div className="mb-6">
-                      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-gray-800 dark:to-gray-700 p-5 rounded-2xl">
-                        <h2 className="text-xl text-emerald-800 dark:text-white font-bold flex items-center mb-2">
+                      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-gray-800 dark:to-gray-700 p-4 sm:p-5 rounded-2xl">
+                        <h2 className="text-lg sm:text-xl text-emerald-800 dark:text-white font-bold flex items-center mb-2">
                           <PiUsersDuotone className="h-5 w-5 mr-2 text-emerald-600" />
                           Union Membership
                         </h2>
-                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                        <p className="text-[0.83rem] sm:text-sm text-gray-700 dark:text-gray-300">
                           Manage your Matatu Workers Union membership details
                           and benefits.
                         </p>
                       </div>
                     </div>
-                    <div className="text-center py-8 px-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
+                    <div className="text-center py-6 sm:py-8 px-2 sm:px-4 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
                       <div className="mx-auto h-16 w-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-4">
                         <PiUsersDuotone className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                      <h3 className="text-base sm:text-lg font-bold text-secondary-700 dark:text-white mb-2">
                         Membership Status: {user?.membershipStatus || "Active"}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-4 sm:mb-6">
                         Your Union membership is currently active. Access
                         exclusive benefits, union services and discounts for
                         Matatu Workers.
                       </p>
                       <button
                         onClick={() => navigate("/payments")}
-                        className="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors duration-200"
+                        className="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-[0.83rem] sm:text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors duration-200"
                       >
                         <TbIdBadge2 className="mr-2 h-5 w-5" />
                         Manage Membership
@@ -779,6 +713,14 @@ const DashboardPage = () => {
         onClose={() => setShowMembershipModal(false)}
         onPaymentComplete={handleMembershipPayment}
       />
+
+      {/* Payment Receipt Modal */}
+      {showReceiptModal && selectedPayment && (
+        <PaymentReceiptModal
+          payment={selectedPayment}
+          onClose={() => setShowReceiptModal(false)}
+        />
+      )}
     </div>
   );
 };

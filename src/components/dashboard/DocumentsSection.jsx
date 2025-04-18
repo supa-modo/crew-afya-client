@@ -16,7 +16,7 @@ const DocumentsSection = ({
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white pt-3  my-8 md:my-10 dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+    <div className="mt-10">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
         <h3 className="text-base md:text-lg font-semibold text-green-700 pl-4 flex items-center">
           <PiFilesDuotone className="mr-2 h-7 w-7 text-green-700" />
@@ -49,7 +49,7 @@ const DocumentsSection = ({
           </svg>
         </div>
       ) : documents.length === 0 ? (
-        <div className="flex items-center justify-center m-6 px-2 sm:px-4 md:px-6 h-48 bg-gray-50 dark:bg-gray-900/50 rounded-md border-2 border-dashed border-gray-300 dark:border-gray-700">
+        <div className="flex items-center justify-center md:m-2 px-2 sm:px-4 md:px-6 h-48 bg-gray-50 dark:bg-gray-900/50 rounded-md border-2 border-dashed border-gray-300 dark:border-gray-700">
           <div className="text-center">
             <PiFilesDuotone className="mx-auto h-12 w-12 text-gray-400" />
             <p className="mt-2 text-sm sm:text-base text-gray-500 dark:text-gray-400">

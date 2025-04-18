@@ -13,7 +13,7 @@ export const getStatusBadge = (status) => {
   switch (status.toLowerCase()) {
     case "active":
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 border border-green-300 text-green-800 dark:bg-green-900/30 dark:border-green-800 dark:text-green-100">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 border border-green-300 text-green-800 dark:bg-green-900 dark:border-green-800 dark:text-green-100">
           Active
         </span>
       );

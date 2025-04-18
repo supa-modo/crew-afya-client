@@ -73,31 +73,31 @@ const BenefitsCard = ({ plan }) => {
 
   return (
     <div className="rounded-sm overflow-hidden ">
-      <div className=" px-4">
+      <div className="">
         <h3 className="text-amber-700 dark:text-amber-600 font-semibold flex items-center">
           <TbListCheck className="mr-2 h-5 w-5" />
           Health Plan Benefits
         </h3>
       </div>
-      <div className="p-5">
+      <div className="py-5">
         {availableBenefits.length > 0 ? (
           <div className="space-y-4">
             {availableBenefits.map((benefit, index) => (
               <div
                 key={index}
-                className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                className="p-2.5 sm:p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-800 dark:text-white flex items-center">
+                    <h4 className="text-[0.83rem] sm:text-sm font-medium text-gray-800 dark:text-white flex items-center">
                       <TbCheck className="h-4 w-4 text-green-500 mr-1 flex-shrink-0" />
                       {benefit.name}
                     </h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-5">
+                    <p className="text-[0.7rem] sm:text-xs text-gray-500 dark:text-gray-400 mt-1 ml-5">
                       {benefit.description}
                     </p>
                   </div>
-                  <span className="text-sm font-semibold text-gray-800 dark:text-white">
+                  <span className="text-[0.83rem] sm:text-sm font-semibold text-gray-800 dark:text-white">
                     {benefit.value}
                   </span>
                 </div>

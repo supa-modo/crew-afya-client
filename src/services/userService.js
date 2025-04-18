@@ -67,7 +67,23 @@ export const changeUserPassword = async (currentPassword, newPassword) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: "Failed to change password" };
+    // Handle error object structure correctly
+    if (error.response) {
+      // Server responded with error
+      if (error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else if (typeof error.response.data === "string") {
+        throw new Error(error.response.data);
+      } else {
+        throw new Error("Password change failed: Server error");
+      }
+    } else if (error.request) {
+      // Request made but no response received
+      throw new Error("Password change failed: No response from server");
+    } else {
+      // Something else went wrong
+      throw new Error("Password change failed: " + error.message);
+    }
   }
 };
 
@@ -185,10 +201,14 @@ export const updateUser = async (id, userData) => {
  */
 export const updateMembershipStatus = async (id, status) => {
   try {
-    const response = await api.patch(`/users/${id}/membership-status`, { membershipStatus: status });
+    const response = await api.patch(`/users/${id}/membership-status`, {
+      membershipStatus: status,
+    });
     return response.data;
   } catch (error) {
-    throw error.response?.data || { message: "Failed to update membership status" };
+    throw (
+      error.response?.data || { message: "Failed to update membership status" }
+    );
   }
 };
 
