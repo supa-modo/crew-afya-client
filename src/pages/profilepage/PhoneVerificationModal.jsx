@@ -117,7 +117,7 @@ const PhoneVerificationModal = ({
           className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-xl text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-200 dark:border-gray-700 relative z-[10000]"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="px-6 py-4 mb-2">
+          <div className="px-6 py-4">
             <div className="flex justify-between items-center">
               <h3 className="text-base sm:text-lg font-semibold text-primary-800 dark:text-primary-500 ">
                 <span>Verify Your Phone Number</span>
@@ -132,7 +132,7 @@ const PhoneVerificationModal = ({
             </div>
           </div>
 
-          <div className="px-6 py-5">
+          <div className="px-6 py-3 sm:py-5">
             <AnimatePresence>
               {error && (
                 <motion.div
@@ -176,7 +176,6 @@ const PhoneVerificationModal = ({
             </AnimatePresence>
 
             <div className="flex items-center mb-5 text-gray-600 dark:text-gray-300">
-              <TbShieldLock className="h-5 w-5 mr-2 text-gray-500" />
               <p className="text-sm">
                 We need to verify your phone number:{" "}
                 <span className="font-medium text-gray-800 dark:text-gray-200">
@@ -189,7 +188,7 @@ const PhoneVerificationModal = ({
               <button
                 onClick={handleSendCode}
                 disabled={isSubmitting}
-                className="w-full inline-flex justify-center items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full inline-flex justify-center items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>

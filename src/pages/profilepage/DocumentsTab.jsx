@@ -91,17 +91,17 @@ const DocumentsTab = ({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="mb-2 sm:mb-4 p-2 sm:p-4 rounded-lg bg-yellow-50 border border-yellow-200"
+            className="mb-2 sm:mb-4 p-2 sm:p-4 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700"
           >
             <div className="flex">
               <div className="flex-shrink-0">
-                <FiAlertTriangle className="h-5 w-5 text-yellow-600" />
+                <FiAlertTriangle className="h-5 w-5 text-amber-700 dark:text-amber-500" />
               </div>
               <div className="ml-3">
-                <h3 className="text-[0.83rem] sm:text-sm font-medium text-yellow-800">
+                <h3 className="text-[0.83rem] sm:text-sm font-medium text-amber-700 dark:text-amber-500">
                   Identification Required
                 </h3>
-                <div className="mt-2 text-[0.8rem] sm:text-sm text-yellow-700">
+                <div className="mt-2 text-[0.8rem] sm:text-sm text-amber-700 dark:text-amber-500">
                   <p>
                     Please upload your identification document to complete your
                     profile.
@@ -111,7 +111,7 @@ const DocumentsTab = ({
                   <button
                     type="button"
                     onClick={handleFileUploadClick}
-                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-[0.7rem] sm:text-[0.8rem] font-medium rounded-md text-amber-700 bg-amber-200/80 hover:bg-amber-200 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-amber-500"
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-[0.7rem] sm:text-[0.8rem] font-medium rounded-md text-amber-700 dark:text-amber-400 bg-amber-200/80 dark:bg-amber-800/20 hover:bg-amber-200 dark:hover:bg-amber-900/20 focus:outline-none dark:border dark:border-amber-800"
                   >
                     <FiUpload className="mr-1.5 h-4 w-4" />
                     Upload ID Now

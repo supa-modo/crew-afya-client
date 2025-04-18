@@ -37,7 +37,7 @@ const ConfirmationModal = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           transition={{ duration: 0.3 }}
-          className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl w-full border border-gray-200 dark:border-gray-700 relative z-[10000]"
+          className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-xl text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-xl w-full border border-gray-200 dark:border-gray-700 relative z-[10000]"
           onClick={(e) => e.stopPropagation()}
         >
          <div className="flex justify-between items-center py-3 px-4">
