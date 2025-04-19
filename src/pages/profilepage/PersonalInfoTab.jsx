@@ -344,7 +344,7 @@ const PersonalInfoTab = ({
             </div>
             {formData.membershipStatus !== "active" && (
               <p className="mt-1 text-xs text-yellow-600">
-                Please pay your membership fee to activate your account
+                Please pay your membership fee to activate your membership
               </p>
             )}
           </div>

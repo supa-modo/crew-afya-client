@@ -620,11 +620,11 @@ const ProfilePage = () => {
                   </h3>
                 </div>
 
-                <div className="mt-1 sm:mt-2 pl-2 sm:pl-4 text-[0.8rem] sm:text-sm text-amber-700 dark:text-amber-300">
+                <div className="mt-1 sm:mt-2 sm:pl-4 text-[0.8rem] sm:text-sm text-amber-700 dark:text-amber-300 px-2">
                   {missingProfileItems.length > 0 && (
-                    <ul className="mt-1 pl-4 list-disc">
+                    <ul className="mt-1 list-disc flex justify-between">
                       {missingProfileItems.map((item, index) => (
-                        <li key={index}>{item}</li>
+                        <li key={index} >{item}</li>
                       ))}
                     </ul>
                   )}
@@ -633,7 +633,7 @@ const ProfilePage = () => {
             </div>
           )}
 
-          <div className="flex flex-col space-y-6 md:space-y-0 md:grid md:grid-cols-4 md:gap-6">
+          <div className="flex flex-col space-y-6 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-6">
             {/* Left Sidebar */}
             <div className="md:col-span-1">
               <div className="bg-white dark:bg-gray-900 shadow rounded-xl overflow-hidden">

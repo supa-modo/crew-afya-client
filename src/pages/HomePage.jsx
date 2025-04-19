@@ -184,10 +184,10 @@ const HomePage = () => {
           <div className="absolute -bottom-32 -left-32 rounded-full w-80 h-80 bg-secondary-400 opacity-10 blur-3xl"></div>
         </div>
 
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-32 md:pb-48 md:pt-56 relative z-20">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div className="md:w-1/2 mb-12 md:-mb-10 flex flex-col justify-end ">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight animate-fadeIn pt-10">
+        <div className="max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-8 py-32 lg:pb-48 lg:pt-56 relative z-20">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+            <div className="lg:w-1/2 mb-12 lg:-mb-10 flex flex-col justify-end ">
+              <h1 className="text-3xl lg:text-5xl font-bold text-white leading-tight animate-fadeIn pt-6 lg:pt-8">
                 Empowering
                 <br />
                 <span className="text-secondary-400 mr-1 sm:mr-2">
@@ -195,13 +195,13 @@ const HomePage = () => {
                 </span>
                 Through Unity & Benefits
               </h1>
-              <p className="mt-6 text-base sm:text-lg text-white text-opacity-90 max-w-2xl">
+              <p className="mt-4 lg:mt-6 text-base md:text-lg text-white text-opacity-90 max-w-2xl">
                 Our comprehensive platform provides matatu operators with union
                 membership management, affordable loan services, and quality
                 medical insurance coverage, all in one place.
               </p>
 
-              <div className="mt-8 flex space-x-4">
+              <div className="mt-6 lg:mt-8 flex space-x-4">
                 {isAuthenticated ? (
                   <button
                     onClick={() => navigate("/dashboard")}
@@ -249,7 +249,7 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="md:w-1/2 flex justify-center md:justify-end sm:mb-8 md:mb-16">
+            <div className="lg:w-1/2 flex justify-center md:justify-end sm:mb-8 lg:mb-16">
               <div className="relative w-full max-w-2xl">
                 {/* Dashboard preview image */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transform rotate-2 hover:rotate-0 transition-transform duration-500">
@@ -401,26 +401,20 @@ const HomePage = () => {
         className="py-24 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 overflow-hidden"
       >
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          {/* Background decorative elements */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-100 dark:bg-primary-900/20 rounded-full opacity-50 blur-3xl"></div>
-            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary-100 dark:bg-secondary-900/20 rounded-full opacity-50 blur-3xl"></div>
-          </div>
-
           <div className="relative">
-            <div className="text-center mb-12 sm:mb-16">
-              <div className="inline-block bg-secondary-100 dark:bg-secondary-900/30 rounded-full px-4 py-1.5 mb-4">
-                <h2 className="text-sm sm:text-base font-semibold text-secondary-600 dark:text-secondary-400 uppercase tracking-wide">
+            <div className="text-center mb-10 lg:mb-16">
+              <div className="inline-block bg-secondary-100 dark:bg-secondary-900/30 rounded-full px-4 py-1.5 mb-2 lg:mb-4">
+                <h2 className="text-[0.8rem] lg:text-sm font-semibold text-secondary-600 dark:text-secondary-400 uppercase tracking-wide">
                   Union Benefits
                 </h2>
               </div>
-              <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-600 dark:text-white">
+              <h2 className="mt-2 text-xl lg:text-4xl font-extrabold text-gray-600 dark:text-white">
                 Comprehensive Support for{" "}
                 <span className="text-primary-600 dark:text-primary-400">
                   Matatu Operators
                 </span>
               </h2>
-              <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              <p className="mt-2 lg:mt-4 text-[0.9rem] lg:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                 Our union provides matatu operators with access to essential
                 services including affordable healthcare, financial support, and
                 community resources.
@@ -441,7 +435,7 @@ const HomePage = () => {
                     </h3>
                   </div>
 
-                  <p className="text-gray-600 text-sm sm:text-base dark:text-gray-400 mb-6">
+                  <p className="text-gray-600 text-sm sm:text-base dark:text-gray-400 mb-3 lg:mb-6">
                     Access to affordable health insurance plans for you and your
                     family with comprehensive benefits including inpatient,
                     outpatient, and emergency care.
@@ -468,7 +462,7 @@ const HomePage = () => {
                     </h3>
                   </div>
 
-                  <p className="text-gray-600 text-sm sm:text-base dark:text-gray-400 mb-6">
+                  <p className="text-gray-600 text-sm sm:text-base dark:text-gray-400 mb-3 lg:mb-6">
                     Set up daily, weekly, or monthly payment schedules for
                     premiums that fit your cash flow. Pay as little as KSh 24
                     per day for comprehensive coverage.
@@ -495,7 +489,7 @@ const HomePage = () => {
                     </h3>
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base mb-6">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base mb-3 lg:mb-6">
                     Manage your membership, payments, and insurance via USSD on
                     any feature phone. No smartphone or internet connection
                     required.
@@ -519,7 +513,7 @@ const HomePage = () => {
                     </h3>
                   </div>
 
-                  <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base mb-6">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base mb-3 lg:mb-6">
                     Safe payment processing for dues, loan repayments, and
                     insurance premiums via M-Pesa with instant confirmation.
                   </p>
@@ -545,7 +539,7 @@ const HomePage = () => {
                     </h3>
                   </div>
 
-                  <p className="text-gray-600 text-sm sm:text-base dark:text-gray-400 mb-6">
+                  <p className="text-gray-600 text-sm sm:text-base dark:text-gray-400 mb-3 lg:mb-6">
                     Official recognition as a union member with representation,
                     collective bargaining, and access to exclusive benefits.
                   </p>
@@ -571,10 +565,9 @@ const HomePage = () => {
                     </h3>
                   </div>
 
-                  <p className="text-gray-600 text-sm sm:text-base dark:text-gray-400 mb-6">
-                    Track your insurance contributions, and financial
-                    health with detailed analytics and personalized
-                    recommendations.
+                  <p className="text-gray-600 text-sm sm:text-base dark:text-gray-400 mb-3 lg:mb-6">
+                    Track your insurance contributions, and financial health
+                    with detailed analytics and personalized recommendations.
                   </p>
                   <Link
                     to="/dashboard"
@@ -590,16 +583,16 @@ const HomePage = () => {
       </div>
 
       {/* How It Works Section */}
-      <div id="how-it-works" className="py-24 ">
+      <div id="how-it-works" className="py-16 lg:py-24 ">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-sm sm:text-base font-semibold text-secondary-700 dark:text-secondary-400 uppercase tracking-wide">
+            <h2 className="text-[0.8rem] lg:text-base font-semibold text-secondary-700 dark:text-secondary-400 uppercase tracking-wide">
               Membership Process
             </h2>
-            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-primary-600 dark:text-white">
+            <h2 className="mt-2 text-2xl md:text-3xl lg:text-4xl font-bold text-primary-600 dark:text-white">
               How to Join & Benefit
             </h2>
-            <p className="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="mt-2 lg:mt-4 text-sm lg:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Becoming a member of our matatu workers union is simple and
               provides immediate access to benefits.
             </p>
@@ -667,231 +660,61 @@ const HomePage = () => {
         id="insurance-plans"
         className="py-24 bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 overflow-hidden"
       >
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          {/* Background decorative elements */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-40 -left-40 w-80 h-80 bg-primary-100 dark:bg-primary-900/20 rounded-full opacity-50 blur-3xl"></div>
-            <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-secondary-100 dark:bg-secondary-900/20 rounded-full opacity-50 blur-3xl"></div>
-          </div>
-
+        <div className="max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8 relative">
           <div className="relative">
             <div className="text-center mb-12 sm:mb-16">
-              <div className="inline-block bg-primary-100 dark:bg-primary-900/30 rounded-full px-4 py-1.5 mb-4">
-                <h2 className="text-sm sm:text-base font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+              <div className="inline-block bg-primary-100 dark:bg-primary-900/30 rounded-full px-4 py-1.5 mb-2 lg:mb-4">
+                <h2 className="text-[0.8rem] lg:text-sm font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide">
                   Medical Insurance
                 </h2>
               </div>
-              <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-600 dark:text-white">
+              <h2 className="mt-2 text-xl lg:text-3xl font-extrabold text-gray-600 dark:text-white">
                 Affordable Health{" "}
                 <span className="text-primary-600 dark:text-primary-400">
                   Coverage Plans
                 </span>
               </h2>
-              <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              <p className="mt-2 lg:mt-4 text-sm lg:text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                 Choose from our carefully selected medical insurance plans
                 designed specifically for matatu operators and their families.
               </p>
             </div>
-
+            {/* //TODO: To add interface for displaying insurance plans and their premiums fetched from the */}
             {loading ? (
               <div className="flex justify-center items-center py-20">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
               </div>
             ) : error ? (
-              <div className="text-center py-20">
-                <div className="text-red-500 text-lg mb-4">{error}</div>
-                <button
-                  onClick={() => window.location.reload()}
-                  className="bg-primary-600 hover:bg-primary-700 text-white py-2 px-6 rounded-lg font-medium"
-                >
-                  Try Again
-                </button>
-              </div>
+              <div className="text-center py-20"></div>
             ) : insurancePlans.length === 0 ? (
-              <div className="text-center py-20">
-                <p className="text-gray-600 dark:text-gray-400 text-lg">
-                  No insurance plans available at the moment. Please check back
-                  later.
-                </p>
-              </div>
+              <div className="text-center py-20"></div>
             ) : (
-              <div className="relative">
-                {/* Carousel controls */}
-                {insurancePlans.length > 3 && (
-                  <>
-                    <button
-                      onClick={prevSlide}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white dark:bg-gray-800 rounded-full p-3 shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
-                      aria-label="Previous slide"
-                    >
-                      <FiChevronLeft className="h-6 w-6 text-primary-600 dark:text-primary-400" />
-                    </button>
-                    <button
-                      onClick={nextSlide}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white dark:bg-gray-800 rounded-full p-3 shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
-                      aria-label="Next slide"
-                    >
-                      <FiChevronRight className="h-6 w-6 text-primary-600 dark:text-primary-400" />
-                    </button>
-                  </>
-                )}
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {getVisiblePlans().map((plan, index) => {
-                    const prices = calculatePrices(plan.dailyPrice || 24);
-                    const isPremium =
-                      plan.name.toLowerCase().includes("premium") ||
-                      index === 1;
-                    const isFamily =
-                      plan.name.toLowerCase().includes("family") ||
-                      plan.name.toLowerCase().includes("plus");
-
-                    return (
-                      <div
-                        key={plan.id || index}
-                        className={`relative bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-2xl ${
-                          isPremium
-                            ? "ring-4 ring-secondary-500 dark:ring-secondary-400 ring-opacity-50"
-                            : ""
-                        }`}
-                      >
-                        {isPremium && (
-                          <div className="absolute top-0 right-0 bg-secondary-500 text-white py-1 px-4 rounded-bl-lg font-medium text-sm">
-                            Popular
-                          </div>
-                        )}
-                        <div
-                          className={`${
-                            isPremium
-                              ? "bg-secondary-600"
-                              : isFamily
-                              ? "bg-primary-600"
-                              : "bg-blue-600"
-                          } p-6 text-white`}
-                        >
-                          <h3 className="text-xl sm:text-2xl font-bold">
-                            {plan.name || "Crew Afya Plan"}
-                          </h3>
-                          <p className="mt-1 text-secondary-100">
-                            {plan.shortDescription ||
-                              (isFamily
-                                ? "For Driver/Conductor + Dependents"
-                                : "For Driver/Conductor")}
-                          </p>
-                          <div className="mt-4 flex items-baseline">
-                            <span className="text-2xl sm:text-3xl font-bold">
-                              {prices.daily}
-                            </span>
-                            <span className="ml-1 text-sm">/day</span>
-                          </div>
-                          <p className="mt-1 text-sm text-secondary-100">
-                            or {prices.monthly}/month ({prices.yearly}/year)
-                          </p>
-                        </div>
-                        <div className="p-6">
-                          <ul className="space-y-3">
-                            <li className="flex items-start">
-                              <IoMdCheckmarkCircleOutline className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                              <span>
-                                Inpatient Coverage:{" "}
-                                {formatCurrency(plan.inpatientLimit || 200000)}
-                              </span>
-                            </li>
-                            <li className="flex items-start">
-                              <IoMdCheckmarkCircleOutline className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                              <span>
-                                Outpatient: Up to{" "}
-                                {formatCurrency(plan.outpatientLimit || 20000)}
-                              </span>
-                            </li>
-                            <li className="flex items-start">
-                              <IoMdCheckmarkCircleOutline className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                              <span>
-                                Maternity:{" "}
-                                {formatCurrency(plan.maternityLimit || 20000)}
-                              </span>
-                            </li>
-                            <li className="flex items-start">
-                              <IoMdCheckmarkCircleOutline className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                              <span>
-                                Optical Coverage:{" "}
-                                {formatCurrency(plan.opticalLimit || 5000)}
-                              </span>
-                            </li>
-                            <li className="flex items-start">
-                              <IoMdCheckmarkCircleOutline className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                              <span>
-                                {isFamily
-                                  ? "Covers Spouse & Up to 3 Children"
-                                  : "Accident Coverage: " +
-                                    formatCurrency(plan.accidentLimit || 50000)}
-                              </span>
-                            </li>
-                          </ul>
-                          <div className="mt-6">
-                            <Link
-                              to={isAuthenticated ? "/dashboard" : "/register"}
-                              className={`block w-full text-center ${
-                                isPremium
-                                  ? "bg-secondary-600 hover:bg-secondary-700"
-                                  : isFamily
-                                  ? "bg-primary-600 hover:bg-primary-700"
-                                  : "bg-blue-600 hover:bg-blue-700"
-                              } text-white py-2 px-4 rounded-lg font-medium`}
-                            >
-                              {isAuthenticated
-                                ? "Select Plan"
-                                : "Join & Select"}
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Carousel indicators */}
-                {insurancePlans.length > 3 && (
-                  <div className="flex justify-center mt-8">
-                    {Array.from({
-                      length: Math.ceil(insurancePlans.length / 3),
-                    }).map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`h-2 w-2 mx-1 rounded-full ${
-                          currentSlide === index
-                            ? "bg-primary-600 w-4"
-                            : "bg-gray-300 dark:bg-gray-600"
-                        } transition-all duration-300`}
-                        aria-label={`Go to slide ${index + 1}`}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
+              <div className="relative"> </div>
             )}
           </div>
         </div>
       </div>
 
       {/* Testimonials Section */}
-      <div id="testimonials" className="py-24 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-10 md:mb-14">
+      <div
+        id="testimonials"
+        className="py-16 lg:py-24 bg-gray-50 dark:bg-gray-900"
+      >
+        <div className="max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="text-center mb-4 lg:mb-8 sm:mb-10 md:mb-14">
             <h2 className="text-sm sm:text-base font-semibold text-secondary-600 dark:text-secondary-400 uppercase tracking-wide">
               Union Member Stories
             </h2>
-            <h2 className="mt-2 text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-white">
+            <h2 className="mt-2 text-xl lg:text-3xl font-bold text-primary-600 dark:text-white">
               What Our Members Say
             </h2>
-            <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="mt-2 lg:mt-4 text-sm md:text-base lg:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Hear from matatu operators who have benefited from our union
               services and support.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
             {[
               {
                 name: "John Mwangi",
@@ -917,9 +740,9 @@ const HomePage = () => {
             ].map((testimonial, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 lg:p-6 border border-gray-200 dark:border-gray-700"
               >
-                <div className="flex items-center mb-4">
+                <div className="flex items-center mb-3 lg:mb-4">
                   <div className="h-12 w-12 rounded-full bg-gray-200 overflow-hidden">
                     <img
                       src={testimonial.image || "/avatar-placeholder.png"}
@@ -928,15 +751,15 @@ const HomePage = () => {
                     />
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                    <h3 className="text-base lg:text-lg font-semibold text-gray-700 dark:text-white">
                       {testimonial.name}
                     </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-[0.8rem] lg:text-[0.9rem] text-gray-500 dark:text-gray-400">
                       {testimonial.role}
                     </p>
                   </div>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300 italic">
+                <p className="text-[0.8rem] lg:text-[0.9rem] text-gray-600 dark:text-gray-300 italic">
                   "{testimonial.quote}"
                 </p>
               </div>
@@ -946,26 +769,26 @@ const HomePage = () => {
       </div>
 
       {/* Call to Action Section */}
-      <div className="py-16 bg-secondary-700 dark:bg-secondary-800/50">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
+      <div className="py-10 lg:py-16 bg-secondary-700 dark:bg-secondary-800/50">
+        <div className="max-w-screen-xl mx-auto px-3 sm:px-4 lg:px-8 text-center">
+          <h2 className="text-lg md:text-2xl lg:text-3xl font-bold text-white">
             Join the Matatu Workers Union Today
           </h2>
-          <p className="mt-4 text-lg sm:text-xl text-secondary-100 max-w-2xl mx-auto">
+          <p className="mt-3 lg:mt-4 text-sm lg:text-xl text-secondary-100 max-w-3xl mx-auto">
             Get access to affordable medical coverage, low-interest loans, and
             the security of being part of Kenya's largest matatu operators
             union.
           </p>
-          <div className="mt-8 flex justify-center">
+          <div className="mt-6 lg:mt-8 flex space-x-4 justify-center">
             <Link
               to="/register"
-              className="text-base sm:text-lg px-8 py-3 bg-white text-secondary-600 font-medium rounded-lg shadow-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1"
+              className="text-sm md:text-base lg:text-lg px-8 py-2 lg:py-3 bg-white text-secondary-600 font-medium rounded-lg shadow-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1"
             >
               Register Now
             </Link>
             <Link
               to="/about"
-              className="ml-4 text-base sm:text-lg px-8 py-3 bg-transparent border-2 border-white text-white font-medium rounded-lg hover:bg-white/10 transition-all"
+              className="text-sm md:text-base lg:text-lg px-8 py-2 lg:py-3 bg-transparent border-2 border-white text-white font-medium rounded-lg hover:bg-white/10 transition-all"
             >
               Learn More
             </Link>
@@ -974,18 +797,18 @@ const HomePage = () => {
       </div>
 
       {/* FAQ Section */}
-      <div id="faq" className="py-24 bg-gray-50 dark:bg-gray-900">
+      <div id="faq" className="py-16 lg:py-24 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-6 lg:mb-14">
             <h2 className="text-sm sm:text-base font-semibold text-secondary-600 dark:text-secondary-400 uppercase tracking-wide">
               Frequently Asked Questions
             </h2>
-            <h2 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold text-primary-600 dark:text-white">
+            <h2 className="mt-2 text-xl lg:text-3xl font-bold text-primary-600 dark:text-white">
               Common Questions About Our Union
             </h2>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 lg:gap-6 md:grid-cols-2">
             {[
               {
                 question:
@@ -1024,12 +847,14 @@ const HomePage = () => {
             ].map((faq, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 lg:p-6 border border-gray-200 dark:border-gray-700"
               >
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                <h3 className="text-[0.9rem] lg:text-lg font-semibold text-gray-700 dark:text-white mb-1 lg:mb-3">
                   {faq.question}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300">{faq.answer}</p>
+                <p className="text-[0.8rem] lg:text-base text-gray-600 dark:text-gray-300">
+                  {faq.answer}
+                </p>
               </div>
             ))}
           </div>

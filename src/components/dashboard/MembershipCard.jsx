@@ -37,8 +37,8 @@ const MembershipCard = ({ user }) => {
           </div>
 
           {/* Member Details Section */}
-          <div className="grid grid-cols-2 gap-8 sm:gap-10 mt-2 sm:mt-4 md:mt-6 px-3">
-            <div className="relative">
+          <div className="flex items-center justify-between lg:justify-self-auto space-x-1 mt-2 sm:mt-4 md:mt-6 px-3">
+            <div className="lg:w-full relative">
               <div className="opacity-80 text-xs mb-1 font-medium">
                 Member ID
               </div>
@@ -50,7 +50,7 @@ const MembershipCard = ({ user }) => {
               <div className="absolute left-0 -bottom-2 w-12 h-0.5 bg-secondary-400/40 rounded-full"></div>
             </div>
 
-            <div className="relative">
+            <div className="lg:w-full relative">
               <div className="opacity-80 text-xs mb-1 font-medium">
                 Operation Route
               </div>
@@ -88,7 +88,7 @@ const MembershipCard = ({ user }) => {
         </div>
 
         {/* Bus icon decoration */}
-        <div className="absolute right-5 bottom-16 text-white/35">
+        <div className="absolute right-5 lg:right-14 bottom-6 lg:bottom-16 text-white/35">
           <TbBus className="h-16 w-16 sm:h-20 sm:w-20" />
         </div>
       </div>

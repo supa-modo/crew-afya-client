@@ -1,21 +1,12 @@
 import React, { useState } from "react";
 import {
-  FiSearch,
-  FiMail,
-  FiPhone,
-  FiMessageCircle,
-  FiChevronDown,
-  FiChevronUp,
-} from "react-icons/fi";
-import {
-  TbHeartHandshake,
-  TbClock,
-  TbMessage,
   TbMessageDots,
   TbHelpCircle,
-  TbFileDescription,
   TbSearch,
   TbMailFilled,
+  TbPhoneCall,
+  TbChevronUp,
+  TbChevronDown,
 } from "react-icons/tb";
 import { MdOutlineHealthAndSafety, MdOutlinePayments } from "react-icons/md";
 import { RiCustomerService2Line } from "react-icons/ri";
@@ -70,7 +61,7 @@ const SupportPage = () => {
       category: "general",
       question: "What is Crew Afya?",
       answer:
-        "Crew Afya is a comprehensive healthcare platform designed specifically for matatu operators, providing affordable health insurance plans, easy claims processing, and health management tools.",
+        "Crew Afya is a comprehensive healthcare insurance product designed specifically for matatu operators, providing affordable health insurance plans, easy claims processing, and health management tools.",
     },
     {
       category: "general",
@@ -148,14 +139,7 @@ const SupportPage = () => {
           />
         </div>
 
-        {/* Animated background elements */}
-        <div className="absolute inset-0 z-10">
-          <div className="absolute -top-24 -right-24 rounded-full w-64 h-64 bg-secondary-500 opacity-20 blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/4 rounded-full w-96 h-96 bg-secondary-500 opacity-10 blur-3xl"></div>
-          <div className="absolute -bottom-32 -left-32 rounded-full w-80 h-80 bg-secondary-400 opacity-10 blur-3xl"></div>
-        </div>
-
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 relative z-20">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 relative z-20 backdrop-blur-[1px]">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -275,9 +259,9 @@ const SupportPage = () => {
                               {faq.question}
                             </span>
                             {expandedFaq === index ? (
-                              <FiChevronUp className="h-4 sm:h-5 w-4 sm:w-5 text-primary-500" />
+                              <TbChevronUp className="h-4 sm:h-5 w-4 sm:w-5 text-primary-500" />
                             ) : (
-                              <FiChevronDown className="h-4 sm:h-5 w-4 sm:w-5 text-gray-500" />
+                              <TbChevronDown className="h-4 sm:h-5 w-4 sm:w-5 text-gray-500" />
                             )}
                           </button>
                           <AnimatePresence>
@@ -435,11 +419,11 @@ const SupportPage = () => {
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                    <FiMail className="h-5 w-5 mr-3 text-primary-500" />
+                    <TbMailFilled className="h-5 w-5 mr-3 text-primary-500" />
                     <span>support@crewafya.com</span>
                   </div>
                   <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                    <FiPhone className="h-5 w-5 mr-3 text-primary-500" />
+                    <TbPhoneCall className="h-5 w-5 mr-3 text-primary-500" />
                     <span>+254 700 123 456</span>
                   </div>
                 </div>

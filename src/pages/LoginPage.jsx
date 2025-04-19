@@ -76,7 +76,7 @@ const LoginPage = () => {
             className="mb-6 p-4 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-xl shadow-lg flex items-start animate-fadeIn border border-green-100 dark:border-green-800/50"
           >
             <FiCheckCircle className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" />
-            <span className="text-sm font-medium">{message}</span>
+            <span className="text-[0.8rem] sm:text-sm font-medium">{message}</span>
           </motion.div>
         )}
 

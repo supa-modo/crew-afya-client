@@ -256,7 +256,7 @@ const CoverageUtilization = ({
 
         {/* Overlay Message with Subscribe Button */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-gradient-to-r from-gray-50 via-gray-200/60 to-gray-50 dark:bg-gray-800 p-6 rounded-xl text-center max-w-xs w-full dark:border-gray-700">
+          <div className="bg-gradient-to-r from-gray-50 via-gray-200/60 to-gray-50 dark:bg-gradient-to-r dark:from-gray-800/20 dark:via-gray-700 dark:to-gray-800/20 p-6 rounded-xl text-center max-w-xs w-full dark:border-gray-700">
             <FiAlertCircle className="mx-auto h-10 w-10 text-gray-400 mb-3" />
             <p className="text-[0.8rem] sm:text-sm text-gray-700 dark:text-gray-300 mb-4">
               No coverage information available.

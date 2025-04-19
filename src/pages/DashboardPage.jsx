@@ -336,7 +336,7 @@ const DashboardPage = () => {
             <div className="mt-5 lg:mt-0 flex space-x-3 sm:space-x-4">
               <Link
                 to="/payments"
-                className="w-full  px-4 sm:px-5 py-2 sm:py-3 bg-gradient-to-r from-secondary-700/90 to-secondary-700 dark:from-secondary-700/90 dark:to-secondary-800 rounded-lg text-[0.8rem] sm:text-sm font-medium text-white hover:bg-secondary-700 transition-all duration-200 shadow-sm"
+                className="w-full  px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-to-r from-secondary-700/90 to-secondary-700 dark:from-secondary-700/90 dark:to-secondary-800 rounded-lg text-[0.8rem] sm:text-sm font-medium text-white hover:bg-secondary-700 transition-all duration-200 shadow-sm"
               >
                 <div className="flex items-center justify-center">
                   <BsFillCreditCardFill className="mr-2 h-5 sm:h-5 w-5 sm:w-5" />
@@ -344,13 +344,6 @@ const DashboardPage = () => {
                   <TbArrowRight className="ml-2 h-3.5 w-3.5" />
                 </div>
               </Link>
-              {/* <Link
-                to="/profile"
-                className="inline-flex items-center px-4 sm:px-5 md:px-6 py-2 sm:py-3 bg-primary-600 backdrop-blur-sm border border-gray-200 dark:border-primary-700 rounded-lg text-xs sm:text-sm font-medium text-white hover:bg-gray-700 transition-all duration-200 shadow-sm"
-              >
-                <PiUserDuotone className="mr-2 h-5 sm:h-5 w-5 sm:w-5" />
-                View Profile
-              </Link> */}
             </div>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-3xl rounded-b-none sm:rounded-b-3xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
@@ -638,7 +631,7 @@ const DashboardPage = () => {
                         Membership Status: {user?.membershipStatus || "Active"}
                       </h3>
                       <p className="text-sm text-gray-600 dark:text-gray-400 max-w-lg mx-auto mb-4 sm:mb-6">
-                        Your Union membership is currently active. Access
+                        Your Union membership is currently {user?.membershipStatus || "Active"}. Access
                         exclusive benefits, union services and discounts for
                         Matatu Workers.
                       </p>

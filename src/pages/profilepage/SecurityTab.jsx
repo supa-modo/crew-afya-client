@@ -257,7 +257,7 @@ const SecurityTab = ({
       </form>
 
       {/* Phone Verification Section */}
-      <div className="pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
+      <div className=" pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
         <div className="mb-5">
           <h2 className="text-base sm:text-lg font-semibold text-secondary-700 dark:text-secondary-500 flex items-center">
             <TbDeviceMobile className="h-5 w-5 mr-2 text-secondary-600" />
@@ -265,7 +265,7 @@ const SecurityTab = ({
           </h2>
         </div>
 
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 max-w-xl hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors duration-200">
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors duration-200">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <div className="">

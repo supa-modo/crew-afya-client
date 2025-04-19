@@ -59,8 +59,8 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-3 pt-4 pb-20 text-center sm:block sm:p-0">
+    <div className="fixed inset-0 z-[100] overflow-y-auto backdrop-blur-[1.5px]">
+      <div className="flex items-center justify-center min-h-screen px-3 pt-4 pb-20 text-center sm:block sm:px-5">
         <div
           className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
           onClick={onClose}
@@ -70,7 +70,7 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
           &#8203;
         </span>
 
-        <div className="inline-block w-full max-w-3xl px-5 pt-6 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl dark:bg-gray-800 sm:my-6 sm:align-middle sm:px-10 sm:pb-8">
+        <div className="inline-block w-full max-w-3xl px-2 md:px-5 pt-6 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl dark:bg-gray-800 sm:my-6 sm:align-middle sm:px-10 sm:pb-8">
           {/* Header */}
           <div className="absolute top-0 right-0 pt-4 pr-4">
             <button
@@ -87,25 +87,25 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="text-center pb-4"
+              className="text-center"
             >
-              <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-secondary-100 dark:bg-secondary-900/30">
+              <div className="w-16 h-16 mx-auto mb-2 md:mb-4 flex items-center justify-center rounded-full bg-secondary-100 dark:bg-secondary-900/30">
                 <RiUserCommunityLine className="h-10 w-10 text-secondary-600 dark:text-secondary-400" />
               </div>
 
-              <div className="text-center mb-4">
+              <div className="text-center mb-2 md:mb-4">
             <h3 className="text-base sm:text-lg font-semibold text-secondary-700 dark:text-secondary-600">
               Union Membership Registration
             </h3>
           </div>
 
-              <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 mb-5 md:mb-8">
               Welcome to <span className="font-bold text-primary-600">Matatu Workers Union</span>! To activate your membership, a one-time registration fee of KES
                 500 is required. This fee grants you access to all
                 union benefits.
               </p>
 
-              <div className="flex justify-center space-x-4">
+              <div className="w-full flex justify-center space-x-2 md:space-x-4">
                 <button
                   onClick={onClose}
                   className="px-6 py-2.5 border border-gray-300 rounded-lg text-xs sm:text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100"
@@ -114,7 +114,7 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
                 </button>
                 <button
                   onClick={() => setStep(2)}
-                  className="px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white bg-gradient-to-br from-secondary-600 to-secondary-700 hover:bg-secondary-700"
+                  className=" px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white bg-gradient-to-br from-secondary-600 to-secondary-700 hover:bg-secondary-700"
                 >
                   Continue to Payment
                 </button>
@@ -149,7 +149,7 @@ const UnionMembershipModal = ({ isOpen, onClose, onPaymentComplete }) => {
               <div className="text-center">
                 <button
                   onClick={() => setStep(1)}
-                  className="text-sm font-medium text-secondary-600 hover:text-secondary-700"
+                  className="text-[0.83rem] sm:text-sm font-medium text-secondary-600 hover:text-secondary-700"
                 >
                   <div className="flex items-center justify-center">
                     <TbArrowLeft className="h-4 w-4 mr-2" />
