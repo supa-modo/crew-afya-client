@@ -2,15 +2,11 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import {
-  FiLoader,
   FiDownload,
   FiSearch,
-  FiFilter,
   FiChevronLeft,
   FiChevronRight,
-  FiCheck,
-  FiX,
-  FiClock,
+
 } from "react-icons/fi";
 import { HiCash } from "react-icons/hi";
 import {
@@ -24,6 +20,7 @@ import { apiGet, apiDownload } from "../../services/api";
 import { formatDate } from "../../utils/formatDate";
 import { MpesaIcon } from "../common/icons";
 import { StatusBadge } from "../../utils/statusBadge";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const UnionMembershipHistory = () => {
   const [loading, setLoading] = useState(true);
@@ -32,11 +29,7 @@ const UnionMembershipHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState({
-    status: "",
-    dateRange: "",
-  });
-  const [showFilters, setShowFilters] = useState(false);
+
 
   const pageSize = 10;
 
@@ -81,37 +74,18 @@ const UnionMembershipHistory = () => {
     };
 
     fetchMembershipPayments();
-  }, [filters.status, filters.dateRange]);
+  }, []);
 
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-    }).format(amount);
-  };
 
   const handleSearch = (e) => {
     e.preventDefault();
     setCurrentPage(1); // Reset to first page when searching
   };
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setCurrentPage(1); // Reset to first page when filtering
-  };
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const toggleFilters = () => {
-    setShowFilters(!showFilters);
-  };
 
   // Handle download receipt
   const handleDownloadReceipt = async (payment) => {
@@ -166,13 +140,12 @@ const UnionMembershipHistory = () => {
 
   // Filter and search payments
   const filteredPayments = membershipPayments.filter((payment) => {
-    // Search by reference or method
+    // Search by reference 
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       return (
         (payment.reference &&
-          payment.reference.toLowerCase().includes(searchLower)) ||
-        (payment.method && payment.method.toLowerCase().includes(searchLower))
+          payment.reference.toLowerCase().includes(searchLower))
       );
     }
     return true;
@@ -187,8 +160,8 @@ const UnionMembershipHistory = () => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div className="p-3 pt-5 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="flex items-center gap-2 md:w-[50%]">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+          <div className="flex items-center gap-2 lg:w-[50%]">
             <h2 className="text-base sm:text-lg font-semibold text-gray-600 dark:text-white">
               Membership Payment History
             </h2>
@@ -197,7 +170,7 @@ const UnionMembershipHistory = () => {
             </span>
           </div>
 
-          <div className="w-full md:w-[50%] flex flex-row items-end sm:items-center gap-3">
+          <div className="w-full lg:w-[50%] flex flex-row items-end sm:items-center gap-3">
             <div className="relative w-full">
               <form onSubmit={handleSearch} className="w-full">
                 <div className="relative">
@@ -215,69 +188,12 @@ const UnionMembershipHistory = () => {
               </form>
             </div>
 
-            <button
-              onClick={toggleFilters}
-              className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap ${
-                showFilters
-                  ? "bg-primary-50 text-primary-700 border-primary-300 dark:bg-primary-900/20 dark:text-primary-400 dark:border-primary-700"
-                  : "bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-              } transition-colors duration-200`}
-            >
-              <FiFilter className="mr-2 h-4 w-4" />
-              Filters
-            </button>
 
-            <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold whitespace-nowrap bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200">
-              <FiDownload className="mr-2 h-4 w-4" />
-              Export
-            </button>
+           
           </div>
         </div>
 
-        {showFilters && (
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
-            <div>
-              <label
-                htmlFor="status"
-                className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
-              >
-                Status
-              </label>
-              <select
-                id="status"
-                name="status"
-                value={filters.status}
-                onChange={handleFilterChange}
-                className="text-sm md:text-base font-medium block w-full pl-3 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 text-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-              >
-                <option value="">All Statuses</option>
-                <option value="completed">Completed</option>
-                <option value="pending">Pending</option>
-                <option value="failed">Failed</option>
-              </select>
-            </div>
-            <div>
-              <label
-                htmlFor="dateRange"
-                className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
-              >
-                Date Range
-              </label>
-              <select
-                id="dateRange"
-                name="dateRange"
-                value={filters.dateRange}
-                onChange={handleFilterChange}
-                className="text-sm md:text-base font-medium block w-full pl-3 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-1 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 text-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-primary-500 dark:focus:border-primary-500 transition-colors duration-200"
-              >
-                <option value="">All Time</option>
-                <option value="last7days">Last 7 Days</option>
-                <option value="last30days">Last 30 Days</option>
-                <option value="last90days">Last 90 Days</option>
-              </select>
-            </div>
-          </div>
-        )}
+
       </div>
 
       <div className="overflow-x-auto">
@@ -355,21 +271,13 @@ const UnionMembershipHistory = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="inline-flex items-center px-3 py-0.5 rounded-md text-xs sm:text-sm font-medium dark:text-blue-400">
-                    {payment.method === "M-Pesa" ? (
+                   
                       <MpesaIcon width={60} height={20} />
-                    ) : payment.method === "Card" ? (
-                      <TbCreditCard className="mr-2 h-5 w-5 text-blue-500" />
-                    ) : payment.method === "Cash" ? (
-                      <TbCash className="mr-2 h-5 w-5 text-yellow-500" />
-                    ) : payment.method === "Bank Transfer" ? (
-                      <TbMoneybag className="mr-2 h-5 w-5 text-purple-500" />
-                    ) : (
-                      <TbHistory className="mr-2 h-5 w-5 text-gray-500" />
-                    )}
+                    
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                  {payment.reference || "-"}
+                  {payment.reference || "--"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusBadge status={payment.status} />

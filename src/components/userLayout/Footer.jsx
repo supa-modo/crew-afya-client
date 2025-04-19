@@ -82,7 +82,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Services and Company sections - side by side on mobile */}
+          {/* Services and Union sections - side by side on mobile */}
           <div className="col-span-1 md:col-span-2 grid grid-cols-2 gap-8 md:gap-8">
             <div>
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
@@ -125,7 +125,7 @@ const Footer = () => {
             </div>
             <div>
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                Company
+                Union
               </h3>
               <ul className="mt-4 space-y-2">
                 <li>

@@ -244,8 +244,8 @@ const PaymentHistory = ({ title = "Recent Transactions", onViewReceipt }) => {
   return (
     <>
       <div className="bg-white dark:bg-gray-800 rounded-xl rounded-t-2xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="p-4 sm:-6 flex flex-wrap items-center justify-between border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-base sm:text-lg font-semibold text-gray-500 dark:text-white flex items-center md:w-[50%]">
+        <div className="p-4 sm:p-5 flex flex-wrap items-center justify-between border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-500 dark:text-white flex items-center lg:w-[50%]">
             <TbHistory className="mr-2 h-5 w-5 text-primary-600 dark:text-primary-400" />
             {title}
             <span className="ml-4 text-[0.75rem] text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-500 px-2 rounded-full">
@@ -253,8 +253,8 @@ const PaymentHistory = ({ title = "Recent Transactions", onViewReceipt }) => {
             </span>
           </h2>
 
-          <div className="flex flex-wrap items-center mt-4 sm:mt-0 w-full md:w-[50%]">
-            {/* Search and filter buttons */}
+          <div className="flex flex-wrap items-center mt-4 lg:mt-0 w-full lg:w-[50%]">
+            {/* Search button */}
 
             <div className="relative w-full">
               <div className="relative">
@@ -271,71 +271,9 @@ const PaymentHistory = ({ title = "Recent Transactions", onViewReceipt }) => {
               </div>
             </div>
 
-            {/* <button
-              className="ml-2 inline-flex items-center px-3 py-2.5 bg-gray-100 dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none"
-              onClick={toggleFilters}
-            >
-              <FiFilter className="h-4 w-4 mr-2" />
-              Filter
-              {isFilterOpen ? (
-                <FiChevronUp className="ml-1 h-4 w-4" />
-              ) : (
-                <FiChevronDown className="ml-1 h-4 w-4" />
-              )}
-            </button> */}
+
           </div>
         </div>
-
-        {/* Filters panel */}
-        {isFilterOpen && (
-          <div className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700 p-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label
-                  htmlFor="status"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Status
-                </label>
-                <select
-                  id="status"
-                  name="status"
-                  className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 text-sm rounded-md p-2.5 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-primary-500 dark:focus:border-primary-400"
-                  value={filters.status}
-                  onChange={handleFilterChange}
-                >
-                  <option value="">All Statuses</option>
-                  <option value="completed">Completed</option>
-                  <option value="pending">Pending</option>
-                  <option value="failed">Failed</option>
-                </select>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="dateRange"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Date Range
-                </label>
-                <select
-                  id="dateRange"
-                  name="dateRange"
-                  className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 text-sm rounded-md p-2.5 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-primary-500 dark:focus:border-primary-400"
-                  value={filters.dateRange}
-                  onChange={handleFilterChange}
-                >
-                  <option value="">All Time</option>
-                  <option value="today">Today</option>
-                  <option value="this_week">This Week</option>
-                  <option value="this_month">This Month</option>
-                  <option value="last_3_months">Last 3 Months</option>
-                  <option value="last_year">Last Year</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
 
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">

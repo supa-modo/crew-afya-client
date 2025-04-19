@@ -2,21 +2,17 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
-  TbActivity,
-  TbBus,
-  TbCalendarEvent,
-  TbCreditCardPay,
-  TbRoute,
   TbShieldCheckFilled,
   TbHomeDot,
   TbIdBadge2,
   TbChevronRight,
-  TbDashboard,
   TbClock,
   TbStarFilled,
+  TbArrowRight,
 } from "react-icons/tb";
-import { PiUserCircle, PiUserDuotone, PiUsersDuotone } from "react-icons/pi";
-import { MdPayments, MdSpaceDashboard } from "react-icons/md";
+import { PiUserDuotone, PiUsersDuotone, PiUsersThreeDuotone } from "react-icons/pi";
+import { MdPayments } from "react-icons/md";
+import { BsFillCreditCardFill } from "react-icons/bs";
 import {
   getUserDocuments,
   deleteUserDocument,
@@ -36,6 +32,7 @@ import UnionMembershipModal from "../components/UnionMembershipModal";
 import OverviewTab from "../components/dashboard/OverviewTab";
 import MedicalCoverTab from "../components/dashboard/MedicalCoverTab";
 import MembershipCard from "../components/dashboard/MembershipCard";
+import { MpesaIcon } from "../components/common/icons";
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -320,7 +317,7 @@ const DashboardPage = () => {
         {/* Header section with welcome message and quick actions */}
         <div className="max-w-screen-2xl mx-auto px-0 sm:px-3 lg:px-8 mb-6">
           {/* Header with gradient background */}
-          <div className="px-3 py-5 sm:px-4 sm:py-6 flex flex-col md:flex-row md:items-center md:justify-between">
+          <div className="px-3 py-5 sm:px-4 sm:py-6 flex flex-col lg:flex-row lg:items-center md:justify-between">
             <div className="flex items-start space-x-3">
               <div className="hidden md:flex h-14 w-14 rounded-full bg-primary-600/20 backdrop-blur-sm items-center justify-center flex-shrink-0">
                 <PiUserDuotone className="h-8 w-8 text-primary-600" />
@@ -336,21 +333,24 @@ const DashboardPage = () => {
                 </p>
               </div>
             </div>
-            <div className="mt-5 md:mt-0 flex space-x-3 sm:space-x-4">
+            <div className="mt-5 lg:mt-0 flex space-x-3 sm:space-x-4">
               <Link
                 to="/payments"
-                className="inline-flex items-center px-4 sm:px-5 py-2 sm:py-3 bg-secondary-600 border border-secondary-500 rounded-lg text-xs sm:text-sm font-medium text-white hover:bg-secondary-700 transition-all duration-200 shadow-sm"
+                className="w-full  px-4 sm:px-5 py-2 sm:py-3 bg-gradient-to-r from-secondary-700/90 to-secondary-700 dark:from-secondary-700/90 dark:to-secondary-800 rounded-lg text-[0.8rem] sm:text-sm font-medium text-white hover:bg-secondary-700 transition-all duration-200 shadow-sm"
               >
-                <TbCreditCardPay className="mr-2 h-5 sm:h-5 w-5 sm:w-5" />
-                Make a Payment
+                <div className="flex items-center justify-center">
+                  <BsFillCreditCardFill className="mr-2 h-5 sm:h-5 w-5 sm:w-5" />
+                  Make a Payment
+                  <TbArrowRight className="ml-2 h-3.5 w-3.5" />
+                </div>
               </Link>
-              <Link
+              {/* <Link
                 to="/profile"
                 className="inline-flex items-center px-4 sm:px-5 md:px-6 py-2 sm:py-3 bg-primary-600 backdrop-blur-sm border border-gray-200 dark:border-primary-700 rounded-lg text-xs sm:text-sm font-medium text-white hover:bg-gray-700 transition-all duration-200 shadow-sm"
               >
-                <PiUserCircle className="mr-2 h-5 sm:h-5 w-5 sm:w-5" />
+                <PiUserDuotone className="mr-2 h-5 sm:h-5 w-5 sm:w-5" />
                 View Profile
-              </Link>
+              </Link> */}
             </div>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-3xl rounded-b-none sm:rounded-b-3xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
@@ -505,65 +505,43 @@ const DashboardPage = () => {
                 {[
                   {
                     id: "overview",
-                    label: "Dashboard ",
-                    icon: <MdSpaceDashboard className="h-5 w-5" />,
+                    label: "Overview ",
                     color: "from-primary-500/10 to-primary-600/10",
-                    activeColor: "bg-primary-600 text-white",
-                    iconColor: "text-primary-600 dark:text-primary-400",
+                    activeColor:
+                      "bg-gradient-to-r from-primary-600/15 via-primary-600/10 to-white dark:from-primary-900/80 dark:via-primary-900/50 dark:to-gray-800",
                   },
                   {
                     id: "medical",
                     label: "Medical ",
-                    icon: <TbShieldCheckFilled className="h-5 w-5" />,
                     color: "from-blue-500/10 to-blue-600/10",
-                    activeColor: "bg-blue-600 text-white",
-                    iconColor: "text-blue-600 dark:text-blue-400",
+                    activeColor:
+                      "bg-gradient-to-r from-white via-primary-600/20 to-white dark:from-gray-800 dark:via-primary-900/80 dark:to-gray-800",
                   },
                   {
                     id: "membership",
                     label: " Membership",
-                    icon: <PiUsersDuotone className="h-5 w-5" />,
                     color: "from-emerald-500/10 to-emerald-600/10",
-                    activeColor: "bg-emerald-600 text-white",
-                    iconColor: "text-emerald-600 dark:text-emerald-400",
+                    activeColor:
+                      "bg-gradient-to-r from-white via-primary-600/10 to-primary-600/20 dark:from-gray-800 dark:via-primary-900/50 dark:to-primary-900/80",
                   },
                 ].map((tab) => (
                   <button
                     key={tab.id}
-                    className={`group relative min-w-[110px] sm:min-w-[180px] md:min-w-[200px] flex items-center justify-center px-2 sm:px-4 py-4 font-medium text-sm transition-all duration-200 ${
+                    className={`group relative w-full min-w-[110px] sm:min-w-[180px] md:min-w-[200px] flex items-center justify-center px-4 py-6 font-medium text-sm transition-all duration-200 ${
                       activeTab === tab.id
-                        ? "text-gray-900 dark:text-white"
+                        ? `text-primary-600 dark:text-white ${tab.activeColor}`
                         : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/30"
                     }`}
                     onClick={() => setActiveTab(tab.id)}
                   >
-                    <div className="flex items-center space-x-1.5 sm:space-x-3">
-                      <span
-                        className={`flex items-center justify-center h-8 sm:h-11 w-8 sm:w-11 rounded-md sm:rounded-lg transition-all duration-300 ${
-                          activeTab === tab.id
-                            ? tab.activeColor
-                            : `bg-gradient-to-br ${tab.color} ${tab.iconColor}`
-                        }`}
-                      >
-                        {tab.icon}
-                      </span>
-                      <span className="font-medium text-xs sm:text-sm flex flex-col items-center">
-                        {(() => {
-                          const words = tab.label.split(" ");
-                          const firstWord = words[0];
-                          const restWords = words.slice(1).join(" ");
-                          return (
-                            <>
-                              <span className="block">{firstWord}</span>
-                              <span className="block">{restWords}</span>
-                            </>
-                          );
-                        })()}
+                    <div className="">
+                      <span className="font-medium text-sm md:text-base">
+                        {tab.label}
                       </span>
 
                       {/* Glowing Active Indicator */}
                       {activeTab === tab.id && (
-                        <span className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-[90%] h-1 rounded-full bg-primary-500 shadow-lg shadow-primary-500/30"></span>
+                        <span className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-full h-1 rounded-full bg-primary-500 shadow-lg shadow-primary-500/30"></span>
                       )}
                     </div>
                   </button>
@@ -643,7 +621,7 @@ const DashboardPage = () => {
                     <div className="mb-6">
                       <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-gray-800 dark:to-gray-700 p-4 sm:p-5 rounded-2xl">
                         <h2 className="text-lg sm:text-xl text-emerald-800 dark:text-white font-bold flex items-center mb-2">
-                          <PiUsersDuotone className="h-5 w-5 mr-2 text-emerald-600" />
+                          <PiUsersThreeDuotone className="h-6 w-6 mr-2 text-emerald-600" />
                           Union Membership
                         </h2>
                         <p className="text-[0.83rem] sm:text-sm text-gray-700 dark:text-gray-300">
@@ -659,18 +637,28 @@ const DashboardPage = () => {
                       <h3 className="text-base sm:text-lg font-bold text-secondary-700 dark:text-white mb-2">
                         Membership Status: {user?.membershipStatus || "Active"}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-4 sm:mb-6">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 max-w-lg mx-auto mb-4 sm:mb-6">
                         Your Union membership is currently active. Access
                         exclusive benefits, union services and discounts for
                         Matatu Workers.
                       </p>
-                      <button
-                        onClick={() => navigate("/payments")}
-                        className="inline-flex items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-[0.83rem] sm:text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors duration-200"
-                      >
-                        <TbIdBadge2 className="mr-2 h-5 w-5" />
-                        Manage Membership
-                      </button>
+
+                      <div className="flex flex-col lg:flex-row gap-2 md:gap-3 justify-center">
+                        <button
+                          onClick={() => navigate("/payments")}
+                          className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-[0.83rem] sm:text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors duration-200"
+                        >
+                          <TbIdBadge2 className="mr-2 h-5 w-5" />
+                          Manage Membership
+                        </button>
+                        <button
+                          onClick={() => navigate("/profile")}
+                          className="inline-flex items-center justify-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-[0.83rem] sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200"
+                        >
+                          <PiUserDuotone className="mr-2 h-5 w-5" />
+                          View My Profile
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

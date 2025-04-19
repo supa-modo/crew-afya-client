@@ -12,6 +12,7 @@ const ConfirmationModal = ({
   confirmText,
   cancelText,
   isLoading,
+  titleClass,
   confirmButtonClass,
 }) => {
   if (!isOpen) return null;
@@ -41,7 +42,7 @@ const ConfirmationModal = ({
           onClick={(e) => e.stopPropagation()}
         >
          <div className="flex justify-between items-center py-3 px-4">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-600 dark:text-gray-200 ">
+              <h3 className={`text-base sm:text-lg font-semibold ${titleClass || "text-gray-600 dark:text-gray-200"}`}>
                <span>{title}</span>
               </h3>
               <button

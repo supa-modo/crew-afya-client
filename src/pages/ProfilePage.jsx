@@ -25,24 +25,11 @@ import PhoneVerificationModal from "./profilepage/PhoneVerificationModal";
 import DependantsTab from "./profilepage/DependantsTab";
 import {
   PiUser,
-  PiUserCircle,
-  PiIdentificationCard,
-  PiFileText,
-  PiLock,
-  PiUsersThreeDuotone,
   PiUserDuotone,
-  PiCheck,
-  PiClock,
-  PiSpinner,
-  PiXCircle,
   PiFilesDuotone,
 } from "react-icons/pi";
 import {
-  TbActivity,
-  TbHomeDot,
   TbChevronRight,
-  TbStarFilled,
-  TbExclamationCircle,
   TbAlertTriangle,
   TbHome2,
   TbLockSquareRounded,

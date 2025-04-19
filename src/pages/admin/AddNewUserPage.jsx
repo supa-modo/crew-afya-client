@@ -341,7 +341,7 @@ const AddNewUserPage = () => {
               <li className="flex items-center">
                 <TbChevronRight className="w-4 h-4" />
                 <span className="ml-2 text-admin-700 dark:text-gray-300 font-semibold">
-                  Add New User
+                  Add New Member
                 </span>
               </li>
             </ol>

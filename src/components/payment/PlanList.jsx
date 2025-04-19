@@ -201,7 +201,7 @@ const PlanList = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             onClick={() => handleSelectPlan(plan)}
-            className={`group cursor-pointer border rounded-xl p-4 sm:p-5 transition-all ${
+            className={`group cursor-pointer border rounded-xl p-4 sm:p-5 ${
               selectedPlan?.id === plan.id
                 ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
                 : "border-gray-200 dark:border-gray-700 hover:border-primary-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 bg-white dark:bg-gray-800"

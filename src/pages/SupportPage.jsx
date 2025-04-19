@@ -14,6 +14,8 @@ import {
   TbMessageDots,
   TbHelpCircle,
   TbFileDescription,
+  TbSearch,
+  TbMailFilled,
 } from "react-icons/tb";
 import { MdOutlineHealthAndSafety, MdOutlinePayments } from "react-icons/md";
 import { RiCustomerService2Line } from "react-icons/ri";
@@ -172,7 +174,7 @@ const SupportPage = () => {
             <div className="max-w-4xl mx-auto relative">
               <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200/40 dark:border-gray-700/40">
                 <div className="pl-4">
-                  <FiSearch className="h-5 w-5 text-gray-400" />
+                  <TbSearch className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   type="text"
@@ -192,7 +194,7 @@ const SupportPage = () => {
         {/* Tabs */}
         <div className="mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-md">
-            <div className="bg-gradient-to-r from-primary-600/5 to-primary-600/0 dark:from-primary-900/10 dark:to-primary-900/5 p-1 border-b border-gray-200 dark:border-gray-700">
+            <div className="bg-gradient-to-r from-primary-600/5 to-primary-600/0 dark:from-primary-900/10 dark:to-primary-900/20 p-1 border-b border-gray-200 dark:border-gray-700">
               <nav className="flex flex-wrap">
                 <button
                   onClick={() => setActiveTab("help")}
@@ -393,7 +395,7 @@ const SupportPage = () => {
                         value={formData.subject}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-2.5 text-[0.83rem] sm:text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
+                        className="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-700 hover:border-primary-300 dark:hover:border-primary-500/50 transition-all duration-200"
                       />
                     </div>
 
@@ -416,7 +418,7 @@ const SupportPage = () => {
                         type="submit"
                         className="w-full inline-flex items-center justify-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-[0.83rem] sm:text-sm md:text-base font-medium text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                       >
-                        <FiMail className="mr-2 -ml-1 h-5 w-5" />
+                        <TbMailFilled className="mr-2 -ml-1 h-5 w-5" />
                         Submit Request
                       </button>
                     </div>

@@ -252,9 +252,9 @@ const PaymentsPage = () => {
         </div>
 
         {/* Header section */}
-        <div className="max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-8 mb-8">
-          <div className="bg-gray-50 dark:bg-gray-800 pt-5 sm:pt-7 pb-8 flex flex-col md:flex-row justify-between items-center rounded-2xl overflow-hidden border border-secondary-700/20 shadow-xl relative">
-            <div className="relative z-10 px-5 sm:px-8 text-secondary-700 dark:text-secondary-500">
+        <div className="max-w-screen-2xl mx-auto px-3 sm:px-6 md:px-8 mb-8">
+          <div className="bg-gray-50 dark:bg-gray-800 pt-5 sm:pt-7 pb-8 flex flex-col lg:flex-row justify-between items-center rounded-2xl overflow-hidden border border-secondary-700/20 shadow-xl relative">
+            <div className="lg:w-full relative z-10 px-5 sm:px-8 text-secondary-700 dark:text-secondary-500">
               <h1 className="text-base sm:text-lg md:text-xl font-bold flex items-center">
                 <TbCoins className="mr-3 h-8 w-8 text-secondary-700 dark:text-secondary-500" />
                 Payments & Subscriptions
@@ -265,9 +265,9 @@ const PaymentsPage = () => {
               </p>
             </div>
             {selectedPlan && activeTab === "medical" && (
-              <div className="px-8 pt-5 md:pt-8 z-10 w-full sm:w-auto">
+              <div className="px-4 md:px-8 pt-5 md:pt-8 z-10 w-full lg:w-auto min-w-[30%]">
                 <button
-                  className="w-full sm:w-auto text-primary-700 bg-primary-100 transition-all duration-200 font-semibold text-[0.8rem] sm:text-sm py-2.5 sm:py-3 px-8 rounded-lg shadow-md hover:shadow-lg"
+                  className="w-full text-white bg-gradient-to-r from-secondary-700/90 to-secondary-800 transition-all duration-200 font-medium text-[0.8rem] sm:text-sm py-2.5 sm:py-3 px-8 rounded-lg shadow-md hover:shadow-lg"
                   onClick={() => handleOpenPlanModal(true)}
                 >
                   Change Your Plan
@@ -328,9 +328,9 @@ const PaymentsPage = () => {
         <div className="max-w-screen-2xl mx-auto px-0 md:px-8">
           {activeTab === "medical" ? (
             <div className="bg-white dark:bg-gray-800 shadow-lg rounded-b-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-              <div className="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8 px-4 md:px-8 py-8">
+              <div className="flex flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8 px-4 md:px-6 lg:px-8 py-8">
                 {/* Calendar Component */}
-                <div className="bg-white md:w-[40%] dark:bg-gray-800 rounded-xl">
+                <div className="bg-white lg:w-[40%] dark:bg-gray-800 rounded-xl">
                   <h3 className="text-base sm:text-lg font-semibold text-primary-600 flex items-center mb-2">
                     <TbCalendarEvent className="mr-2 h-5 w-5 text-primary-500" />
                     Your Payment Calendar
@@ -364,7 +364,7 @@ const PaymentsPage = () => {
                 </div>
 
                 {/* Make Payment Section */}
-                <div className="bg-white md:w-[60%] md:border-l md:border-gray-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden md:pl-8">
+                <div className="bg-white lg:w-[60%] lg:border-l lg:border-gray-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden lg:pl-8">
                   <div className="">
                     {isLoading ? (
                       <div className="text-center py-20">

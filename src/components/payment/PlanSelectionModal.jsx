@@ -348,18 +348,6 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
     }
   };
 
-  const getStepTitle = () => {
-    switch (step) {
-      case 1:
-        return "Select Your Health Insurance Plan";
-      case 2:
-        return "Payment Details";
-      case 3:
-        return "Processing Payment";
-      default:
-        return "Select Your Health Insurance Plan";
-    }
-  };
 
   const handleOpenMembershipPage = () => {
     onClose();
@@ -423,7 +411,7 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.4 }}
                 >
                   {/* Plan Category Tabs */}
                   <div className="mb-6">
@@ -511,26 +499,27 @@ const PlanSelectionModal = ({ isOpen, onClose, onPlanSelected }) => {
             onClose={handleRejectChangeSubscription}
             onConfirm={handleConfirmChangeSubscription}
             title="Change Subscription Plan"
+            titleClass="text-amber-700 dark:text-amber-600"
             message={
               <>
                 <span className="block mb-3">
                   You already have an active subscription to the{" "}
-                  <strong>
+                  <strong className="text-secondary-700 dark:text-secondary-500">
                     {existingSubscription?.plan?.name || "current"}
                   </strong>{" "}
                   plan.
                 </span>
                 <span className="block mb-3">
-                  Selecting a new plan will cancel your current subscription.
-                  You will need to make a payment for the new plan.
+                  Selecting a new plan will cancel your current subscription and you will need to make a payment for the new plan to activate it.
                 </span>
                 <span className="block">
-                  Do you want to proceed with changing your subscription plan?
+                  Proceed with changing your subscription plan?
                 </span>
               </>
             }
             confirmText="Yes, Change Plan"
-            cancelText="Keep Current Plan"
+            confirmButtonClass="bg-amber-600 dark:bg-amber-700 hover:bg-amber-700 dark:hover:bg-amber-800"
+            cancelText="No, Keep Current Plan"
             type="warning"
             icon={<TbRefresh className="h-8 w-8 text-amber-600" />}
           />

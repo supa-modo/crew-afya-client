@@ -159,7 +159,7 @@ const Navbar = () => {
             : "bg-white/85 dark:bg-gray-900/60 backdrop-blur-sm shadow-sm"
         } fixed w-full top-0 z-50 transition-all duration-300 ease-in-out border-b border-gray-200/30 dark:border-gray-800/30`}
       >
-        <div className="max-w-screen md:mx-6 lg:mx-24 px-4 sm:px-6 lg:px-8">
+        <div className="lg:mx-[2%] px-4 sm:px-6 lg:px-[3%]">
           <div className="flex justify-between items-center h-16 md:h-20">
             <div className="flex items-center">
               <Link to="/" className="flex-shrink-0 flex items-center">
@@ -184,7 +184,7 @@ const Navbar = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex md:items-center md:space-x-6">
+            <div className="hidden lg:flex lg:items-center lg:space-x-6">
               <div className="flex space-x-1">
                 <Link
                   to="/"
@@ -289,7 +289,7 @@ const Navbar = () => {
                     <div className="relative" ref={profileRef}>
                       <button
                         onClick={toggleProfile}
-                        className="flex items-center space-x-3 bg-white/20 dark:bg-gray-800/10 px-2 py-1 pr-3 rounded-md border-l-2 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:border-l-2 focus:border-secondary-600 dark:focus:border-l-2 dark:focus:border-secondary-600"
+                        className="flex items-center space-x-3  px-2 py-1 pr-3 rounded-md border-l-2 border-gray-300 dark:border-gray-700 transition-colors duration-200 focus:outline-none focus:border-l-2 focus:border-secondary-600 dark:focus:border-l-2 dark:focus:border-secondary-600"
                         aria-expanded={isProfileOpen}
                         aria-haspopup="true"
                       >
@@ -314,7 +314,7 @@ const Navbar = () => {
                             onClick={() => setIsProfileOpen(false)}
                             aria-hidden="true"
                           />
-                          <div className="absolute right-0 mt-2 w-64 origin-top-right rounded-xl bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-100 dark:divide-gray-700 overflow-hidden z-50">
+                          <div className="absolute right-0 mt-2 w-64 origin-top-right rounded-lg bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-100 dark:divide-gray-700 overflow-hidden z-50">
                             <div className="px-4 py-4">
                               <p className=" font-semibold text-gray-600 dark:text-white truncate">
                                 {user?.firstName} {user?.lastName}
@@ -401,7 +401,7 @@ const Navbar = () => {
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden flex items-center">
+            <div className="lg:hidden flex items-center">
               <button
                 onClick={toggleDarkMode}
                 className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-secondary-600 dark:hover:text-secondary-400 focus:outline-none focus:ring-2  focus:ring-secondary-500 dark:focus:ring-offset-gray-900 transition-colors duration-200 mr-2"
@@ -434,13 +434,13 @@ const Navbar = () => {
 
         {/* Mobile menu, show/hide based on menu state */}
         {isMenuOpen && (
-          <div className="md:hidden" id="mobile-menu" ref={menuRef}>
-            <div className="pl-6 pr-6 pt-3 pb-3 space-y-1  sm:px-3 border-t border-gray-200 dark:border-gray-800">
+          <div className="lg:hidden" id="mobile-menu" ref={menuRef}>
+            <div className="pl-3 pr-6 pt-3 pb-3 space-y-1  sm:px-3 border-t border-gray-200 dark:border-gray-800">
               <Link
                 to="/"
                 className={`${
                   isActive("/")
-                    ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
+                    ? "bg-secondary-600 dark:bg-secondary-900/80 text-white dark:text-secondary-300"
                     : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                 } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                 onClick={closeMenus}
@@ -457,7 +457,7 @@ const Navbar = () => {
                     to="/dashboard"
                     className={`${
                       isActive("/dashboard")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
+                        ? "bg-secondary-600 dark:bg-secondary-900/80 text-white dark:text-secondary-300"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
@@ -471,7 +471,7 @@ const Navbar = () => {
                     to="/payments"
                     className={`${
                       isActive("/payments")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
+                        ? "bg-secondary-600 dark:bg-secondary-900/80 text-white dark:text-secondary-300"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
@@ -481,25 +481,11 @@ const Navbar = () => {
                       Payments
                     </div>
                   </Link>
-                  {/* <Link
-                    to="/payment"
-                    className={`${
-                      isActive("/payment")
-                        ? "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
-                    } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
-                    onClick={closeMenus}
-                  >
-                    <div className="flex items-center">
-                      <FaCreditCard className="mr-3" size={19} />
-                      Pay Now
-                    </div>
-                  </Link> */}
                   <Link
                     to="/support"
                     className={`${
                       isActive("/settings")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
+                        ? "bg-secondary-600 dark:bg-secondary-900/80 text-white dark:text-secondary-300"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
@@ -513,7 +499,7 @@ const Navbar = () => {
                     to="/profile"
                     className={`${
                       isActive("/profile")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-600 dark:text-secondary-400"
+                        ? "bg-secondary-600 dark:bg-secondary-900/20 text-white dark:text-secondary-300"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
@@ -530,7 +516,7 @@ const Navbar = () => {
                     to="/about"
                     className={`${
                       isActive("/about")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
+                        ? "bg-secondary-600 dark:bg-secondary-900/80 text-white dark:text-secondary-300"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
@@ -544,7 +530,7 @@ const Navbar = () => {
                     to="/support"
                     className={`${
                       isActive("/support")
-                        ? "bg-secondary-50 dark:bg-secondary-900/20 text-secondary-700 dark:text-secondary-400"
+                        ? "bg-secondary-600 dark:bg-secondary-900/80 text-white dark:text-secondary-300"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                     } block px-3 py-2.5 rounded-md text-sm transition-colors duration-200`}
                     onClick={closeMenus}
@@ -580,7 +566,7 @@ const Navbar = () => {
                     <button
                       onClick={handleLogout}
                       disabled={isSigningOut}
-                      className="w-full flex items-center px-4 py-2 text-sm sm:text-base text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors duration-200"
+                      className="w-full flex items-center px-2 py-2 text-sm sm:text-base text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors duration-200"
                     >
                       {isSigningOut ? (
                         <>
