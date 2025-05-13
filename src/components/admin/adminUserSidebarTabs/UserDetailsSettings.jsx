@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { FaSave } from "react-icons/fa";
-import {
-  FiAlertTriangle,
-  FiBell,
-} from "react-icons/fi";
+import { FiAlertTriangle, FiBell } from "react-icons/fi";
 import { TbLockFilled } from "react-icons/tb";
+import { changeUserPasswordByAdmin } from "../../../services/adminService";
 
 const UserDetailsSettings = ({ user }) => {
+  console.log(user);
   // Account settings states
   const [accountSettings, setAccountSettings] = useState({
     twoFactorAuth: user?.twoFactorAuth || false,
@@ -16,7 +15,6 @@ const UserDetailsSettings = ({ user }) => {
 
   // Password states
   const [passwords, setPasswords] = useState({
-    current: "",
     new: "",
     confirm: "",
   });
@@ -53,10 +51,6 @@ const UserDetailsSettings = ({ user }) => {
   const validatePasswordForm = () => {
     const errors = {};
 
-    if (!passwords.current) {
-      errors.current = "Current password is required";
-    }
-
     if (!passwords.new) {
       errors.new = "New password is required";
     } else if (passwords.new.length < 8) {
@@ -86,7 +80,7 @@ const UserDetailsSettings = ({ user }) => {
     }, 1000);
   };
 
-  const handleChangePassword = (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
     const errors = validatePasswordForm();
 
@@ -98,22 +92,23 @@ const UserDetailsSettings = ({ user }) => {
     setIsSubmitting(true);
     setFormErrors({});
 
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Password changed");
-      setIsSubmitting(false);
+    try {
+      await changeUserPasswordByAdmin(user.id, passwords.new);
       setSuccess("Password changed successfully");
 
       // Reset form
       setPasswords({
-        current: "",
         new: "",
         confirm: "",
       });
 
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(""), 3000);
-    }, 1000);
+    } catch (error) {
+      setFormErrors({ general: error.message || "Failed to change password" });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

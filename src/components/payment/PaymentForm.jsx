@@ -124,7 +124,7 @@ const PaymentForm = ({
       {/* Submit Button */}
       <button
         type="submit"
-        className={`w-full flex justify-center items-center px-4 py-2.5 border border-transparent rounded-md shadow-sm text-[0.83rem] sm:text-sm md:text-[0.95rem] font-medium text-white bg-gradient-to-r from-secondary-700/90 via-secondary-800/90 to-secondary-700 hover:bg-primary-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+        className={`w-full flex justify-center items-center px-4 py-2.5 border border-transparent rounded-md shadow-sm text-sm md:text-[0.95rem] font-medium text-white bg-gradient-to-r from-secondary-700/90 via-secondary-800/90 to-secondary-700 hover:bg-primary-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed ${
           paymentType === "membership"
             ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
             : ""
@@ -157,13 +157,13 @@ const PaymentForm = ({
           </>
         ) : (
           <>
-            Pay with M-Pesa
-            <MpesaIcon width={60} height={20} className="ml-2" />
+            Pay with
+            <MpesaIcon variant="white" width={64} height={22} className="ml-1 mt-0.5" />
           </>
         )}
       </button>
 
-      <p className="text-[0.7rem] sm:text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
+      <p className="text-[0.7rem] sm:text-xs text-center text-gray-500 dark:text-gray-400 mt-1">
         You will receive an M-Pesa STK push prompt on your phone
       </p>
     </motion.form>

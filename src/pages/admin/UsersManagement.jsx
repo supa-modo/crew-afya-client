@@ -488,12 +488,7 @@ const UserManagement = ({
                 >
                   <div className="flex items-center">Plan</div>
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                >
-                  <div className="flex items-center">Role</div>
-                </th>
+               
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
@@ -530,7 +525,7 @@ const UserManagement = ({
               {users.map((user) => (
                 <tr
                   key={user.id}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  className="hover:bg-admin-100/30 dark:hover:bg-gray-800 transition-colors"
                 >
                   <td
                     className="px-6 py-3 whitespace-nowrap cursor-pointer"
@@ -541,6 +536,7 @@ const UserManagement = ({
                         <span className="text-admin-700 dark:text-admin-300 font-medium">
                           {user.firstName?.charAt(0)}
                           {user.lastName?.charAt(0)}
+                          
                         </span>
                       </div>
                       <div className="ml-4">
@@ -595,25 +591,21 @@ const UserManagement = ({
                       </span>
                     )}
                   </td>
+                  
                   <td
-                    className="px-6 py-3 whitespace-nowrap text-sm cursor-pointer"
+                    className="px-6 py-3 flex flex-col space-y-1 whitespace-nowrap text-sm font-medium text-gray-500 dark:text-gray-400 cursor-pointer"
                     onClick={() => handleViewUser(user)}
                   >
+                    <span>{formatDate(user.createdAt)}</span>
                     <span
-                      className={`px-5 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      className={`px-4 py-0.5 w-fit text-xs leading-4 font-semibold rounded-full ${
                         user.role === "admin" || user.role === "superadmin"
-                          ? "bg-admin-200 border border-admin-300 dark:bg-admin-900 dark:text-admin-200"
-                          : "bg-gray-200 border border-gray-300 dark:bg-gray-700 dark:text-gray-300"
+                          ? "bg-admin-200 dark:bg-admin-900 dark:text-admin-200"
+                          : "bg-gray-200 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-400"
                       }`}
                     >
                       {user.role?.charAt(0).toUpperCase() + user.role?.slice(1)}
                     </span>
-                  </td>
-                  <td
-                    className="px-6 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 cursor-pointer"
-                    onClick={() => handleViewUser(user)}
-                  >
-                    {new Date(user.createdAt).toLocaleDateString()}
                   </td>
                   <td
                     className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 cursor-pointer"

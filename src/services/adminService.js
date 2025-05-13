@@ -140,3 +140,13 @@ export const getTransactionById = async (transactionId) => {
 export const updateTransactionStatus = async (transactionId, status) => {
   return apiPut(`/admin/transactions/${transactionId}/status`, { status });
 };
+
+/**
+ * Change user password by admin
+ * @param {string} userId - User ID
+ * @param {string} newPassword - New password
+ * @returns {Promise} Promise with success message
+ */
+export const changeUserPasswordByAdmin = async (userId, newPassword) => {
+  return apiPut(`/users/admin/change-password`, {userId, newPassword });
+};

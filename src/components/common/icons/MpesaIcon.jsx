@@ -1,6 +1,18 @@
 import React from "react";
 
-const MpesaIcon = ({ width = 28, height = 28, className = "" }) => {
+/**
+ * MpesaIcon component with color variant support
+ * @param {number} width - Width of the icon
+ * @param {number} height - Height of the icon
+ * @param {string} className - Additional CSS classes
+ * @param {string} variant - Color variant: 'default' (green) or 'white' (white with red details)
+ * @returns {JSX.Element} MpesaIcon SVG component
+ */
+const MpesaIcon = ({ width = 28, height = 28, className = "", variant = "default" }) => {
+  // Determine colors based on variant
+  const primaryColor = variant === "white" ? "#FFFFFF" : "#2DB34E";
+  const secondaryColor = variant === "white" ? "#FFFFFF" : "#2CB34C";
+  const accentColor = variant === "white" ? "#FFFFFF" : "#18AF41";
   return (
     <svg
       version="1.1"
@@ -12,9 +24,9 @@ const MpesaIcon = ({ width = 28, height = 28, className = "" }) => {
       viewBox="0 0 450 112"
       className={className}
     >
-      {/* Left side - M (green) */}
+      {/* Left side - M */}
       <path
-        fill="#2DB34E"
+        fill={primaryColor}
         d="M29.192,53.055c0.086,8.649,0.172,17.298-0.107,26.513
           c-0.594,1.03-0.824,1.493-1.054,1.957h-16.806V25.543h16.869
           c0.271,1.938,0.488,3.492,0.578,4.132c6.366-1.689,12.432-4.072,18.682-4.75
@@ -29,9 +41,9 @@ const MpesaIcon = ({ width = 28, height = 28, className = "" }) => {
           c-5.95-0.397-9.298,2.87-11.115,10.877C28.939,52.488,29.066,52.771,29.192,53.055z"
       />
 
-      {/* Feature phone outline (green) */}
+      {/* Feature phone outline */}
       <path
-        fill="#2DB34E"
+        fill={primaryColor}
         d="M121.469,113c-3.561-2.202-4.58-5.121-4.551-8.961c0.112-14.933-0.165-29.869-0.16-44.803
           c0.005-16.8-0.031-33.605,0.453-50.393c0.071-2.449,2.927-4.817,4.642-7.533h45.678
           c4.843,3.097,5.816,7.384,5.6,12.543c-0.343,8.199-0.092,16.422-0.092,24.635
@@ -64,9 +76,9 @@ const MpesaIcon = ({ width = 28, height = 28, className = "" }) => {
           C134.066,46.837,135.738,48.376,137.703,50.096z"
       />
 
-      {/* PESA part (green) - Modified to remove white spaces inside letters */}
+      {/* PESA part - P */}
       <path
-        fill="#2CB34D"
+        fill={secondaryColor}
         d="M247.091,58.939c-4.927,21.418-21.47,28.673-43.072,18.726v24.043h-18.827V25.922h17.244
           c0.256,1.139,0.565,2.518,0.876,3.906c0.481,0,0.9,0.134,1.123-0.019c10.103-6.939,20.576-7.608,30.91-0.972
           C246.177,35.794,248.316,46.594,247.091,58.939z M221.763,41.383c-6.89-2.633-11.828-1.831-15.437,2.507
@@ -76,7 +88,7 @@ const MpesaIcon = ({ width = 28, height = 28, className = "" }) => {
 
       {/* E in PESA */}
       <path
-        fill="#2CB34C"
+        fill={secondaryColor}
         d="M312.989,58.047h-38.916c2.203,10.625,13.066,12.765,27.319,5.775
           c3.083,3.048,6.278,6.208,9.454,9.349c-8.427,9.279-24.982,12.115-38.482,6.931
           c-11.158-4.284-18.287-14.455-18.435-26.301c-0.173-13.875,10.971-26.726,25.089-28.777
@@ -88,7 +100,7 @@ const MpesaIcon = ({ width = 28, height = 28, className = "" }) => {
 
       {/* S in PESA */}
       <path
-        fill="#2CB34D"
+        fill={secondaryColor}
         d="M363.657,78.85c-14.595,6.309-28.436,4.031-42.597-1.276
           c2.106-4.887,3.909-9.068,5.714-13.257c9.519,3.3,19.049,7.515,28.983,2.453
           c0.199-0.804,0.399-1.609,0.598-2.413c-2.529-1.103-4.965-2.583-7.605-3.231
@@ -103,7 +115,7 @@ const MpesaIcon = ({ width = 28, height = 28, className = "" }) => {
 
       {/* A in PESA */}
       <path
-        fill="#2CB34C"
+        fill={secondaryColor}
         d="M441.103,81.517h-16.709c-0.295-1.277-0.613-2.655-0.943-4.082
           c-12.831,7.07-25.166,7.731-36.292-2.821c-8.677-8.23-9.781-24.778-3.286-36.999
           c5.944-11.185,24.125-17.712,36.612-9.56c3.546-0.979,5.806-1.975,8.132-2.161
@@ -116,32 +128,32 @@ const MpesaIcon = ({ width = 28, height = 28, className = "" }) => {
 
       {/* Small detail adjustments */}
       <path
-        fill="#18AF41"
+        fill={accentColor}
         d="M313.247,58.11c0.005-0.203,0.268-0.343,0.635-0.324
           C313.825,58.02,313.665,58.096,313.247,58.11z"
       />
       <path
-        fill="#18AF41"
+        fill={accentColor}
         d="M442.112,26.708c-0.289,0.128-0.579-0.065-0.993-0.492
           C441.367,26.118,441.739,26.252,442.112,26.708z"
       />
       <path
-        fill="#18AF41"
+        fill={accentColor}
         d="M441.453,81.413c-0.191-0.295-0.033-0.694,0.398-1.274
           C442.015,80.409,441.909,80.859,441.453,81.413z"
       />
       <path
-        fill="#18AF41"
+        fill={accentColor}
         d="M28.254,81.597c0.008-0.536,0.237-1,0.71-1.58
           C28.964,80.491,28.72,81.08,28.254,81.597z"
       />
       <path
-        fill="#18AF41"
+        fill={accentColor}
         d="M29.272,52.805c-0.206-0.033-0.333-0.317-0.264-0.678
           C29.252,52.218,29.301,52.386,29.272,52.805z"
       />
       <path
-        fill="#18AF41"
+        fill={accentColor}
         d="M67.921,80.732c-0.249,0.048-0.398-0.12-0.5-0.312
           c-0.021-0.04,0.129-0.172,0.358-0.334C67.969,80.179,68.003,80.344,67.921,80.732z"
       />

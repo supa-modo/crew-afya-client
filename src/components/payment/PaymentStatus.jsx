@@ -15,7 +15,6 @@ import {
 } from "react-icons/tb";
 import { MdSpaceDashboard } from "react-icons/md";
 
-// Add this at the top of your file or in a separate CSS file
 const spinnerStyles = `
   @keyframes spinnerRotate {
     0% { transform: rotate(0deg); }
@@ -74,7 +73,7 @@ const PaymentStatus = ({
     }
   };
 
-  // Adding this new component for loading spinner
+  //  loading spinner
   const LoadingIconWithSpinner = ({ status }) => {
     const colorTheme = getColorTheme();
     const gradientClass =
@@ -419,7 +418,7 @@ const PaymentStatus = ({
               className={`relative w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] mb-3 rounded-full flex items-center justify-center ${colorTheme.shadow}`}
             >
               <div
-                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full  flex items-center justify-center`}
+                className={`w-16 h-16 md:w-20 md:h-20 rounded-full  flex items-center justify-center`}
               >
                 <StatusIcon className={`h-10 w-10 ${colorTheme.icon}`} />
               </div>
@@ -480,7 +479,7 @@ const PaymentStatus = ({
             <div className="w-full flex flex-col sm:flex-row gap-3">
               <Link
                 to="/dashboard"
-                className=" px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold text-primary-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-semibold text-primary-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
               >
                 <div className="flex items-center justify-center">
                   <MdSpaceDashboard className="text-primary-600  mr-2 h-5 w-5" />

@@ -16,6 +16,7 @@ import {
   TbMoneybag,
   TbCoins,
   TbChevronRight,
+  TbArrowsUpDown,
 } from "react-icons/tb";
 import { BiSolidShieldX } from "react-icons/bi";
 import { MdOutlineHealthAndSafety } from "react-icons/md";
@@ -222,10 +223,7 @@ const PaymentsPage = () => {
                 </svg>
               </li>
               <li>
-                <Link
-                  to="/dashboard"
-                  className="hover:text-primary-600"
-                >
+                <Link to="/dashboard" className="hover:text-primary-600">
                   Dashboard
                 </Link>
               </li>
@@ -270,7 +268,10 @@ const PaymentsPage = () => {
                   className="w-full text-white bg-gradient-to-r from-secondary-700/90 to-secondary-800 transition-all duration-200 font-medium text-[0.8rem] sm:text-sm py-2.5 sm:py-3 px-8 rounded-lg shadow-md hover:shadow-lg"
                   onClick={() => handleOpenPlanModal(true)}
                 >
-                  Change Your Plan
+                  <div className="flex items-center space-x-2 justify-center">
+                    <TbArrowsUpDown size={18} className="rotate-90"/>
+                    <span>Change Your Plan</span>
+                  </div>
                 </button>
               </div>
             )}

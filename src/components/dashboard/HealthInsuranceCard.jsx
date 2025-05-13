@@ -34,7 +34,7 @@ const HealthInsuranceCard = ({
 
   return (
     <div className="w-full">
-      <div className="bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 p-3 sm:p-6 rounded-2xl shadow-md border border-blue-100 dark:border-gray-700">
+      <div className="bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 p-3 sm:p-6 rounded-2xl shadow-md border border-blue-200 dark:border-gray-700">
         {/* Card Header */}
         <div className="flex items-center justify-between mb-5 sm:mb-6">
           <div className="flex items-center space-x-4">
@@ -43,7 +43,7 @@ const HealthInsuranceCard = ({
                 Medical Cover
               </h3>
               <p className="text-[0.77rem] sm:text-sm text-gray-600 dark:text-gray-300">
-                CrewAfya Health Insurance
+                CrewAfya Health Cover
               </p>
             </div>
           </div>
@@ -55,7 +55,7 @@ const HealthInsuranceCard = ({
         </div>
 
         {/* Plan Details */}
-        <div className="bg-white/60 dark:bg-gray-800/50 rounded-xl p-3.5 sm:p-4 mb-8">
+        <div className="bg-white/60 dark:bg-gray-800/50 border shadow-inner rounded-xl p-3.5 sm:p-4 mb-8">
           <div className="flex items-center justify-between mb-4 sm:mb-8">
             <div>
               <p className="text-[0.76rem] sm:text-sm font-medium text-gray-600 dark:text-gray-400">

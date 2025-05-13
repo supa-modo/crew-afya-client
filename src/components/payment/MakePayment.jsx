@@ -6,15 +6,10 @@ import {
   TbReceipt2,
   TbWallet,
 } from "react-icons/tb";
-import { PiUserDuotone } from "react-icons/pi";
-import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   initiateM_PesaPayment,
   checkPaymentStatus,
-  getPendingPayment,
-  clearPendingPayment,
-  recoverPaymentProcess,
   verifyMpesaPayment,
 } from "../../services/paymentService";
 import { formatCurrency } from "../../utils/formatCurrency";
@@ -23,42 +18,9 @@ import { formatCurrency } from "../../utils/formatCurrency";
 import PaymentForm from "./PaymentForm";
 import PaymentStatus from "./PaymentStatus";
 import PaymentTypeSelector from "./PaymentTypeSelector";
-import { RiCommunityLine, RiUserCommunityLine } from "react-icons/ri";
+import { RiUserCommunityLine } from "react-icons/ri";
 
-// Component for handling phone number input and submission
-const PaymentFormContainer = ({
-  paymentType,
-  phoneNumber,
-  setPhoneNumber,
-  errorMessage,
-  isSubmitting,
-  getCurrentAmount,
-  getPaymentTypeTitle,
-  handleSubmit,
-  disabled,
-}) => {
-  return (
-    <motion.div
-      key="payment-form"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="space-y-4"
-    >
-      <PaymentForm
-        phoneNumber={phoneNumber}
-        setPhoneNumber={setPhoneNumber}
-        paymentType={paymentType}
-        errorMessage={errorMessage}
-        getCurrentAmount={getCurrentAmount}
-        getPaymentTypeTitle={getPaymentTypeTitle}
-        isSubmitting={isSubmitting}
-        handleSubmit={handleSubmit}
-        disabled={disabled}
-      />
-    </motion.div>
-  );
-};
+
 
 // Main MakePayment component
 const MakePayment = ({
