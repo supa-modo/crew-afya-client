@@ -25,8 +25,8 @@ const Footer = () => {
               </span>
             </Link>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">
-              Streamlining Union membership management, medical coverage, and
-              loan applications all in one place.
+              Empowering Matatu Workers with access to Medical Coverage, Union
+              Membership, and Financial Services.
             </p>
             <div className="mt-4 flex space-x-4">
               <a
@@ -202,7 +202,11 @@ const Footer = () => {
         </div>
         <div className="mt-8 border-t border-gray-300 dark:border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center mb-4 md:mb-0">
-            <img className="h-8 w-auto mr-2" src="/mwulogo.png" alt="CrewAfya" />
+            <img
+              className="h-8 w-auto mr-2"
+              src="/mwulogo.png"
+              alt="CrewAfya"
+            />
             <span className="text-sm text-gray-500 dark:text-gray-400">
               &copy; {currentYear} Matatu Wokers Union. All rights reserved.
             </span>

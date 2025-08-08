@@ -476,7 +476,6 @@ const RegisterForm = () => {
           exit={{ opacity: 0 }}
           className="text-center mb-4"
         >
-
           {/* Animated underline */}
           <motion.div
             initial={{ width: 0 }}

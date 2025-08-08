@@ -66,6 +66,16 @@ const SecurityTab = ({
       return;
     }
 
+    // Check for password complexity requirements
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+    if (!passwordRegex.test(formData.newPassword)) {
+      setLocalError(
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      );
+      return;
+    }
+
     // If validation passes, proceed with the actual submission
     handlePasswordSubmit(e);
   };
@@ -296,7 +306,9 @@ const SecurityTab = ({
               <div className="flex items-center justify-center">
                 <TbPhoneCall className="mr-2 -ml-1 h-5 w-5" />
                 <span>
-                  {userData?.phoneVerified ? "Phone Verified" : "Verify Phone Number"}
+                  {userData?.phoneVerified
+                    ? "Phone Verified"
+                    : "Verify Phone Number"}
                 </span>
               </div>
             </button>

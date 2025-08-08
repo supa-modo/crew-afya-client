@@ -421,7 +421,8 @@ const UserInfoForm = ({ formData, handleChange, errors }) => {
             </p>
           )}
           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-            Password must be at least 8 characters long
+            Password must be at least 8 characters with uppercase, lowercase,
+            number, and special character
           </p>
         </div>
       </div>
